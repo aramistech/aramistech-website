@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,9 +17,45 @@ import { apiRequest } from "@/lib/queryClient";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
+interface TimeLeft {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
 export default function Windows10Upgrade() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  // Calculate time remaining until Windows 10 support ends (October 14, 2025)
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date().getTime();
+      const endDate = new Date('2025-10-14T00:00:00').getTime();
+      const difference = endDate - now;
+
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        setTimeLeft({ days, hours, minutes, seconds });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      }
+    };
+
+    // Calculate immediately
+    calculateTimeLeft();
+
+    // Update every second
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
   
   const form = useForm<InsertContact>({
     resolver: zodResolver(insertContactSchema),
@@ -109,13 +146,39 @@ export default function Windows10Upgrade() {
         </div>
       </div>
 
-      {/* Urgency Banner */}
-      <div className="bg-red-600 text-white py-4">
+      {/* Countdown Timer Banner */}
+      <div className="bg-red-600 text-white py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center text-center">
-            <Clock className="w-6 h-6 mr-3 animate-pulse" />
-            <p className="text-lg font-semibold">
-              Windows 10 support ends October 14, 2025 - Only 4 months left to upgrade!
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-3">
+              <Clock className="w-6 h-6 mr-3 animate-pulse" />
+              <p className="text-lg font-semibold">
+                Windows 10 support ends October 14, 2025
+              </p>
+            </div>
+            
+            {/* Countdown Timer */}
+            <div className="flex flex-wrap justify-center gap-4 mt-4">
+              <div className="bg-white/20 rounded-lg p-3 min-w-[80px]">
+                <div className="text-2xl font-bold">{timeLeft.days}</div>
+                <div className="text-sm opacity-90">Days</div>
+              </div>
+              <div className="bg-white/20 rounded-lg p-3 min-w-[80px]">
+                <div className="text-2xl font-bold">{timeLeft.hours}</div>
+                <div className="text-sm opacity-90">Hours</div>
+              </div>
+              <div className="bg-white/20 rounded-lg p-3 min-w-[80px]">
+                <div className="text-2xl font-bold">{timeLeft.minutes}</div>
+                <div className="text-sm opacity-90">Minutes</div>
+              </div>
+              <div className="bg-white/20 rounded-lg p-3 min-w-[80px]">
+                <div className="text-2xl font-bold">{timeLeft.seconds}</div>
+                <div className="text-sm opacity-90">Seconds</div>
+              </div>
+            </div>
+            
+            <p className="text-lg font-semibold mt-3 text-yellow-200">
+              Time remaining to upgrade before support ends!
             </p>
           </div>
         </div>
