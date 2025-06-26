@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 import AdminReviewsPage from "@/pages/admin-reviews";
+import SocialProofPopup from "@/components/social-proof-popup";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <SocialProofPopup />
       </TooltipProvider>
     </QueryClientProvider>
   );
