@@ -111,6 +111,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Reorder menu items
+  app.put("/api/admin/menu-items/reorder", requireAdminAuth, async (req, res) => {
+    try {
+      const { updates } = req.body;
+      
+      if (!Array.isArray(updates)) {
+        return res.status(400).json({ error: "Updates must be an array" });
+      }
+
+      for (const update of updates) {
+        await storage.updateMenuItem(update.id, { orderIndex: update.orderIndex });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Reorder menu items error:", error);
+      res.status(500).json({ error: "Failed to reorder menu items" });
+    }
+  });
+
   // Protected admin reviews routes
   app.get("/api/admin/reviews", requireAdminAuth, async (req, res) => {
     try {

@@ -252,6 +252,24 @@ export default function MenuManager() {
     },
   });
 
+  // Toggle visibility mutation
+  const toggleVisibilityMutation = useMutation({
+    mutationFn: async ({ id, isVisible }: { id: number; isVisible: boolean }) => {
+      const res = await apiRequest('PUT', `/api/admin/menu-items/${id}`, { isVisible });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/menu-items'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update visibility",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmit = (data: MenuItemFormData) => {
     if (editingItem) {
       updateItemMutation.mutate({ id: editingItem.id, data });
@@ -275,6 +293,19 @@ export default function MenuManager() {
   const handleDelete = (id: number) => {
     if (confirm('Are you sure you want to delete this menu item?')) {
       deleteItemMutation.mutate(id);
+    }
+  };
+
+  // Handle drag end
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = parentItems.findIndex((item) => item.id === active.id);
+      const newIndex = parentItems.findIndex((item) => item.id === over?.id);
+      
+      const reorderedItems = arrayMove(parentItems, oldIndex, newIndex);
+      reorderMutation.mutate(reorderedItems);
     }
   };
 
@@ -509,16 +540,79 @@ export default function MenuManager() {
         </Card>
       )}
 
-      {/* Menu Items List */}
+      {/* Menu Items List with Drag and Drop */}
       <div className="space-y-4">
+        <h3 className="text-lg font-medium">Current Menu Items</h3>
+        <p className="text-sm text-gray-600">Drag and drop to reorder menu items</p>
         {parentItems.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             No menu items yet. Add your first menu item to get started.
           </div>
         ) : (
-          parentItems
-            .sort((a, b) => a.orderIndex - b.orderIndex)
-            .map(item => renderMenuItem(item))
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={parentItems.map(item => item.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-3">
+                {parentItems
+                  .sort((a, b) => a.orderIndex - b.orderIndex)
+                  .map(item => (
+                    <SortableMenuItem
+                      key={item.id}
+                      item={item}
+                      onEdit={handleEdit}
+                      onDelete={handleDelete}
+                      onToggleVisibility={(id, isVisible) => 
+                        toggleVisibilityMutation.mutate({ id, isVisible })
+                      }
+                    >
+                      {/* Render sub-items */}
+                      {menuItems
+                        .filter(subItem => subItem.parentId === item.id)
+                        .sort((a, b) => a.orderIndex - b.orderIndex)
+                        .map(subItem => (
+                          <div key={subItem.id} className="ml-8 mt-2">
+                            <div className="flex items-center gap-3 p-2 bg-gray-50 border rounded text-sm">
+                              <ChevronRight className="w-3 h-3 text-gray-400" />
+                              <span className="flex-1 font-medium">{subItem.label}</span>
+                              {subItem.href && (
+                                <span className="text-gray-500">→ {subItem.href}</span>
+                              )}
+                              <div className="flex items-center gap-1">
+                                <Switch
+                                  checked={subItem.isVisible}
+                                  onCheckedChange={(checked) => 
+                                    toggleVisibilityMutation.mutate({ id: subItem.id, isVisible: checked })
+                                  }
+                                />
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleEdit(subItem)}
+                                >
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDelete(subItem.id)}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                    </SortableMenuItem>
+                  ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         )}
       </div>
     </div>
