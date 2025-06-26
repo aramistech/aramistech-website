@@ -6,6 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Copy, RefreshCw, Globe, Wifi, MapPin, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/header';
+import Footer from '@/components/footer';
 
 interface IPInfo {
   ip: string;
@@ -368,6 +369,7 @@ export default function IPLookup() {
         </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
