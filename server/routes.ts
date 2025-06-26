@@ -1,10 +1,167 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, insertMenuItemSchema } from "@shared/schema";
+import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Add cookie parser middleware
+  app.use(cookieParser());
+
+  // Admin authentication routes
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      const user = await storage.getUserByUsername(username);
+      if (!user) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+
+      const isValidPassword = await verifyPassword(password, user.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+
+      const sessionId = await createAdminSession(user.id);
+      
+      res.cookie('admin_session', sessionId, {
+        httpOnly: true,
+        secure: false, // Set to true in production with HTTPS
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        sameSite: 'lax'
+      });
+
+      res.json({ success: true, user: { id: user.id, username: user.username } });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ error: "Login failed" });
+    }
+  });
+
+  app.post("/api/admin/logout", requireAdminAuth, async (req, res) => {
+    try {
+      const sessionId = req.cookies?.admin_session;
+      if (sessionId) {
+        await storage.deleteAdminSession(sessionId);
+      }
+      res.clearCookie('admin_session');
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ error: "Logout failed" });
+    }
+  });
+
+  app.get("/api/admin/me", requireAdminAuth, async (req, res) => {
+    const user = (req as any).adminUser;
+    res.json({ user: { id: user.id, username: user.username } });
+  });
+
+  // Admin menu management routes
+  app.get("/api/admin/menu-items", requireAdminAuth, async (req, res) => {
+    try {
+      const menuItems = await storage.getMenuItems();
+      res.json({ success: true, menuItems });
+    } catch (error) {
+      console.error("Get menu items error:", error);
+      res.status(500).json({ error: "Failed to fetch menu items" });
+    }
+  });
+
+  app.post("/api/admin/menu-items", requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertMenuItemSchema.parse(req.body);
+      const menuItem = await storage.createMenuItem(validatedData);
+      res.json({ success: true, menuItem });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid data", details: error.errors });
+      }
+      console.error("Create menu item error:", error);
+      res.status(500).json({ error: "Failed to create menu item" });
+    }
+  });
+
+  app.put("/api/admin/menu-items/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertMenuItemSchema.partial().parse(req.body);
+      const menuItem = await storage.updateMenuItem(id, validatedData);
+      res.json({ success: true, menuItem });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid data", details: error.errors });
+      }
+      console.error("Update menu item error:", error);
+      res.status(500).json({ error: "Failed to update menu item" });
+    }
+  });
+
+  app.delete("/api/admin/menu-items/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteMenuItem(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Delete menu item error:", error);
+      res.status(500).json({ error: "Failed to delete menu item" });
+    }
+  });
+
+  // Protected admin reviews routes
+  app.get("/api/admin/reviews", requireAdminAuth, async (req, res) => {
+    try {
+      const reviews = await storage.getReviews();
+      res.json({ success: true, reviews });
+    } catch (error) {
+      console.error("Get reviews error:", error);
+      res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+  });
+
+  app.post("/api/admin/reviews", requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertReviewSchema.parse(req.body);
+      const review = await storage.createReview(validatedData);
+      res.json({ success: true, review });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid data", details: error.errors });
+      }
+      console.error("Create review error:", error);
+      res.status(500).json({ error: "Failed to create review" });
+    }
+  });
+
+  app.put("/api/admin/reviews/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertReviewSchema.partial().parse(req.body);
+      const review = await storage.updateReview(id, validatedData);
+      res.json({ success: true, review });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid data", details: error.errors });
+      }
+      console.error("Update review error:", error);
+      res.status(500).json({ error: "Failed to update review" });
+    }
+  });
+
+  app.delete("/api/admin/reviews/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteReview(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Delete review error:", error);
+      res.status(500).json({ error: "Failed to delete review" });
+    }
+  });
+
   // Contact form submission
   app.post("/api/contact", async (req, res) => {
     try {
