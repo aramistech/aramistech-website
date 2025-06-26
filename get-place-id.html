@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find Your AramisTech Place ID</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; line-height: 1.6; }
+        .method { background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #007bff; }
+        .result { background: #d4edda; padding: 15px; margin: 15px 0; border-radius: 5px; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; padding: 15px; margin: 15px 0; border-radius: 5px; border: 1px solid #f5c6cb; }
+        input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0056b3; }
+        .code { background: #f1f1f1; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        .highlight { background: yellow; padding: 2px; }
+    </style>
+</head>
+<body>
+    <h1>Find Your AramisTech Place ID</h1>
+    
+    <div class="method">
+        <h3>Method 1: From Your Google Business Profile URL</h3>
+        <p>1. Go to your Google Business Profile dashboard</p>
+        <p>2. Look at the URL in your browser - it should look like:</p>
+        <p><code>https://business.google.com/dashboard/l/<span class="highlight">PLACE_ID_HERE</span></code></p>
+        <p>3. Copy the Place ID part and test it below</p>
+    </div>
+
+    <div class="method">
+        <h3>Method 2: From Google Maps</h3>
+        <p>1. Search "AramisTech" on Google Maps</p>
+        <p>2. Click on your business listing</p>
+        <p>3. Look at the URL - it contains your Place ID after <code>place_id=</code></p>
+        <p>4. Example: <code>https://maps.google.com/place_id=<span class="highlight">ChIJXXXXXXXXXXXX</span></code></p>
+    </div>
+
+    <div class="method">
+        <h3>Method 3: From Reviews Link</h3>
+        <p>1. Go to your Google Business Profile</p>
+        <p>2. Click "Get more reviews" or "Share review form"</p>
+        <p>3. The link will contain your Place ID</p>
+    </div>
+
+    <div class="method">
+        <h3>Test Your Place ID Here:</h3>
+        <input type="text" id="placeId" placeholder="Paste your Place ID here (starts with ChIJ...)" />
+        <button onclick="testPlaceId()">Test This Place ID</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <div class="method">
+        <h3>Your Store Code: 06947206146225721785</h3>
+        <p>This appears to be a Google Business Profile identifier. Unfortunately, I need the actual Place ID to connect your reviews.</p>
+        <p>The Place ID typically starts with "ChIJ" followed by letters and numbers.</p>
+    </div>
+
+    <script>
+        async function testPlaceId() {
+            const placeId = document.getElementById('placeId').value.trim();
+            if (!placeId) {
+                alert('Please enter a Place ID');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div>Testing Place ID: ' + placeId + '...</div>';
+
+            try {
+                const response = await fetch(`/api/test-place-id/${placeId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultsDiv.innerHTML = `
+                        <div class="result">
+                            <h3>✓ Found Your Business!</h3>
+                            <p><strong>Name:</strong> ${data.business_name}</p>
+                            <p><strong>Address:</strong> ${data.address}</p>
+                            <p><strong>Rating:</strong> ${data.rating} stars (${data.total_reviews} reviews)</p>
+                            <p><strong>Place ID:</strong> ${placeId}</p>
+                            <button onclick="updateReviews('${placeId}')">Use This Place ID for Reviews</button>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="error">
+                            <h3>✗ Place ID Not Valid</h3>
+                            <p><strong>Status:</strong> ${data.status}</p>
+                            <p><strong>Error:</strong> ${data.error || 'Place ID not found'}</p>
+                            <p>Please check the Place ID and try again.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <h3>✗ Test Failed</h3>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function updateReviews(placeId) {
+            // This will test the reviews with your specific Place ID
+            window.open(`/?place_id=${placeId}`, '_blank');
+        }
+
+        // Auto-focus the input field
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('placeId').focus();
+        });
+    </script>
+</body>
+</html>
