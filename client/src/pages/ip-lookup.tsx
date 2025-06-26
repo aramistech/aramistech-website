@@ -168,7 +168,7 @@ export default function IPLookup() {
             <img 
               src="https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png" 
               alt="AramisTech Logo" 
-              className="h-16 w-auto"
+              className="h-24 w-auto"
             />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
