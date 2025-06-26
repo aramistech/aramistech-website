@@ -57,7 +57,7 @@ export default function MenuManager() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const menuItems: MenuItem[] = menuData?.menuItems || [];
+  const menuItems: MenuItem[] = Array.isArray(menuData?.menuItems) ? menuData.menuItems : [];
 
   // Get parent menu items (top-level items)
   const parentItems = menuItems.filter(item => !item.parentId);
@@ -222,9 +222,24 @@ export default function MenuManager() {
 
   return (
     <div className="space-y-6">
+      {/* Current Website Navigation */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h3 className="text-lg font-semibold text-blue-900 mb-2">Current Website Navigation</h3>
+        <p className="text-blue-700 text-sm mb-3">
+          These are the menu items currently displayed on your website. Edit them below or add new links.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {menuItems.filter(item => !item.parentId).map(item => (
+            <div key={item.id} className="bg-white px-3 py-1 rounded border text-sm">
+              {item.label} {item.href && `→ ${item.href}`}
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Add/Edit Form */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Menu Items</h3>
+        <h3 className="text-lg font-medium">Manage Menu Items</h3>
         <Button onClick={() => setShowForm(!showForm)}>
           <Plus className="w-4 h-4 mr-2" />
           Add Menu Item
@@ -235,8 +250,11 @@ export default function MenuManager() {
         <Card>
           <CardHeader>
             <CardTitle>
-              {editingItem ? 'Edit Menu Item' : 'Add New Menu Item'}
+              {editingItem ? `Edit "${editingItem.label}"` : 'Add New Menu Item'}
             </CardTitle>
+            <p className="text-sm text-gray-600">
+              {editingItem ? 'Update the menu item details below' : 'Create a new navigation link or submenu parent'}
+            </p>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -260,10 +278,20 @@ export default function MenuManager() {
                   name="href"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Link URL (optional)</FormLabel>
+                      <FormLabel>Link URL</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="/about or https://example.com" />
+                        <Input 
+                          {...field} 
+                          placeholder="Examples: /, #services, /about, https://external-site.com" 
+                        />
                       </FormControl>
+                      <div className="text-sm text-gray-500 mt-1">
+                        • Use "/" for home page<br/>
+                        • Use "#section" for page anchors<br/>
+                        • Use "/page" for internal pages<br/>
+                        • Use "https://..." for external sites<br/>
+                        • Leave empty for parent menu items with sublinks only
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}

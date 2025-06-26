@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { LogOut, Settings, Star, Menu, Users, BarChart3 } from 'lucide-react';
 import AdminReviews from '@/components/admin-reviews';
+import MenuManager from '@/components/menu-manager';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -140,15 +141,7 @@ export default function AdminDashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-8">
-                    <Menu className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      Menu Management
-                    </h3>
-                    <p className="text-gray-500">
-                      Website navigation menu management will be available here
-                    </p>
-                  </div>
+                  <MenuManager />
                 </CardContent>
               </Card>
             </TabsContent>
