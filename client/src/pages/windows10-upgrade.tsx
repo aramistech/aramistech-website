@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { trackBusinessEvent } from "@/lib/analytics";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 export default function Windows10Upgrade() {
   const { toast } = useToast();
@@ -61,6 +63,8 @@ export default function Windows10Upgrade() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <Header />
+      
       {/* Hero Section */}
       <div 
         className="relative text-white py-20 min-h-[600px] flex items-center"
@@ -442,6 +446,8 @@ export default function Windows10Upgrade() {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }
