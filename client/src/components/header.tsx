@@ -1,12 +1,29 @@
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Link } from "wouter";
 import { trackClick } from "@/lib/analytics";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSupportDropdownOpen, setIsSupportDropdownOpen] = useState(false);
+  const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsSupportDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     trackClick('navigation_link', sectionId, sectionId);
@@ -79,21 +96,45 @@ export default function Header() {
             >
               Industries
             </button>
-            <Link href="/windows10-upgrade">
-              <button className="text-professional-gray hover:text-aramis-orange transition-colors font-medium">
-                Windows 10 Upgrade
+            {/* Support Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button 
+                onClick={() => setIsSupportDropdownOpen(!isSupportDropdownOpen)}
+                className="flex items-center gap-1 text-professional-gray hover:text-aramis-orange transition-colors font-medium"
+              >
+                Support
+                <ChevronDown className={`w-4 h-4 transition-transform ${isSupportDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
-            </Link>
-            <Link href="/customer-portal">
-              <button className="text-professional-gray hover:text-aramis-orange transition-colors font-medium">
-                Customer Portal
-              </button>
-            </Link>
-            <Link href="/ip-lookup">
-              <button className="text-professional-gray hover:text-aramis-orange transition-colors font-medium">
-                IP Lookup
-              </button>
-            </Link>
+              
+              {isSupportDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  <Link href="/customer-portal">
+                    <button 
+                      onClick={() => setIsSupportDropdownOpen(false)}
+                      className="block w-full text-left px-4 py-2 text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
+                    >
+                      Customer Portal
+                    </button>
+                  </Link>
+                  <Link href="/windows10-upgrade">
+                    <button 
+                      onClick={() => setIsSupportDropdownOpen(false)}
+                      className="block w-full text-left px-4 py-2 text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
+                    >
+                      Windows 10 Upgrade
+                    </button>
+                  </Link>
+                  <Link href="/ip-lookup">
+                    <button 
+                      onClick={() => setIsSupportDropdownOpen(false)}
+                      className="block w-full text-left px-4 py-2 text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
+                    >
+                      IP Lookup Tool
+                    </button>
+                  </Link>
+                </div>
+              )}
+            </div>
             <button 
               onClick={() => scrollToSection('contact')} 
               className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
@@ -138,21 +179,45 @@ export default function Header() {
             >
               Industries
             </button>
-            <Link href="/windows10-upgrade">
-              <button className="block w-full text-left py-2 text-professional-gray hover:text-aramis-orange">
-                Windows 10 Upgrade
+            {/* Mobile Support Dropdown */}
+            <div>
+              <button 
+                onClick={() => setIsMobileSupportOpen(!isMobileSupportOpen)}
+                className="flex items-center justify-between w-full text-left py-2 text-professional-gray hover:text-aramis-orange"
+              >
+                Support
+                <ChevronDown className={`w-4 h-4 transition-transform ${isMobileSupportOpen ? 'rotate-180' : ''}`} />
               </button>
-            </Link>
-            <Link href="/customer-portal">
-              <button className="block w-full text-left py-2 text-professional-gray hover:text-aramis-orange">
-                Customer Portal
-              </button>
-            </Link>
-            <Link href="/ip-lookup">
-              <button className="block w-full text-left py-2 text-professional-gray hover:text-aramis-orange">
-                IP Lookup
-              </button>
-            </Link>
+              
+              {isMobileSupportOpen && (
+                <div className="ml-4 space-y-1">
+                  <Link href="/customer-portal">
+                    <button 
+                      onClick={() => {setIsMenuOpen(false); setIsMobileSupportOpen(false);}}
+                      className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
+                    >
+                      Customer Portal
+                    </button>
+                  </Link>
+                  <Link href="/windows10-upgrade">
+                    <button 
+                      onClick={() => {setIsMenuOpen(false); setIsMobileSupportOpen(false);}}
+                      className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
+                    >
+                      Windows 10 Upgrade
+                    </button>
+                  </Link>
+                  <Link href="/ip-lookup">
+                    <button 
+                      onClick={() => {setIsMenuOpen(false); setIsMobileSupportOpen(false);}}
+                      className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
+                    >
+                      IP Lookup Tool
+                    </button>
+                  </Link>
+                </div>
+              )}
+            </div>
             <button 
               onClick={() => scrollToSection('contact')} 
               className="block w-full text-left py-2 bg-aramis-orange text-white px-4 rounded-lg text-center"
