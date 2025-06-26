@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Copy, RefreshCw, Globe, Wifi, MapPin, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import Header from '@/components/header';
 
 interface IPInfo {
   ip: string;
@@ -160,41 +161,36 @@ export default function IPLookup() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-6">
-            <img 
-              src="https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png" 
-              alt="AramisTech Logo" 
-              className="h-24 w-auto"
-            />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50">
+      <Header />
+      <div className="py-12">
+        <div className="container mx-auto px-4 max-w-4xl">
+          {/* Page Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              IP Address Lookup Tool
+            </h1>
+            <p className="text-xl text-gray-600 mb-6">
+              Find your public internet IP and local network addresses
+            </p>
+            <Button 
+              onClick={refreshData} 
+              disabled={refreshing}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {refreshing ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Refreshing...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Refresh
+                </>
+              )}
+            </Button>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            IP Address Lookup Tool
-          </h1>
-          <p className="text-xl text-gray-600 mb-6">
-            Find your public internet IP and local network addresses
-          </p>
-          <Button 
-            onClick={refreshData} 
-            disabled={refreshing}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
-            {refreshing ? (
-              <>
-                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                Refreshing...
-              </>
-            ) : (
-              <>
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Refresh
-              </>
-            )}
-          </Button>
-        </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Public IP Card */}
@@ -370,6 +366,7 @@ export default function IPLookup() {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );
