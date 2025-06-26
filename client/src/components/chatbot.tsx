@@ -138,41 +138,41 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
     }
     
     // Enhanced technical keyword detection with specific responses
-    const hardwareKeywords = ['computer', 'laptop', 'desktop', 'pc', 'hardware', 'motherboard', 'ram', 'memory', 'cpu', 'processor'];
-    const networkKeywords = ['internet', 'wifi', 'network', 'connection', 'router', 'modem', 'ethernet'];
-    const softwareKeywords = ['windows', 'microsoft', 'office', 'word', 'excel', 'powerpoint', 'software', 'program', 'application', 'app'];
-    const emailKeywords = ['email', 'outlook', 'gmail', 'mail', 'exchange'];
-    const securityKeywords = ['security', 'antivirus', 'firewall', 'malware', 'virus', 'hack', 'password', 'login'];
-    const generalTechKeywords = ['error', 'problem', 'issue', 'not working', 'broken', 'crash', 'freeze', 'stuck', 'fail', 'down', 'slow', 'help', 'fix', 'repair'];
+    const hardwareKeywords = ['computer', 'laptop', 'desktop', 'pc', 'hardware', 'motherboard', 'ram', 'memory', 'cpu', 'processor', 'blue', 'bsod', 'boot', 'startup', 'power'];
+    const networkKeywords = ['internet', 'wifi', 'wi-fi', 'network', 'connection', 'router', 'modem', 'ethernet', 'vpn'];
+    const softwareKeywords = ['windows', 'microsoft', 'office', 'word', 'excel', 'powerpoint', 'software', 'program', 'application', 'app', 'install', 'update'];
+    const emailKeywords = ['email', 'outlook', 'gmail', 'mail', 'exchange', 'send', 'receive'];
+    const securityKeywords = ['security', 'antivirus', 'firewall', 'malware', 'virus', 'hack', 'hacked', 'password', 'login', 'ransomware', 'phishing', 'spam'];
+    const generalTechKeywords = ['error', 'problem', 'issue', 'not working', 'broken', 'crash', 'freeze', 'stuck', 'fail', 'down', 'slow', 'help', 'fix', 'repair', 'trouble', 'support'];
     
     // Check for hardware issues
     if (hardwareKeywords.some(keyword => message.includes(keyword))) {
-      return "Hardware issues can be tricky to diagnose! Common problems include:\n• Power supply failures\n• Memory (RAM) problems\n• Hard drive issues\n• Overheating components\n• Loose connections\n\nOur technicians can quickly identify and fix hardware problems. Call us at (305) 814-4461 for professional hardware diagnosis and repair!";
+      return "Hardware issues can be tricky to diagnose! Common problems include:\n• Blue Screen of Death (BSOD)\n• Computer won't start or boot\n• Random crashes and freezes\n• Memory (RAM) problems\n• Hard drive failures\n• Overheating components\n• Power supply issues\n\nThese problems need professional diagnosis to prevent data loss. Call us at (305) 814-4461 for immediate hardware troubleshooting and repair!";
     }
     
     // Check for network issues
     if (networkKeywords.some(keyword => message.includes(keyword))) {
-      return "Network connectivity problems are frustrating! We see these issues often:\n• Slow internet speeds\n• Wi-Fi dead zones\n• Router configuration problems\n• Network security concerns\n• VPN connection issues\n\nWe specialize in network optimization and can get you connected reliably. Call us at (305) 814-4461 for network troubleshooting!";
+      return "Network connectivity problems are frustrating and hurt productivity! Common issues we fix:\n• Slow or intermittent internet\n• Wi-Fi dead zones and weak signals\n• Router/modem configuration problems\n• VPN connection failures\n• Network security vulnerabilities\n• Can't connect devices to network\n\nNetwork problems can have many causes. Our technicians quickly diagnose and optimize your connectivity. Call us at (305) 814-4461 for professional network troubleshooting!";
     }
     
     // Check for software issues
     if (softwareKeywords.some(keyword => message.includes(keyword))) {
-      return "Software problems can really slow down your work! Common issues include:\n• Application crashes\n• Compatibility problems\n• License management\n• Update failures\n• Performance issues\n\nWe handle all types of software troubleshooting and optimization. Call us at (305) 814-4461 for expert software support!";
+      return "Software problems can really slow down your work! Issues we commonly resolve:\n• Programs crash or won't start\n• Software installation failures\n• Compatibility problems between programs\n• License and activation issues\n• Slow performance and freezing\n• Update and patch failures\n\nSoftware conflicts can be complex to diagnose. We handle all types of software troubleshooting and optimization. Call us at (305) 814-4461 for expert software support!";
     }
     
     // Check for email issues
     if (emailKeywords.some(keyword => message.includes(keyword))) {
-      return "Email problems can hurt your business communication! We commonly fix:\n• Can't send or receive emails\n• Outlook configuration issues\n• Email security concerns\n• Mobile device email setup\n• Spam filtering problems\n\nWe're email experts and can resolve these quickly. Call us at (305) 814-4461 for email support!";
+      return "Email problems can seriously hurt your business communication! Issues we fix daily:\n• Can't send or receive emails\n• Outlook configuration and setup\n• Email account synchronization\n• Mobile device email problems\n• Spam filtering and security\n• Email server connection errors\n\nEmail issues can cost you business opportunities. We're email experts and resolve these problems quickly. Call us at (305) 814-4461 for immediate email support!";
     }
     
     // Check for security concerns
     if (securityKeywords.some(keyword => message.includes(keyword))) {
-      return "Cybersecurity is critical for your business! We help with:\n• Virus and malware removal\n• Firewall configuration\n• Password security\n• Employee security training\n• Data protection strategies\n\nDon't risk your business data - call us at (305) 814-4461 for comprehensive cybersecurity solutions!";
+      return "Cybersecurity threats are real and growing! Security issues we handle:\n• Virus and malware infections\n• Suspicious computer behavior\n• Password security and breaches\n• Firewall configuration\n• Ransomware protection\n• Employee security training\n• Data backup and recovery\n\nDon't wait until it's too late - cybersecurity requires immediate professional attention. Call us at (305) 814-4461 for comprehensive security solutions!";
     }
     
     // Check for general technical problems
     if (generalTechKeywords.some(keyword => message.includes(keyword))) {
-      return "Technical issues can be complex! Our IT experts can help diagnose and resolve problems quickly:\n• System diagnostics\n• Performance optimization\n• Error troubleshooting\n• Preventive maintenance\n• Emergency repairs\n\nWith 27+ years of experience, we've seen it all. Call us at (305) 814-4461 and describe your specific issue - we'll get you back up and running!";
+      return "Technical issues can be frustrating and complex! Common problems we solve:\n• System crashes and error messages\n• Slow computer performance\n• Programs freezing or not responding\n• Startup and boot problems\n• Random computer behavior\n• Data access issues\n• System optimization needs\n\nTechnical problems often have multiple causes. With 27+ years of experience, we quickly diagnose the root cause and fix it properly. Call us at (305) 814-4461 and describe your specific issue - we'll get you back up and running fast!";
     }
     
     // Fallback response for general inquiries
