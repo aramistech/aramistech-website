@@ -8,6 +8,7 @@ import NotFound from "@/pages/not-found";
 import AdminReviewsPage from "@/pages/admin-reviews";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
+import Windows10Upgrade from "@/pages/windows10-upgrade";
 import SocialProofPopup from "@/components/social-proof-popup";
 import { useEffect } from "react";
 import { initGA } from "./lib/analytics";
@@ -20,6 +21,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/windows10-upgrade" component={Windows10Upgrade} />
       <Route path="/admin/reviews" component={AdminReviewsPage} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
