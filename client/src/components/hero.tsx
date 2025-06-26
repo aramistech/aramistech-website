@@ -2,6 +2,7 @@ import { Award, CheckCircle, Calendar, Phone } from "lucide-react";
 import { useContactForm } from "@/hooks/use-contact-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { trackClick, trackBusinessEvent, trackFormInteraction } from "@/lib/analytics";
 
 export default function Hero() {
   const { 
