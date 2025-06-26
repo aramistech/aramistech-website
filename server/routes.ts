@@ -131,6 +131,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin user management routes
+  app.get("/api/admin/users", requireAdminAuth, async (req, res) => {
+    try {
+      const users = await storage.getAllAdminUsers();
+      res.json({ success: true, users });
+    } catch (error) {
+      console.error("Get admin users error:", error);
+      res.status(500).json({ error: "Failed to fetch admin users" });
+    }
+  });
+
+  app.post("/api/admin/users", requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertUserSchema.parse(req.body);
+      const user = await storage.createAdminUser(validatedData);
+      res.json({ success: true, user });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid data", details: error.errors });
+      }
+      console.error("Create admin user error:", error);
+      res.status(500).json({ error: "Failed to create admin user" });
+    }
+  });
+
+  app.put("/api/admin/users/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = updateUserSchema.parse(req.body);
+      const user = await storage.updateAdminUser(id, validatedData);
+      res.json({ success: true, user });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid data", details: error.errors });
+      }
+      console.error("Update admin user error:", error);
+      res.status(500).json({ error: "Failed to update admin user" });
+    }
+  });
+
+  app.delete("/api/admin/users/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteAdminUser(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Delete admin user error:", error);
+      res.status(500).json({ error: "Failed to delete admin user" });
+    }
+  });
+
   // Protected admin reviews routes
   app.get("/api/admin/reviews", requireAdminAuth, async (req, res) => {
     try {

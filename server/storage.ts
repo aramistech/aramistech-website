@@ -1,6 +1,7 @@
-import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, type User, type InsertUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession } from "@shared/schema";
+import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, isNull, gt } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -180,6 +181,44 @@ export class DatabaseStorage implements IStorage {
     await db
       .delete(menuItems)
       .where(eq(menuItems.id, id));
+  }
+
+  // Admin user management
+  async getAllAdminUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(users.createdAt);
+  }
+
+  async createAdminUser(userData: InsertUser): Promise<User> {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    const [user] = await db
+      .insert(users)
+      .values({
+        ...userData,
+        password: hashedPassword,
+      })
+      .returning();
+    return user;
+  }
+
+  async updateAdminUser(id: number, userData: Partial<UpdateUser>): Promise<User> {
+    const updateData: any = { ...userData };
+    
+    if (userData.password) {
+      updateData.password = await bcrypt.hash(userData.password, 10);
+    }
+    
+    updateData.updatedAt = new Date();
+    
+    const [user] = await db
+      .update(users)
+      .set(updateData)
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async deleteAdminUser(id: number): Promise<void> {
+    await db.delete(users).where(eq(users.id, id));
   }
 }
 
