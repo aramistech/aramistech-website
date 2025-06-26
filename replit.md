@@ -104,7 +104,8 @@ AramisTech is a professional IT solutions company website built as a full-stack 
 
 ```
 Changelog:
-- June 26, 2025. Initial setup
+- June 26, 2025. Initial setup with professional IT services website
+- June 26, 2025. Added PostgreSQL database integration for contact forms and quote requests
 ```
 
 ## User Preferences

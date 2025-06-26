@@ -1,4 +1,6 @@
 import { users, contacts, quickQuotes, type User, type InsertUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -10,73 +12,54 @@ export interface IStorage {
   getQuickQuotes(): Promise<QuickQuote[]>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private contacts: Map<number, Contact>;
-  private quickQuotes: Map<number, QuickQuote>;
-  private currentUserId: number;
-  private currentContactId: number;
-  private currentQuickQuoteId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.contacts = new Map();
-    this.quickQuotes = new Map();
-    this.currentUserId = 1;
-    this.currentContactId = 1;
-    this.currentQuickQuoteId = 1;
-  }
-
+export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   async createContact(insertContact: InsertContact): Promise<Contact> {
-    const id = this.currentContactId++;
-    const contact: Contact = { 
-      ...insertContact, 
-      id,
-      createdAt: new Date()
-    };
-    this.contacts.set(id, contact);
+    const [contact] = await db
+      .insert(contacts)
+      .values(insertContact)
+      .returning();
     return contact;
   }
 
   async createQuickQuote(insertQuote: InsertQuickQuote): Promise<QuickQuote> {
-    const id = this.currentQuickQuoteId++;
-    const quote: QuickQuote = { 
-      ...insertQuote, 
-      id,
-      createdAt: new Date()
-    };
-    this.quickQuotes.set(id, quote);
+    const [quote] = await db
+      .insert(quickQuotes)
+      .values(insertQuote)
+      .returning();
     return quote;
   }
 
   async getContacts(): Promise<Contact[]> {
-    return Array.from(this.contacts.values()).sort((a, b) => 
-      (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)
-    );
+    return await db
+      .select()
+      .from(contacts)
+      .orderBy(desc(contacts.createdAt));
   }
 
   async getQuickQuotes(): Promise<QuickQuote[]> {
-    return Array.from(this.quickQuotes.values()).sort((a, b) => 
-      (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)
-    );
+    return await db
+      .select()
+      .from(quickQuotes)
+      .orderBy(desc(quickQuotes.createdAt));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
