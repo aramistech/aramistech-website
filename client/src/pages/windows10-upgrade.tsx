@@ -100,7 +100,7 @@ export default function Windows10Upgrade() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <Header />
+      <DynamicHeader />
       
       {/* Hero Section */}
       <div 

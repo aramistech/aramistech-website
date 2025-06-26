@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Copy, RefreshCw, Globe, Wifi, MapPin, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import Header from '@/components/header';
+import DynamicHeader from '@/components/dynamic-header';
 import Footer from '@/components/footer';
 
 interface IPInfo {
@@ -163,7 +163,7 @@ export default function IPLookup() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50">
-      <Header />
+      <DynamicHeader />
       <div className="py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           {/* Page Header */}

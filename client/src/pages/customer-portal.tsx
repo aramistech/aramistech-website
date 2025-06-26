@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import BillingPortal from "@/components/billing-portal";
 import { getWHMCS, type WHMCSCustomer } from "@/lib/whmcs-integration";
 import { Loader2, User, Mail, Lock } from "lucide-react";
-import Header from "@/components/header";
+import DynamicHeader from "@/components/dynamic-header";
 import Footer from "@/components/footer";
 
 const loginSchema = z.object({
@@ -72,7 +72,7 @@ export default function CustomerPortal() {
   if (isLoggedIn && customer) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <Header />
+        <DynamicHeader />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Customer Welcome */}
@@ -137,7 +137,7 @@ export default function CustomerPortal() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <Header />
+      <DynamicHeader />
       
       <div className="max-w-md mx-auto px-4 py-16">
         <Card>
