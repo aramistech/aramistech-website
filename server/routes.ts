@@ -226,6 +226,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete review endpoint
+  app.delete("/api/reviews/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ success: false, message: "Invalid review ID" });
+      }
+      
+      await storage.deleteReview(id);
+      res.json({ success: true, message: "Review deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

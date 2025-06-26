@@ -49,10 +49,12 @@ export default function AdminReviews() {
 
   const createReviewMutation = useMutation({
     mutationFn: async (data: ReviewFormData) => {
-      return apiRequest("/api/reviews", {
+      const response = await fetch("/api/reviews", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/reviews/database'] });
@@ -82,9 +84,11 @@ export default function AdminReviews() {
 
   const addSampleReviewsMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest("/api/reviews/seed", {
-        method: "POST"
+      const response = await fetch("/api/reviews/seed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
       });
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/reviews/database'] });
@@ -96,9 +100,40 @@ export default function AdminReviews() {
     }
   });
 
+  const deleteReviewMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/reviews/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/reviews/database'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/reviews'] });
+      toast({
+        title: "Review Deleted",
+        description: "Customer review has been successfully removed."
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete review. Please try again.",
+        variant: "destructive"
+      });
+    }
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     createReviewMutation.mutate(formData);
+  };
+
+  const handleDeleteReview = (id: number, customerName: string) => {
+    if (window.confirm(`Are you sure you want to delete the review from ${customerName}?`)) {
+      deleteReviewMutation.mutate(id);
+    }
   };
 
   const reviews = reviewsData?.reviews || [];
@@ -236,10 +271,19 @@ export default function AdminReviews() {
                       </span>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-500 capitalize bg-gray-100 px-2 py-1 rounded">
                       {review.source}
                     </span>
+                    <Button
+                      onClick={() => handleDeleteReview(review.id, review.customerName)}
+                      disabled={deleteReviewMutation.isPending}
+                      variant="outline"
+                      size="sm"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed">{review.reviewText}</p>

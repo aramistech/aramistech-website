@@ -13,6 +13,7 @@ export interface IStorage {
   createReview(review: InsertReview): Promise<Review>;
   getReviews(): Promise<Review[]>;
   getVisibleReviews(): Promise<Review[]>;
+  deleteReview(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -85,6 +86,12 @@ export class DatabaseStorage implements IStorage {
       .from(reviews)
       .where(eq(reviews.isVisible, true))
       .orderBy(desc(reviews.datePosted));
+  }
+
+  async deleteReview(id: number): Promise<void> {
+    await db
+      .delete(reviews)
+      .where(eq(reviews.id, id));
   }
 }
 
