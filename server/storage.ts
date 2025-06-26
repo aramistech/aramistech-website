@@ -175,10 +175,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateMenuItem(id: number, menuItemData: Partial<InsertMenuItem>): Promise<MenuItem> {
+    // Validate and clean the data to prevent NaN values
+    const cleanData: any = { ...menuItemData };
+    
+    // Remove or convert invalid values
+    if (cleanData.parentId === undefined || cleanData.parentId === null || isNaN(cleanData.parentId)) {
+      cleanData.parentId = null;
+    }
+    if (cleanData.orderIndex !== undefined && isNaN(cleanData.orderIndex)) {
+      delete cleanData.orderIndex;
+    }
+    
     const [updatedMenuItem] = await db
       .update(menuItems)
       .set({
-        ...menuItemData,
+        ...cleanData,
         updatedAt: new Date()
       })
       .where(eq(menuItems.id, id))

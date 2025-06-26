@@ -165,7 +165,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       for (const update of updates) {
-        await storage.updateMenuItem(update.id, { orderIndex: update.orderIndex });
+        // Validate the update data to prevent NaN values
+        const id = parseInt(update.id);
+        const orderIndex = parseInt(update.orderIndex);
+        
+        if (isNaN(id) || isNaN(orderIndex)) {
+          console.error("Invalid data in reorder:", update);
+          continue; // Skip invalid entries
+        }
+        
+        await storage.updateMenuItem(id, { orderIndex });
       }
       
       res.json({ success: true });
