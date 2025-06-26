@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Star, Plus, Trash2 } from "lucide-react";
+import { Star, Plus, Trash2, Edit } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -34,6 +34,7 @@ export default function AdminReviews() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [formData, setFormData] = useState<ReviewFormData>({
     customerName: "",
     rating: 5,
@@ -125,9 +126,75 @@ export default function AdminReviews() {
     }
   });
 
+  const updateReviewMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: ReviewFormData }) => {
+      const response = await fetch(`/api/reviews/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/reviews/database'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/reviews'] });
+      toast({
+        title: "Review Updated",
+        description: "Customer review has been successfully updated."
+      });
+      setEditingReview(null);
+      setShowForm(false);
+      setFormData({
+        customerName: "",
+        rating: 5,
+        reviewText: "",
+        businessName: "AramisTech",
+        location: "South Florida",
+        source: "manual"
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update review. Please try again.",
+        variant: "destructive"
+      });
+    }
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createReviewMutation.mutate(formData);
+    if (editingReview) {
+      updateReviewMutation.mutate({ id: editingReview.id, data: formData });
+    } else {
+      createReviewMutation.mutate(formData);
+    }
+  };
+
+  const handleEditReview = (review: Review) => {
+    setEditingReview(review);
+    setFormData({
+      customerName: review.customerName,
+      rating: review.rating,
+      reviewText: review.reviewText,
+      businessName: review.businessName || "AramisTech",
+      location: review.location || "South Florida",
+      source: review.source
+    });
+    setShowForm(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingReview(null);
+    setShowForm(false);
+    setFormData({
+      customerName: "",
+      rating: 5,
+      reviewText: "",
+      businessName: "AramisTech",
+      location: "South Florida",
+      source: "manual"
+    });
   };
 
   const handleDeleteReview = (id: number, customerName: string) => {
@@ -169,7 +236,9 @@ export default function AdminReviews() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle>Add New Customer Review</CardTitle>
+            <CardTitle>
+              {editingReview ? 'Edit Customer Review' : 'Add New Customer Review'}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -223,14 +292,17 @@ export default function AdminReviews() {
               <div className="flex space-x-2">
                 <Button 
                   type="submit" 
-                  disabled={createReviewMutation.isPending}
+                  disabled={createReviewMutation.isPending || updateReviewMutation.isPending}
                 >
-                  {createReviewMutation.isPending ? "Adding..." : "Add Review"}
+                  {editingReview 
+                    ? (updateReviewMutation.isPending ? "Updating..." : "Update Review")
+                    : (createReviewMutation.isPending ? "Adding..." : "Add Review")
+                  }
                 </Button>
                 <Button 
                   type="button" 
                   variant="outline"
-                  onClick={() => setShowForm(false)}
+                  onClick={handleCancelEdit}
                 >
                   Cancel
                 </Button>
@@ -275,6 +347,14 @@ export default function AdminReviews() {
                     <span className="text-xs text-gray-500 capitalize bg-gray-100 px-2 py-1 rounded">
                       {review.source}
                     </span>
+                    <Button
+                      onClick={() => handleEditReview(review)}
+                      variant="outline"
+                      size="sm"
+                      className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
                     <Button
                       onClick={() => handleDeleteReview(review.id, review.customerName)}
                       disabled={deleteReviewMutation.isPending}

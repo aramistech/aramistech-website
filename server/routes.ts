@@ -241,6 +241,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update review endpoint
+  app.put("/api/reviews/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ success: false, message: "Invalid review ID" });
+      }
+      
+      const data = insertReviewSchema.partial().parse(req.body);
+      const updatedReview = await storage.updateReview(id, data);
+      res.json({ success: true, review: updatedReview });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

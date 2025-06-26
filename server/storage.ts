@@ -14,6 +14,7 @@ export interface IStorage {
   getReviews(): Promise<Review[]>;
   getVisibleReviews(): Promise<Review[]>;
   deleteReview(id: number): Promise<void>;
+  updateReview(id: number, review: Partial<InsertReview>): Promise<Review>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -92,6 +93,15 @@ export class DatabaseStorage implements IStorage {
     await db
       .delete(reviews)
       .where(eq(reviews.id, id));
+  }
+
+  async updateReview(id: number, reviewData: Partial<InsertReview>): Promise<Review> {
+    const [updatedReview] = await db
+      .update(reviews)
+      .set(reviewData)
+      .where(eq(reviews.id, id))
+      .returning();
+    return updatedReview;
   }
 }
 
