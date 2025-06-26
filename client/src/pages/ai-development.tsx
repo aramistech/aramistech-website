@@ -54,7 +54,7 @@ export default function AIDevelopment() {
                   </Button>
                 </Link>
                 <Link href="#services">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3">
+                  <Button size="lg" variant="outline" className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white px-8 py-3">
                     Explore AI Services
                   </Button>
                 </Link>
