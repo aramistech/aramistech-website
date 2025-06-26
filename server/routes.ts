@@ -192,6 +192,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Media management routes
+  app.post("/api/admin/media/upload", requireAdminAuth, upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      const fileUrl = `/uploads/${req.file.filename}`;
+      const mediaData = {
+        fileName: req.file.filename,
+        originalName: req.file.originalname,
+        mimeType: req.file.mimetype,
+        fileSize: req.file.size,
+        filePath: req.file.path,
+        url: fileUrl,
+        altText: req.body.altText || '',
+        caption: req.body.caption || '',
+      };
+
+      const validatedData = insertMediaFileSchema.parse(mediaData);
+      const file = await storage.uploadMediaFile(validatedData);
+      res.json({ success: true, file });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      res.status(500).json({ error: "Failed to upload file" });
+    }
+  });
+
+  app.get("/api/admin/media", requireAdminAuth, async (req, res) => {
+    try {
+      const files = await storage.getMediaFiles();
+      res.json({ success: true, files });
+    } catch (error) {
+      console.error("Error fetching media files:", error);
+      res.status(500).json({ error: "Failed to fetch media files" });
+    }
+  });
+
+  app.put("/api/admin/media/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { altText, caption } = req.body;
+      const file = await storage.updateMediaFile(id, { altText, caption });
+      res.json({ success: true, file });
+    } catch (error) {
+      console.error("Error updating media file:", error);
+      res.status(500).json({ error: "Failed to update media file" });
+    }
+  });
+
+  app.delete("/api/admin/media/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const file = await storage.getMediaFileById(id);
+      
+      if (file) {
+        // Delete file from filesystem
+        if (fs.existsSync(file.filePath)) {
+          fs.unlinkSync(file.filePath);
+        }
+        
+        // Delete record from database
+        await storage.deleteMediaFile(id);
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting media file:", error);
+      res.status(500).json({ error: "Failed to delete media file" });
+    }
+  });
+
   // Admin user management routes
   app.get("/api/admin/users", requireAdminAuth, async (req, res) => {
     try {

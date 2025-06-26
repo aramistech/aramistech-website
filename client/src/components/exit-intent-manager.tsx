@@ -12,6 +12,8 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Eye, Palette, Image } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import MediaLibrary from "@/components/media-library";
 
 interface ExitIntentPopup {
   id: number;
@@ -233,16 +235,37 @@ export default function ExitIntentManager() {
                     <FormItem>
                       <FormLabel className="flex items-center gap-2">
                         <Image className="w-4 h-4" />
-                        Image URL (Optional)
+                        Popup Image (Optional)
                       </FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="https://example.com/image.jpg" 
-                          {...field} 
-                        />
+                        <div className="flex gap-2">
+                          <Input 
+                            placeholder="Select from media library or enter URL" 
+                            {...field} 
+                          />
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button type="button" variant="outline" size="sm">
+                                <Image className="w-4 h-4 mr-1" />
+                                Browse
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                              <DialogHeader>
+                                <DialogTitle>Select Image from Media Library</DialogTitle>
+                              </DialogHeader>
+                              <MediaLibrary
+                                selectionMode={true}
+                                onSelectImage={(imageUrl) => {
+                                  field.onChange(imageUrl);
+                                }}
+                              />
+                            </DialogContent>
+                          </Dialog>
+                        </div>
                       </FormControl>
                       <FormDescription>
-                        URL of image to display in popup
+                        Choose an image from your media library or enter a URL
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

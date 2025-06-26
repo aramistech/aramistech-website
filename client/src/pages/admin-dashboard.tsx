@@ -6,11 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import AdminReviews from '@/components/admin-reviews';
 import MenuManager from '@/components/menu-manager';
 import AdminUserManager from '@/components/admin-user-manager';
 import ExitIntentManager from '@/components/exit-intent-manager';
+import MediaLibrary from '@/components/media-library';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -99,7 +100,7 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <Tabs defaultValue="reviews" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="reviews" className="flex items-center gap-2">
                 <Star className="w-4 h-4" />
                 Reviews
@@ -111,6 +112,10 @@ export default function AdminDashboard() {
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="w-4 h-4" />
                 Admin Users
+              </TabsTrigger>
+              <TabsTrigger value="media" className="flex items-center gap-2">
+                <ImageIcon className="w-4 h-4" />
+                Media Library
               </TabsTrigger>
               <TabsTrigger value="popup" className="flex items-center gap-2">
                 <ExternalLink className="w-4 h-4" />
@@ -169,6 +174,23 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <AdminUserManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="media" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <ImageIcon className="w-5 h-5" />
+                    Media Library
+                  </CardTitle>
+                  <CardDescription>
+                    Upload and manage images for your website content
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <MediaLibrary />
                 </CardContent>
               </Card>
             </TabsContent>
