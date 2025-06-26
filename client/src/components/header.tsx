@@ -125,7 +125,10 @@ export default function Header() {
                 <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                   <Link href="/customer-portal">
                     <button 
-                      onClick={() => setIsSupportDropdownOpen(false)}
+                      onClick={() => {
+                        setIsSupportDropdownOpen(false);
+                        setTimeout(() => window.scrollTo(0, 0), 100);
+                      }}
                       className="block w-full text-left px-4 py-2 text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
                       Customer Portal
@@ -133,7 +136,10 @@ export default function Header() {
                   </Link>
                   <Link href="/windows10-upgrade">
                     <button 
-                      onClick={() => setIsSupportDropdownOpen(false)}
+                      onClick={() => {
+                        setIsSupportDropdownOpen(false);
+                        setTimeout(() => window.scrollTo(0, 0), 100);
+                      }}
                       className="block w-full text-left px-4 py-2 text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
                       Windows 10 Upgrade
@@ -141,7 +147,10 @@ export default function Header() {
                   </Link>
                   <Link href="/ip-lookup">
                     <button 
-                      onClick={() => setIsSupportDropdownOpen(false)}
+                      onClick={() => {
+                        setIsSupportDropdownOpen(false);
+                        setTimeout(() => window.scrollTo(0, 0), 100);
+                      }}
                       className="block w-full text-left px-4 py-2 text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
                       IP Lookup Tool
@@ -208,7 +217,11 @@ export default function Header() {
                 <div className="ml-4 space-y-1">
                   <Link href="/customer-portal">
                     <button 
-                      onClick={() => {setIsMenuOpen(false); setIsMobileSupportOpen(false);}}
+                      onClick={() => {
+                        setIsMenuOpen(false); 
+                        setIsMobileSupportOpen(false);
+                        setTimeout(() => window.scrollTo(0, 0), 100);
+                      }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
                       Customer Portal
@@ -216,7 +229,11 @@ export default function Header() {
                   </Link>
                   <Link href="/windows10-upgrade">
                     <button 
-                      onClick={() => {setIsMenuOpen(false); setIsMobileSupportOpen(false);}}
+                      onClick={() => {
+                        setIsMenuOpen(false); 
+                        setIsMobileSupportOpen(false);
+                        setTimeout(() => window.scrollTo(0, 0), 100);
+                      }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
                       Windows 10 Upgrade
@@ -224,7 +241,11 @@ export default function Header() {
                   </Link>
                   <Link href="/ip-lookup">
                     <button 
-                      onClick={() => {setIsMenuOpen(false); setIsMobileSupportOpen(false);}}
+                      onClick={() => {
+                        setIsMenuOpen(false); 
+                        setIsMobileSupportOpen(false);
+                        setTimeout(() => window.scrollTo(0, 0), 100);
+                      }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
                       IP Lookup Tool

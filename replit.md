@@ -132,6 +132,7 @@ Changelog:
 - June 26, 2025. Added complete navigation header and footer to Windows 10 upgrade page for consistent user experience across all service pages
 - June 26, 2025. Added dynamic countdown timer to Windows 10 upgrade page showing exact time remaining until October 14, 2025 support end date with real-time updates
 - June 26, 2025. Fixed flashing background image issue on Windows 10 upgrade page by removing dynamic cache-busting parameter
+- June 26, 2025. Fixed navigation links to work from any page - main navigation links now navigate to home page with proper section scrolling, and Support dropdown links scroll to top of target pages
 - June 26, 2025. Updated social proof popup timing to appear every 1-2 minutes instead of every 15-45 seconds for better user experience
 ```
 
