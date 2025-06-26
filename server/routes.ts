@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema } from "@shared/schema";
 import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
 import { z } from "zod";
 
@@ -128,6 +128,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Reorder menu items error:", error);
       res.status(500).json({ error: "Failed to reorder menu items" });
+    }
+  });
+
+  // Exit intent popup routes
+  app.get("/api/exit-intent-popup", async (req, res) => {
+    try {
+      const popup = await storage.getExitIntentPopup();
+      res.json({ success: true, popup });
+    } catch (error) {
+      console.error("Error fetching exit intent popup:", error);
+      res.status(500).json({ error: "Failed to fetch exit intent popup" });
+    }
+  });
+
+  app.put("/api/admin/exit-intent-popup", requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertExitIntentPopupSchema.parse(req.body);
+      const popup = await storage.updateExitIntentPopup(validatedData);
+      res.json({ success: true, popup });
+    } catch (error) {
+      console.error("Error updating exit intent popup:", error);
+      res.status(500).json({ error: "Failed to update exit intent popup" });
     }
   });
 

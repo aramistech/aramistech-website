@@ -98,7 +98,7 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <Tabs defaultValue="reviews" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="reviews" className="flex items-center gap-2">
                 <Star className="w-4 h-4" />
                 Reviews
@@ -110,6 +110,10 @@ export default function AdminDashboard() {
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="w-4 h-4" />
                 Admin Users
+              </TabsTrigger>
+              <TabsTrigger value="popup" className="flex items-center gap-2">
+                <ExternalLink className="w-4 h-4" />
+                Exit Popup
               </TabsTrigger>
               <TabsTrigger value="analytics" className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" />

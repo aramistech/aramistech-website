@@ -30,6 +30,9 @@ export interface IStorage {
   createAdminUser(user: InsertUser): Promise<User>;
   updateAdminUser(id: number, user: Partial<UpdateUser>): Promise<User>;
   deleteAdminUser(id: number): Promise<void>;
+  // Exit intent popup management
+  getExitIntentPopup(): Promise<ExitIntentPopup | undefined>;
+  updateExitIntentPopup(popup: InsertExitIntentPopup): Promise<ExitIntentPopup>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -222,6 +225,33 @@ export class DatabaseStorage implements IStorage {
     await db.delete(adminSessions).where(eq(adminSessions.userId, id));
     // Then delete the user
     await db.delete(users).where(eq(users.id, id));
+  }
+
+  async getExitIntentPopup(): Promise<ExitIntentPopup | undefined> {
+    const [popup] = await db.select().from(exitIntentPopup).limit(1);
+    return popup;
+  }
+
+  async updateExitIntentPopup(popupData: InsertExitIntentPopup): Promise<ExitIntentPopup> {
+    // Check if popup exists
+    const existing = await this.getExitIntentPopup();
+    
+    if (existing) {
+      // Update existing popup
+      const [popup] = await db
+        .update(exitIntentPopup)
+        .set({ ...popupData, updatedAt: new Date() })
+        .where(eq(exitIntentPopup.id, existing.id))
+        .returning();
+      return popup;
+    } else {
+      // Create new popup
+      const [popup] = await db
+        .insert(exitIntentPopup)
+        .values(popupData)
+        .returning();
+      return popup;
+    }
   }
 }
 
