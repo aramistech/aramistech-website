@@ -49,20 +49,16 @@ function App() {
     }
 
     // Initialize WHMCS integration
-    initializeWHMCS({
-      baseUrl: 'https://aramistech.com/abilling',
-      apiIdentifier: '', // Will be set via server environment
-      apiSecret: '' // Will be set via server environment
-    });
+    initializeWHMCS();
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
         <Router />
+        <Toaster />
         <SocialProofPopup />
-        <Chatbot />
+        <Chatbot className="fixed bottom-4 right-4 z-50" />
       </TooltipProvider>
     </QueryClientProvider>
   );
