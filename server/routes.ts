@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, insertMenuItemSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema } from "@shared/schema";
 import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
 import { z } from "zod";
 
