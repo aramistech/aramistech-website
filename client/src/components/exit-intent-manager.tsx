@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -63,7 +63,7 @@ export default function ExitIntentManager() {
   });
 
   // Update form when data loads
-  useState(() => {
+  useEffect(() => {
     if (popup) {
       form.reset({
         title: popup.title,
@@ -76,7 +76,7 @@ export default function ExitIntentManager() {
         textColor: popup.textColor,
       });
     }
-  });
+  }, [popup, form]);
 
   const updateMutation = useMutation({
     mutationFn: async (data: ExitIntentFormData) => {

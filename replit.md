@@ -38,18 +38,24 @@ AramisTech is a professional IT solutions company website built as a full-stack 
 - **About**: Company information and trust indicators
 - **Team**: Team member profiles
 - **Contact**: Comprehensive contact form
+- **Exit Intent Popup**: Customizable popup to capture leaving visitors
 - **UI Components**: Complete shadcn/ui component library
 
 ### Backend Services
 - **Contact API**: Handles contact form submissions (`/api/contact`)
 - **Quick Quote API**: Processes quick quote requests (`/api/quick-quote`)
-- **Storage Layer**: Abstracted storage interface with memory fallback
+- **Admin Dashboard**: Protected interface for content management
+- **Exit Intent Management**: Admin controls for popup customization
+- **Storage Layer**: Abstracted storage interface with PostgreSQL
 - **Validation**: Zod schema validation for all form inputs
 
 ### Data Models
 - **Contact Schema**: Comprehensive business contact information
-- **User Schema**: Basic user authentication structure
+- **User Schema**: Admin user authentication and management
 - **Quick Quote Schema**: Simplified quote request format
+- **Review Schema**: Customer testimonial management
+- **Menu Schema**: Website navigation structure
+- **Exit Intent Popup Schema**: Popup content and styling configuration
 
 ## Data Flow
 
@@ -111,6 +117,7 @@ Changelog:
 - June 26, 2025. Created login-protected backend dashboard at /admin/dashboard with authentication system, moved admin reviews inside dashboard, added menu management for website navigation with support for submenus
 - June 26, 2025. Enhanced menu management with drag-and-drop reordering functionality for intuitive navigation control
 - June 26, 2025. Added comprehensive admin user management system with create, edit, delete, and password change capabilities for dashboard access control
+- June 26, 2025. Implemented exit intent popup system with mouse tracking detection, customizable messaging, images, colors, and admin management interface
 ```
 
 ## User Preferences
