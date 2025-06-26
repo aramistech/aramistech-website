@@ -6,10 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3 } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink } from 'lucide-react';
 import AdminReviews from '@/components/admin-reviews';
 import MenuManager from '@/components/menu-manager';
 import AdminUserManager from '@/components/admin-user-manager';
+import ExitIntentManager from '@/components/exit-intent-manager';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -168,6 +169,23 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <AdminUserManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="popup" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <ExternalLink className="w-5 h-5" />
+                    Exit Intent Popup
+                  </CardTitle>
+                  <CardDescription>
+                    Configure the popup that appears when visitors try to leave your site
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ExitIntentManager />
                 </CardContent>
               </Card>
             </TabsContent>

@@ -9,6 +9,7 @@ import Industries from "@/components/industries";
 import Testimonials from "@/components/testimonials";
 import Contact from "@/components/contact";
 import Footer from "@/components/footer";
+import ExitIntentPopup from "@/components/exit-intent-popup";
 
 export default function Home() {
   return (
@@ -43,6 +44,7 @@ export default function Home() {
       <Testimonials />
       <Contact />
       <Footer />
+      <ExitIntentPopup />
     </div>
   );
 }

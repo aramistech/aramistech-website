@@ -80,11 +80,7 @@ export default function ExitIntentManager() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: ExitIntentFormData) => {
-      return await apiRequest("/api/admin/exit-intent-popup", {
-        method: "PUT",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
+      return await apiRequest("/api/admin/exit-intent-popup", "PUT", data);
     },
     onSuccess: () => {
       toast({
