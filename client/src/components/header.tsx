@@ -191,8 +191,16 @@ export default function Header() {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setIsSupportDropdownOpen(false);
-                        window.open('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.exe', '_blank');
+                        const link = document.createElement('a');
+                        link.href = 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.exe';
+                        link.download = 'rustdesk-1.4.0-x86_64.exe';
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
@@ -201,8 +209,16 @@ export default function Header() {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setIsSupportDropdownOpen(false);
-                        window.open('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86.exe', '_blank');
+                        const link = document.createElement('a');
+                        link.href = 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86.exe';
+                        link.download = 'rustdesk-1.4.0-x86.exe';
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
@@ -211,8 +227,16 @@ export default function Header() {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setIsSupportDropdownOpen(false);
-                        window.open('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.dmg', '_blank');
+                        const link = document.createElement('a');
+                        link.href = 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.dmg';
+                        link.download = 'rustdesk-1.4.0-x86_64.dmg';
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
@@ -221,8 +245,16 @@ export default function Header() {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setIsSupportDropdownOpen(false);
-                        window.open('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-aarch64.dmg', '_blank');
+                        const link = document.createElement('a');
+                        link.href = 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-aarch64.dmg';
+                        link.download = 'rustdesk-1.4.0-aarch64.dmg';
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
@@ -231,8 +263,16 @@ export default function Header() {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setIsSupportDropdownOpen(false);
-                        window.open('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk_1.4.0_amd64.deb', '_blank');
+                        const link = document.createElement('a');
+                        link.href = 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk_1.4.0_amd64.deb';
+                        link.download = 'rustdesk_1.4.0_amd64.deb';
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
@@ -359,9 +399,17 @@ export default function Header() {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setIsMenuOpen(false);
                         setIsMobileSupportOpen(false);
-                        window.open('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.exe', '_blank');
+                        const link = document.createElement('a');
+                        link.href = 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.exe';
+                        link.download = 'rustdesk-1.4.0-x86_64.exe';
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
@@ -370,9 +418,17 @@ export default function Header() {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setIsMenuOpen(false);
                         setIsMobileSupportOpen(false);
-                        window.open('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86.exe', '_blank');
+                        const link = document.createElement('a');
+                        link.href = 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86.exe';
+                        link.download = 'rustdesk-1.4.0-x86.exe';
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
@@ -381,9 +437,17 @@ export default function Header() {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setIsMenuOpen(false);
                         setIsMobileSupportOpen(false);
-                        window.open('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.dmg', '_blank');
+                        const link = document.createElement('a');
+                        link.href = 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.dmg';
+                        link.download = 'rustdesk-1.4.0-x86_64.dmg';
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
@@ -392,9 +456,17 @@ export default function Header() {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setIsMenuOpen(false);
                         setIsMobileSupportOpen(false);
-                        window.open('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-aarch64.dmg', '_blank');
+                        const link = document.createElement('a');
+                        link.href = 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-aarch64.dmg';
+                        link.download = 'rustdesk-1.4.0-aarch64.dmg';
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
@@ -403,9 +475,17 @@ export default function Header() {
                     <button 
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         setIsMenuOpen(false);
                         setIsMobileSupportOpen(false);
-                        window.open('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk_1.4.0_amd64.deb', '_blank');
+                        const link = document.createElement('a');
+                        link.href = 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk_1.4.0_amd64.deb';
+                        link.download = 'rustdesk_1.4.0_amd64.deb';
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                       }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
