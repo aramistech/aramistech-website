@@ -326,6 +326,31 @@ export default function ExitIntentManager() {
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="buttonColor"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Button Color</FormLabel>
+                        <FormControl>
+                          <div className="flex items-center gap-2">
+                            <Input 
+                              type="color" 
+                              className="w-12 h-10 p-1 border rounded cursor-pointer"
+                              {...field} 
+                            />
+                            <Input 
+                              placeholder="#2563eb" 
+                              className="flex-1"
+                              {...field} 
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 <Button 
@@ -388,7 +413,7 @@ export default function ExitIntentManager() {
                   <button
                     className="w-full py-2 px-4 rounded font-semibold text-sm"
                     style={{
-                      backgroundColor: watchedValues.textColor,
+                      backgroundColor: watchedValues.buttonColor,
                       color: watchedValues.backgroundColor,
                     }}
                   >

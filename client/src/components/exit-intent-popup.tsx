@@ -15,6 +15,7 @@ interface ExitIntentPopup {
   isActive: boolean;
   backgroundColor: string;
   textColor: string;
+  buttonColor: string;
 }
 
 export default function ExitIntentPopup() {
@@ -128,7 +129,7 @@ export default function ExitIntentPopup() {
                 className="w-full py-3 text-lg font-semibold"
                 onClick={handleClose}
                 style={{
-                  backgroundColor: popup.textColor,
+                  backgroundColor: popup.buttonColor,
                   color: popup.backgroundColor,
                 }}
               >

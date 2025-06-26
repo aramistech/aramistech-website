@@ -120,7 +120,7 @@ Changelog:
 - June 26, 2025. Created login-protected backend dashboard at /admin/dashboard with authentication system, moved admin reviews inside dashboard, added menu management for website navigation with support for submenus
 - June 26, 2025. Enhanced menu management with drag-and-drop reordering functionality for intuitive navigation control
 - June 26, 2025. Added comprehensive admin user management system with create, edit, delete, and password change capabilities for dashboard access control
-- June 26, 2025. Implemented exit intent popup system with mouse tracking detection, customizable messaging, images, colors, and admin management interface
+- June 26, 2025. Implemented exit intent popup system with mouse tracking detection, customizable messaging, images, colors, button color customization, and admin management interface
 - June 26, 2025. Built WordPress-style media library with file upload, image management, and integration with exit intent popup for easy image selection
 - June 26, 2025. Integrated Google Analytics 4 with comprehensive tracking system for visitor behavior, session duration, click tracking, conversion events, and traffic source analysis
 ```
