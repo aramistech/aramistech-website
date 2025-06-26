@@ -42,9 +42,33 @@ export const reviews = pgTable("reviews", {
   source: text("source").default("manual").notNull(), // google, manual, website
 });
 
+export const menuItems = pgTable("menu_items", {
+  id: serial("id").primaryKey(),
+  label: text("label").notNull(),
+  href: text("href"),
+  parentId: integer("parent_id"),
+  orderIndex: integer("order_index").default(0).notNull(),
+  isVisible: boolean("is_visible").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const adminSessions = pgTable("admin_sessions", {
+  id: text("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
+});
+
+export const insertMenuItemSchema = createInsertSchema(menuItems).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export const insertContactSchema = createInsertSchema(contacts).omit({
@@ -70,3 +94,6 @@ export type QuickQuote = typeof quickQuotes.$inferSelect;
 export type InsertQuickQuote = z.infer<typeof insertQuickQuoteSchema>;
 export type Review = typeof reviews.$inferSelect;
 export type InsertReview = z.infer<typeof insertReviewSchema>;
+export type MenuItem = typeof menuItems.$inferSelect;
+export type InsertMenuItem = z.infer<typeof insertMenuItemSchema>;
+export type AdminSession = typeof adminSessions.$inferSelect;

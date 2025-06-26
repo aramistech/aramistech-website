@@ -1,6 +1,6 @@
-import { users, contacts, quickQuotes, reviews, type User, type InsertUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview } from "@shared/schema";
+import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, type User, type InsertUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, isNull, gt } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -15,6 +15,15 @@ export interface IStorage {
   getVisibleReviews(): Promise<Review[]>;
   deleteReview(id: number): Promise<void>;
   updateReview(id: number, review: Partial<InsertReview>): Promise<Review>;
+  // Admin authentication
+  createAdminSession(userId: number, sessionId: string, expiresAt: Date): Promise<AdminSession>;
+  getAdminSession(sessionId: string): Promise<AdminSession | undefined>;
+  deleteAdminSession(sessionId: string): Promise<void>;
+  // Menu management
+  getMenuItems(): Promise<MenuItem[]>;
+  createMenuItem(menuItem: InsertMenuItem): Promise<MenuItem>;
+  updateMenuItem(id: number, menuItem: Partial<InsertMenuItem>): Promise<MenuItem>;
+  deleteMenuItem(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -102,6 +111,70 @@ export class DatabaseStorage implements IStorage {
       .where(eq(reviews.id, id))
       .returning();
     return updatedReview;
+  }
+
+  // Admin authentication methods
+  async createAdminSession(userId: number, sessionId: string, expiresAt: Date): Promise<AdminSession> {
+    const [session] = await db
+      .insert(adminSessions)
+      .values({ id: sessionId, userId, expiresAt })
+      .returning();
+    return session;
+  }
+
+  async getAdminSession(sessionId: string): Promise<AdminSession | undefined> {
+    const [session] = await db
+      .select()
+      .from(adminSessions)
+      .where(and(
+        eq(adminSessions.id, sessionId),
+        gt(adminSessions.expiresAt, new Date())
+      ));
+    return session || undefined;
+  }
+
+  async deleteAdminSession(sessionId: string): Promise<void> {
+    await db
+      .delete(adminSessions)
+      .where(eq(adminSessions.id, sessionId));
+  }
+
+  // Menu management methods
+  async getMenuItems(): Promise<MenuItem[]> {
+    return await db
+      .select()
+      .from(menuItems)
+      .where(eq(menuItems.isVisible, true))
+      .orderBy(menuItems.orderIndex);
+  }
+
+  async createMenuItem(menuItemData: InsertMenuItem): Promise<MenuItem> {
+    const [menuItem] = await db
+      .insert(menuItems)
+      .values({
+        ...menuItemData,
+        updatedAt: new Date()
+      })
+      .returning();
+    return menuItem;
+  }
+
+  async updateMenuItem(id: number, menuItemData: Partial<InsertMenuItem>): Promise<MenuItem> {
+    const [updatedMenuItem] = await db
+      .update(menuItems)
+      .set({
+        ...menuItemData,
+        updatedAt: new Date()
+      })
+      .where(eq(menuItems.id, id))
+      .returning();
+    return updatedMenuItem;
+  }
+
+  async deleteMenuItem(id: number): Promise<void> {
+    await db
+      .delete(menuItems)
+      .where(eq(menuItems.id, id));
   }
 }
 
