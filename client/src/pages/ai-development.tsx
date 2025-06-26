@@ -61,97 +61,155 @@ export default function AIDevelopment() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg shadow-2xl p-8 h-96 flex items-center justify-center">
-                <svg viewBox="0 0 400 300" className="w-full h-full max-w-md">
-                  {/* Neural Network Background */}
+              <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 rounded-lg shadow-2xl overflow-hidden h-96 flex items-center justify-center">
+                <svg viewBox="0 0 500 350" className="w-full h-full">
                   <defs>
-                    <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#3B82F6" />
-                      <stop offset="100%" stopColor="#8B5CF6" />
+                    {/* Glowing Effects */}
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                      <feMerge> 
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                    
+                    {/* Gradients */}
+                    <radialGradient id="coreGradient" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#F97316" stopOpacity="1" />
+                      <stop offset="70%" stopColor="#3B82F6" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="#1E293B" stopOpacity="0.3" />
+                    </radialGradient>
+                    
+                    <linearGradient id="pulseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#8B5CF6" />
+                      <stop offset="50%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#06B6D4" />
                     </linearGradient>
-                    <linearGradient id="nodeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#F97316" />
-                      <stop offset="100%" stopColor="#EF4444" />
+                    
+                    <linearGradient id="dataStream" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="transparent" />
+                      <stop offset="50%" stopColor="#F97316" />
+                      <stop offset="100%" stopColor="transparent" />
                     </linearGradient>
                   </defs>
                   
-                  {/* Connection Lines */}
-                  <g opacity="0.6">
-                    <line x1="50" y1="80" x2="120" y2="60" stroke="#3B82F6" strokeWidth="2" />
-                    <line x1="50" y1="120" x2="120" y2="60" stroke="#3B82F6" strokeWidth="2" />
-                    <line x1="50" y1="160" x2="120" y2="140" stroke="#3B82F6" strokeWidth="2" />
-                    <line x1="50" y1="200" x2="120" y2="180" stroke="#3B82F6" strokeWidth="2" />
-                    
-                    <line x1="120" y1="60" x2="200" y2="80" stroke="#8B5CF6" strokeWidth="2" />
-                    <line x1="120" y1="140" x2="200" y2="120" stroke="#8B5CF6" strokeWidth="2" />
-                    <line x1="120" y1="180" x2="200" y2="160" stroke="#8B5CF6" strokeWidth="2" />
-                    
-                    <line x1="200" y1="80" x2="280" y2="100" stroke="#F97316" strokeWidth="2" />
-                    <line x1="200" y1="120" x2="280" y2="100" stroke="#F97316" strokeWidth="2" />
-                    <line x1="200" y1="160" x2="280" y2="140" stroke="#F97316" strokeWidth="2" />
-                    
-                    <line x1="280" y1="100" x2="350" y2="120" stroke="#EF4444" strokeWidth="2" />
-                    <line x1="280" y1="140" x2="350" y2="120" stroke="#EF4444" strokeWidth="2" />
+                  {/* Background Grid */}
+                  <g opacity="0.1">
+                    {Array.from({length: 25}, (_, i) => (
+                      <line key={`v${i}`} x1={i * 20} y1="0" x2={i * 20} y2="350" stroke="#3B82F6" strokeWidth="0.5" />
+                    ))}
+                    {Array.from({length: 18}, (_, i) => (
+                      <line key={`h${i}`} x1="0" y1={i * 20} x2="500" y2={i * 20} stroke="#3B82F6" strokeWidth="0.5" />
+                    ))}
                   </g>
                   
-                  {/* Neural Network Nodes */}
+                  {/* Central AI Core */}
+                  <g transform="translate(250, 175)">
+                    <circle r="60" fill="url(#coreGradient)" filter="url(#glow)">
+                      <animate attributeName="r" values="60;65;60" dur="3s" repeatCount="indefinite" />
+                    </circle>
+                    
+                    {/* Rotating Rings */}
+                    <circle r="80" fill="none" stroke="#3B82F6" strokeWidth="2" opacity="0.6" strokeDasharray="5,5">
+                      <animateTransform attributeName="transform" type="rotate" values="0;360" dur="8s" repeatCount="indefinite" />
+                    </circle>
+                    <circle r="100" fill="none" stroke="#8B5CF6" strokeWidth="1" opacity="0.4" strokeDasharray="3,7">
+                      <animateTransform attributeName="transform" type="rotate" values="360;0" dur="12s" repeatCount="indefinite" />
+                    </circle>
+                    
+                    {/* Central Brain */}
+                    <g transform="scale(1.5)">
+                      <path d="M-15 -5 C-15 -15, -8 -20, 0 -20 C8 -20, 15 -15, 15 -5 C15 5, 10 10, 5 10 L-5 10 C-10 10, -15 5, -15 -5 Z" 
+                            fill="#FFFFFF" opacity="0.9" />
+                      <circle cx="-5" cy="-2" r="1.5" fill="#3B82F6" />
+                      <circle cx="5" cy="-2" r="1.5" fill="#3B82F6" />
+                      <path d="M-3 3 Q0 6 3 3" stroke="#3B82F6" strokeWidth="1" fill="none" />
+                      
+                      {/* Neural pathways */}
+                      <path d="M-10 -8 Q-5 -10 0 -8 Q5 -10 10 -8" stroke="#F97316" strokeWidth="1" fill="none" opacity="0.8">
+                        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite" />
+                      </path>
+                    </g>
+                  </g>
+                  
+                  {/* Data Streams */}
                   <g>
-                    {/* Input Layer */}
-                    <circle cx="50" cy="80" r="8" fill="url(#brainGradient)" />
-                    <circle cx="50" cy="120" r="8" fill="url(#brainGradient)" />
-                    <circle cx="50" cy="160" r="8" fill="url(#brainGradient)" />
-                    <circle cx="50" cy="200" r="8" fill="url(#brainGradient)" />
+                    {/* Left to Center */}
+                    <path d="M50 100 Q150 120 200 140" stroke="url(#dataStream)" strokeWidth="3" fill="none">
+                      <animate attributeName="stroke-dasharray" values="0,200;100,100;0,200" dur="3s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M50 200 Q150 180 200 160" stroke="url(#dataStream)" strokeWidth="3" fill="none">
+                      <animate attributeName="stroke-dasharray" values="0,200;100,100;0,200" dur="3.5s" repeatCount="indefinite" />
+                    </path>
                     
-                    {/* Hidden Layer 1 */}
-                    <circle cx="120" cy="60" r="10" fill="url(#brainGradient)" />
-                    <circle cx="120" cy="140" r="10" fill="url(#brainGradient)" />
-                    <circle cx="120" cy="180" r="10" fill="url(#brainGradient)" />
-                    
-                    {/* Hidden Layer 2 */}
-                    <circle cx="200" cy="80" r="10" fill="url(#nodeGradient)" />
-                    <circle cx="200" cy="120" r="10" fill="url(#nodeGradient)" />
-                    <circle cx="200" cy="160" r="10" fill="url(#nodeGradient)" />
-                    
-                    {/* Hidden Layer 3 */}
-                    <circle cx="280" cy="100" r="10" fill="url(#nodeGradient)" />
-                    <circle cx="280" cy="140" r="10" fill="url(#nodeGradient)" />
-                    
-                    {/* Output Layer */}
-                    <circle cx="350" cy="120" r="12" fill="#EF4444" />
+                    {/* Right to Center */}
+                    <path d="M450 120 Q350 140 300 160" stroke="url(#dataStream)" strokeWidth="3" fill="none">
+                      <animate attributeName="stroke-dasharray" values="0,200;100,100;0,200" dur="2.8s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M450 220 Q350 200 300 180" stroke="url(#dataStream)" strokeWidth="3" fill="none">
+                      <animate attributeName="stroke-dasharray" values="0,200;100,100;0,200" dur="3.2s" repeatCount="indefinite" />
+                    </path>
                   </g>
                   
-                  {/* Brain Icon */}
-                  <g transform="translate(180, 200)">
-                    <path d="M20 15 C20 7, 12 0, 0 0 C-12 0, -20 7, -20 15 C-20 20, -15 25, -10 25 L10 25 C15 25, 20 20, 20 15 Z" 
-                          fill="url(#brainGradient)" opacity="0.8" />
-                    <circle cx="-8" cy="8" r="2" fill="#FFFFFF" />
-                    <circle cx="8" cy="8" r="2" fill="#FFFFFF" />
-                    <path d="M-5 15 Q0 18 5 15" stroke="#FFFFFF" strokeWidth="1.5" fill="none" />
-                  </g>
-                  
-                  {/* Floating Data Points */}
-                  <g opacity="0.7">
-                    <circle cx="300" cy="50" r="3" fill="#3B82F6">
-                      <animate attributeName="cy" values="50;40;50" dur="2s" repeatCount="indefinite" />
+                  {/* Floating Data Nodes */}
+                  <g>
+                    <circle cx="80" cy="80" r="8" fill="#3B82F6" filter="url(#glow)">
+                      <animate attributeName="cy" values="80;70;80" dur="4s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" />
                     </circle>
-                    <circle cx="320" cy="70" r="2" fill="#8B5CF6">
-                      <animate attributeName="cy" values="70;60;70" dur="2.5s" repeatCount="indefinite" />
+                    <circle cx="420" cy="100" r="6" fill="#8B5CF6" filter="url(#glow)">
+                      <animate attributeName="cy" values="100;90;100" dur="3.5s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite" />
                     </circle>
-                    <circle cx="340" cy="45" r="2.5" fill="#F97316">
-                      <animate attributeName="cy" values="45;35;45" dur="1.8s" repeatCount="indefinite" />
+                    <circle cx="100" cy="250" r="7" fill="#F97316" filter="url(#glow)">
+                      <animate attributeName="cy" values="250;240;250" dur="3.8s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.6;1;0.6" dur="2.2s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="400" cy="270" r="5" fill="#06B6D4" filter="url(#glow)">
+                      <animate attributeName="cy" values="270;260;270" dur="4.2s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.6;1;0.6" dur="1.8s" repeatCount="indefinite" />
                     </circle>
                   </g>
                   
-                  {/* Code Symbols */}
-                  <g transform="translate(50, 240)" opacity="0.6">
-                    <text x="0" y="0" fontFamily="monospace" fontSize="12" fill="#3B82F6">&lt;AI/&gt;</text>
-                    <text x="60" y="0" fontFamily="monospace" fontSize="12" fill="#8B5CF6">ML()</text>
-                    <text x="120" y="0" fontFamily="monospace" fontSize="12" fill="#F97316">&#123;data&#125;</text>
-                    <text x="180" y="0" fontFamily="monospace" fontSize="12" fill="#EF4444">neural++</text>
+                  {/* AI Code Elements */}
+                  <g transform="translate(50, 300)" opacity="0.8">
+                    <text x="0" y="0" fontFamily="'Courier New', monospace" fontSize="14" fill="#3B82F6" filter="url(#glow)">
+                      &lt;neural_network&gt;
+                    </text>
+                    <text x="180" y="0" fontFamily="'Courier New', monospace" fontSize="14" fill="#8B5CF6" filter="url(#glow)">
+                      deep_learning()
+                    </text>
+                    <text x="350" y="0" fontFamily="'Courier New', monospace" fontSize="14" fill="#F97316" filter="url(#glow)">
+                      AI.evolve()
+                    </text>
+                  </g>
+                  
+                  {/* Particle Effects */}
+                  <g opacity="0.6">
+                    {Array.from({length: 15}, (_, i) => (
+                      <circle key={i} 
+                        cx={50 + i * 30} 
+                        cy={50 + (i % 3) * 100} 
+                        r="1" 
+                        fill="#FFFFFF">
+                        <animate 
+                          attributeName="opacity" 
+                          values="0;1;0" 
+                          dur={`${2 + i * 0.3}s`} 
+                          repeatCount="indefinite" 
+                        />
+                        <animate 
+                          attributeName="cy" 
+                          values={`${50 + (i % 3) * 100};${40 + (i % 3) * 100};${50 + (i % 3) * 100}`} 
+                          dur={`${3 + i * 0.2}s`} 
+                          repeatCount="indefinite" 
+                        />
+                      </circle>
+                    ))}
                   </g>
                 </svg>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent rounded-lg"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent rounded-lg"></div>
             </div>
           </div>
         </div>
