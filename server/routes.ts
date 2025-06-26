@@ -78,14 +78,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get Google reviews
   app.get("/api/reviews", async (req, res) => {
     try {
-      // Use AramisTech/Aramont Place ID 
-      const placeId = req.query.place_id || process.env.ARAMISTECH_PLACE_ID || "ChIJwdS0isO52YgRMkrde8V_XKI";
+      // Use AramisTech Place ID from query parameter or environment
+      const placeId = req.query.place_id || process.env.ARAMISTECH_PLACE_ID;
       const apiKey = process.env.GOOGLE_PLACES_API_KEY;
       
       if (!apiKey) {
         return res.status(500).json({
           success: false,
           message: "Google Places API key not configured"
+        });
+      }
+
+      if (!placeId) {
+        return res.json({
+          success: false,
+          message: "AramisTech Place ID not configured. Visit business.google.com to get your Place ID."
         });
       }
 

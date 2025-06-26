@@ -67,8 +67,14 @@ export default function Testimonials() {
 
         {error && (
           <div className="text-center bg-white p-8 rounded-xl shadow-lg max-w-2xl mx-auto">
-            <p className="text-gray-600 mb-4">We're working on connecting your Google Business reviews.</p>
-            <p className="text-sm text-gray-500">Your AramisTech reviews will appear here once the Google Business connection is configured.</p>
+            <h3 className="text-xl font-semibold text-professional-gray mb-4">Client Testimonials Coming Soon</h3>
+            <p className="text-gray-600 mb-4">We're connecting your authentic AramisTech Google Business reviews.</p>
+            <div className="bg-blue-50 p-4 rounded-lg mb-4">
+              <p className="text-sm text-blue-800">
+                <strong>To display your reviews:</strong> Get your Google Business Place ID from your Business Profile dashboard at business.google.com
+              </p>
+            </div>
+            <p className="text-sm text-gray-500">Your customer reviews will display here automatically once configured.</p>
           </div>
         )}
         
