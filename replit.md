@@ -140,6 +140,7 @@ Changelog:
 - June 26, 2025. Enhanced chatbot with AI-powered issue analysis engine featuring confidence scoring, contextual responses, dynamic technical guidance, and multi-layered detection to provide professional-level technical support that leads to AramisTech consultations
 - June 26, 2025. Updated social proof popup timing to appear every 1-2 minutes instead of every 15-45 seconds for better user experience
 - June 26, 2025. Rebuilt chatbot with advanced pattern recognition system featuring weighted keyword analysis, confidence scoring, specialized printer support, contextual understanding, and enhanced debugging for intelligent technical issue detection and lead generation
+- June 26, 2025. Fixed menu management system by removing duplicate menu items and properly implementing Support dropdown with Customer Portal, Windows 10 Upgrade, and IP Lookup sub-items - admin interface now shows correct navigation structure
 ```
 
 ## User Preferences
