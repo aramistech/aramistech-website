@@ -19,11 +19,17 @@ interface ReviewsResponse {
 }
 
 export default function Testimonials() {
-  // Check if a Place ID is provided in URL for testing
+  // Primary: Use database reviews (authentic AramisTech customer reviews)
+  const { data: databaseData, isLoading: dbLoading } = useQuery({
+    queryKey: ['/api/reviews/database'],
+    staleTime: 1000 * 60 * 10,
+  });
+
+  // Fallback: Google reviews only if no database reviews exist
   const urlParams = new URLSearchParams(window.location.search);
   const testPlaceId = urlParams.get('place_id');
   
-  const { data: reviewsData, isLoading, error } = useQuery<ReviewsResponse>({
+  const { data: googleData, isLoading: googleLoading } = useQuery<ReviewsResponse>({
     queryKey: ['/api/reviews', testPlaceId],
     queryFn: async () => {
       const url = testPlaceId ? `/api/reviews?place_id=${testPlaceId}` : '/api/reviews';
@@ -33,8 +39,27 @@ export default function Testimonials() {
       }
       return response.json();
     },
-    staleTime: 1000 * 60 * 30, // Cache for 30 minutes
+    enabled: !databaseData?.reviews?.length,
+    staleTime: 1000 * 60 * 30,
   });
+
+  const isLoading = dbLoading || googleLoading;
+  
+  // Transform database reviews to match expected format
+  const reviewsData = databaseData?.reviews?.length ? {
+    success: true,
+    reviews: databaseData.reviews.map((r: any) => ({
+      text: r.reviewText,
+      author: r.customerName,
+      rating: r.rating,
+      time: new Date(r.datePosted).getTime() / 1000,
+      location: r.location
+    })),
+    business: {
+      rating: 5.0,
+      user_ratings_total: databaseData.reviews.length
+    }
+  } : googleData;
 
   return (
     <section className="py-20 bg-light-gray">
@@ -65,7 +90,7 @@ export default function Testimonials() {
           </div>
         )}
 
-        {error && (
+        {!isLoading && !reviewsData?.success && (
           <div className="text-center bg-white p-8 rounded-xl shadow-lg max-w-2xl mx-auto">
             <h3 className="text-xl font-semibold text-professional-gray mb-4">Client Testimonials Coming Soon</h3>
             <p className="text-gray-600 mb-4">We're connecting your authentic AramisTech Google Business reviews.</p>
@@ -80,7 +105,7 @@ export default function Testimonials() {
         
         {reviewsData?.reviews && (
           <div className="grid lg:grid-cols-3 gap-8">
-            {reviewsData.reviews.slice(0, 3).map((review, index) => (
+            {reviewsData.reviews.slice(0, 3).map((review: any, index: number) => (
               <div key={index} className="bg-white p-8 rounded-xl shadow-lg">
                 <div className="flex items-center mb-6">
                   <div className="flex text-yellow-400">
