@@ -146,7 +146,7 @@ export default function Header() {
               </button>
               
               {isSupportDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                   <Link href="/customer-portal">
                     <button 
                       onClick={() => {
@@ -180,6 +180,37 @@ export default function Header() {
                       IP Lookup Tool
                     </button>
                   </Link>
+                  
+                  {/* Downloads Section */}
+                  <div className="border-t border-gray-200 mt-2 pt-2">
+                    <div className="px-4 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                      Support Downloads
+                    </div>
+                    <a 
+                      href="/downloads/network-diagnostic-tool.bat"
+                      download="AramisTech-Network-Diagnostic.bat"
+                      onClick={() => setIsSupportDropdownOpen(false)}
+                      className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
+                    >
+                      📊 Network Diagnostic Tool
+                    </a>
+                    <a 
+                      href="/downloads/system-info-collector.bat"
+                      download="AramisTech-System-Info.bat"
+                      onClick={() => setIsSupportDropdownOpen(false)}
+                      className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
+                    >
+                      💻 System Info Collector
+                    </a>
+                    <a 
+                      href="/downloads/remote-support-setup.exe"
+                      download="AramisTech-Remote-Support.exe"
+                      onClick={() => setIsSupportDropdownOpen(false)}
+                      className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
+                    >
+                      🔧 Remote Support Tool
+                    </a>
+                  </div>
                 </div>
               )}
             </div>
@@ -275,6 +306,46 @@ export default function Header() {
                       IP Lookup Tool
                     </button>
                   </Link>
+                  
+                  {/* Mobile Downloads Section */}
+                  <div className="border-t border-gray-200 mt-2 pt-2">
+                    <div className="py-1 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                      Support Downloads
+                    </div>
+                    <a 
+                      href="/downloads/network-diagnostic-tool.bat"
+                      download="AramisTech-Network-Diagnostic.bat"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setIsMobileSupportOpen(false);
+                      }}
+                      className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
+                    >
+                      📊 Network Diagnostic Tool
+                    </a>
+                    <a 
+                      href="/downloads/system-info-collector.bat"
+                      download="AramisTech-System-Info.bat"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setIsMobileSupportOpen(false);
+                      }}
+                      className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
+                    >
+                      💻 System Info Collector
+                    </a>
+                    <a 
+                      href="/downloads/remote-support-setup.exe"
+                      download="AramisTech-Remote-Support.exe"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setIsMobileSupportOpen(false);
+                      }}
+                      className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
+                    >
+                      🔧 Remote Support Tool
+                    </a>
+                  </div>
                 </div>
               )}
             </div>
