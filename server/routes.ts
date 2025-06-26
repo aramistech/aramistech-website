@@ -75,6 +75,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get Google reviews
+  app.get("/api/reviews", async (req, res) => {
+    try {
+      const placeId = req.query.place_id || "ChIJwdS0isO52YgRMkrde8V_XKI"; // Default to found business
+      const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+      
+      if (!apiKey) {
+        return res.status(500).json({
+          success: false,
+          message: "Google Places API key not configured"
+        });
+      }
+
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews,rating,user_ratings_total&key=${apiKey}`
+      );
+      
+      const data = await response.json();
+      
+      if (data.status === "OK" && data.result) {
+        // Filter and format reviews
+        const reviews = (data.result.reviews || [])
+          .filter((review: any) => review.rating >= 4) // Only show 4+ star reviews
+          .slice(0, 6) // Limit to 6 reviews
+          .map((review: any) => ({
+            text: review.text,
+            author: review.author_name,
+            rating: review.rating,
+            time: review.time,
+            profile_photo: review.profile_photo_url
+          }));
+
+        res.json({
+          success: true,
+          reviews,
+          business: {
+            rating: data.result.rating,
+            user_ratings_total: data.result.user_ratings_total
+          }
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "Business reviews not found"
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch reviews"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
