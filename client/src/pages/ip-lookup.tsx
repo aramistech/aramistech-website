@@ -164,6 +164,13 @@ export default function IPLookup() {
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
+          <div className="flex justify-center mb-6">
+            <img 
+              src="https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png" 
+              alt="AramisTech Logo" 
+              className="h-16 w-auto"
+            />
+          </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             IP Address Lookup Tool
           </h1>

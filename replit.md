@@ -127,6 +127,8 @@ Changelog:
 - June 26, 2025. Created professional Windows 10 upgrade service page with urgency messaging, comprehensive service details, contact form integration, and navigation menu placement
 - June 26, 2025. Updated Windows 10 page "Call Now" button styling with orange text and blue hover effect to match brand colors
 - June 26, 2025. Implemented comprehensive WHMCS billing system integration with separate hosting architecture, customer portal, API proxy, service management, and secure authentication
+- June 26, 2025. Created professional IP address lookup tool at /ip-lookup with public and local IP detection, location information, copy functionality, and AramisTech branding
+- June 26, 2025. Updated social proof popup timing to appear every 1-2 minutes instead of every 15-45 seconds for better user experience
 ```
 
 ## User Preferences
