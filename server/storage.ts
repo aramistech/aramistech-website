@@ -1,4 +1,4 @@
-import { users, contacts, quickQuotes, type User, type InsertUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote } from "@shared/schema";
+import { users, contacts, quickQuotes, reviews, type User, type InsertUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -10,6 +10,9 @@ export interface IStorage {
   createQuickQuote(quote: InsertQuickQuote): Promise<QuickQuote>;
   getContacts(): Promise<Contact[]>;
   getQuickQuotes(): Promise<QuickQuote[]>;
+  createReview(review: InsertReview): Promise<Review>;
+  getReviews(): Promise<Review[]>;
+  getVisibleReviews(): Promise<Review[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -59,6 +62,29 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(quickQuotes)
       .orderBy(desc(quickQuotes.createdAt));
+  }
+
+  async createReview(insertReview: InsertReview): Promise<Review> {
+    const [review] = await db
+      .insert(reviews)
+      .values(insertReview)
+      .returning();
+    return review;
+  }
+
+  async getReviews(): Promise<Review[]> {
+    return await db
+      .select()
+      .from(reviews)
+      .orderBy(desc(reviews.datePosted));
+  }
+
+  async getVisibleReviews(): Promise<Review[]> {
+    return await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.isVisible, true))
+      .orderBy(desc(reviews.datePosted));
   }
 }
 

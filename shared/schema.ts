@@ -30,6 +30,18 @@ export const quickQuotes = pgTable("quick_quotes", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const reviews = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  customerName: text("customer_name").notNull(),
+  rating: integer("rating").notNull(), // 1-5 stars
+  reviewText: text("review_text").notNull(),
+  businessName: text("business_name"),
+  location: text("location"),
+  datePosted: timestamp("date_posted").defaultNow(),
+  isVisible: boolean("is_visible").default(true).notNull(),
+  source: text("source").default("manual").notNull(), // google, manual, website
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -45,9 +57,16 @@ export const insertQuickQuoteSchema = createInsertSchema(quickQuotes).omit({
   createdAt: true,
 });
 
+export const insertReviewSchema = createInsertSchema(reviews).omit({
+  id: true,
+  datePosted: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type Contact = typeof contacts.$inferSelect;
 export type InsertContact = z.infer<typeof insertContactSchema>;
 export type QuickQuote = typeof quickQuotes.$inferSelect;
 export type InsertQuickQuote = z.infer<typeof insertQuickQuoteSchema>;
+export type Review = typeof reviews.$inferSelect;
+export type InsertReview = z.infer<typeof insertReviewSchema>;
