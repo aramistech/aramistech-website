@@ -1,5 +1,6 @@
-import { Star } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 
 interface GoogleReview {
   text: string;
@@ -19,6 +20,9 @@ interface ReviewsResponse {
 }
 
 export default function Testimonials() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
   // Primary: Use database reviews (authentic AramisTech customer reviews)
   const { data: databaseData, isLoading: dbLoading } = useQuery({
     queryKey: ['/api/reviews/database'],
@@ -60,6 +64,36 @@ export default function Testimonials() {
       user_ratings_total: databaseData.reviews.length
     }
   } : googleData;
+
+  const reviews = reviewsData?.reviews || [];
+  const totalSlides = Math.ceil(reviews.length / 3); // Show 3 reviews per slide
+  const reviewsPerSlide = 3;
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!isAutoPlaying || totalSlides <= 1) return;
+    
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % totalSlides);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [totalSlides, isAutoPlaying]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+    setIsAutoPlaying(false);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+    setIsAutoPlaying(false);
+  };
+
+  const getCurrentSlideReviews = () => {
+    const startIndex = currentSlide * reviewsPerSlide;
+    return reviews.slice(startIndex, startIndex + reviewsPerSlide);
+  };
 
   return (
     <section className="py-20 bg-light-gray">
@@ -103,33 +137,105 @@ export default function Testimonials() {
           </div>
         )}
         
-        {reviewsData?.reviews && (
-          <div className="grid lg:grid-cols-3 gap-8">
-            {reviewsData.reviews.slice(0, 3).map((review: any, index: number) => (
-              <div key={index} className="bg-white p-8 rounded-xl shadow-lg">
-                <div className="flex items-center mb-6">
-                  <div className="flex text-yellow-400">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`w-5 h-5 ${i < review.rating ? 'fill-current' : ''}`} />
-                    ))}
+        {reviews.length > 0 && (
+          <div className="relative">
+            {/* Carousel Container */}
+            <div className="overflow-hidden">
+              <div 
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              >
+                {Array.from({ length: totalSlides }, (_, slideIndex) => (
+                  <div key={slideIndex} className="w-full flex-shrink-0">
+                    <div className="grid lg:grid-cols-3 gap-8">
+                      {reviews
+                        .slice(slideIndex * reviewsPerSlide, (slideIndex + 1) * reviewsPerSlide)
+                        .map((review: any, index: number) => (
+                        <div key={`${slideIndex}-${index}`} className="bg-white p-8 rounded-xl shadow-lg">
+                          <div className="flex items-center mb-6">
+                            <div className="flex text-yellow-400">
+                              {[...Array(5)].map((_, i) => (
+                                <Star key={i} className={`w-5 h-5 ${i < review.rating ? 'fill-current' : ''}`} />
+                              ))}
+                            </div>
+                          </div>
+                          <p className="text-gray-600 mb-6 italic leading-relaxed">
+                            "{review.text}"
+                          </p>
+                          <div className="flex items-center">
+                            <div className="w-12 h-12 bg-primary-blue rounded-full flex items-center justify-center mr-4">
+                              <span className="text-white font-semibold">
+                                {review.author?.charAt(0)?.toUpperCase() || 'U'}
+                              </span>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-900">{review.author}</h4>
+                              <p className="text-sm text-gray-500">
+                                {review.location || 'Verified Customer'}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <p className="text-gray-600 mb-6 italic">
-                  "{review.text}"
-                </p>
-                <div className="flex items-center">
-                  <img 
-                    src={review.profile_photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.author)}&background=4F46E5&color=fff`} 
-                    alt={`${review.author} review`} 
-                    className="w-12 h-12 rounded-full mr-4 object-cover"
-                  />
-                  <div>
-                    <h4 className="font-semibold">{review.author}</h4>
-                    <p className="text-sm text-gray-600">Google Review</p>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Navigation Controls */}
+            {totalSlides > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:bg-primary-blue hover:text-white"
+                  aria-label="Previous reviews"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:bg-primary-blue hover:text-white"
+                  aria-label="Next reviews"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
+            )}
+
+            {/* Slide Indicators */}
+            {totalSlides > 1 && (
+              <div className="flex justify-center mt-8 space-x-2">
+                {Array.from({ length: totalSlides }, (_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setCurrentSlide(index);
+                      setIsAutoPlaying(false);
+                    }}
+                    className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                      index === currentSlide 
+                        ? 'bg-primary-blue' 
+                        : 'bg-gray-300 hover:bg-gray-400'
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Auto-play indicator */}
+            {totalSlides > 1 && (
+              <div className="text-center mt-4">
+                <button
+                  onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+                  className="text-sm text-gray-500 hover:text-primary-blue transition-colors"
+                >
+                  {isAutoPlaying ? 'Pause auto-play' : 'Resume auto-play'}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
