@@ -61,6 +61,12 @@ export default {
           border: "var(--sidebar-border)",
           ring: "var(--sidebar-ring)",
         },
+        // Custom AramisTech colors
+        "primary-blue": "var(--primary-blue)",
+        "secondary-blue": "var(--secondary-blue)",
+        "accent-blue": "var(--accent-blue)",
+        "professional-gray": "var(--professional-gray)",
+        "light-gray": "var(--light-gray)",
       },
       keyframes: {
         "accordion-down": {
