@@ -9,7 +9,7 @@ export default function Footer() {
             <img 
               src="https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png" 
               alt="AramisTech Logo" 
-              className="h-12 w-auto mb-6 brightness-0 invert"
+              className="h-16 w-auto mb-6 brightness-0 invert"
             />
             <p className="text-gray-300 mb-6 max-w-md">
               Family-owned IT company with 27+ years of experience serving South Florida businesses. We provide reliable computer repairs, network maintenance, cloud solutions, and custom servers.
