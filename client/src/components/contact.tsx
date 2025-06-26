@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { trackClick, trackBusinessEvent, trackFormInteraction } from "@/lib/analytics";
 
 export default function Contact() {
   const { 
@@ -144,6 +145,10 @@ export default function Contact() {
                 type="submit" 
                 disabled={isContactLoading}
                 className="w-full bg-primary-blue text-white py-4 hover:bg-secondary-blue"
+                onClick={() => {
+                  trackFormInteraction('contact_form', 'submit');
+                  trackBusinessEvent('contact_form', { source: 'main_contact_form' });
+                }}
               >
                 <i className="fas fa-paper-plane mr-2"></i>
                 {isContactLoading ? "Submitting..." : "Request Free Consultation"}
@@ -166,7 +171,16 @@ export default function Contact() {
                   <div>
                     <h4 className="font-semibold mb-1">Call Us</h4>
                     <p className="text-blue-100">Monday - Friday: 9am to 6pm</p>
-                    <a href="tel:(305) 814-4461" className="text-lg font-semibold hover:text-blue-200 transition-colors">(305) 814-4461</a>
+                    <a 
+                      href="tel:(305) 814-4461" 
+                      className="text-lg font-semibold hover:text-blue-200 transition-colors"
+                      onClick={() => {
+                        trackClick('phone_number', 'contact_phone', '(305) 814-4461');
+                        trackBusinessEvent('phone_click', { source: 'contact_section' });
+                      }}
+                    >
+                      (305) 814-4461
+                    </a>
                   </div>
                 </div>
                 
@@ -175,7 +189,16 @@ export default function Contact() {
                   <div>
                     <h4 className="font-semibold mb-1">Email Us</h4>
                     <p className="text-blue-100">Response within 2 hours</p>
-                    <a href="mailto:sales@aramistech.com" className="text-lg font-semibold hover:text-blue-200 transition-colors">sales@aramistech.com</a>
+                    <a 
+                      href="mailto:sales@aramistech.com" 
+                      className="text-lg font-semibold hover:text-blue-200 transition-colors"
+                      onClick={() => {
+                        trackClick('email_link', 'contact_email', 'sales@aramistech.com');
+                        trackBusinessEvent('contact_form', { source: 'email_link' });
+                      }}
+                    >
+                      sales@aramistech.com
+                    </a>
                   </div>
                 </div>
                 
