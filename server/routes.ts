@@ -48,6 +48,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadDir));
+  
+  // Serve client public files (including Windows 10 background)
+  const clientPublicDir = path.join(process.cwd(), 'client/public');
+  app.use(express.static(clientPublicDir));
 
   // Admin authentication routes
   app.post("/api/admin/login", async (req, res) => {
