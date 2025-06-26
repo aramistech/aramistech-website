@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find AramisTech Place ID</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .result { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; }
+        input[type="text"] { width: 100%; padding: 10px; margin: 10px 0; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Find AramisTech Place ID</h1>
+    <p>Enter potential Place IDs to test which one corresponds to your AramisTech business:</p>
+    
+    <div>
+        <input type="text" id="placeId" placeholder="Enter Place ID (e.g., ChIJuSPgBSaBPSYRg3sc62pAZGU)" />
+        <button onclick="testPlaceId()">Test Place ID</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <h3>Common Place ID Sources:</h3>
+    <ul>
+        <li>Google Business Profile URL</li>
+        <li>Google Maps business page</li>
+        <li>Google Reviews link</li>
+    </ul>
+
+    <p>From your links, I'll test these potential IDs:</p>
+    <button onclick="testPlaceId('ChIJuSPgBSaBPSYRg3sc62pAZGU')">Test from g.co/kgs link</button>
+
+    <script>
+        async function testPlaceId(id = null) {
+            const placeId = id || document.getElementById('placeId').value;
+            if (!placeId) {
+                alert('Please enter a Place ID');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div>Testing Place ID: ' + placeId + '...</div>';
+
+            try {
+                const response = await fetch(`/api/test-place-id/${placeId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultsDiv.innerHTML = `
+                        <div class="result success">
+                            <h3>✓ Valid Business Found!</h3>
+                            <p><strong>Name:</strong> ${data.business_name}</p>
+                            <p><strong>Address:</strong> ${data.address}</p>
+                            <p><strong>Rating:</strong> ${data.rating} (${data.total_reviews} reviews)</p>
+                            <p><strong>Place ID:</strong> ${placeId}</p>
+                            <button onclick="updateReviews('${placeId}')">Use This Place ID</button>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="result error">
+                            <h3>✗ Place ID Invalid</h3>
+                            <p><strong>Status:</strong> ${data.status}</p>
+                            <p><strong>Error:</strong> ${data.error || 'Place ID not found'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>✗ Test Failed</h3>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function updateReviews(placeId) {
+            window.open(`/?place_id=${placeId}`, '_blank');
+        }
+    </script>
+</body>
+</html>

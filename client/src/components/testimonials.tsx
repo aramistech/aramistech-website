@@ -19,10 +19,15 @@ interface ReviewsResponse {
 }
 
 export default function Testimonials() {
+  // Check if a Place ID is provided in URL for testing
+  const urlParams = new URLSearchParams(window.location.search);
+  const testPlaceId = urlParams.get('place_id');
+  
   const { data: reviewsData, isLoading, error } = useQuery<ReviewsResponse>({
-    queryKey: ['/api/reviews'],
+    queryKey: ['/api/reviews', testPlaceId],
     queryFn: async () => {
-      const response = await fetch('/api/reviews');
+      const url = testPlaceId ? `/api/reviews?place_id=${testPlaceId}` : '/api/reviews';
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch reviews');
       }
