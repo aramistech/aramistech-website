@@ -7,7 +7,8 @@ This guide explains how to integrate your AramisTech website with WHMCS billing 
 ## Architecture
 
 - **Main Website**: Hosted on Replit (aramistech.com)
-- **WHMCS Billing**: Separate hosting (billing.aramistech.com)
+- **WHMCS Billing**: Currently on GoDaddy (aramistech.com/abilling)
+- **Recommended**: Move to billing.aramistech.com subdomain
 - **Integration**: API communication between both systems
 
 ## Required Environment Variables
@@ -15,10 +16,15 @@ This guide explains how to integrate your AramisTech website with WHMCS billing 
 Add these to your Replit Secrets:
 
 ```
-WHMCS_URL=https://billing.aramistech.com
+WHMCS_URL=https://aramistech.com/abilling
 WHMCS_API_IDENTIFIER=your_api_identifier
 WHMCS_API_SECRET=your_api_secret
 WHMCS_WEBHOOK_SECRET=your_webhook_secret
+```
+
+**After migration to subdomain:**
+```
+WHMCS_URL=https://billing.aramistech.com
 ```
 
 ## WHMCS Setup Steps

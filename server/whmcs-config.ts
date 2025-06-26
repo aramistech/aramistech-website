@@ -2,7 +2,7 @@
 import type { WHMCSConfig } from "../client/src/lib/whmcs-integration";
 
 export const whmcsConfig: WHMCSConfig = {
-  baseUrl: process.env.WHMCS_URL || 'https://billing.aramistech.com',
+  baseUrl: process.env.WHMCS_URL || 'https://aramistech.com/abilling',
   apiIdentifier: process.env.WHMCS_API_IDENTIFIER || '',
   apiSecret: process.env.WHMCS_API_SECRET || ''
 };

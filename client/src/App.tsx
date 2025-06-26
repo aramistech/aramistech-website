@@ -45,7 +45,7 @@ function App() {
 
     // Initialize WHMCS integration
     initializeWHMCS({
-      baseUrl: 'https://billing.aramistech.com',
+      baseUrl: 'https://aramistech.com/abilling',
       apiIdentifier: '', // Will be set via server environment
       apiSecret: '' // Will be set via server environment
     });
