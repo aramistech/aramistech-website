@@ -146,7 +146,7 @@ export default function MenuManager() {
   });
 
   // Fetch menu items
-  const { data: menuData, isLoading } = useQuery({
+  const { data: menuData, isLoading } = useQuery<{ success: boolean; menuItems: MenuItem[] }>({
     queryKey: ['/api/admin/menu-items'],
     staleTime: 1000 * 60 * 5,
   });
