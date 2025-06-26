@@ -47,7 +47,7 @@ export default function Header() {
             <img 
               src="https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png" 
               alt="AramisTech Logo" 
-              className="h-16 w-auto"
+              className="h-20 w-auto"
             />
           </div>
           
