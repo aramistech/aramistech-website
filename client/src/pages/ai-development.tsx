@@ -224,11 +224,11 @@ export default function AIDevelopment() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">27+</div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">5+</div>
               <div className="text-gray-600">Years Experience</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">500+</div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">100+</div>
               <div className="text-gray-600">Projects Completed</div>
             </div>
             <div className="text-center">
@@ -603,9 +603,9 @@ export default function AIDevelopment() {
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
-            <Link href="tel:+1-954-XXX-XXXX">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-3">
-                Call Now: (954) XXX-XXXX
+            <Link href="tel:+1-305-807-7015">
+              <Button size="lg" variant="outline" className="border-white text-blue hover:bg-white hover:text-blue-900 px-8 py-3">
+                Call Now: (305) 807-7015
               </Button>
             </Link>
           </div>
