@@ -48,9 +48,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadDir));
-  
-  // Serve attached assets
-  app.use('/assets', express.static('attached_assets'));
 
   // Admin authentication routes
   app.post("/api/admin/login", async (req, res) => {
