@@ -130,6 +130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+
   // Test Place ID endpoint for AramisTech configuration
   app.get("/api/test-place-id/:placeId", async (req, res) => {
     try {
