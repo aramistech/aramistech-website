@@ -120,6 +120,10 @@
     background-color: var(--aramis-orange);
   }
   
+  .animate-pulse-slow {
+    animation: pulse-slow 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
   .border-primary-blue {
     border-color: var(--primary-blue);
   }
@@ -142,5 +146,14 @@
   
   .focus\:ring-primary-blue:focus {
     --tw-ring-color: var(--primary-blue);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
   }
 }
