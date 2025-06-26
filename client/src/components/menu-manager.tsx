@@ -11,7 +11,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { Plus, Edit, Trash2, Move, Link, ChevronRight } from 'lucide-react';
+import { Plus, Edit, Trash2, GripVertical, Link, ChevronRight } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const menuItemSchema = z.object({
   label: z.string().min(1, 'Label is required'),
@@ -34,11 +51,88 @@ interface MenuItem {
   updatedAt: string;
 }
 
+// Sortable Menu Item Component
+function SortableMenuItem({ item, onEdit, onDelete, onToggleVisibility, children }: {
+  item: MenuItem;
+  onEdit: (item: MenuItem) => void;
+  onDelete: (id: number) => void;
+  onToggleVisibility: (id: number, isVisible: boolean) => void;
+  children?: React.ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="group">
+      <div className={`flex items-center gap-3 p-3 bg-white border rounded-lg ${isDragging ? 'shadow-lg' : 'hover:shadow-sm'}`}>
+        <div
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+        >
+          <GripVertical className="w-4 h-4" />
+        </div>
+        
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">{item.label}</span>
+            {item.href && (
+              <span className="text-sm text-gray-500">→ {item.href}</span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Switch
+            checked={item.isVisible}
+            onCheckedChange={(checked) => onToggleVisibility(item.id, checked)}
+          />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onEdit(item)}
+          >
+            <Edit className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onDelete(item.id)}
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+      {children}
+    </div>
+  );
+}
+
 export default function MenuManager() {
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const form = useForm<MenuItemFormData>({
     resolver: zodResolver(menuItemSchema),
@@ -130,6 +224,30 @@ export default function MenuManager() {
         title: "Error",
         description: error.message || "Failed to delete menu item",
         variant: "destructive",
+      });
+    },
+  });
+
+  // Reorder mutation
+  const reorderMutation = useMutation({
+    mutationFn: async (reorderedItems: MenuItem[]) => {
+      const updates = reorderedItems.map((item, index) => ({
+        id: item.id,
+        orderIndex: index,
+      }));
+      
+      const res = await apiRequest('PUT', '/api/admin/menu-items/reorder', { updates });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/menu-items'] });
+      toast({ title: 'Menu order updated successfully' });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error reordering menu items',
+        description: error.message,
+        variant: 'destructive',
       });
     },
   });
