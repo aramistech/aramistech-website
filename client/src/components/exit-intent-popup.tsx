@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
 import { Link } from "wouter";
 
 interface ExitIntentPopup {
@@ -68,9 +67,7 @@ export default function ExitIntentPopup() {
     };
   }, [popup?.isActive, hasShown]);
 
-  const handleClose = () => {
-    setIsVisible(false);
-  };
+
 
   if (!popup?.isActive || !isVisible) {
     return null;
@@ -86,15 +83,6 @@ export default function ExitIntentPopup() {
         }}
       >
         <div className="relative">
-          {/* Close button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="absolute top-2 right-2 z-10 hover:bg-black/10"
-            onClick={handleClose}
-          >
-            <X className="w-4 h-4" />
-          </Button>
 
           {/* Image */}
           {popup.imageUrl && (
@@ -127,7 +115,7 @@ export default function ExitIntentPopup() {
             <Link href={popup.buttonUrl}>
               <Button
                 className="w-full py-3 text-lg font-semibold"
-                onClick={handleClose}
+                onClick={() => setIsVisible(false)}
                 style={{
                   backgroundColor: popup.buttonColor,
                   color: popup.backgroundColor,
@@ -139,7 +127,7 @@ export default function ExitIntentPopup() {
 
             {/* Small dismiss text */}
             <button
-              onClick={handleClose}
+              onClick={() => setIsVisible(false)}
               className="mt-4 text-xs underline opacity-70 hover:opacity-100 transition-opacity"
               style={{ color: popup.textColor }}
             >
