@@ -32,19 +32,37 @@ export async function setupDefaultMenuItems() {
       return;
     }
 
-    // Create default menu items
-    const menuItems = [
-      { label: 'Home', href: '/', orderIndex: 0, isVisible: true },
-      { label: 'Services', href: '#services', orderIndex: 1, isVisible: true },
-      { label: 'About', href: '#about', orderIndex: 2, isVisible: true },
-      { label: 'Contact', href: '#contact', orderIndex: 3, isVisible: true },
-    ];
+    // Create main menu items first
+    const homeItem = await storage.createMenuItem({ label: 'Home', href: '/', orderIndex: 0, isVisible: true });
+    const servicesItem = await storage.createMenuItem({ label: 'Services', href: '#services', orderIndex: 1, isVisible: true });
+    const aboutItem = await storage.createMenuItem({ label: 'About', href: '#about', orderIndex: 2, isVisible: true });
+    const supportItem = await storage.createMenuItem({ label: 'Support', href: undefined, orderIndex: 3, isVisible: true });
+    const contactItem = await storage.createMenuItem({ label: 'Contact', href: '#contact', orderIndex: 4, isVisible: true });
 
-    for (const item of menuItems) {
-      await storage.createMenuItem(item);
-    }
+    // Create Support sub-menu items
+    await storage.createMenuItem({ 
+      label: 'Customer Portal', 
+      href: '/customer-portal', 
+      parentId: supportItem.id, 
+      orderIndex: 0, 
+      isVisible: true 
+    });
+    await storage.createMenuItem({ 
+      label: 'Windows 10 Upgrade', 
+      href: '/windows10-upgrade', 
+      parentId: supportItem.id, 
+      orderIndex: 1, 
+      isVisible: true 
+    });
+    await storage.createMenuItem({ 
+      label: 'IP Lookup', 
+      href: '/ip-lookup', 
+      parentId: supportItem.id, 
+      orderIndex: 2, 
+      isVisible: true 
+    });
 
-    console.log('Default menu items created');
+    console.log('Complete menu structure created');
   } catch (error) {
     console.error('Error creating default menu items:', error);
   }

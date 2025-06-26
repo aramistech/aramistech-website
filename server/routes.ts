@@ -175,6 +175,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Reset menu items to default structure
+  app.post("/api/admin/menu-items/reset", requireAdminAuth, async (req, res) => {
+    try {
+      // Delete all existing menu items
+      const existingItems = await storage.getMenuItems();
+      for (const item of existingItems) {
+        await storage.deleteMenuItem(item.id);
+      }
+
+      // Create main menu items first
+      const homeItem = await storage.createMenuItem({ label: 'Home', href: '/', orderIndex: 0, isVisible: true });
+      const servicesItem = await storage.createMenuItem({ label: 'Services', href: '#services', orderIndex: 1, isVisible: true });
+      const aboutItem = await storage.createMenuItem({ label: 'About', href: '#about', orderIndex: 2, isVisible: true });
+      const supportItem = await storage.createMenuItem({ label: 'Support', href: undefined, orderIndex: 3, isVisible: true });
+      const contactItem = await storage.createMenuItem({ label: 'Contact', href: '#contact', orderIndex: 4, isVisible: true });
+
+      // Create Support sub-menu items
+      await storage.createMenuItem({ 
+        label: 'Customer Portal', 
+        href: '/customer-portal', 
+        parentId: supportItem.id, 
+        orderIndex: 0, 
+        isVisible: true 
+      });
+      await storage.createMenuItem({ 
+        label: 'Windows 10 Upgrade', 
+        href: '/windows10-upgrade', 
+        parentId: supportItem.id, 
+        orderIndex: 1, 
+        isVisible: true 
+      });
+      await storage.createMenuItem({ 
+        label: 'IP Lookup', 
+        href: '/ip-lookup', 
+        parentId: supportItem.id, 
+        orderIndex: 2, 
+        isVisible: true 
+      });
+
+      res.json({ success: true, message: "Menu items reset to default structure" });
+    } catch (error) {
+      console.error("Reset menu items error:", error);
+      res.status(500).json({ error: "Failed to reset menu items" });
+    }
+  });
+
   // Exit intent popup routes
   app.get("/api/exit-intent-popup", async (req, res) => {
     try {

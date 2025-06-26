@@ -228,6 +228,28 @@ export default function MenuManager() {
     },
   });
 
+  // Reset menu items mutation
+  const resetMenuMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest('POST', `/api/admin/menu-items/reset`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/menu-items'] });
+      toast({
+        title: "Menu reset complete",
+        description: "Menu items have been reset to default structure with Support dropdown",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to reset menu items",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Reorder mutation
   const reorderMutation = useMutation({
     mutationFn: async (reorderedItems: MenuItem[]) => {
@@ -389,10 +411,19 @@ export default function MenuManager() {
       {/* Add/Edit Form */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">Manage Menu Items</h3>
-        <Button onClick={() => setShowForm(!showForm)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Menu Item
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => resetMenuMutation.mutate()}
+            disabled={resetMenuMutation.isPending}
+          >
+            Reset to Default
+          </Button>
+          <Button onClick={() => setShowForm(!showForm)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Menu Item
+          </Button>
+        </div>
       </div>
 
       {showForm && (
