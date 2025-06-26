@@ -124,8 +124,18 @@
     animation: pulse-slow 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   
+  .chatbot-glow {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+  
   .chatbot-glow:hover {
-    box-shadow: 0 0 20px rgba(255, 165, 0, 0.6), 0 0 40px rgba(255, 165, 0, 0.4), 0 0 60px rgba(255, 165, 0, 0.2);
+    box-shadow: 
+      0 4px 15px rgba(0, 0, 0, 0.2),
+      0 0 30px #ff6b35,
+      0 0 60px #ff6b35,
+      0 0 90px #ff6b35 !important;
+    transform: scale(1.05);
   }
   
   .border-primary-blue {
