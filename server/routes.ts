@@ -78,14 +78,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get Google reviews
   app.get("/api/reviews", async (req, res) => {
     try {
-      // AramisTech Place ID - you can test with: /api/reviews?place_id=YOUR_PLACE_ID
-      const placeId = req.query.place_id || process.env.ARAMISTECH_PLACE_ID || "ChIJwdS0isO52YgRMkrde8V_XKI";
+      // Use AramisTech Place ID if provided, otherwise return placeholder message
+      const placeId = req.query.place_id || process.env.ARAMISTECH_PLACE_ID;
       const apiKey = process.env.GOOGLE_PLACES_API_KEY;
       
       if (!apiKey) {
         return res.status(500).json({
           success: false,
           message: "Google Places API key not configured"
+        });
+      }
+
+      if (!placeId) {
+        return res.json({
+          success: false,
+          message: "AramisTech Place ID not configured. Please provide your Google Business Place ID to display authentic reviews."
         });
       }
 
@@ -127,6 +134,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: false,
         message: "Failed to fetch reviews"
       });
+    }
+  });
+
+  // Test Place ID endpoint for AramisTech configuration
+  app.get("/api/test-place-id/:placeId", async (req, res) => {
+    try {
+      const placeId = req.params.placeId;
+      const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+      
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,rating,user_ratings_total,reviews&key=${apiKey}`
+      );
+      
+      const data = await response.json();
+      
+      res.json({
+        success: data.status === "OK",
+        business_name: data.result?.name,
+        address: data.result?.formatted_address,
+        rating: data.result?.rating,
+        total_reviews: data.result?.user_ratings_total,
+        status: data.status,
+        error: data.error_message
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, error: "Failed to test Place ID" });
     }
   });
 

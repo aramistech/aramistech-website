@@ -61,8 +61,9 @@ export default function Testimonials() {
         )}
 
         {error && (
-          <div className="text-center">
-            <p className="text-gray-600">Unable to load reviews at this time. Please check back later.</p>
+          <div className="text-center bg-white p-8 rounded-xl shadow-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 mb-4">We're working on connecting your Google Business reviews.</p>
+            <p className="text-sm text-gray-500">Your AramisTech reviews will appear here once the Google Business connection is configured.</p>
           </div>
         )}
         
