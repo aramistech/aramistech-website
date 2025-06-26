@@ -133,4 +133,15 @@ Changelog:
 
 ```
 Preferred communication style: Simple, everyday language.
+WHMCS Integration: Decided on billing.aramistech.com subdomain migration - implementation postponed for a few days
+Current WHMCS: Located at aramistech.com/abilling on GoDaddy hosting
+```
+
+## Pending Tasks
+
+```
+- WHMCS subdomain migration from /abilling to billing.aramistech.com
+- API credentials configuration
+- Customer communication about billing portal move
+- Complete documentation available in WHMCS-Migration-Plan.md
 ```

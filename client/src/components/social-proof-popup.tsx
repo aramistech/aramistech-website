@@ -45,17 +45,17 @@ const SocialProofPopup = () => {
       }, 5000);
     };
 
-    // Show popup at random intervals between 15-45 seconds
+    // Show popup at random intervals between 60-120 seconds (1-2 minutes)
     const scheduleNextPopup = () => {
-      const randomDelay = Math.random() * (45000 - 15000) + 15000; // 15-45 seconds
+      const randomDelay = Math.random() * (120000 - 60000) + 60000; // 60-120 seconds
       setTimeout(() => {
         showPopup();
         scheduleNextPopup(); // Schedule the next one
       }, randomDelay);
     };
 
-    // Initial delay before first popup (5-10 seconds after page load)
-    const initialDelay = Math.random() * 5000 + 5000;
+    // Initial delay before first popup (15-30 seconds after page load)
+    const initialDelay = Math.random() * 15000 + 15000;
     setTimeout(() => {
       showPopup();
       scheduleNextPopup();
