@@ -78,7 +78,7 @@ export default function Header() {
             </button>
             <button 
               onClick={() => scrollToSection('contact')} 
-              className="bg-primary-blue text-white px-6 py-2 rounded-lg hover:bg-secondary-blue transition-colors font-semibold"
+              className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
             >
               Free Consultation
             </button>
@@ -122,7 +122,7 @@ export default function Header() {
             </button>
             <button 
               onClick={() => scrollToSection('contact')} 
-              className="block w-full text-left py-2 bg-primary-blue text-white px-4 rounded-lg text-center"
+              className="block w-full text-left py-2 bg-aramis-orange text-white px-4 rounded-lg text-center"
             >
               Free Consultation
             </button>

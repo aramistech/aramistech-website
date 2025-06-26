@@ -67,6 +67,7 @@ export default {
         "accent-blue": "var(--accent-blue)",
         "professional-gray": "var(--professional-gray)",
         "light-gray": "var(--light-gray)",
+        "aramis-orange": "var(--aramis-orange)",
       },
       keyframes: {
         "accordion-down": {
