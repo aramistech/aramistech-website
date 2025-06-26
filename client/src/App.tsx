@@ -12,6 +12,7 @@ import Windows10Upgrade from "@/pages/windows10-upgrade";
 import CustomerPortal from "@/pages/customer-portal";
 import IPLookup from "@/pages/ip-lookup";
 import SocialProofPopup from "@/components/social-proof-popup";
+import Chatbot from "@/components/chatbot";
 import { useEffect } from "react";
 import { initGA } from "./lib/analytics";
 import { useAnalytics } from "./hooks/use-analytics";
@@ -59,6 +60,7 @@ function App() {
         <Toaster />
         <Router />
         <SocialProofPopup />
+        <Chatbot />
       </TooltipProvider>
     </QueryClientProvider>
   );
