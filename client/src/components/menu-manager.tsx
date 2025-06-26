@@ -65,11 +65,8 @@ export default function MenuManager() {
   // Create menu item mutation
   const createItemMutation = useMutation({
     mutationFn: async (data: MenuItemFormData) => {
-      return apiRequest('/api/admin/menu-items', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest('POST', '/api/admin/menu-items', data);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/menu-items'] });
@@ -93,11 +90,8 @@ export default function MenuManager() {
   // Update menu item mutation
   const updateItemMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: MenuItemFormData }) => {
-      return apiRequest(`/api/admin/menu-items/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest('PUT', `/api/admin/menu-items/${id}`, data);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/menu-items'] });
@@ -121,9 +115,8 @@ export default function MenuManager() {
   // Delete menu item mutation
   const deleteItemMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest(`/api/admin/menu-items/${id}`, {
-        method: 'DELETE',
-      });
+      const res = await apiRequest('DELETE', `/api/admin/menu-items/${id}`);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/menu-items'] });

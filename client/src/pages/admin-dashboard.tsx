@@ -23,9 +23,8 @@ export default function AdminDashboard() {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('/api/admin/logout', {
-        method: 'POST',
-      });
+      const res = await apiRequest('POST', '/api/admin/logout');
+      return res.json();
     },
     onSuccess: () => {
       queryClient.clear();
@@ -78,7 +77,7 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">
-                Welcome, {adminUser.user.username}
+                Welcome, {adminUser?.user?.username || 'Admin'}
               </span>
               <Button
                 variant="outline"

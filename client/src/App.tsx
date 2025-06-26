@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 import AdminReviewsPage from "@/pages/admin-reviews";
+import AdminLogin from "@/pages/admin-login";
+import AdminDashboard from "@/pages/admin-dashboard";
 import SocialProofPopup from "@/components/social-proof-popup";
 
 function Router() {
@@ -13,6 +15,8 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/admin/reviews" component={AdminReviewsPage} />
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
