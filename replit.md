@@ -134,6 +134,7 @@ Changelog:
 - June 26, 2025. Fixed flashing background image issue on Windows 10 upgrade page by removing dynamic cache-busting parameter
 - June 26, 2025. Fixed navigation links to work from any page - main navigation links now navigate to home page with proper section scrolling, and Support dropdown links scroll to top of target pages
 - June 26, 2025. Added comprehensive chatbot with AramisTech branding, intelligent responses for all services, Windows 10 upgrade info, contact details, pricing guidance, and professional conversation flow
+- June 26, 2025. Enhanced chatbot with extensive technical support responses covering hardware issues, software problems, cybersecurity, network troubleshooting, business applications, and emergency scenarios - all designed to lead users toward contacting AramisTech for professional assistance
 - June 26, 2025. Updated social proof popup timing to appear every 1-2 minutes instead of every 15-45 seconds for better user experience
 ```
 

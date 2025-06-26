@@ -50,6 +50,42 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
     'cloud': "Our cloud migration services help you move to secure, scalable cloud solutions. We handle everything from planning to implementation and ongoing support.",
     'backup': "We offer automated data backup and disaster recovery solutions to ensure your business data is always protected and recoverable.",
     
+    // Technical Support Questions
+    'slow computer': "Slow computers can be caused by:\n• Too many startup programs\n• Insufficient RAM or storage\n• Malware infections\n• Outdated hardware\n• Registry issues\n\nOur technicians can diagnose and fix these issues quickly. Call (305) 814-4461 for a free assessment!",
+    'computer slow': "Slow computers can be caused by:\n• Too many startup programs\n• Insufficient RAM or storage\n• Malware infections\n• Outdated hardware\n• Registry issues\n\nOur technicians can diagnose and fix these issues quickly. Call (305) 814-4461 for a free assessment!",
+    'internet slow': "Slow internet could be due to:\n• Network congestion\n• Outdated router/modem\n• Poor Wi-Fi placement\n• ISP throttling\n• Malware\n\nWe can optimize your network for maximum speed. Contact us at (305) 814-4461 for a network evaluation!",
+    'wifi problems': "Wi-Fi issues often stem from:\n• Router placement\n• Interference from other devices\n• Outdated equipment\n• Network configuration\n• Security settings\n\nOur network experts can solve these problems. Call (305) 814-4461 for professional Wi-Fi optimization!",
+    'virus': "If you suspect malware:\n1. Don't enter passwords/personal info\n2. Disconnect from internet\n3. Run antivirus scan\n4. Contact us immediately\n\nWe provide emergency malware removal and prevention. Call (305) 814-4461 for immediate assistance!",
+    'malware': "If you suspect malware:\n1. Don't enter passwords/personal info\n2. Disconnect from internet\n3. Run antivirus scan\n4. Contact us immediately\n\nWe provide emergency malware removal and prevention. Call (305) 814-4461 for immediate assistance!",
+    'email problems': "Email issues can include:\n• Can't send/receive emails\n• Spam filtering problems\n• Account security concerns\n• Setup on new devices\n• Outlook configuration\n\nWe handle all email platforms. Call (305) 814-4461 for email support!",
+    'printer': "Printer problems we solve:\n• Won't print or prints blank pages\n• Paper jams and feed issues\n• Network printer setup\n• Driver installation\n• Print quality issues\n\nOur technicians can fix it remotely or on-site. Call (305) 814-4461!",
+    'backup failed': "Backup failures are serious! Common causes:\n• Storage space issues\n• Network interruptions\n• Corrupted files\n• Software conflicts\n\nDon't risk losing data - call (305) 814-4461 immediately for backup repair and data protection!",
+    'data recovery': "Lost important files? We can help with:\n• Hard drive recovery\n• Deleted file restoration\n• Corrupted document repair\n• RAID recovery\n• SSD/flash drive recovery\n\nTime is critical for data recovery. Call (305) 814-4461 now!",
+    'server down': "Server issues need immediate attention:\n• Check power and connections\n• Verify network connectivity\n• Look for error messages\n• Don't restart repeatedly\n\nFor business-critical servers, call (305) 814-4461 for emergency support!",
+    'password reset': "Password issues we help with:\n• Windows login problems\n• Email account recovery\n• Network password resets\n• Two-factor authentication\n• Security policy setup\n\nCall (305) 814-4461 for secure password assistance!",
+    'software install': "Software installation problems:\n• Compatibility issues\n• License management\n• Driver conflicts\n• Business software setup\n• Updates and patches\n\nWe ensure proper software deployment. Call (305) 814-4461 for professional installation!",
+    'remote work': "Remote work IT support:\n• VPN setup and troubleshooting\n• Remote desktop configuration\n• Home office security\n• Cloud access issues\n• Video conferencing setup\n\nWe specialize in remote work solutions. Call (305) 814-4461 to optimize your home office!",
+    
+    // Business IT Challenges
+    'office 365': "Office 365/Microsoft 365 issues we resolve:\n• Email migration and setup\n• SharePoint configuration\n• Teams optimization\n• License management\n• Security compliance\n\nMaximize your Office 365 investment. Call (305) 814-4461 for expert configuration!",
+    'teams': "Microsoft Teams problems:\n• Audio/video quality issues\n• Screen sharing problems\n• Meeting room setup\n• Integration with phone systems\n• User training needs\n\nWe optimize Teams for seamless collaboration. Call (305) 814-4461!",
+    'zoom': "Video conferencing issues:\n• Poor audio/video quality\n• Connection problems\n• Screen sharing difficulties\n• Recording setup\n• Security settings\n\nWe ensure professional video meetings. Call (305) 814-4461 for setup assistance!",
+    'quickbooks': "QuickBooks IT support:\n• Multi-user setup\n• Database corruption\n• Network sharing issues\n• Backup and security\n• Integration problems\n\nProtect your financial data with proper IT setup. Call (305) 814-4461!",
+    'server': "Server problems we solve:\n• Performance issues\n• Storage management\n• User access problems\n• Backup failures\n• Security concerns\n\nBusiness servers need expert care. Call (305) 814-4461 for server support!",
+    'firewall': "Firewall and security issues:\n• Blocked legitimate traffic\n• Configuration problems\n• VPN access issues\n• Intrusion attempts\n• Policy management\n\nSecure your business properly. Call (305) 814-4461 for cybersecurity expertise!",
+    
+    // Hardware Issues
+    'computer won\'t start': "Computer won't boot? Common causes:\n• Power supply failure\n• RAM issues\n• Hard drive problems\n• Motherboard failure\n• Loose connections\n\nDon't lose your data - call (305) 814-4461 for immediate diagnosis!",
+    'blue screen': "Blue Screen of Death (BSOD) indicates:\n• Hardware failure\n• Driver conflicts\n• Memory problems\n• System corruption\n• Overheating\n\nThis needs professional diagnosis. Call (305) 814-4461 to prevent data loss!",
+    'overheating': "Computer overheating can cause:\n• Sudden shutdowns\n• Performance drops\n• Hardware damage\n• Data corruption\n\nPrevent costly damage - call (305) 814-4461 for cooling system repair!",
+    'hard drive': "Hard drive issues are critical:\n• Strange noises (clicking/grinding)\n• Slow file access\n• Frequent crashes\n• Error messages\n• Boot failures\n\nBack up data immediately! Call (305) 814-4461 for emergency data recovery!",
+    
+    // Cyber Security Concerns
+    'hacked': "If you think you've been hacked:\n1. Disconnect from internet immediately\n2. Don't use any passwords\n3. Scan for malware\n4. Check financial accounts\n5. Call us NOW\n\nCyber attacks need immediate response. Call (305) 814-4461 for emergency security assistance!",
+    'ransomware': "Ransomware attack response:\n1. DO NOT pay the ransom\n2. Disconnect affected systems\n3. Preserve evidence\n4. Contact authorities\n5. Call cybersecurity experts\n\nWe help businesses recover from ransomware. Call (305) 814-4461 immediately!",
+    'phishing': "Phishing protection tips:\n• Verify sender identity\n• Don't click suspicious links\n• Check URLs carefully\n• Use two-factor authentication\n• Train your employees\n\nWe provide comprehensive phishing protection. Call (305) 814-4461 for security training!",
+    'spam': "Email spam and security:\n• Advanced spam filtering\n• Email security policies\n• User education\n• Quarantine management\n• Compliance requirements\n\nProtect your business email. Call (305) 814-4461 for email security solutions!",
+    
     // Contact & Business Info
     'contact': "You can reach us at:\n📞 (305) 814-4461\n📧 sales@aramistech.com\n📍 Serving Miami & Broward\n⏰ Mon-Fri: 9am-6pm\n\nWould you like to schedule a free consultation?",
     'phone': "Call us at (305) 814-4461 for immediate assistance. We're available Monday through Friday, 9am to 6pm.",
@@ -78,6 +114,14 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
     'urgent': "For urgent IT issues, please call (305) 814-4461 right away. We prioritize emergency situations and can provide immediate assistance.",
     'down': "If your systems are down, call (305) 814-4461 immediately. We understand how critical uptime is for your business.",
     
+    // Additional Technical Issues
+    'vpn': "VPN connection problems:\n• Can't connect to company network\n• Slow VPN performance\n• Authentication failures\n• Split tunneling issues\n• Mobile device setup\n\nWe configure secure, fast VPN solutions. Call (305) 814-4461 for VPN support!",
+    'outlook': "Outlook email issues:\n• Won't send/receive emails\n• PST file corruption\n• Calendar sync problems\n• Profile configuration\n• Add-in conflicts\n\nWe're Outlook experts. Call (305) 814-4461 for email troubleshooting!",
+    'excel': "Excel and Office problems:\n• File corruption\n• Performance issues\n• Macro errors\n• Sharing and collaboration\n• Version compatibility\n\nMaximize your Office productivity. Call (305) 814-4461 for software optimization!",
+    'dropbox': "Cloud storage issues:\n• Sync problems\n• File conflicts\n• Access permissions\n• Storage management\n• Security concerns\n\nWe optimize cloud workflows. Call (305) 814-4461 for cloud solution support!",
+    'onedrive': "OneDrive sync issues:\n• Files not syncing\n• Duplicate files\n• Storage quota problems\n• Sharing permissions\n• Offline access\n\nWe ensure seamless cloud integration. Call (305) 814-4461!",
+    'website down': "Website or online service issues:\n• DNS problems\n• Hosting issues\n• SSL certificate errors\n• Database connections\n• Performance optimization\n\nWe support business web services. Call (305) 814-4461 for web assistance!",
+    
     // Default responses
     'help': "I can help you with information about our IT services, pricing, contact details, and scheduling consultations. What would you like to know?",
     'thanks': "You're welcome! Is there anything else I can help you with today?"
@@ -93,7 +137,15 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
       }
     }
     
-    // Fallback response
+    // Check for technical keywords that might indicate IT problems
+    const techKeywords = ['error', 'problem', 'issue', 'not working', 'broken', 'crash', 'freeze', 'stuck', 'fail', 'down', 'slow'];
+    const hasTechKeyword = techKeywords.some(keyword => message.includes(keyword));
+    
+    if (hasTechKeyword) {
+      return "It sounds like you're experiencing a technical issue! Our IT experts can help diagnose and resolve the problem quickly.\n\nFor immediate technical support:\n📞 Call (305) 814-4461\n📧 Email sales@aramistech.com\n\nDescribe your specific issue and we'll provide professional assistance with 27+ years of IT experience!";
+    }
+    
+    // Fallback response for general inquiries
     return "I'd be happy to help! For specific questions about our IT services, pricing, or to schedule a consultation, please call us at (305) 814-4461 or email sales@aramistech.com. Our team can provide detailed answers tailored to your needs.";
   };
 
