@@ -108,6 +108,7 @@ Changelog:
 - June 26, 2025. Added PostgreSQL database integration for contact forms and quote requests
 - June 26, 2025. Integrated Google Places API for authentic customer reviews - awaiting AramisTech Place ID for final connection
 - June 26, 2025. Built complete review management system with database storage, admin interface at /admin/reviews, and delete functionality
+- June 26, 2025. Created login-protected backend dashboard at /admin/dashboard with authentication system, moved admin reviews inside dashboard, added menu management for website navigation with support for submenus
 ```
 
 ## User Preferences
