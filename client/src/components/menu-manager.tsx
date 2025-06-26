@@ -304,8 +304,8 @@ export default function MenuManager() {
                     <FormItem>
                       <FormLabel>Parent Item (for sub-menu)</FormLabel>
                       <Select
-                        onValueChange={(value) => field.onChange(value ? parseInt(value) : undefined)}
-                        value={field.value?.toString()}
+                        onValueChange={(value) => field.onChange(value === "none" ? undefined : parseInt(value))}
+                        value={field.value?.toString() || "none"}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -313,7 +313,7 @@ export default function MenuManager() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="">None (Top-level item)</SelectItem>
+                          <SelectItem value="none">None (Top-level item)</SelectItem>
                           {parentItems.map((item) => (
                             <SelectItem key={item.id} value={item.id.toString()}>
                               {item.label}
