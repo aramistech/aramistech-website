@@ -33,7 +33,7 @@ import { CSS } from '@dnd-kit/utilities';
 const menuItemSchema = z.object({
   label: z.string().min(1, 'Label is required'),
   href: z.string().optional(),
-  parentId: z.number().optional(),
+  parentId: z.union([z.number(), z.null()]).optional(),
   orderIndex: z.number().default(0),
   isVisible: z.boolean().default(true),
 });
@@ -293,10 +293,16 @@ export default function MenuManager() {
   });
 
   const onSubmit = (data: MenuItemFormData) => {
+    // Transform parentId to handle "none" selection properly
+    const transformedData = {
+      ...data,
+      parentId: data.parentId === undefined || data.parentId === null ? null : data.parentId
+    };
+
     if (editingItem) {
-      updateItemMutation.mutate({ id: editingItem.id, data });
+      updateItemMutation.mutate({ id: editingItem.id, data: transformedData });
     } else {
-      createItemMutation.mutate(data);
+      createItemMutation.mutate(transformedData);
     }
   };
 
@@ -484,7 +490,7 @@ export default function MenuManager() {
                     <FormItem>
                       <FormLabel>Parent Item (for sub-menu)</FormLabel>
                       <Select
-                        onValueChange={(value) => field.onChange(value === "none" ? undefined : parseInt(value))}
+                        onValueChange={(value) => field.onChange(value === "none" ? null : parseInt(value))}
                         value={field.value?.toString() || "none"}
                       >
                         <FormControl>

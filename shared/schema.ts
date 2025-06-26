@@ -112,6 +112,8 @@ export const insertMenuItemSchema = createInsertSchema(menuItems).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  parentId: z.union([z.number(), z.null()]).optional(),
 });
 
 export const insertContactSchema = createInsertSchema(contacts).omit({

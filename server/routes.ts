@@ -131,10 +131,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Reorder menu items - MUST be before the /:id route
   app.put("/api/admin/menu-items/reorder", requireAdminAuth, async (req, res) => {
-    console.log("🎯 REORDER ROUTE HIT - this is correct!");
     try {
       const { updates } = req.body;
-      console.log("Reorder updates:", updates);
       
       if (!Array.isArray(updates)) {
         return res.status(400).json({ error: "Updates must be an array" });
@@ -144,8 +142,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Validate the update data to prevent NaN values
         const id = parseInt(update.id);
         const orderIndex = parseInt(update.orderIndex);
-        
-        console.log(`Processing update: id=${id}, orderIndex=${orderIndex}`);
         
         if (isNaN(id) || isNaN(orderIndex)) {
           console.error("Invalid data in reorder:", update);
@@ -163,16 +159,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.put("/api/admin/menu-items/:id", requireAdminAuth, async (req, res) => {
-    console.log("❌ WRONG ROUTE HIT - this should be reorder route!");
-    console.log("Route param ID:", req.params.id);
     try {
       const id = parseInt(req.params.id);
       
       // Clean the request data before validation
       const cleanedBody = { ...req.body };
-      
-      // Log incoming data for debugging
-      console.log("Menu item update request:", { id, body: req.body });
       
       // Handle parentId specially to prevent NaN
       if (cleanedBody.parentId !== undefined) {
