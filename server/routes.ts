@@ -417,6 +417,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Public menu items endpoint for frontend navigation
+  app.get("/api/menu-items", async (req, res) => {
+    try {
+      const menuItems = await storage.getMenuItems();
+      res.json({ success: true, menuItems });
+    } catch (error) {
+      console.error("Error fetching menu items:", error);
+      res.status(500).json({ error: "Failed to fetch menu items" });
+    }
+  });
+
   // Contact form submission
   app.post("/api/contact", async (req, res) => {
     try {

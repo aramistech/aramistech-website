@@ -1,4 +1,4 @@
-import Header from "@/components/header";
+import DynamicHeader from "@/components/dynamic-header";
 import Hero from "@/components/hero";
 import TrustIndicators from "@/components/trust-indicators";
 import Services from "@/components/services";
@@ -14,7 +14,7 @@ import ExitIntentPopup from "@/components/exit-intent-popup";
 export default function Home() {
   return (
     <div className="min-h-screen">
-      <Header />
+      <DynamicHeader />
       <Hero />
       <TrustIndicators />
       <Services />

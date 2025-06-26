@@ -1,14 +1,38 @@
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { trackClick } from "@/lib/analytics";
+
+interface MenuItem {
+  id: number;
+  label: string;
+  href?: string;
+  parentId?: number;
+  orderIndex: number;
+  isVisible: boolean;
+}
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSupportDropdownOpen, setIsSupportDropdownOpen] = useState(false);
-  const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [location, setLocation] = useLocation();
+
+  // Fetch menu items from database
+  const { data: menuData } = useQuery({
+    queryKey: ['/api/menu-items'],
+    queryFn: async () => {
+      const res = await fetch('/api/menu-items');
+      return res.json();
+    },
+  });
+
+  const menuItems: MenuItem[] = menuData?.menuItems || [];
+  const mainMenuItems = menuItems.filter(item => !item.parentId && item.isVisible);
+  const getSubMenuItems = (parentId: number) => 
+    menuItems.filter(item => item.parentId === parentId && item.isVisible);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -16,7 +40,7 @@ export default function Header() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsSupportDropdownOpen(false);
+        setActiveDropdown(null);
       }
     };
 

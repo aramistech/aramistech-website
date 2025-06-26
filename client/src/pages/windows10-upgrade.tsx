@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { trackBusinessEvent } from "@/lib/analytics";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import Header from "@/components/header";
+import DynamicHeader from "@/components/dynamic-header";
 import Footer from "@/components/footer";
 
 interface TimeLeft {
