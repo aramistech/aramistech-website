@@ -127,174 +127,139 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
     'thanks': "You're welcome! Is there anything else I can help you with today?"
   };
 
-  const analyzeIssue = (message: string): { category: string; confidence: number; response: string } => {
-    const msg = message.toLowerCase().trim();
+
+
+  const analyzeMessage = (message: string) => {
+    const msg = message.toLowerCase();
+    const words = msg.split(/\s+/);
     
-    // Define issue patterns with confidence scoring
-    const issuePatterns = {
+    // Advanced pattern recognition with context
+    const patterns = {
       hardware: {
-        keywords: ['blue screen', 'bsod', 'computer won\'t start', 'won\'t boot', 'boot', 'startup', 'crash', 'freeze', 'slow computer', 'computer slow', 'overheating', 'ram', 'memory', 'hard drive', 'hardware', 'power supply'],
-        phrases: ['blue screen of death', 'computer crashed', 'won\'t turn on', 'freezes up', 'runs slow', 'making noise'],
-        response: (specifics: string[]) => {
-          let specific = "";
-          if (specifics.includes('blue screen') || specifics.includes('bsod')) {
-            specific = "Blue Screen errors usually indicate hardware failure, driver conflicts, or memory issues. ";
-          } else if (specifics.includes('slow') || specifics.includes('performance')) {
-            specific = "Slow performance can be caused by insufficient RAM, full hard drives, or malware. ";
-          } else if (specifics.includes('boot') || specifics.includes('start')) {
-            specific = "Boot problems often stem from hard drive failure, corrupted files, or power issues. ";
-          }
-          
-          return `${specific}Common hardware issues we diagnose and fix:\n• Blue Screen of Death (BSOD) and system crashes\n• Computer won't boot or start properly\n• Slow performance and freezing\n• Memory (RAM) and hard drive failures\n• Overheating and power supply problems\n• Strange noises or error messages\n\nHardware problems require professional diagnosis to prevent data loss. Call us at (305) 814-4461 for immediate hardware troubleshooting!`;
-        }
+        primary: ['blue', 'bsod', 'crash', 'freeze', 'boot', 'startup', 'power', 'noise', 'overheating', 'ram', 'memory', 'motherboard'],
+        secondary: ['screen', 'death', 'won\'t', 'start', 'turn', 'hot', 'fan', 'beep'],
+        context: ['computer', 'laptop', 'pc', 'desktop', 'hardware']
       },
-      
+      performance: {
+        primary: ['slow', 'lag', 'sluggish', 'performance', 'speed', 'fast', 'optimize'],
+        secondary: ['takes', 'forever', 'long', 'time', 'minutes', 'hours'],
+        context: ['computer', 'system', 'running', 'loading', 'startup']
+      },
       network: {
-        keywords: ['wifi', 'wi-fi', 'internet', 'network', 'connection', 'router', 'modem', 'vpn', 'ethernet', 'can\'t connect', 'no internet', 'slow internet'],
-        phrases: ['wifi not working', 'internet is slow', 'can\'t get online', 'network problems'],
-        response: (specifics: string[]) => {
-          let specific = "";
-          if (specifics.includes('slow') || specifics.includes('speed')) {
-            specific = "Slow internet can be caused by router issues, ISP problems, or network congestion. ";
-          } else if (specifics.includes('wifi') || specifics.includes('wireless')) {
-            specific = "Wi-Fi problems often involve router placement, interference, or configuration issues. ";
-          } else if (specifics.includes('vpn')) {
-            specific = "VPN connection problems usually require configuration adjustments or firewall changes. ";
-          }
-          
-          return `${specific}Network connectivity issues we resolve:\n• Slow or intermittent internet connections\n• Wi-Fi dead zones and weak signals\n• Can't connect devices to network\n• VPN and remote access problems\n• Router and modem configuration\n• Network security vulnerabilities\n\nNetwork problems can have complex causes. Our technicians quickly diagnose and optimize your connectivity. Call us at (305) 814-4461 for network troubleshooting!`;
-        }
+        primary: ['wifi', 'internet', 'network', 'connection', 'router', 'modem', 'ethernet', 'vpn'],
+        secondary: ['connect', 'disconnected', 'dropped', 'signal', 'speed', 'slow'],
+        context: ['can\'t', 'won\'t', 'not', 'unable', 'trouble']
       },
-      
-      software: {
-        keywords: ['software', 'program', 'application', 'app', 'windows', 'office', 'outlook', 'excel', 'word', 'install', 'update', 'license'],
-        phrases: ['program crashed', 'software not working', 'can\'t install', 'won\'t update'],
-        response: (specifics: string[]) => {
-          let specific = "";
-          if (specifics.includes('office') || specifics.includes('outlook') || specifics.includes('excel')) {
-            specific = "Microsoft Office issues often involve licensing, corruption, or compatibility problems. ";
-          } else if (specifics.includes('install') || specifics.includes('update')) {
-            specific = "Installation and update problems can be caused by permissions, conflicts, or corrupted files. ";
-          } else if (specifics.includes('crash') || specifics.includes('freeze')) {
-            specific = "Software crashes usually indicate compatibility issues, insufficient resources, or corruption. ";
-          }
-          
-          return `${specific}Software problems we solve daily:\n• Programs crash, freeze, or won't start\n• Software installation and update failures\n• Microsoft Office and business application issues\n• License activation and compatibility problems\n• Slow performance and error messages\n• File association and startup issues\n\nSoftware conflicts require expert diagnosis. Call us at (305) 814-4461 for professional software support!`;
-        }
+      printer: {
+        primary: ['printer', 'print', 'printing', 'scanner', 'scan'],
+        secondary: ['won\'t', 'not', 'can\'t', 'jam', 'paper', 'ink', 'toner', 'queue'],
+        context: ['document', 'page', 'job', 'spooler']
       },
-      
       email: {
-        keywords: ['email', 'outlook', 'gmail', 'mail', 'send', 'receive', 'exchange'],
-        phrases: ['can\'t send email', 'email not working', 'outlook problems'],
-        response: (specifics: string[]) => {
-          let specific = "";
-          if (specifics.includes('send') || specifics.includes('receive')) {
-            specific = "Email sending/receiving problems often involve server settings, authentication, or network issues. ";
-          } else if (specifics.includes('outlook')) {
-            specific = "Outlook issues commonly involve profile corruption, server settings, or synchronization problems. ";
-          }
-          
-          return `${specific}Email communication problems we fix:\n• Can't send or receive emails\n• Outlook configuration and synchronization\n• Email account setup on devices\n• Server connection and authentication\n• Spam filtering and security issues\n• Calendar and contact synchronization\n\nEmail problems hurt business communication. We're email experts and resolve these quickly. Call us at (305) 814-4461 for immediate email support!`;
-        }
+        primary: ['email', 'outlook', 'mail', 'exchange', 'gmail'],
+        secondary: ['send', 'receive', 'sync', 'configuration', 'setup', 'account'],
+        context: ['can\'t', 'won\'t', 'not', 'unable', 'problem']
       },
-      
       security: {
-        keywords: ['virus', 'malware', 'hack', 'hacked', 'security', 'password', 'firewall', 'antivirus', 'ransomware', 'phishing', 'spam'],
-        phrases: ['think i\'m hacked', 'computer infected', 'suspicious activity'],
-        response: (specifics: string[]) => {
-          let specific = "";
-          if (specifics.includes('virus') || specifics.includes('malware')) {
-            specific = "Virus/malware infections require immediate attention to prevent data theft and system damage. ";
-          } else if (specifics.includes('hack') || specifics.includes('hacked')) {
-            specific = "If you suspect you've been hacked, disconnect from the internet immediately and call us. ";
-          } else if (specifics.includes('password')) {
-            specific = "Password security issues can indicate compromised accounts or weak security practices. ";
-          }
-          
-          return `${specific}Cybersecurity threats we handle:\n• Virus and malware removal\n• Ransomware recovery and protection\n• Suspicious computer behavior\n• Password security and breaches\n• Firewall and security configuration\n• Employee security training\n\nCybersecurity requires immediate professional attention. Call us at (305) 814-4461 for emergency security assistance!`;
-        }
+        primary: ['virus', 'malware', 'hack', 'security', 'password', 'firewall', 'antivirus', 'ransomware'],
+        secondary: ['infected', 'suspicious', 'breach', 'attack', 'phishing', 'spam'],
+        context: ['think', 'suspect', 'might', 'been', 'computer']
+      },
+      software: {
+        primary: ['software', 'program', 'application', 'app', 'office', 'word', 'excel', 'windows'],
+        secondary: ['install', 'update', 'license', 'activation', 'compatibility'],
+        context: ['won\'t', 'can\'t', 'not', 'error', 'crash']
       }
     };
     
     // Score each category
-    let bestMatch = { category: 'general', confidence: 0, response: '', specifics: [] as string[] };
-    
-    for (const [category, config] of Object.entries(issuePatterns)) {
+    const scores: Record<string, number> = {};
+    for (const [category, config] of Object.entries(patterns)) {
       let score = 0;
-      const foundSpecifics: string[] = [];
       
-      // Check keywords
-      config.keywords.forEach(keyword => {
-        if (msg.includes(keyword)) {
-          score += keyword.length > 3 ? 2 : 1; // Longer keywords get higher weight
-          foundSpecifics.push(keyword);
-        }
+      // Primary keywords (high weight)
+      config.primary.forEach(keyword => {
+        if (msg.includes(keyword)) score += 10;
       });
       
-      // Check phrases (higher weight)
-      config.phrases.forEach(phrase => {
-        if (msg.includes(phrase)) {
-          score += 5;
-          foundSpecifics.push(phrase);
-        }
+      // Secondary keywords (medium weight)
+      config.secondary.forEach(keyword => {
+        if (msg.includes(keyword)) score += 5;
       });
       
-      if (score > bestMatch.confidence) {
-        bestMatch = {
-          category,
-          confidence: score,
-          response: config.response(foundSpecifics),
-          specifics: foundSpecifics
-        };
-      }
+      // Context keywords (low weight)
+      config.context.forEach(keyword => {
+        if (msg.includes(keyword)) score += 2;
+      });
+      
+      // Phrase bonus
+      if (category === 'hardware' && (msg.includes('blue screen') || msg.includes('won\'t boot'))) score += 20;
+      if (category === 'printer' && (msg.includes('won\'t print') || msg.includes('not printing'))) score += 20;
+      if (category === 'network' && (msg.includes('wifi not working') || msg.includes('no internet'))) score += 20;
+      
+      scores[category] = score;
     }
     
-    return bestMatch;
+    return scores;
   };
 
   const getBotResponse = (userMessage: string): string => {
-    const message = userMessage.toLowerCase().trim();
+    const msg = userMessage.toLowerCase();
+    console.log('Chatbot received:', msg);
     
-    // Simple direct pattern matching for common tech issues
-    if (message.includes('blue screen') || message.includes('bsod')) {
-      return "Blue Screen errors usually indicate hardware failure, driver conflicts, or memory issues. Common hardware issues we diagnose and fix:\n• Blue Screen of Death (BSOD) and system crashes\n• Computer won't boot or start properly\n• Slow performance and freezing\n• Memory (RAM) and hard drive failures\n• Overheating and power supply problems\n• Strange noises or error messages\n\nHardware problems require professional diagnosis to prevent data loss. Call us at (305) 814-4461 for immediate hardware troubleshooting!";
+    const scores = analyzeMessage(msg);
+    const topCategory = Object.keys(scores).reduce((a, b) => (scores[a] || 0) > (scores[b] || 0) ? a : b);
+    const confidence = scores[topCategory] || 0;
+    
+    console.log('Analysis scores:', scores, 'Top:', topCategory, 'Confidence:', confidence);
+    
+    // High confidence responses with specific guidance
+    if (confidence >= 10) {
+      switch (topCategory) {
+        case 'hardware':
+          if (msg.includes('blue') || msg.includes('bsod')) {
+            return "Blue Screen of Death detected! This critical error usually indicates:\n• Faulty RAM or memory issues\n• Driver conflicts or corruption\n• Hardware component failure\n• Overheating problems\n• Hard drive errors\n\nBSOD errors can cause data loss if not addressed immediately. Our technicians can diagnose the exact cause and prevent further damage. Call us at (305) 814-4461 for emergency hardware diagnosis!";
+          }
+          if (msg.includes('boot') || msg.includes('start')) {
+            return "Boot failure detected! When computers won't start, common causes include:\n• Hard drive failure or corruption\n• Power supply problems\n• RAM or motherboard issues\n• BIOS/UEFI configuration errors\n• Operating system corruption\n\nBoot problems require immediate attention to recover your data and restore functionality. Call us at (305) 814-4461 for emergency boot repair!";
+          }
+          return "Hardware issue detected! Computer hardware problems include:\n• System crashes and blue screens\n• Boot and startup failures\n• Overheating and noise issues\n• Memory and storage problems\n• Power supply failures\n\nHardware diagnostics require professional tools and expertise. Call us at (305) 814-4461 for comprehensive hardware troubleshooting!";
+          
+        case 'printer':
+          return "Printer problems detected! Common printing issues we resolve:\n• Printer won't respond or print\n• Paper jams and feed problems\n• Poor print quality or blank pages\n• Network printer connection issues\n• Driver installation and updates\n• Print spooler and queue errors\n\nPrinter issues can halt business productivity. Our technicians handle all printer brands and models. Call us at (305) 814-4461 for printer repair and setup!";
+          
+        case 'performance':
+          return "Performance issues detected! Slow computer symptoms include:\n• Long startup and shutdown times\n• Programs taking forever to load\n• System freezing and unresponsiveness\n• Internet browsing sluggishness\n• File operations taking too long\n\nPerformance problems often indicate deeper system issues. We optimize computers for maximum speed and efficiency. Call us at (305) 814-4461 for performance tuning!";
+          
+        case 'network':
+          return "Network connectivity issues detected! Internet and WiFi problems include:\n• Intermittent or no internet connection\n• Slow download and upload speeds\n• WiFi signal and range problems\n• Router and modem configuration issues\n• VPN and remote access failures\n\nNetwork problems affect business productivity and communication. Our network specialists ensure reliable connectivity. Call us at (305) 814-4461 for network optimization!";
+          
+        case 'email':
+          return "Email communication problems detected! Common email issues include:\n• Unable to send or receive messages\n• Outlook synchronization errors\n• Email account configuration problems\n• Mobile device email setup issues\n• Server connection and authentication errors\n\nEmail problems can cost business opportunities. We're email experts who resolve issues quickly. Call us at (305) 814-4461 for email support!";
+          
+        case 'security':
+          return "Security threat detected! Cybersecurity issues require immediate attention:\n• Virus and malware infections\n• Ransomware attacks and prevention\n• Suspicious system behavior\n• Password security breaches\n• Firewall and antivirus configuration\n\nDon't risk your business data and reputation. Security threats need professional intervention. Call us immediately at (305) 814-4461 for emergency security assistance!";
+          
+        case 'software':
+          return "Software problems detected! Application and program issues include:\n• Programs crashing or won't start\n• Installation and update failures\n• License activation problems\n• Compatibility and performance issues\n• File association errors\n\nSoftware conflicts can be complex to diagnose and resolve. We handle all business applications and operating systems. Call us at (305) 814-4461 for software support!";
+      }
     }
     
-    if (message.includes('slow computer') || message.includes('computer slow') || message.includes('running slow')) {
-      return "Slow performance can be caused by insufficient RAM, full hard drives, or malware. Common performance issues we fix:\n• Computer takes forever to start up\n• Programs freeze or crash frequently\n• Internet browsing is sluggish\n• Files take too long to open\n• System becomes unresponsive\n\nPerformance problems need professional diagnosis. Call us at (305) 814-4461 for computer optimization!";
-    }
-    
-    if (message.includes('wifi') || message.includes('wi-fi') || message.includes('internet') || message.includes('network')) {
-      return "Network connectivity problems are frustrating and hurt productivity! Common network issues we resolve:\n• Slow or intermittent internet connections\n• Wi-Fi dead zones and weak signals\n• Can't connect devices to network\n• VPN and remote access problems\n• Router and modem configuration\n• Network security vulnerabilities\n\nNetwork problems can have complex causes. Our technicians quickly diagnose and optimize your connectivity. Call us at (305) 814-4461 for network troubleshooting!";
-    }
-    
-    if (message.includes('email') || message.includes('outlook') || message.includes('mail')) {
-      return "Email problems can seriously hurt your business communication! Email issues we fix daily:\n• Can't send or receive emails\n• Outlook configuration and synchronization\n• Email account setup on devices\n• Server connection and authentication\n• Spam filtering and security issues\n• Calendar and contact synchronization\n\nEmail problems hurt business communication. We're email experts and resolve these quickly. Call us at (305) 814-4461 for immediate email support!";
-    }
-    
-    if (message.includes('virus') || message.includes('malware') || message.includes('hack') || message.includes('security')) {
-      return "Cybersecurity threats are real and growing! Security issues we handle:\n• Virus and malware removal\n• Ransomware recovery and protection\n• Suspicious computer behavior\n• Password security and breaches\n• Firewall and security configuration\n• Employee security training\n\nCybersecurity requires immediate professional attention. Call us at (305) 814-4461 for emergency security assistance!";
-    }
-    
-    if (message.includes('software') || message.includes('program') || message.includes('application') || message.includes('office')) {
-      return "Software problems can really slow down your work! Software issues we solve daily:\n• Programs crash, freeze, or won't start\n• Software installation and update failures\n• Microsoft Office and business application issues\n• License activation and compatibility problems\n• Slow performance and error messages\n• File association and startup issues\n\nSoftware conflicts require expert diagnosis. Call us at (305) 814-4461 for professional software support!";
-    }
-    
-    // Check for exact predefined responses
+    // Check for specific predefined responses
     for (const [key, response] of Object.entries(predefinedResponses)) {
-      if (message.includes(key)) {
+      if (msg.includes(key)) {
         return response;
       }
     }
     
-    // Enhanced fallback for general tech terms
-    const techTerms = ['error', 'problem', 'issue', 'help', 'fix', 'repair', 'broken', 'not working', 'trouble', 'support', 'crash', 'freeze', 'stuck'];
-    if (techTerms.some(term => message.includes(term))) {
-      return "I understand you're experiencing a technical issue! Our IT experts can help diagnose and resolve problems quickly:\n• Hardware diagnostics and repair\n• Software troubleshooting and optimization\n• Network connectivity solutions\n• Security and virus removal\n• Email and communication fixes\n• Emergency technical support\n\nWith 27+ years of experience, we've solved thousands of IT problems. Call us at (305) 814-4461 and describe your specific issue - we'll get you back up and running fast!";
+    // General tech terms fallback
+    const techTerms = ['problem', 'issue', 'error', 'help', 'fix', 'repair', 'broken', 'trouble', 'support'];
+    if (techTerms.some(term => msg.includes(term))) {
+      return "Technical issues can be complex and frustrating! Our IT experts provide comprehensive support:\n• Hardware diagnostics and repair\n• Software troubleshooting and optimization\n• Network connectivity solutions\n• Security and virus removal\n• Email and communication fixes\n• Emergency technical support\n\nWith 27+ years of experience serving South Florida businesses, we quickly diagnose and resolve IT problems. Call us at (305) 814-4461 for expert assistance!";
     }
     
-    // General inquiry fallback
-    return "I'd be happy to help! For specific questions about our IT services, pricing, or to schedule a consultation, please call us at (305) 814-4461 or email us at sales@aramistech.com. Our team can provide detailed answers tailored to your needs.";
+    // Default intelligent response
+    return "Hello! I'm AramisTech's AI assistant, ready to help with your technology needs. Whether you're experiencing computer problems, network issues, email troubles, or security concerns, our expert team provides professional IT solutions for South Florida businesses. Call us at (305) 814-4461 for immediate assistance!";
   };
 
   const handleSendMessage = () => {
