@@ -94,11 +94,11 @@ export default function Windows10Upgrade() {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-white text-white hover:bg-white hover:text-primary-blue px-8 py-4 text-lg"
+                className="border-white text-aramis-orange hover:bg-white hover:text-primary-blue px-8 py-4 text-lg"
                 onClick={() => window.open('tel:+15613682196', '_self')}
               >
                 <Phone className="w-5 h-5 mr-2" />
-                Call Now: (561) 368-2196
+                Call Now: (305) 814-4461
               </Button>
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function Windows10Upgrade() {
           <div className="flex items-center justify-center text-center">
             <Clock className="w-6 h-6 mr-3 animate-pulse" />
             <p className="text-lg font-semibold">
-              Windows 10 support ends October 14, 2025 - Only 9 months left to upgrade!
+              Windows 10 support ends October 14, 2025 - Only 4 months left to upgrade!
             </p>
           </div>
         </div>
@@ -290,7 +290,7 @@ export default function Windows10Upgrade() {
                         <FormItem>
                           <FormLabel>Email Address *</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="your@email.com" {...field} value={field.value || ""} />
+                            <Input type="email" placeholder="Your @ Email" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -304,7 +304,7 @@ export default function Windows10Upgrade() {
                         <FormItem>
                           <FormLabel>Phone Number *</FormLabel>
                           <FormControl>
-                            <Input placeholder="(561) 123-4567" {...field} value={field.value || ""} />
+                            <Input placeholder="(000) 000-0000" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -366,14 +366,14 @@ export default function Windows10Upgrade() {
                   <Phone className="w-5 h-5 text-aramis-orange" />
                   <div>
                     <p className="font-semibold">Call Us Now</p>
-                    <p className="text-primary-blue">(561) 368-2196</p>
+                    <p className="text-primary-blue">(305) 814-4461</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Mail className="w-5 h-5 text-aramis-orange" />
                   <div>
                     <p className="font-semibold">Email Us</p>
-                    <p className="text-primary-blue">info@aramistech.com</p>
+                    <p className="text-primary-blue">support@aramistech.com</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -396,11 +396,9 @@ export default function Windows10Upgrade() {
                   <p className="text-gray-600">
                     <strong>Assessment:</strong> FREE (includes compatibility check and upgrade plan)
                   </p>
+                
                   <p className="text-gray-600">
-                    <strong>Basic Upgrade:</strong> Starting at $299 per computer
-                  </p>
-                  <p className="text-gray-600">
-                    <strong>Complete Migration:</strong> Starting at $499 per computer
+                    <strong>Complete Migration:</strong> $180 per computer this includes the license
                   </p>
                   <Separator />
                   <p className="text-sm text-gray-500">
