@@ -169,6 +169,12 @@ export default function DynamicHeader() {
                 </button>
               );
             })}
+            <button 
+              onClick={() => scrollToSection('contact')} 
+              className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
+            >
+              Free Consultation
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -228,6 +234,12 @@ export default function DynamicHeader() {
                   </button>
                 );
               })}
+              <button 
+                onClick={() => scrollToSection('contact')} 
+                className="w-full mt-4 bg-aramis-orange text-white px-6 py-3 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
+              >
+                Free Consultation
+              </button>
             </div>
           </div>
         )}
