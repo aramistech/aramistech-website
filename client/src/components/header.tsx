@@ -89,6 +89,11 @@ export default function Header() {
                 Customer Portal
               </button>
             </Link>
+            <Link href="/ip-lookup">
+              <button className="text-professional-gray hover:text-aramis-orange transition-colors font-medium">
+                IP Lookup
+              </button>
+            </Link>
             <button 
               onClick={() => scrollToSection('contact')} 
               className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
@@ -141,6 +146,11 @@ export default function Header() {
             <Link href="/customer-portal">
               <button className="block w-full text-left py-2 text-professional-gray hover:text-aramis-orange">
                 Customer Portal
+              </button>
+            </Link>
+            <Link href="/ip-lookup">
+              <button className="block w-full text-left py-2 text-professional-gray hover:text-aramis-orange">
+                IP Lookup
               </button>
             </Link>
             <button 
