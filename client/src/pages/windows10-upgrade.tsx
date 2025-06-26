@@ -64,11 +64,21 @@ export default function Windows10Upgrade() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Hero Section */}
       <div 
-        className="relative text-white py-20 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(/assets/cleanwin10image_1750946635072.png)` }}
+        className="relative text-white py-20 min-h-[500px] bg-primary-blue overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-blue/80 to-indigo-700/80"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Background Image */}
+        <img 
+          src="/assets/cleanwin10image_1750946635072.png"
+          alt="Windows 10 Background"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          onError={(e) => {
+            console.error('Image failed to load:', e.target.src);
+            e.target.style.display = 'none';
+          }}
+          onLoad={() => console.log('Image loaded successfully')}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-blue/70 to-indigo-700/70 z-10"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-20">
           <div className="text-center">
             <Badge className="mb-4 bg-red-500 hover:bg-red-600 text-white">
               <AlertTriangle className="w-4 h-4 mr-2" />
