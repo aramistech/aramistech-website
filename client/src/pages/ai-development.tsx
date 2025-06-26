@@ -21,7 +21,7 @@ import {
   Shield
 } from 'lucide-react';
 import { Link } from 'wouter';
-import cleanWin10Image from '@assets/cleanwin10image_1750946635072.png';
+
 
 export default function AIDevelopment() {
   return (
@@ -61,12 +61,97 @@ export default function AIDevelopment() {
               </div>
             </div>
             <div className="relative">
-              <img 
-                src={cleanWin10Image} 
-                alt="AI Development Technology" 
-                className="rounded-lg shadow-2xl w-full h-auto"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 to-transparent rounded-lg"></div>
+              <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg shadow-2xl p-8 h-96 flex items-center justify-center">
+                <svg viewBox="0 0 400 300" className="w-full h-full max-w-md">
+                  {/* Neural Network Background */}
+                  <defs>
+                    <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#8B5CF6" />
+                    </linearGradient>
+                    <linearGradient id="nodeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#F97316" />
+                      <stop offset="100%" stopColor="#EF4444" />
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* Connection Lines */}
+                  <g opacity="0.6">
+                    <line x1="50" y1="80" x2="120" y2="60" stroke="#3B82F6" strokeWidth="2" />
+                    <line x1="50" y1="120" x2="120" y2="60" stroke="#3B82F6" strokeWidth="2" />
+                    <line x1="50" y1="160" x2="120" y2="140" stroke="#3B82F6" strokeWidth="2" />
+                    <line x1="50" y1="200" x2="120" y2="180" stroke="#3B82F6" strokeWidth="2" />
+                    
+                    <line x1="120" y1="60" x2="200" y2="80" stroke="#8B5CF6" strokeWidth="2" />
+                    <line x1="120" y1="140" x2="200" y2="120" stroke="#8B5CF6" strokeWidth="2" />
+                    <line x1="120" y1="180" x2="200" y2="160" stroke="#8B5CF6" strokeWidth="2" />
+                    
+                    <line x1="200" y1="80" x2="280" y2="100" stroke="#F97316" strokeWidth="2" />
+                    <line x1="200" y1="120" x2="280" y2="100" stroke="#F97316" strokeWidth="2" />
+                    <line x1="200" y1="160" x2="280" y2="140" stroke="#F97316" strokeWidth="2" />
+                    
+                    <line x1="280" y1="100" x2="350" y2="120" stroke="#EF4444" strokeWidth="2" />
+                    <line x1="280" y1="140" x2="350" y2="120" stroke="#EF4444" strokeWidth="2" />
+                  </g>
+                  
+                  {/* Neural Network Nodes */}
+                  <g>
+                    {/* Input Layer */}
+                    <circle cx="50" cy="80" r="8" fill="url(#brainGradient)" />
+                    <circle cx="50" cy="120" r="8" fill="url(#brainGradient)" />
+                    <circle cx="50" cy="160" r="8" fill="url(#brainGradient)" />
+                    <circle cx="50" cy="200" r="8" fill="url(#brainGradient)" />
+                    
+                    {/* Hidden Layer 1 */}
+                    <circle cx="120" cy="60" r="10" fill="url(#brainGradient)" />
+                    <circle cx="120" cy="140" r="10" fill="url(#brainGradient)" />
+                    <circle cx="120" cy="180" r="10" fill="url(#brainGradient)" />
+                    
+                    {/* Hidden Layer 2 */}
+                    <circle cx="200" cy="80" r="10" fill="url(#nodeGradient)" />
+                    <circle cx="200" cy="120" r="10" fill="url(#nodeGradient)" />
+                    <circle cx="200" cy="160" r="10" fill="url(#nodeGradient)" />
+                    
+                    {/* Hidden Layer 3 */}
+                    <circle cx="280" cy="100" r="10" fill="url(#nodeGradient)" />
+                    <circle cx="280" cy="140" r="10" fill="url(#nodeGradient)" />
+                    
+                    {/* Output Layer */}
+                    <circle cx="350" cy="120" r="12" fill="#EF4444" />
+                  </g>
+                  
+                  {/* Brain Icon */}
+                  <g transform="translate(180, 200)">
+                    <path d="M20 15 C20 7, 12 0, 0 0 C-12 0, -20 7, -20 15 C-20 20, -15 25, -10 25 L10 25 C15 25, 20 20, 20 15 Z" 
+                          fill="url(#brainGradient)" opacity="0.8" />
+                    <circle cx="-8" cy="8" r="2" fill="#FFFFFF" />
+                    <circle cx="8" cy="8" r="2" fill="#FFFFFF" />
+                    <path d="M-5 15 Q0 18 5 15" stroke="#FFFFFF" strokeWidth="1.5" fill="none" />
+                  </g>
+                  
+                  {/* Floating Data Points */}
+                  <g opacity="0.7">
+                    <circle cx="300" cy="50" r="3" fill="#3B82F6">
+                      <animate attributeName="cy" values="50;40;50" dur="2s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="320" cy="70" r="2" fill="#8B5CF6">
+                      <animate attributeName="cy" values="70;60;70" dur="2.5s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="340" cy="45" r="2.5" fill="#F97316">
+                      <animate attributeName="cy" values="45;35;45" dur="1.8s" repeatCount="indefinite" />
+                    </circle>
+                  </g>
+                  
+                  {/* Code Symbols */}
+                  <g transform="translate(50, 240)" opacity="0.6">
+                    <text x="0" y="0" fontFamily="monospace" fontSize="12" fill="#3B82F6">&lt;AI/&gt;</text>
+                    <text x="60" y="0" fontFamily="monospace" fontSize="12" fill="#8B5CF6">ML()</text>
+                    <text x="120" y="0" fontFamily="monospace" fontSize="12" fill="#F97316">&#123;data&#125;</text>
+                    <text x="180" y="0" fontFamily="monospace" fontSize="12" fill="#EF4444">neural++</text>
+                  </g>
+                </svg>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent rounded-lg"></div>
             </div>
           </div>
         </div>
