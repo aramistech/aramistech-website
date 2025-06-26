@@ -17,6 +17,8 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState<number | null>(null);
+  const [isSupportDropdownOpen, setIsSupportDropdownOpen] = useState(false);
+  const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [location, setLocation] = useLocation();
 
@@ -187,6 +189,16 @@ export default function Header() {
                       Support Downloads
                     </div>
                     <a 
+                      href="https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.exe"
+                      download="rustdesk-1.4.0-x86_64.exe"
+                      onClick={() => setIsSupportDropdownOpen(false)}
+                      className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      🖥️ RustDesk QuickSupport (Windows Only)
+                    </a>
+                    <a 
                       href="/downloads/network-diagnostic-tool.bat"
                       download="AramisTech-Network-Diagnostic.bat"
                       onClick={() => setIsSupportDropdownOpen(false)}
@@ -201,14 +213,6 @@ export default function Header() {
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
                       💻 System Info Collector
-                    </a>
-                    <a 
-                      href="/downloads/remote-support-setup.exe"
-                      download="AramisTech-Remote-Support.exe"
-                      onClick={() => setIsSupportDropdownOpen(false)}
-                      className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
-                    >
-                      🔧 Remote Support Tool
                     </a>
                   </div>
                 </div>
@@ -313,6 +317,19 @@ export default function Header() {
                       Support Downloads
                     </div>
                     <a 
+                      href="https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.exe"
+                      download="rustdesk-1.4.0-x86_64.exe"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setIsMobileSupportOpen(false);
+                      }}
+                      className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      🖥️ RustDesk QuickSupport (Windows Only)
+                    </a>
+                    <a 
                       href="/downloads/network-diagnostic-tool.bat"
                       download="AramisTech-Network-Diagnostic.bat"
                       onClick={() => {
@@ -333,17 +350,6 @@ export default function Header() {
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
                       💻 System Info Collector
-                    </a>
-                    <a 
-                      href="/downloads/remote-support-setup.exe"
-                      download="AramisTech-Remote-Support.exe"
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        setIsMobileSupportOpen(false);
-                      }}
-                      className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
-                    >
-                      🔧 Remote Support Tool
                     </a>
                   </div>
                 </div>
