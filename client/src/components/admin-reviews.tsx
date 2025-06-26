@@ -182,6 +182,11 @@ export default function AdminReviews() {
       source: review.source
     });
     setShowForm(true);
+    
+    // Scroll to top of page to show the form
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
 
   const handleCancelEdit = () => {
@@ -226,7 +231,18 @@ export default function AdminReviews() {
           >
             Add Sample Reviews
           </Button>
-          <Button onClick={() => setShowForm(!showForm)}>
+          <Button onClick={() => {
+            setEditingReview(null);
+            setFormData({
+              customerName: "",
+              rating: 5,
+              reviewText: "",
+              businessName: "AramisTech",
+              location: "South Florida",
+              source: "manual"
+            });
+            setShowForm(!showForm);
+          }}>
             <Plus className="w-4 h-4 mr-2" />
             Add Review
           </Button>
@@ -234,10 +250,10 @@ export default function AdminReviews() {
       </div>
 
       {showForm && (
-        <Card>
+        <Card className={`${editingReview ? 'border-blue-500 border-2 bg-blue-50' : ''}`}>
           <CardHeader>
-            <CardTitle>
-              {editingReview ? 'Edit Customer Review' : 'Add New Customer Review'}
+            <CardTitle className={editingReview ? 'text-blue-700' : ''}>
+              {editingReview ? `✏️ Editing Review from ${editingReview.customerName}` : 'Add New Customer Review'}
             </CardTitle>
           </CardHeader>
           <CardContent>
