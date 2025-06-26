@@ -1,0 +1,78 @@
+import { Facebook, Linkedin, Twitter, Phone, Mail, MapPin, Clock } from "lucide-react";
+
+export default function Footer() {
+  return (
+    <footer className="bg-professional-gray text-white py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="lg:col-span-2">
+            <img 
+              src="https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png" 
+              alt="AramisTech Logo" 
+              className="h-12 w-auto mb-6 brightness-0 invert"
+            />
+            <p className="text-gray-300 mb-6 max-w-md">
+              Family-owned IT company with 27+ years of experience serving South Florida businesses. We provide reliable computer repairs, network maintenance, cloud solutions, and custom servers.
+            </p>
+            <div className="flex space-x-4">
+              <a href="#" className="bg-primary-blue p-3 rounded-lg hover:bg-secondary-blue transition-colors">
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a href="#" className="bg-primary-blue p-3 rounded-lg hover:bg-secondary-blue transition-colors">
+                <Linkedin className="w-5 h-5" />
+              </a>
+              <a href="#" className="bg-primary-blue p-3 rounded-lg hover:bg-secondary-blue transition-colors">
+                <Twitter className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+          
+          <div>
+            <h4 className="text-lg font-semibold mb-6">Services</h4>
+            <ul className="space-y-3 text-gray-300">
+              <li><a href="#" className="hover:text-white transition-colors">Workstation Maintenance</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">File Server Support</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Active Directory</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Exchange/Google Workspace</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Synology NAS</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Phone Support</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="text-lg font-semibold mb-6">Contact Info</h4>
+            <ul className="space-y-3 text-gray-300">
+              <li className="flex items-center">
+                <Phone className="w-4 h-4 mr-3" />
+                <a href="tel:(305) 814-4461" className="hover:text-white transition-colors">(305) 814-4461</a>
+              </li>
+              <li className="flex items-center">
+                <Mail className="w-4 h-4 mr-3" />
+                <a href="mailto:sales@aramistech.com" className="hover:text-white transition-colors">sales@aramistech.com</a>
+              </li>
+              <li className="flex items-start">
+                <MapPin className="w-4 h-4 mr-3 mt-1" />
+                <span>Serving Miami & Broward Counties, Florida</span>
+              </li>
+              <li className="flex items-start">
+                <Clock className="w-4 h-4 mr-3 mt-1" />
+                <span>Mon-Fri: 9am-6pm<br />Weekend: Closed</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="border-t border-gray-600 pt-8 mt-12">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm">
+              &copy; 2024 AramisTech Corp. All rights reserved. | Privacy Policy | Terms of Service
+            </p>
+            <p className="text-gray-400 text-sm mt-4 md:mt-0">
+              Proudly serving South Florida for 27+ years
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
