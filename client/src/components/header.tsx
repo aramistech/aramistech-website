@@ -56,25 +56,25 @@ export default function Header() {
           <div className="hidden lg:flex items-center space-x-8">
             <button 
               onClick={() => scrollToSection('services')} 
-              className="text-professional-gray hover:text-primary-blue transition-colors font-medium"
+              className="text-professional-gray hover:text-aramis-orange transition-colors font-medium"
             >
               Services
             </button>
             <button 
               onClick={() => scrollToSection('about')} 
-              className="text-professional-gray hover:text-primary-blue transition-colors font-medium"
+              className="text-professional-gray hover:text-aramis-orange transition-colors font-medium"
             >
               About
             </button>
             <button 
               onClick={() => scrollToSection('team')} 
-              className="text-professional-gray hover:text-primary-blue transition-colors font-medium"
+              className="text-professional-gray hover:text-aramis-orange transition-colors font-medium"
             >
               Team
             </button>
             <button 
               onClick={() => scrollToSection('industries')} 
-              className="text-professional-gray hover:text-primary-blue transition-colors font-medium"
+              className="text-professional-gray hover:text-aramis-orange transition-colors font-medium"
             >
               Industries
             </button>
@@ -87,7 +87,7 @@ export default function Header() {
           </div>
           
           <div className="lg:hidden">
-            <button onClick={toggleMenu} className="text-professional-gray hover:text-primary-blue">
+            <button onClick={toggleMenu} className="text-professional-gray hover:text-aramis-orange">
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
@@ -100,25 +100,25 @@ export default function Header() {
           <div className="px-4 py-2 space-y-2">
             <button 
               onClick={() => scrollToSection('services')} 
-              className="block w-full text-left py-2 text-professional-gray hover:text-primary-blue"
+              className="block w-full text-left py-2 text-professional-gray hover:text-aramis-orange"
             >
               Services
             </button>
             <button 
               onClick={() => scrollToSection('about')} 
-              className="block w-full text-left py-2 text-professional-gray hover:text-primary-blue"
+              className="block w-full text-left py-2 text-professional-gray hover:text-aramis-orange"
             >
               About
             </button>
             <button 
               onClick={() => scrollToSection('team')} 
-              className="block w-full text-left py-2 text-professional-gray hover:text-primary-blue"
+              className="block w-full text-left py-2 text-professional-gray hover:text-aramis-orange"
             >
               Team
             </button>
             <button 
               onClick={() => scrollToSection('industries')} 
-              className="block w-full text-left py-2 text-professional-gray hover:text-primary-blue"
+              className="block w-full text-left py-2 text-professional-gray hover:text-aramis-orange"
             >
               Industries
             </button>
