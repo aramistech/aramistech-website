@@ -63,10 +63,15 @@ export default function Windows10Upgrade() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Hero Section */}
       <div 
-        className="relative text-white py-20 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url(/windows10-background.png)' }}
+        className="relative text-white py-20 bg-cover bg-center bg-no-repeat min-h-[600px]"
+        style={{ 
+          backgroundImage: 'url(/windows10-bg.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-blue/80 to-indigo-700/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-blue/70 to-indigo-700/70"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <Badge className="mb-4 bg-red-500 hover:bg-red-600 text-white">
