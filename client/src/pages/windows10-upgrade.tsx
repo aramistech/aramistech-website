@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { trackBusinessEvent } from "@/lib/analytics";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import cleanWin10Image from "@assets/cleanwin10image_1750946635072.png";
+// Import the Windows 10 background image
 
 export default function Windows10Upgrade() {
   const { toast } = useToast();
@@ -65,7 +65,7 @@ export default function Windows10Upgrade() {
       {/* Hero Section */}
       <div 
         className="relative text-white py-20 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${cleanWin10Image})` }}
+        style={{ backgroundImage: `url(/cleanwin10image.png)` }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-primary-blue/80 to-indigo-700/80"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
