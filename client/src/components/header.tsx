@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { trackClick } from "@/lib/analytics";
 
 export default function Header() {
@@ -8,6 +8,7 @@ export default function Header() {
   const [isSupportDropdownOpen, setIsSupportDropdownOpen] = useState(false);
   const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [location, setLocation] = useLocation();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -27,9 +28,23 @@ export default function Header() {
 
   const scrollToSection = (sectionId: string) => {
     trackClick('navigation_link', sectionId, sectionId);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    
+    // If we're not on the home page, navigate there first
+    if (location !== '/') {
+      setLocation('/');
+      // Wait for navigation to complete, then scroll
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // We're already on the home page, just scroll
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
     setIsMenuOpen(false);
   };
