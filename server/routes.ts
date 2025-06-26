@@ -78,7 +78,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get Google reviews
   app.get("/api/reviews", async (req, res) => {
     try {
-      const placeId = req.query.place_id || "ChIJwdS0isO52YgRMkrde8V_XKI"; // Default to found business
+      // AramisTech Place ID - will be updated when correct ID is found
+      const placeId = req.query.place_id || process.env.ARAMISTECH_PLACE_ID || "ChIJwdS0isO52YgRMkrde8V_XKI";
       const apiKey = process.env.GOOGLE_PLACES_API_KEY;
       
       if (!apiKey) {
