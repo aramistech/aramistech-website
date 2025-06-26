@@ -24,6 +24,11 @@ export interface IStorage {
   createMenuItem(menuItem: InsertMenuItem): Promise<MenuItem>;
   updateMenuItem(id: number, menuItem: Partial<InsertMenuItem>): Promise<MenuItem>;
   deleteMenuItem(id: number): Promise<void>;
+  // Admin user management
+  getAllAdminUsers(): Promise<User[]>;
+  createAdminUser(user: InsertUser): Promise<User>;
+  updateAdminUser(id: number, user: Partial<UpdateUser>): Promise<User>;
+  deleteAdminUser(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {

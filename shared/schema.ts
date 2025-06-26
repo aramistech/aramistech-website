@@ -6,6 +6,11 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  email: text("email"),
+  isActive: boolean("is_active").default(true),
+  lastLogin: timestamp("last_login"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const contacts = pgTable("contacts", {
@@ -63,6 +68,16 @@ export const adminSessions = pgTable("admin_sessions", {
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
+  email: true,
+  isActive: true,
+});
+
+export const updateUserSchema = createInsertSchema(users).pick({
+  username: true,
+  email: true,
+  isActive: true,
+}).extend({
+  password: z.string().optional(),
 });
 
 export const insertMenuItemSchema = createInsertSchema(menuItems).omit({
@@ -87,6 +102,7 @@ export const insertReviewSchema = createInsertSchema(reviews).omit({
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpdateUser = z.infer<typeof updateUserSchema>;
 export type User = typeof users.$inferSelect;
 export type Contact = typeof contacts.$inferSelect;
 export type InsertContact = z.infer<typeof insertContactSchema>;
