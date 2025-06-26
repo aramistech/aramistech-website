@@ -132,7 +132,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/admin/menu-items/:id", requireAdminAuth, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const validatedData = insertMenuItemSchema.partial().parse(req.body);
+      
+      // Clean the request data before validation
+      const cleanedBody = { ...req.body };
+      
+      // Log incoming data for debugging
+      console.log("Menu item update request:", { id, body: req.body });
+      
+      // Handle parentId specially to prevent NaN
+      if (cleanedBody.parentId !== undefined) {
+        const parentIdValue = cleanedBody.parentId;
+        if (parentIdValue === null || parentIdValue === "" || parentIdValue === "null" || isNaN(parentIdValue)) {
+          cleanedBody.parentId = null;
+        } else {
+          cleanedBody.parentId = parseInt(parentIdValue);
+        }
+      }
+      
+      // Handle orderIndex
+      if (cleanedBody.orderIndex !== undefined && isNaN(cleanedBody.orderIndex)) {
+        cleanedBody.orderIndex = 0;
+      }
+      
+      // Remove any fields with NaN values
+      Object.keys(cleanedBody).forEach(key => {
+        if (typeof cleanedBody[key] === 'number' && isNaN(cleanedBody[key])) {
+          console.log(`Removing NaN field: ${key}`);
+          delete cleanedBody[key];
+        }
+      });
+      
+      const validatedData = insertMenuItemSchema.partial().parse(cleanedBody);
       const menuItem = await storage.updateMenuItem(id, validatedData);
       res.json({ success: true, menuItem });
     } catch (error) {
