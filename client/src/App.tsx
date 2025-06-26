@@ -11,6 +11,7 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import Windows10Upgrade from "@/pages/windows10-upgrade";
 import CustomerPortal from "@/pages/customer-portal";
 import IPLookup from "@/pages/ip-lookup";
+import AIDevelopment from "@/pages/ai-development";
 import SocialProofPopup from "@/components/social-proof-popup";
 import Chatbot from "@/components/chatbot";
 import { useEffect } from "react";
@@ -25,6 +26,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/ai-development" component={AIDevelopment} />
       <Route path="/windows10-upgrade" component={Windows10Upgrade} />
       <Route path="/customer-portal" component={CustomerPortal} />
       <Route path="/ip-lookup" component={IPLookup} />
