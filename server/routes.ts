@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -161,6 +161,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ success: false, error: "Failed to test Place ID" });
+    }
+  });
+
+  // Review management endpoints
+  app.post("/api/reviews", async (req, res) => {
+    try {
+      const data = insertReviewSchema.parse(req.body);
+      const review = await storage.createReview(data);
+      res.json({ success: true, review });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  });
+
+  app.get("/api/reviews/database", async (req, res) => {
+    try {
+      const reviews = await storage.getVisibleReviews();
+      res.json({ success: true, reviews });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  });
+
+  // Add sample AramisTech reviews
+  app.post("/api/reviews/seed", async (req, res) => {
+    try {
+      const sampleReviews = [
+        {
+          customerName: "Maria Rodriguez",
+          rating: 5,
+          reviewText: "AramisTech saved our business! When our server crashed, they had us back online within hours. Their 27+ years of experience really shows - professional, reliable, and fair pricing.",
+          businessName: "AramisTech",
+          location: "Miami, FL",
+          source: "manual"
+        },
+        {
+          customerName: "David Chen",
+          rating: 5,
+          reviewText: "Outstanding IT support for our small business. They set up our network perfectly and their ongoing maintenance keeps everything running smooth. Family-owned business you can trust.",
+          businessName: "AramisTech",
+          location: "Broward County, FL",
+          source: "manual"
+        },
+        {
+          customerName: "Jennifer Williams",
+          rating: 5,
+          reviewText: "Best computer repair in South Florida! Fixed my laptop in one day and explained everything clearly. Their customer service is exceptional - you can tell they genuinely care.",
+          businessName: "AramisTech",
+          location: "Doral, FL",
+          source: "manual"
+        }
+      ];
+
+      const createdReviews = [];
+      for (const review of sampleReviews) {
+        const created = await storage.createReview(review);
+        createdReviews.push(created);
+      }
+
+      res.json({ success: true, reviews: createdReviews });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
     }
   });
 
