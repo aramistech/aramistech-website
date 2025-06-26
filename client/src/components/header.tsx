@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link } from "wouter";
 import { trackClick } from "@/lib/analytics";
 
 export default function Header() {
@@ -78,6 +79,11 @@ export default function Header() {
             >
               Industries
             </button>
+            <Link href="/windows10-upgrade">
+              <button className="text-professional-gray hover:text-aramis-orange transition-colors font-medium">
+                Windows 10 Upgrade
+              </button>
+            </Link>
             <button 
               onClick={() => scrollToSection('contact')} 
               className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
@@ -122,6 +128,11 @@ export default function Header() {
             >
               Industries
             </button>
+            <Link href="/windows10-upgrade">
+              <button className="block w-full text-left py-2 text-professional-gray hover:text-aramis-orange">
+                Windows 10 Upgrade
+              </button>
+            </Link>
             <button 
               onClick={() => scrollToSection('contact')} 
               className="block w-full text-left py-2 bg-aramis-orange text-white px-4 rounded-lg text-center"

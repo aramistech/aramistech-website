@@ -254,7 +254,7 @@ export default function Windows10Upgrade() {
                         <FormItem>
                           <FormLabel>First Name *</FormLabel>
                           <FormControl>
-                            <Input placeholder="Your first name" {...field} />
+                            <Input placeholder="Your first name" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -268,7 +268,7 @@ export default function Windows10Upgrade() {
                         <FormItem>
                           <FormLabel>Last Name *</FormLabel>
                           <FormControl>
-                            <Input placeholder="Your last name" {...field} />
+                            <Input placeholder="Your last name" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -282,7 +282,7 @@ export default function Windows10Upgrade() {
                         <FormItem>
                           <FormLabel>Email Address *</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="your@email.com" {...field} />
+                            <Input type="email" placeholder="your@email.com" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -296,7 +296,7 @@ export default function Windows10Upgrade() {
                         <FormItem>
                           <FormLabel>Phone Number *</FormLabel>
                           <FormControl>
-                            <Input placeholder="(561) 123-4567" {...field} />
+                            <Input placeholder="(561) 123-4567" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -310,7 +310,7 @@ export default function Windows10Upgrade() {
                         <FormItem>
                           <FormLabel>Company Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Your company" {...field} />
+                            <Input placeholder="Your company" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -327,7 +327,8 @@ export default function Windows10Upgrade() {
                             <Textarea 
                               placeholder="How many computers need upgrading? Any specific concerns or requirements?"
                               rows={4}
-                              {...field} 
+                              {...field}
+                              value={field.value || ""}
                             />
                           </FormControl>
                           <FormMessage />
