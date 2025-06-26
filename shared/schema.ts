@@ -78,6 +78,20 @@ export const exitIntentPopup = pgTable("exit_intent_popup", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const mediaFiles = pgTable("media_files", {
+  id: serial("id").primaryKey(),
+  fileName: text("file_name").notNull(),
+  originalName: text("original_name").notNull(),
+  mimeType: text("mime_type").notNull(),
+  fileSize: integer("file_size").notNull(),
+  filePath: text("file_path").notNull(),
+  url: text("url").notNull(),
+  altText: text("alt_text"),
+  caption: text("caption"),
+  uploadedAt: timestamp("uploaded_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -125,6 +139,17 @@ export const insertExitIntentPopupSchema = createInsertSchema(exitIntentPopup).p
   textColor: true,
 });
 
+export const insertMediaFileSchema = createInsertSchema(mediaFiles).pick({
+  fileName: true,
+  originalName: true,
+  mimeType: true,
+  fileSize: true,
+  filePath: true,
+  url: true,
+  altText: true,
+  caption: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type UpdateUser = z.infer<typeof updateUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -139,3 +164,5 @@ export type InsertMenuItem = z.infer<typeof insertMenuItemSchema>;
 export type AdminSession = typeof adminSessions.$inferSelect;
 export type ExitIntentPopup = typeof exitIntentPopup.$inferSelect;
 export type InsertExitIntentPopup = z.infer<typeof insertExitIntentPopupSchema>;
+export type MediaFile = typeof mediaFiles.$inferSelect;
+export type InsertMediaFile = z.infer<typeof insertMediaFileSchema>;

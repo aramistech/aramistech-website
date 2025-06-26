@@ -1,4 +1,4 @@
-import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, exitIntentPopup, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup } from "@shared/schema";
+import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, isNull, gt } from "drizzle-orm";
 import bcrypt from "bcryptjs";
@@ -33,6 +33,12 @@ export interface IStorage {
   // Exit intent popup management
   getExitIntentPopup(): Promise<ExitIntentPopup | undefined>;
   updateExitIntentPopup(popup: InsertExitIntentPopup): Promise<ExitIntentPopup>;
+  // Media management
+  uploadMediaFile(file: InsertMediaFile): Promise<MediaFile>;
+  getMediaFiles(): Promise<MediaFile[]>;
+  getMediaFileById(id: number): Promise<MediaFile | undefined>;
+  updateMediaFile(id: number, file: Partial<InsertMediaFile>): Promise<MediaFile>;
+  deleteMediaFile(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -252,6 +258,42 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return popup;
     }
+  }
+
+  async uploadMediaFile(fileData: InsertMediaFile): Promise<MediaFile> {
+    const [file] = await db
+      .insert(mediaFiles)
+      .values(fileData)
+      .returning();
+    return file;
+  }
+
+  async getMediaFiles(): Promise<MediaFile[]> {
+    return await db
+      .select()
+      .from(mediaFiles)
+      .orderBy(desc(mediaFiles.uploadedAt));
+  }
+
+  async getMediaFileById(id: number): Promise<MediaFile | undefined> {
+    const [file] = await db
+      .select()
+      .from(mediaFiles)
+      .where(eq(mediaFiles.id, id));
+    return file;
+  }
+
+  async updateMediaFile(id: number, fileData: Partial<InsertMediaFile>): Promise<MediaFile> {
+    const [file] = await db
+      .update(mediaFiles)
+      .set({ ...fileData, updatedAt: new Date() })
+      .where(eq(mediaFiles.id, id))
+      .returning();
+    return file;
+  }
+
+  async deleteMediaFile(id: number): Promise<void> {
+    await db.delete(mediaFiles).where(eq(mediaFiles.id, id));
   }
 }
 

@@ -1,14 +1,53 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema } from "@shared/schema";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
 import { z } from "zod";
+
+// Configure multer for file uploads
+const uploadDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage_multer = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+  }
+});
+
+const upload = multer({ 
+  storage: storage_multer,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Allow only image files
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Add cookie parser middleware
   app.use(cookieParser());
+  
+  // Serve uploaded files statically
+  app.use('/uploads', express.static(uploadDir));
 
   // Admin authentication routes
   app.post("/api/admin/login", async (req, res) => {
