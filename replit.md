@@ -137,6 +137,7 @@ Changelog:
 - June 26, 2025. Enhanced chatbot with extensive technical support responses covering hardware issues, software problems, cybersecurity, network troubleshooting, business applications, and emergency scenarios - all designed to lead users toward contacting AramisTech for professional assistance
 - June 26, 2025. Made chatbot language more personal using "call us" and "email us" throughout all responses for family-business feel
 - June 26, 2025. Rebuilt chatbot technical detection system with intelligent keyword categorization for hardware, network, software, email, and security issues - provides specific technical guidance while directing users to AramisTech for professional help
+- June 26, 2025. Enhanced chatbot with AI-powered issue analysis engine featuring confidence scoring, contextual responses, dynamic technical guidance, and multi-layered detection to provide professional-level technical support that leads to AramisTech consultations
 - June 26, 2025. Updated social proof popup timing to appear every 1-2 minutes instead of every 15-45 seconds for better user experience
 ```
 
