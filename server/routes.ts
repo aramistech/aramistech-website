@@ -9,6 +9,7 @@ import path from "path";
 import fs from "fs";
 import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
 import { z } from "zod";
+import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), 'uploads');
@@ -619,6 +620,202 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true, review: updatedReview });
     } catch (error: any) {
       res.status(400).json({ success: false, message: error.message });
+    }
+  });
+
+  // WHMCS Integration Endpoints
+  
+  // Get WHMCS configuration status
+  app.get("/api/whmcs/status", (req, res) => {
+    res.json({
+      success: true,
+      configured: validateWHMCSConfig(),
+      baseUrl: whmcsConfig.baseUrl
+    });
+  });
+
+  // Proxy WHMCS API calls (with validation)
+  app.post("/api/whmcs/customer/:email", async (req, res) => {
+    if (!validateWHMCSConfig()) {
+      return res.status(500).json({
+        success: false,
+        message: "WHMCS not configured properly"
+      });
+    }
+
+    try {
+      const email = req.params.email;
+      
+      // Make API call to WHMCS
+      const requestData = new URLSearchParams({
+        action: 'GetClientsDetails',
+        username: whmcsConfig.apiIdentifier,
+        password: whmcsConfig.apiSecret,
+        responsetype: 'json',
+        email: email
+      });
+
+      const response = await fetch(`${whmcsConfig.baseUrl}/includes/api.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: requestData.toString()
+      });
+
+      const data = await response.json();
+      
+      if (data.result === 'error') {
+        return res.status(404).json({
+          success: false,
+          message: data.message || 'Customer not found'
+        });
+      }
+
+      res.json({
+        success: true,
+        customer: data.client
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch customer data"
+      });
+    }
+  });
+
+  // Get customer services
+  app.get("/api/whmcs/customer/:id/services", async (req, res) => {
+    if (!validateWHMCSConfig()) {
+      return res.status(500).json({
+        success: false,
+        message: "WHMCS not configured properly"
+      });
+    }
+
+    try {
+      const clientId = req.params.id;
+      
+      const requestData = new URLSearchParams({
+        action: 'GetClientsProducts',
+        username: whmcsConfig.apiIdentifier,
+        password: whmcsConfig.apiSecret,
+        responsetype: 'json',
+        clientid: clientId
+      });
+
+      const response = await fetch(`${whmcsConfig.baseUrl}/includes/api.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: requestData.toString()
+      });
+
+      const data = await response.json();
+      
+      if (data.result === 'error') {
+        return res.status(400).json({
+          success: false,
+          message: data.message
+        });
+      }
+
+      res.json({
+        success: true,
+        services: data.products?.product || []
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch services"
+      });
+    }
+  });
+
+  // Get customer invoices
+  app.get("/api/whmcs/customer/:id/invoices", async (req, res) => {
+    if (!validateWHMCSConfig()) {
+      return res.status(500).json({
+        success: false,
+        message: "WHMCS not configured properly"
+      });
+    }
+
+    try {
+      const clientId = req.params.id;
+      
+      const requestData = new URLSearchParams({
+        action: 'GetInvoices',
+        username: whmcsConfig.apiIdentifier,
+        password: whmcsConfig.apiSecret,
+        responsetype: 'json',
+        userid: clientId,
+        limitnum: '10'
+      });
+
+      const response = await fetch(`${whmcsConfig.baseUrl}/includes/api.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: requestData.toString()
+      });
+
+      const data = await response.json();
+      
+      if (data.result === 'error') {
+        return res.status(400).json({
+          success: false,
+          message: data.message
+        });
+      }
+
+      res.json({
+        success: true,
+        invoices: data.invoices?.invoice || []
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch invoices"
+      });
+    }
+  });
+
+  // WHMCS Webhook handler for real-time updates
+  app.post("/api/whmcs/webhook", express.raw({ type: 'application/json' }), (req, res) => {
+    try {
+      const signature = req.headers['x-whmcs-signature'] as string;
+      const payload = req.body.toString();
+      
+      if (!validateWHMCSWebhook(signature, payload)) {
+        return res.status(401).json({ success: false, message: 'Invalid signature' });
+      }
+
+      const data = JSON.parse(payload);
+      
+      // Handle different webhook events
+      switch (data.event) {
+        case 'InvoiceCreated':
+          // Handle new invoice creation
+          console.log('New invoice created:', data.invoice_id);
+          break;
+        case 'InvoicePaid':
+          // Handle invoice payment
+          console.log('Invoice paid:', data.invoice_id);
+          break;
+        case 'ClientAdd':
+          // Handle new client registration
+          console.log('New client added:', data.client_id);
+          break;
+        default:
+          console.log('Unhandled webhook event:', data.event);
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(400).json({ success: false, message: 'Invalid webhook data' });
     }
   });
 

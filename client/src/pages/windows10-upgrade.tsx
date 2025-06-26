@@ -94,7 +94,7 @@ export default function Windows10Upgrade() {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-white text-aramis-orange hover:bg-white hover:text-primary-blue px-8 py-4 text-lg"
+                className="border-white text-white hover:bg-white hover:text-primary-blue px-8 py-4 text-lg"
                 onClick={() => window.open('tel:+15613682196', '_self')}
               >
                 <Phone className="w-5 h-5 mr-2" />
@@ -402,7 +402,7 @@ export default function Windows10Upgrade() {
                   </p>
                   <Separator />
                   <p className="text-sm text-gray-500">
-                    * Pricing varies based on data complexity and software requirements. 
+                    * Pricing can vary based on data complexity and software requirements. 
                     All quotes provided after free assessment.
                   </p>
                 </div>
