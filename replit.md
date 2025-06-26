@@ -56,6 +56,7 @@ AramisTech is a professional IT solutions company website built as a full-stack 
 - **Review Schema**: Customer testimonial management
 - **Menu Schema**: Website navigation structure
 - **Exit Intent Popup Schema**: Popup content and styling configuration
+- **Media Files Schema**: Image upload and management system
 
 ## Data Flow
 
@@ -118,6 +119,7 @@ Changelog:
 - June 26, 2025. Enhanced menu management with drag-and-drop reordering functionality for intuitive navigation control
 - June 26, 2025. Added comprehensive admin user management system with create, edit, delete, and password change capabilities for dashboard access control
 - June 26, 2025. Implemented exit intent popup system with mouse tracking detection, customizable messaging, images, colors, and admin management interface
+- June 26, 2025. Built WordPress-style media library with file upload, image management, and integration with exit intent popup for easy image selection
 ```
 
 ## User Preferences
