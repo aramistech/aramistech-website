@@ -1,4 +1,4 @@
-import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession } from "@shared/schema";
+import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, exitIntentPopup, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, isNull, gt } from "drizzle-orm";
 import bcrypt from "bcryptjs";

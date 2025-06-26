@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -65,6 +65,19 @@ export const adminSessions = pgTable("admin_sessions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const exitIntentPopup = pgTable("exit_intent_popup", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull().default("Wait! Don't Leave Yet"),
+  message: text("message").notNull().default("Get a free IT consultation before you go! Our experts are standing by to help with your technology needs."),
+  buttonText: text("button_text").notNull().default("Get Free Consultation"),
+  buttonUrl: text("button_url").notNull().default("/contact"),
+  imageUrl: text("image_url"),
+  isActive: boolean("is_active").notNull().default(true),
+  backgroundColor: text("background_color").notNull().default("#ffffff"),
+  textColor: text("text_color").notNull().default("#000000"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -101,6 +114,17 @@ export const insertReviewSchema = createInsertSchema(reviews).omit({
   datePosted: true,
 });
 
+export const insertExitIntentPopupSchema = createInsertSchema(exitIntentPopup).pick({
+  title: true,
+  message: true,
+  buttonText: true,
+  buttonUrl: true,
+  imageUrl: true,
+  isActive: true,
+  backgroundColor: true,
+  textColor: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type UpdateUser = z.infer<typeof updateUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -113,3 +137,5 @@ export type InsertReview = z.infer<typeof insertReviewSchema>;
 export type MenuItem = typeof menuItems.$inferSelect;
 export type InsertMenuItem = z.infer<typeof insertMenuItemSchema>;
 export type AdminSession = typeof adminSessions.$inferSelect;
+export type ExitIntentPopup = typeof exitIntentPopup.$inferSelect;
+export type InsertExitIntentPopup = z.infer<typeof insertExitIntentPopupSchema>;
