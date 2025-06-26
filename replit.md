@@ -143,6 +143,8 @@ Changelog:
 - June 26, 2025. Fixed menu management system by removing duplicate menu items and properly implementing Support dropdown with Customer Portal, Windows 10 Upgrade, and IP Lookup sub-items - admin interface now shows correct navigation structure
 - June 26, 2025. Completed dynamic navigation system connecting admin menu management to frontend - menu changes in dashboard appear immediately on website, includes Free Consultation button for lead generation
 - June 26, 2025. Fixed menu reordering error where NaN values caused database failures - added data validation and proper error handling for drag-and-drop menu organization
+- June 26, 2025. Fixed menu item parentId validation error "Expected number, received null" by updating client and server schemas to properly handle null values for top-level menu items
+- June 26, 2025. Created professional AI Development service page at /ai-development with comprehensive AI/ML solutions, development process, trust indicators, and AramisTech branding - added to main navigation menu
 ```
 
 ## User Preferences
