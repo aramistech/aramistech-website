@@ -12,10 +12,28 @@ export default function Hero() {
   } = useContactForm();
 
   const scrollToContact = () => {
+    trackClick('cta_button', 'hero_contact', 'Get Free Consultation');
+    trackBusinessEvent('quote_request', { source: 'hero_cta' });
+    
     const element = document.getElementById('contact');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleQuickQuoteSubmit = (data: any) => {
+    trackFormInteraction('quick_quote', 'submit');
+    trackBusinessEvent('quote_request', { 
+      source: 'hero_quick_form',
+      company: data.company,
+      needs: data.needs 
+    });
+    submitQuickQuote(data);
+  };
+
+  const handlePhoneClick = () => {
+    trackClick('phone_number', 'hero_phone', '(561) 419-7800');
+    trackBusinessEvent('phone_click', { source: 'hero' });
   };
 
   return (

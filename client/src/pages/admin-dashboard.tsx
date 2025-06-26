@@ -12,6 +12,7 @@ import MenuManager from '@/components/menu-manager';
 import AdminUserManager from '@/components/admin-user-manager';
 import ExitIntentManager from '@/components/exit-intent-manager';
 import MediaLibrary from '@/components/media-library';
+import AnalyticsDashboard from '@/components/analytics-dashboard';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -280,15 +281,7 @@ export default function AdminDashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-12">
-                    <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      Analytics Dashboard
-                    </h3>
-                    <p className="text-gray-500">
-                      Comprehensive analytics and reporting features will be available here
-                    </p>
-                  </div>
+                  <AnalyticsDashboard />
                 </CardContent>
               </Card>
             </TabsContent>
