@@ -75,6 +75,7 @@ export const exitIntentPopup = pgTable("exit_intent_popup", {
   isActive: boolean("is_active").notNull().default(true),
   backgroundColor: text("background_color").notNull().default("#ffffff"),
   textColor: text("text_color").notNull().default("#000000"),
+  buttonColor: text("button_color").notNull().default("#2563eb"),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
@@ -137,6 +138,7 @@ export const insertExitIntentPopupSchema = createInsertSchema(exitIntentPopup).p
   isActive: true,
   backgroundColor: true,
   textColor: true,
+  buttonColor: true,
 });
 
 export const insertMediaFileSchema = createInsertSchema(mediaFiles).pick({

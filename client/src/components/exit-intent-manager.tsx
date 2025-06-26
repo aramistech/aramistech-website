@@ -25,6 +25,7 @@ interface ExitIntentPopup {
   isActive: boolean;
   backgroundColor: string;
   textColor: string;
+  buttonColor: string;
 }
 
 const exitIntentSchema = z.object({
@@ -36,6 +37,7 @@ const exitIntentSchema = z.object({
   isActive: z.boolean(),
   backgroundColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color format"),
   textColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color format"),
+  buttonColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color format"),
 });
 
 type ExitIntentFormData = z.infer<typeof exitIntentSchema>;
@@ -61,6 +63,7 @@ export default function ExitIntentManager() {
       isActive: popup?.isActive ?? true,
       backgroundColor: popup?.backgroundColor || "#ffffff",
       textColor: popup?.textColor || "#000000",
+      buttonColor: popup?.buttonColor || "#2563eb",
     },
   });
 
@@ -76,6 +79,7 @@ export default function ExitIntentManager() {
         isActive: popup.isActive,
         backgroundColor: popup.backgroundColor,
         textColor: popup.textColor,
+        buttonColor: popup.buttonColor,
       });
     }
   }, [popup, form]);
