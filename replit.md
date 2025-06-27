@@ -191,6 +191,7 @@ Changelog:
 - June 27, 2025. Enhanced warning banner with professional glow animation for text while maintaining flashing critical badge - replaced pulsing with subtle white shadow effect for more corporate appearance
 - June 27, 2025. Added AlertTriangle icon to critical warning banner badge matching the Windows 10 upgrade page design for consistent visual messaging across all pages
 - June 27, 2025. Enhanced "Learn More" link in warning banner with bright yellow button styling, lightning bolt icon, pulsing animation, and hover effects to create prominent call-to-action that stands out against red background
+- June 27, 2025. Removed pulsing animation from "Learn More" button per user request - button now remains static while maintaining yellow styling, lightning bolt icon, and hover effects
 ```
 
 ## User Preferences
