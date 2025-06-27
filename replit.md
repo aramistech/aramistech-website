@@ -168,6 +168,9 @@ Changelog:
 - June 27, 2025. Completely resolved exit intent popup button issue - fixed dialog conflict between popup and consultation form by implementing proper state management, ensuring seamless transition from exit intent detection to lead capture form submission with Amazon SES email delivery
 - June 27, 2025. Debugged and fixed exit intent popup button functionality - button now successfully opens comprehensive IT consultation form with 12 service options, contact capture, IT challenges description, and urgency selection, all connected to backend API with Amazon SES email delivery system
 - June 27, 2025. Added AramisTech logo to IT consultation form header for professional branding and fixed API endpoint URL mismatch - form now successfully submits consultation requests with email delivery to sales@aramistech.com, confirmed working with test submission
+- June 27, 2025. Enhanced chatbot with improved technical responses for blue screen errors, network issues, slow computers, and printer problems - replaced generic responses with specific troubleshooting guidance while maintaining lead generation focus
+- June 27, 2025. Implemented urgent email notification system for technician transfer requests - when customers click "talk with a technician", sales@aramistech.com receives immediate alerts with customer details, session context, and last message for quick response
+- June 27, 2025. Replaced problematic custom live chat system with professional Tawk.to integration - provides reliable mobile apps for iOS/Android, instant push notifications, real-time chat functionality, and eliminates WebSocket errors for improved customer service experience
 ```
 
 ## User Preferences
