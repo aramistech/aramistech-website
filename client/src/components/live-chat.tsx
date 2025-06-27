@@ -274,7 +274,7 @@ export default function LiveChat({ className = "" }: LiveChatProps) {
       <div className={cn("fixed bottom-6 right-6 z-50", className)}>
         <Button
           onClick={() => setIsOpen(true)}
-          className="h-14 w-14 rounded-full bg-orange-500 hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse hover:animate-none"
+          className="h-14 w-14 rounded-full bg-orange-500 hover:bg-orange-600 shadow-lg transition-all duration-300 animate-[pulse_3s_ease-in-out_infinite] hover:animate-none hover:shadow-[0_0_20px_rgba(249,115,22,0.6)]"
           size="lg"
         >
           <MessageCircle className="h-6 w-6 text-white" />
