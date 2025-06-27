@@ -11,6 +11,7 @@ import fs from "fs";
 import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
 import { z } from "zod";
 import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
+import { sendQuickQuoteEmail, sendContactEmail } from "./email-service";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), 'uploads');
@@ -642,6 +643,26 @@ User message: ${message}`
     try {
       const validatedData = insertContactSchema.parse(req.body);
       const contact = await storage.createContact(validatedData);
+      
+      // Send email notification to sales team
+      try {
+        await sendContactEmail({
+          firstName: validatedData.firstName,
+          lastName: validatedData.lastName,
+          email: validatedData.email,
+          phone: validatedData.phone,
+          company: validatedData.company,
+          service: validatedData.service,
+          employees: validatedData.employees,
+          challenges: validatedData.challenges,
+          contactTime: validatedData.contactTime,
+        });
+        console.log("Contact form email sent successfully");
+      } catch (emailError) {
+        console.error("Failed to send contact email:", emailError);
+        // Don't fail the request if email fails, just log the error
+      }
+      
       res.json({ success: true, contact });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -664,6 +685,20 @@ User message: ${message}`
     try {
       const validatedData = insertQuickQuoteSchema.parse(req.body);
       const quote = await storage.createQuickQuote(validatedData);
+      
+      // Send email notification to sales team
+      try {
+        await sendQuickQuoteEmail({
+          name: validatedData.name,
+          email: validatedData.email,
+          phone: validatedData.phone,
+        });
+        console.log("Quick quote email sent successfully");
+      } catch (emailError) {
+        console.error("Failed to send quick quote email:", emailError);
+        // Don't fail the request if email fails, just log the error
+      }
+      
       res.json({ success: true, quote });
     } catch (error) {
       if (error instanceof z.ZodError) {
