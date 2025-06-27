@@ -16,6 +16,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import DynamicHeader from "@/components/dynamic-header";
 import Footer from "@/components/footer";
+import { Link } from "wouter";
 
 interface TimeLeft {
   days: number;
@@ -230,10 +231,10 @@ export default function Windows10Upgrade() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-primary-blue mb-4">
-              See What Our Customers Are Saying
+              See What Our AI-Enhanced Fans Are Saying!
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Real testimonials from South Florida businesses who trusted AramisTech with their Windows 10 to Windows 11 upgrades
+              Because even simulated clients know real IT help when they see it. Contact us today for a Free consultation and let us show you how we can help your business thrive!
             </p>
           </div>
           
@@ -286,7 +287,7 @@ export default function Windows10Upgrade() {
                 <span className="text-green-700 font-semibold">27+ Years of IT Excellence</span>
               </div>
               <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-                Hear from real AramisTech customers about their seamless Windows 11 upgrade experience and how we kept their businesses running without interruption.
+                This video showcases the expertise of our AI development team and what they can do for your business. <Link href="/ai-development" className="text-orange-600 hover:text-orange-700 font-semibold underline transition-colors">Click to Learn more</Link>
               </p>
               <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-xl mx-auto">
                 <p className="text-blue-800 text-sm">
