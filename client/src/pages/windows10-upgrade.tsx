@@ -69,10 +69,16 @@ export default function Windows10Upgrade() {
         entries.forEach((entry) => {
           if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
             setIsVideoVisible(true);
-            // Auto-play with muted audio to comply with browser policies
-            videoElement.muted = true;
+            
+            // First try to play with audio
+            videoElement.muted = false;
             videoElement.play().catch((error) => {
-              console.log('Auto-play prevented by browser:', error);
+              console.log('Auto-play with audio blocked, trying muted:', error);
+              // Fallback to muted auto-play if audio is blocked
+              videoElement.muted = true;
+              videoElement.play().catch((mutedError) => {
+                console.log('Auto-play completely prevented by browser:', mutedError);
+              });
             });
           } else {
             setIsVideoVisible(false);
@@ -246,7 +252,6 @@ export default function Windows10Upgrade() {
                   poster="/video-poster.svg"
                   style={{ maxHeight: '500px' }}
                   playsInline
-                  muted
                 >
                   <source src="/Win10Interviews_1751059835993.mp4" type="video/mp4" />
                   <p className="text-white p-4">
@@ -260,8 +265,9 @@ export default function Windows10Upgrade() {
                 
                 {/* Video overlay indicator when auto-playing */}
                 {isVideoVisible && (
-                  <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium animate-pulse">
-                    Auto-playing
+                  <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium animate-pulse flex items-center gap-2">
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    Now Playing
                   </div>
                 )}
               </div>
@@ -282,6 +288,11 @@ export default function Windows10Upgrade() {
               <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
                 Hear from real AramisTech customers about their seamless Windows 11 upgrade experience and how we kept their businesses running without interruption.
               </p>
+              <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-xl mx-auto">
+                <p className="text-blue-800 text-sm">
+                  <strong>🔊 Auto-Play with Audio:</strong> This video will automatically start playing with sound when it comes into view. Some browsers may require you to interact with the page first before allowing audio playback.
+                </p>
+              </div>
             </div>
           </div>
         </div>
