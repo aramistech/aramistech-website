@@ -177,6 +177,7 @@ Changelog:
 - June 27, 2025. Fixed local IP address detection on IP lookup page with improved WebRTC implementation, multiple STUN servers, better private IP validation, and graceful fallback handling for browser privacy restrictions
 - June 27, 2025. Added professional customer testimonial video to Windows 10 upgrade page with stunning gradient design, floating decorative elements, and strategic placement after countdown timer to build credibility and trust
 - June 27, 2025. Fixed video playback issue by configuring Express server to properly serve video files with correct MIME types and static file handling
+- June 27, 2025. Added AramisTech logo poster to testimonial video and implemented auto-play functionality when scrolling into view using Intersection Observer - video starts playing automatically when 50% visible and pauses when scrolled away
 ```
 
 ## User Preferences

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,6 +28,8 @@ export default function Windows10Upgrade() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
 
   // Calculate time remaining until Windows 10 support ends (October 14, 2025)
   useEffect(() => {
@@ -55,6 +57,39 @@ export default function Windows10Upgrade() {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  // Intersection Observer for video auto-play
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            setIsVideoVisible(true);
+            // Auto-play with muted audio to comply with browser policies
+            videoElement.muted = true;
+            videoElement.play().catch((error) => {
+              console.log('Auto-play prevented by browser:', error);
+            });
+          } else {
+            setIsVideoVisible(false);
+            if (!videoElement.paused) {
+              videoElement.pause();
+            }
+          }
+        });
+      },
+      { threshold: 0.5 } // Trigger when 50% of video is visible
+    );
+
+    observer.observe(videoElement);
+
+    return () => {
+      observer.unobserve(videoElement);
+    };
   }, []);
   
   const form = useForm<InsertContact>({
@@ -203,14 +238,17 @@ export default function Windows10Upgrade() {
               
               <div className="relative bg-black rounded-xl overflow-hidden shadow-xl">
                 <video 
+                  ref={videoRef}
                   controls 
-                  className="w-full h-auto"
+                  className="w-full h-auto transition-opacity duration-500"
                   preload="metadata"
                   controlsList="nodownload"
+                  poster="/video-poster.svg"
                   style={{ maxHeight: '500px' }}
+                  playsInline
+                  muted
                 >
                   <source src="/Win10Interviews_1751059835993.mp4" type="video/mp4" />
-                  <source src="/Win10Interviews_1751059835993.mp4" type="video/webm" />
                   <p className="text-white p-4">
                     Your browser does not support the video tag. 
                     <br />
@@ -219,6 +257,13 @@ export default function Windows10Upgrade() {
                     </a>
                   </p>
                 </video>
+                
+                {/* Video overlay indicator when auto-playing */}
+                {isVideoVisible && (
+                  <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium animate-pulse">
+                    Auto-playing
+                  </div>
+                )}
               </div>
               
               {/* Decorative Elements */}

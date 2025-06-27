@@ -1,0 +1,55 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4f46e5;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff6600;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff8533;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bgGradient)" />
+  
+  <!-- Semi-transparent overlay -->
+  <rect width="800" height="450" fill="rgba(0,0,0,0.3)" />
+  
+  <!-- AramisTech Logo -->
+  <g transform="translate(400, 180)">
+    <!-- Logo Circle Background -->
+    <circle cx="0" cy="0" r="60" fill="white" opacity="0.95" />
+    
+    <!-- Letter A in AramisTech orange -->
+    <text x="0" y="20" font-family="Inter, Arial, sans-serif" font-size="80" font-weight="bold" text-anchor="middle" fill="url(#logoGradient)">A</text>
+  </g>
+  
+  <!-- Company Name -->
+  <text x="400" y="280" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="bold" text-anchor="middle" fill="white">
+    AramisTech
+  </text>
+  
+  <!-- Tagline -->
+  <text x="400" y="310" font-family="Inter, Arial, sans-serif" font-size="18" text-anchor="middle" fill="rgba(255,255,255,0.9)">
+    Customer Testimonials
+  </text>
+  
+  <!-- Play Button -->
+  <g transform="translate(400, 225)">
+    <circle cx="0" cy="0" r="40" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2" />
+    <polygon points="-15,-20 -15,20 20,0" fill="white" />
+  </g>
+  
+  <!-- Windows 10 to 11 Upgrade Context -->
+  <text x="400" y="380" font-family="Inter, Arial, sans-serif" font-size="16" text-anchor="middle" fill="rgba(255,255,255,0.8)">
+    Windows 10 to Windows 11 Upgrade Success Stories
+  </text>
+  
+  <!-- Decorative elements -->
+  <circle cx="100" cy="80" r="8" fill="rgba(255,102,0,0.6)" />
+  <circle cx="700" cy="100" r="12" fill="rgba(255,255,255,0.3)" />
+  <circle cx="120" cy="350" r="6" fill="rgba(255,102,0,0.4)" />
+  <circle cx="680" cy="320" r="10" fill="rgba(255,255,255,0.2)" />
+</svg>
