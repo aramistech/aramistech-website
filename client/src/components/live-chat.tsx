@@ -508,11 +508,11 @@ export default function LiveChat({ className = "" }: LiveChatProps) {
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                      disabled={!isConnected}
+                      disabled={false}
                     />
                     <Button
                       onClick={sendMessage}
-                      disabled={!inputMessage.trim() || !isConnected}
+                      disabled={!inputMessage.trim()}
                       className="bg-orange-500 hover:bg-orange-600"
                     >
                       <Send className="h-4 w-4" />
