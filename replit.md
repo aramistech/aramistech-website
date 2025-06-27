@@ -193,6 +193,7 @@ Changelog:
 - June 27, 2025. Enhanced "Learn More" link in warning banner with bright yellow button styling, lightning bolt icon, pulsing animation, and hover effects to create prominent call-to-action that stands out against red background
 - June 27, 2025. Removed pulsing animation from "Learn More" button per user request - button now remains static while maintaining yellow styling, lightning bolt icon, and hover effects
 - June 27, 2025. Changed "Learn More" button icon from lightning bolt to solid arrow triangle (►) for better visibility and clearer action indication
+- June 27, 2025. Enhanced IP lookup page local IP detection with improved WebRTC implementation, multiple detection methods, and comprehensive user guidance when browser privacy settings block IP detection - now provides helpful instructions for manual IP discovery across Windows, Mac, and Linux platforms
 ```
 
 ## User Preferences

@@ -76,51 +76,95 @@ export default function IPLookup() {
   };
 
   const getLocalIPs = async (): Promise<string[]> => {
+    // Method 1: Try WebRTC approach
+    const webrtcIPs = await tryWebRTCDetection();
+    if (webrtcIPs.length > 0 && !webrtcIPs[0].includes('Unable')) {
+      return webrtcIPs;
+    }
+
+    // Method 2: Try Network Information API (limited support)
+    try {
+      const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+      if (connection && connection.effectiveType) {
+        console.log('Network connection detected:', connection.effectiveType);
+      }
+    } catch (error) {
+      console.log('Network Information API not available');
+    }
+
+    // Method 3: Return helpful guidance for finding local IP
+    return [
+      'Local IP detection blocked by browser privacy settings',
+      '',
+      'To find your local IP address:',
+      '• Windows: Open Command Prompt → type "ipconfig"',
+      '• Mac: System Preferences → Network → Advanced → TCP/IP',
+      '• Linux: Terminal → type "hostname -I" or "ip addr"',
+      '',
+      'Common private IP ranges:',
+      '• 192.168.1.x (Most home routers)',
+      '• 192.168.0.x (Default router settings)',
+      '• 10.0.0.x (Corporate networks)',
+      '• 172.16-31.x.x (Enterprise networks)'
+    ];
+  };
+
+  const tryWebRTCDetection = (): Promise<string[]> => {
     return new Promise((resolve) => {
       const ips: string[] = [];
       let completed = false;
       
       try {
-        // Enhanced WebRTC configuration with multiple STUN servers
-        const pc = new RTCPeerConnection({
+        // Create RTCPeerConnection with no STUN servers to get local candidates only
+        const pc1 = new RTCPeerConnection({
+          iceServers: []
+        });
+
+        // Create another with STUN servers for comparison
+        const pc2 = new RTCPeerConnection({
           iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' },
-            { urls: 'stun:stun3.l.google.com:19302' },
-            { urls: 'stun:stun4.l.google.com:19302' }
+            { urls: 'stun:stun1.l.google.com:19302' }
           ]
         });
 
-        // Create data channel to ensure candidate gathering
-        pc.createDataChannel('');
+        let candidatesReceived = 0;
+        const maxCandidates = 10;
 
-        pc.onicecandidate = (ice) => {
-          if (!ice || !ice.candidate || !ice.candidate.candidate) return;
+        const handleCandidate = (ice: RTCPeerConnectionIceEvent, source: string) => {
+          if (!ice || !ice.candidate) return;
           
+          candidatesReceived++;
           const candidate = ice.candidate.candidate;
-          console.log('ICE candidate:', candidate);
+          console.log(`${source} candidate:`, candidate);
           
-          // Extract IP from candidate string
-          const ipRegex = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/g;
-          const matches = candidate.match(ipRegex);
+          // Look for IPv4 addresses in various parts of the candidate string
+          const ipMatches = candidate.match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/g);
           
-          if (matches) {
-            matches.forEach(ip => {
-              // Validate and filter private IPs
+          if (ipMatches) {
+            ipMatches.forEach(ip => {
               if (isValidPrivateIP(ip) && !ips.includes(ip)) {
-                console.log('Found local IP:', ip);
+                console.log('Found valid local IP:', ip);
                 ips.push(ip);
+              } else if (ip !== '0.0.0.0' && !ip.startsWith('127.') && !ips.includes(ip)) {
+                // Also capture other non-loopback IPs for debugging
+                console.log('Found other IP:', ip);
               }
             });
           }
+
+          // Complete if we have enough candidates or found IPs
+          if (candidatesReceived >= maxCandidates || ips.length > 0) {
+            completeDetection();
+          }
         };
 
-        pc.onicegatheringstatechange = () => {
-          console.log('ICE gathering state:', pc.iceGatheringState);
-          if (pc.iceGatheringState === 'complete' && !completed) {
+        const completeDetection = () => {
+          if (!completed) {
             completed = true;
-            pc.close();
+            pc1.close();
+            pc2.close();
+            
             if (ips.length > 0) {
               resolve(ips);
             } else {
@@ -129,34 +173,27 @@ export default function IPLookup() {
           }
         };
 
-        // Create offer and set local description to start ICE gathering
-        pc.createOffer().then(offer => {
-          pc.setLocalDescription(offer);
-        }).catch(err => {
-          console.error('Error creating offer:', err);
-          if (!completed) {
-            completed = true;
-            pc.close();
-            resolve(['Error detecting local IP']);
-          }
+        pc1.onicecandidate = (ice) => handleCandidate(ice, 'Local');
+        pc2.onicecandidate = (ice) => handleCandidate(ice, 'STUN');
+
+        // Create data channels and offers
+        pc1.createDataChannel('local');
+        pc2.createDataChannel('stun');
+
+        Promise.all([
+          pc1.createOffer().then(offer => pc1.setLocalDescription(offer)),
+          pc2.createOffer().then(offer => pc2.setLocalDescription(offer))
+        ]).catch(err => {
+          console.error('Error creating offers:', err);
+          completeDetection();
         });
 
-        // Timeout fallback
-        setTimeout(() => {
-          if (!completed) {
-            completed = true;
-            pc.close();
-            if (ips.length > 0) {
-              resolve(ips);
-            } else {
-              resolve(['Unable to detect - Check browser settings']);
-            }
-          }
-        }, 5000);
+        // Shorter timeout since we're being more aggressive
+        setTimeout(completeDetection, 3000);
 
       } catch (error) {
-        console.error('WebRTC error:', error);
-        resolve(['WebRTC not supported']);
+        console.error('WebRTC detection failed:', error);
+        resolve(['WebRTC not supported in this browser']);
       }
     });
   };
