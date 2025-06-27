@@ -50,6 +50,8 @@ export default function AdminLiveChat() {
   const [inputMessage, setInputMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [unreadCounts, setUnreadCounts] = useState<Record<number, number>>({});
+  const [newTransferRequests, setNewTransferRequests] = useState<Set<number>>(new Set());
+  const [lastSessionCount, setLastSessionCount] = useState(0);
   
   const ws = useRef<WebSocket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -93,6 +95,62 @@ export default function AdminLiveChat() {
     workingHoursStart: "09:00",
     workingHoursEnd: "17:00",
     weekendAvailable: false,
+  };
+
+  // Detect new transfer requests
+  useEffect(() => {
+    const currentTransferSessions = sessions.filter(s => s.isHumanTransfer && !s.adminUserId);
+    const currentSessionCount = currentTransferSessions.length;
+    
+    if (currentSessionCount > lastSessionCount) {
+      // New transfer request detected
+      const newSessions = currentTransferSessions.slice(lastSessionCount);
+      newSessions.forEach(session => {
+        setNewTransferRequests(prev => new Set(prev).add(session.id));
+        
+        // Play notification sound and show browser notification
+        if (settings.notificationsEnabled) {
+          playNotificationSound();
+          showBrowserNotification(session);
+        }
+      });
+    }
+    
+    setLastSessionCount(currentSessionCount);
+  }, [sessions, lastSessionCount, settings.notificationsEnabled]);
+
+  const playNotificationSound = () => {
+    // Create a simple notification beep
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+  };
+
+  const showBrowserNotification = (session: ChatSession) => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('New Chat Transfer Request', {
+        body: `${session.customerName} is requesting technical support`,
+        icon: '/favicon.ico',
+        tag: `chat-${session.id}`
+      });
+    } else if ('Notification' in window && Notification.permission !== 'denied') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          showBrowserNotification(session);
+        }
+      });
+    }
   };
 
   const scrollToBottom = () => {
@@ -185,6 +243,13 @@ export default function AdminLiveChat() {
   const selectSession = async (session: ChatSession) => {
     setSelectedSession(session);
     setUnreadCounts(prev => ({ ...prev, [session.id]: 0 }));
+    
+    // Clear new transfer notification for this session
+    setNewTransferRequests(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(session.id);
+      return newSet;
+    });
     
     // Load messages for this session
     try {
@@ -305,6 +370,8 @@ export default function AdminLiveChat() {
                       "p-3 rounded-lg border cursor-pointer transition-colors",
                       selectedSession?.id === session.id
                         ? "bg-orange-50 border-orange-200"
+                        : newTransferRequests.has(session.id)
+                        ? "bg-red-50 border-red-200 animate-pulse"
                         : "bg-white hover:bg-gray-50"
                     )}
                   >
@@ -314,7 +381,12 @@ export default function AdminLiveChat() {
                           <h4 className="font-medium text-sm truncate">
                             {session.customerName}
                           </h4>
-                          {session.isHumanTransfer && (
+                          {newTransferRequests.has(session.id) && (
+                            <Badge variant="destructive" className="text-xs animate-pulse">
+                              🚨 NEW REQUEST
+                            </Badge>
+                          )}
+                          {session.isHumanTransfer && !newTransferRequests.has(session.id) && (
                             <Badge variant="secondary" className="text-xs">
                               Human
                             </Badge>
