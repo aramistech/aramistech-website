@@ -147,6 +147,8 @@ Changelog:
 - June 26, 2025. Created professional AI Development service page at /ai-development with comprehensive AI/ML solutions, development process, trust indicators, and AramisTech branding - added to main navigation menu
 - June 27, 2025. Fixed critical router conflicts caused by external URLs in database menu items - created server-side download proxy system for Microsoft Quick Assist and RustDesk downloads to eliminate wouter router errors and ensure proper navigation functionality
 - June 27, 2025. Resolved 404 navigation errors by fixing empty href handling in Support dropdown menu - implemented proper navigation logic for parent menu items without links and enhanced download URL processing
+- June 27, 2025. Integrated ChatGPT AI into chatbot system with OpenAI API - created intelligent customer service assistant with AramisTech branding, professional responses about IT services, and lead generation focus
+- June 27, 2025. Updated chatbot icon color to orange matching AramisTech logo branding for consistent visual identity
 ```
 
 ## User Preferences
