@@ -155,6 +155,7 @@ Changelog:
 - June 27, 2025. Updated chatbot interface to display "Powered by Google Gemini" instead of ChatGPT branding for accurate service identification
 - June 27, 2025. Changed chatbot footer from "Powered by Google Gemini" to "Call us today" for stronger lead generation call-to-action
 - June 27, 2025. Updated chatbot submit button to orange AramisTech branding matching logo colors for consistent visual identity
+- June 27, 2025. Enhanced chatbot responses with personal family-business tone, removed markdown formatting, and emphasized 27+ years experience for better brand representation
 ```
 
 ## User Preferences
