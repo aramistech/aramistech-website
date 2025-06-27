@@ -21,12 +21,21 @@
   25%, 75% { opacity: 0.8; }
 }
 
+@keyframes professionalGlow {
+  0%, 100% { text-shadow: 0 0 2px rgba(255, 255, 255, 0.3); }
+  50% { text-shadow: 0 0 8px rgba(255, 255, 255, 0.6); }
+}
+
 .critical-warning {
   animation: urgentPulse 2s ease-in-out infinite;
 }
 
 .critical-badge {
   animation: urgentFlash 1.5s ease-in-out infinite;
+}
+
+.professional-text {
+  animation: professionalGlow 3s ease-in-out infinite;
 }
 
 @keyframes slide-up {

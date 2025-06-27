@@ -111,12 +111,12 @@ export default function Header() {
               <span className="critical-badge bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                 CRITICAL
               </span>
-              <span className="font-semibold text-sm sm:text-base animate-pulse">
+              <span className="font-semibold text-sm sm:text-base professional-text">
                 Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats
               </span>
               <Link 
                 href="/windows10-upgrade" 
-                className="hidden sm:inline text-sm text-yellow-300 hover:text-yellow-100 animate-pulse underline transition-colors"
+                className="hidden sm:inline text-sm text-yellow-300 hover:text-yellow-100 professional-text underline transition-colors"
                 onClick={() => window.scrollTo(0, 0)}
               >
                 | Learn More
