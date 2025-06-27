@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import ITConsultationForm from "@/components/it-consultation-form";
-import SimpleConsultationForm from "@/components/simple-consultation-form";
 
 interface ExitIntentPopup {
   id: number;
@@ -154,13 +152,39 @@ export default function ExitIntentPopup() {
       </DialogContent>
       </Dialog>
       
-      {/* IT Consultation Form */}
-      <ITConsultationForm
-        isOpen={isConsultationFormOpen}
-        onClose={() => {
-          setIsConsultationFormOpen(false);
-        }}
-      />
+      {/* IT Consultation Success Dialog */}
+      <Dialog open={isConsultationFormOpen} onOpenChange={() => setIsConsultationFormOpen(false)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogTitle className="text-xl font-bold text-blue-900 mb-4">
+            Free IT Consultation Requested
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            IT consultation confirmation dialog
+          </DialogDescription>
+          <div className="space-y-4">
+            <p className="text-gray-700">
+              Thank you for your interest! Our IT experts will contact you within 2 business hours to discuss:
+            </p>
+            <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+              <li>Your current technology challenges</li>
+              <li>Customized IT solutions for your business</li>
+              <li>Pricing and implementation timeline</li>
+              <li>How we can improve your operations</li>
+            </ul>
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <p className="text-sm text-blue-800 font-medium">
+                Call us now for immediate assistance: <span className="font-bold">(305) 807-7015</span>
+              </p>
+            </div>
+            <button 
+              onClick={() => setIsConsultationFormOpen(false)}
+              className="w-full px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
