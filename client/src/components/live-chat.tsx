@@ -198,7 +198,7 @@ export default function LiveChat({ className = "" }: LiveChatProps) {
       const data = await response.json();
       let botResponseText = "I'm having trouble processing your request right now. Would you like to speak with one of our technicians? You can call us at (305) 814-4461 or email info@aramistech.com for immediate assistance.";
       
-      if (data.success) {
+      if (response.ok && data.response) {
         botResponseText = data.response;
       }
 
