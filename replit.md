@@ -187,6 +187,7 @@ Changelog:
 - June 27, 2025. Enhanced AI-Powered Promo Videos service with wide layout design and animated video production visualization featuring pulsing play button, AI enhancement particles, animated timeline, and floating elements in AramisTech orange branding
 - June 27, 2025. Removed live chat functionality from admin dashboard per user request - eliminated chat tab, navigation references, and component imports to streamline dashboard interface
 - June 27, 2025. Added critical red warning banner below topbar with urgent Windows 10 messaging and multiple animations - features pulsing background, flashing critical badge, animated text, and yellow urgency indicators to convey threat urgency
+- June 27, 2025. Updated warning banner text to "Your Systems Will Become Vulnerable to New Threats" and replaced contact message with "Learn More" link that navigates to Windows 10 upgrade page from top
 ```
 
 ## User Preferences

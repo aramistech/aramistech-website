@@ -112,11 +112,15 @@ export default function Header() {
                 CRITICAL
               </span>
               <span className="font-semibold text-sm sm:text-base animate-pulse">
-                Windows 10 Support Ending - Your Systems Become Vulnerable to New Threats
+                Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats
               </span>
-              <span className="hidden sm:inline text-sm text-red-200 animate-pulse">
-                | Contact AramisTech Today
-              </span>
+              <Link 
+                href="/windows10-upgrade" 
+                className="hidden sm:inline text-sm text-yellow-300 hover:text-yellow-100 animate-pulse underline transition-colors"
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                | Learn More
+              </Link>
             </div>
           </div>
         </div>
