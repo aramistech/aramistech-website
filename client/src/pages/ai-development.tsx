@@ -18,6 +18,7 @@ import {
   ArrowRight,
   Cpu,
   Code,
+  Video,
   BarChart3,
   Shield
 } from 'lucide-react';
@@ -438,6 +439,36 @@ export default function AIDevelopment() {
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
                     Scalable Architecture
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* AI-Powered Promo Videos */}
+            <Card className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-orange-500">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-4">
+                  <div className="p-3 bg-orange-100 rounded-lg mr-4 group-hover:bg-orange-200 transition-colors">
+                    <Video className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900">AI-Powered Promo Videos</h3>
+                </div>
+                <p className="text-gray-600 mb-4">
+                  Professional promotional videos created with cutting-edge AI tools, including intelligent 
+                  editing, custom prompts, and automated post-production for maximum marketing impact.
+                </p>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    AI-Enhanced Editing
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    Custom Script Generation
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                    Automated Visual Effects
                   </li>
                 </ul>
               </CardContent>
