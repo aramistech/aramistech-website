@@ -176,6 +176,7 @@ Changelog:
 - June 27, 2025. Enhanced chatbot button with outer glow hover effect using purple and blue gradients for improved user engagement
 - June 27, 2025. Fixed local IP address detection on IP lookup page with improved WebRTC implementation, multiple STUN servers, better private IP validation, and graceful fallback handling for browser privacy restrictions
 - June 27, 2025. Added professional customer testimonial video to Windows 10 upgrade page with stunning gradient design, floating decorative elements, and strategic placement after countdown timer to build credibility and trust
+- June 27, 2025. Fixed video playback issue by configuring Express server to properly serve video files with correct MIME types and static file handling
 ```
 
 ## User Preferences

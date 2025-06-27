@@ -2,10 +2,24 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { createDefaultAdmin, setupDefaultMenuItems } from "./setup-admin";
+import path from "path";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Static file serving with proper MIME types for video files
+app.use(express.static(path.join(process.cwd(), 'public'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.mp4')) {
+      res.setHeader('Content-Type', 'video/mp4');
+    } else if (filePath.endsWith('.webm')) {
+      res.setHeader('Content-Type', 'video/webm');
+    } else if (filePath.endsWith('.ogg')) {
+      res.setHeader('Content-Type', 'video/ogg');
+    }
+  }
+}));
 
 app.use((req, res, next) => {
   const start = Date.now();

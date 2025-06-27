@@ -205,11 +205,19 @@ export default function Windows10Upgrade() {
                 <video 
                   controls 
                   className="w-full h-auto"
-                  poster="/video-poster.jpg"
                   preload="metadata"
+                  controlsList="nodownload"
+                  style={{ maxHeight: '500px' }}
                 >
                   <source src="/Win10Interviews_1751059835993.mp4" type="video/mp4" />
-                  Your browser does not support the video tag. Please upgrade your browser to view this content.
+                  <source src="/Win10Interviews_1751059835993.mp4" type="video/webm" />
+                  <p className="text-white p-4">
+                    Your browser does not support the video tag. 
+                    <br />
+                    <a href="/Win10Interviews_1751059835993.mp4" className="text-blue-400 underline">
+                      Click here to download and view the video
+                    </a>
+                  </p>
                 </video>
               </div>
               
