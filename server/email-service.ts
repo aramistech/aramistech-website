@@ -43,6 +43,20 @@ export interface AIConsultationEmailData {
   preferredContactTime?: string | null;
 }
 
+export interface ITConsultationEmailData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  company?: string | null;
+  employees?: string | null;
+  services: string[];
+  urgency?: string | null;
+  budget?: string | null;
+  challenges: string;
+  preferredContactTime?: string | null;
+}
+
 export async function sendQuickQuoteEmail(data: QuickQuoteEmailData): Promise<void> {
   // Use a verified email address - this needs to be verified in AWS SES first
   const sourceEmail = process.env.SES_VERIFIED_EMAIL || "noreply@aramistech.com";
@@ -404,5 +418,130 @@ This email was generated automatically from your AI Development consultation for
   } catch (error) {
     console.error("Error sending AI consultation email:", error);
     throw new Error("Failed to send AI consultation email");
+  }
+}
+
+export async function sendITConsultationEmail(data: ITConsultationEmailData): Promise<void> {
+  const sourceEmail = process.env.SES_VERIFIED_EMAIL || "noreply@aramistech.com";
+  
+  const emailParams = {
+    Source: sourceEmail,
+    Destination: {
+      ToAddresses: ["sales@aramistech.com"],
+    },
+    Message: {
+      Subject: {
+        Data: "IT Services Consultation - AramisTech",
+        Charset: "UTF-8",
+      },
+      Body: {
+        Html: {
+          Data: `
+            <html>
+              <head>
+                <style>
+                  body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                  .header { background-color: #f97316; color: white; padding: 20px; text-align: center; }
+                  .content { padding: 20px; }
+                  .info-box { background-color: #f8f9fa; border-left: 4px solid #f97316; padding: 15px; margin: 10px 0; }
+                  .services-box { background-color: #e0f2fe; border-left: 4px solid #0277bd; padding: 15px; margin: 20px 0; }
+                  .challenges-box { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+                  .contact-info { background-color: #f3e5f5; border-left: 4px solid #7b1fa2; padding: 15px; margin: 20px 0; }
+                  .footer { background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #666; }
+                  .services-list { margin: 10px 0; }
+                  .services-list li { margin: 5px 0; }
+                </style>
+              </head>
+              <body>
+                <div class="header">
+                  <h1>🛠️ IT Services Consultation Request</h1>
+                  <p>AramisTech - Professional IT Solutions</p>
+                </div>
+                
+                <div class="content">
+                  <div class="info-box">
+                    <h3>Customer Information</h3>
+                    <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
+                    <p><strong>Email:</strong> ${data.email}</p>
+                    <p><strong>Phone:</strong> ${data.phone}</p>
+                    ${data.company ? `<p><strong>Company:</strong> ${data.company}</p>` : ''}
+                    ${data.employees ? `<p><strong>Number of Employees:</strong> ${data.employees}</p>` : ''}
+                  </div>
+                  
+                  <div class="services-box">
+                    <h3>🎯 IT Services Needed</h3>
+                    <ul class="services-list">
+                      ${data.services.map(service => `<li>${service}</li>`).join('')}
+                    </ul>
+                    ${data.urgency ? `<p><strong>Urgency Level:</strong> ${data.urgency}</p>` : ''}
+                    ${data.budget ? `<p><strong>Budget Range:</strong> ${data.budget}</p>` : ''}
+                  </div>
+                  
+                  <div class="challenges-box">
+                    <h3>🚨 IT Challenges</h3>
+                    <p style="background-color: white; padding: 10px; border-radius: 5px;">${data.challenges}</p>
+                    ${data.preferredContactTime ? `<p><strong>Preferred Contact Time:</strong> ${data.preferredContactTime}</p>` : ''}
+                  </div>
+                  
+                  <div class="contact-info">
+                    <h3>📞 Consultation Required</h3>
+                    <p>Customer has IT challenges and expects expert consultation within 2 hours during business hours.</p>
+                    <p><strong>This lead came from exit intent popup - they were about to leave!</strong></p>
+                  </div>
+                </div>
+                
+                <div class="footer">
+                  <p>AramisTech - 27+ Years of Professional IT Solutions</p>
+                  <p>This email was generated automatically from your exit intent consultation form.</p>
+                </div>
+              </body>
+            </html>
+          `,
+          Charset: "UTF-8",
+        },
+        Text: {
+          Data: `
+IT SERVICES CONSULTATION REQUEST - AramisTech
+
+Customer Information:
+Name: ${data.firstName} ${data.lastName}
+Email: ${data.email}
+Phone: ${data.phone}
+${data.company ? `Company: ${data.company}` : ''}
+${data.employees ? `Number of Employees: ${data.employees}` : ''}
+
+IT Services Needed:
+${data.services.map(service => `- ${service}`).join('\n')}
+
+Project Details:
+${data.urgency ? `Urgency Level: ${data.urgency}` : ''}
+${data.budget ? `Budget Range: ${data.budget}` : ''}
+
+IT Challenges:
+${data.challenges}
+
+${data.preferredContactTime ? `Preferred Contact Time: ${data.preferredContactTime}` : ''}
+
+📞 CONSULTATION REQUIRED
+Customer has IT challenges and expects expert consultation within 2 hours during business hours.
+THIS LEAD CAME FROM EXIT INTENT POPUP - THEY WERE ABOUT TO LEAVE!
+
+---
+AramisTech - 27+ Years of Professional IT Solutions
+This email was generated automatically from your exit intent consultation form.
+          `,
+          Charset: "UTF-8",
+        },
+      },
+    },
+  };
+
+  try {
+    const command = new SendEmailCommand(emailParams);
+    await sesClient.send(command);
+    console.log(`IT consultation email sent successfully for ${data.firstName} ${data.lastName}`);
+  } catch (error) {
+    console.error("Error sending IT consultation email:", error);
+    throw new Error("Failed to send IT consultation email");
   }
 }

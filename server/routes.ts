@@ -764,6 +764,51 @@ User message: ${message}`
     }
   });
 
+  // IT consultation form submission
+  app.post("/api/it-consultation", async (req, res) => {
+    try {
+      const validatedData = insertITConsultationSchema.parse(req.body);
+      const consultation = await storage.createITConsultation(validatedData);
+      
+      // Send email notification to sales team
+      try {
+        await sendITConsultationEmail({
+          firstName: validatedData.firstName,
+          lastName: validatedData.lastName,
+          email: validatedData.email,
+          phone: validatedData.phone,
+          company: validatedData.company || undefined,
+          employees: validatedData.employees || undefined,
+          services: validatedData.services,
+          urgency: validatedData.urgency || undefined,
+          budget: validatedData.budget || undefined,
+          challenges: validatedData.challenges,
+          preferredContactTime: validatedData.preferredContactTime || undefined,
+        });
+        console.log("IT consultation email sent successfully");
+      } catch (emailError) {
+        console.error("Failed to send IT consultation email:", emailError);
+        // Don't fail the request if email fails, just log the error
+      }
+      
+      res.json({ success: true, consultation });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ 
+          success: false, 
+          message: "Validation error", 
+          errors: error.errors 
+        });
+      } else {
+        console.error("IT consultation submission error:", error);
+        res.status(500).json({ 
+          success: false, 
+          message: "Failed to submit IT consultation request" 
+        });
+      }
+    }
+  });
+
   // Get all contacts (for admin purposes)
   app.get("/api/contacts", async (req, res) => {
     try {

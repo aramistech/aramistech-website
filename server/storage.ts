@@ -1,4 +1,4 @@
-import { users, contacts, quickQuotes, aiConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings } from "@shared/schema";
+import { users, contacts, quickQuotes, aiConsultations, itConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type ITConsultation, type InsertITConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, isNull, gt, sql, asc, ne } from "drizzle-orm";
 import bcrypt from "bcryptjs";
@@ -132,6 +132,21 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(aiConsultations)
       .orderBy(desc(aiConsultations.createdAt));
+  }
+
+  async createITConsultation(insertConsultation: InsertITConsultation): Promise<ITConsultation> {
+    const [consultation] = await db
+      .insert(itConsultations)
+      .values(insertConsultation)
+      .returning();
+    return consultation;
+  }
+
+  async getITConsultations(): Promise<ITConsultation[]> {
+    return await db
+      .select()
+      .from(itConsultations)
+      .orderBy(desc(itConsultations.createdAt));
   }
 
   async createReview(insertReview: InsertReview): Promise<Review> {
