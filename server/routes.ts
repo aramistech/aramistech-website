@@ -479,7 +479,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.redirect(302, 'https://apps.microsoft.com/store/detail/9p7bp5vnwkx5');
   });
 
-  // ChatGPT integration for chatbot
+  // Fallback responses for when ChatGPT is unavailable
+  const getFallbackResponse = (message: string): string => {
+    const lowerMessage = message.toLowerCase();
+    
+    // Greeting responses
+    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+      return "Hello! I'm here to help with your IT needs. AramisTech has been serving South Florida businesses for 27+ years. How can we assist you today? Call us at (305) 814-4461 or email sales@aramistech.com.";
+    }
+    
+    // Service inquiries
+    if (lowerMessage.includes('service') || lowerMessage.includes('help') || lowerMessage.includes('support')) {
+      return "We offer comprehensive IT services including cybersecurity, network management, Windows 10 upgrades, business solutions, and AI development. For personalized service, call us at (305) 814-4461 or email sales@aramistech.com.";
+    }
+    
+    // Technical issues
+    if (lowerMessage.includes('computer') || lowerMessage.includes('network') || lowerMessage.includes('slow') || lowerMessage.includes('virus') || lowerMessage.includes('problem')) {
+      return "We can help with computer and network issues! Our experienced technicians provide remote and on-site support. Call us immediately at (305) 814-4461 for technical assistance, or email sales@aramistech.com.";
+    }
+    
+    // Windows 10 specific
+    if (lowerMessage.includes('windows') || lowerMessage.includes('upgrade') || lowerMessage.includes('windows 10')) {
+      return "Windows 10 support ends October 14, 2025! We provide professional upgrade services to keep your business secure. Don't wait - call us at (305) 814-4461 to schedule your Windows upgrade consultation.";
+    }
+    
+    // Pricing inquiries
+    if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('quote')) {
+      return "We provide customized pricing based on your specific IT needs. As a family-owned business, we offer competitive rates and personalized service. Call us at (305) 814-4461 for a free consultation and quote.";
+    }
+    
+    // Default response
+    return "Thanks for contacting AramisTech! We're a family-owned IT company with 27+ years of experience serving South Florida businesses. For immediate assistance, call us at (305) 814-4461 or email sales@aramistech.com. We're here to help!";
+  };
+
+  // ChatGPT integration for chatbot with fallback system
   app.post("/api/chatbot", async (req, res) => {
     try {
       const { message } = req.body;
@@ -488,18 +521,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Message is required' });
       }
 
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-          messages: [
-            {
-              role: 'system',
-              content: `You are a helpful customer service assistant for AramisTech, a family-owned IT services company with 27+ years of experience serving South Florida businesses. 
+      // Try ChatGPT first, but fallback gracefully if it fails
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+            messages: [
+              {
+                role: 'system',
+                content: `You are a helpful customer service assistant for AramisTech, a family-owned IT services company with 27+ years of experience serving South Florida businesses. 
 
 AramisTech Services:
 - IT Support & Helpdesk
@@ -529,30 +564,42 @@ Guidelines:
 - Ask clarifying questions to better understand their needs
 - Mention relevant services that could help solve their problems
 - Keep responses concise but informative`
-            },
-            {
-              role: 'user',
-              content: message
-            }
-          ],
-          max_tokens: 300,
-          temperature: 0.7,
-        }),
-      });
+              },
+              {
+                role: 'user',
+                content: message
+              }
+            ],
+            max_tokens: 300,
+            temperature: 0.7,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.statusText}`);
+        if (response.ok) {
+          const data = await response.json();
+          const aiResponse = data.choices[0]?.message?.content;
+          if (aiResponse) {
+            return res.json({ response: aiResponse });
+          }
+        }
+        
+        // If we get here, ChatGPT didn't work properly
+        throw new Error('ChatGPT response failed');
+        
+      } catch (aiError) {
+        console.log('ChatGPT unavailable, using fallback response for:', message.substring(0, 50));
+        
+        // Use intelligent fallback response
+        const fallbackResponse = getFallbackResponse(message);
+        return res.json({ response: fallbackResponse });
       }
 
-      const data = await response.json();
-      const aiResponse = data.choices[0]?.message?.content || 'I apologize, but I encountered an issue. Please call us at (305) 814-4461 for immediate assistance.';
-
-      res.json({ response: aiResponse });
     } catch (error) {
-      console.error('ChatGPT API Error:', error);
-      res.status(500).json({ 
-        error: 'I apologize, but I\'m having technical difficulties. Please call us directly at (305) 814-4461 or email sales@aramistech.com for immediate assistance.' 
-      });
+      console.error('Chatbot Error:', error);
+      
+      // Final fallback if everything fails
+      const finalFallback = "Hi! I'm here to help with your IT needs. AramisTech provides professional IT services to South Florida businesses. Call us at (305) 814-4461 or email sales@aramistech.com for immediate assistance.";
+      res.json({ response: finalFallback });
     }
   });
 
