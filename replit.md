@@ -174,6 +174,7 @@ Changelog:
 - June 27, 2025. Integrated ChatGPT-powered chatbot with OpenAI API - provides intelligent customer service assistant with AramisTech branding, professional responses about IT services, and lead generation focus
 - June 27, 2025. Updated chatbot branding from "Powered by ChatGPT" to "Tech With A Personal Touch" for family-business feel matching AramisTech's personal service approach
 - June 27, 2025. Enhanced chatbot button with outer glow hover effect using purple and blue gradients for improved user engagement
+- June 27, 2025. Fixed local IP address detection on IP lookup page with improved WebRTC implementation, multiple STUN servers, better private IP validation, and graceful fallback handling for browser privacy restrictions
 ```
 
 ## User Preferences

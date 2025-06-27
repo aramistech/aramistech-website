@@ -75,46 +75,101 @@ export default function IPLookup() {
     }
   };
 
-  const getLocalIPs = () => {
-    return new Promise<string[]>((resolve) => {
-      const ips: string[] = [];
-      
-      // Create RTCPeerConnection to discover local IPs
+  const getLocalIPs = async () => {
+    const ips: string[] = [];
+    
+    try {
+      // Method 1: WebRTC with improved candidate handling
       const pc = new RTCPeerConnection({
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' }
+        ]
       });
 
-      pc.createDataChannel('');
+      // Create a data channel to trigger candidate gathering
+      const dataChannel = pc.createDataChannel('ip-discovery', { ordered: false });
       
-      pc.onicecandidate = (event) => {
-        if (event.candidate) {
-          const candidate = event.candidate.candidate;
-          const ipMatch = candidate.match(/(\d+\.\d+\.\d+\.\d+)/);
-          
-          if (ipMatch && ipMatch[1]) {
-            const ip = ipMatch[1];
-            // Filter out public IPs and duplicates
-            if (!ips.includes(ip) && 
-                (ip.startsWith('192.168.') || 
-                 ip.startsWith('10.') || 
-                 ip.startsWith('172.') ||
-                 ip.startsWith('169.254.'))) {
-              ips.push(ip);
+      const candidatePromise = new Promise<string[]>((resolve) => {
+        const foundIPs: string[] = [];
+        let timeoutId: NodeJS.Timeout;
+
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            const candidate = event.candidate.candidate;
+            
+            // Match IPv4 addresses
+            const ipv4Match = candidate.match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
+            if (ipv4Match && ipv4Match[1]) {
+              const ip = ipv4Match[1];
+              
+              // Check if it's a private IP and not already found
+              if (!foundIPs.includes(ip) && isPrivateIP(ip)) {
+                foundIPs.push(ip);
+              }
             }
           }
-        }
-      };
+        };
 
-      pc.createOffer()
-        .then(offer => pc.setLocalDescription(offer))
-        .catch(console.error);
+        pc.onicegatheringstatechange = () => {
+          if (pc.iceGatheringState === 'complete') {
+            clearTimeout(timeoutId);
+            pc.close();
+            resolve(foundIPs);
+          }
+        };
 
-      // Resolve after a short timeout
-      setTimeout(() => {
-        pc.close();
-        resolve(ips);
-      }, 2000);
-    });
+        // Fallback timeout
+        timeoutId = setTimeout(() => {
+          pc.close();
+          resolve(foundIPs);
+        }, 3000);
+      });
+
+      // Create offer to start ICE gathering
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      
+      const webrtcIPs = await candidatePromise;
+      ips.push(...webrtcIPs);
+
+    } catch (error) {
+      console.warn('WebRTC method failed:', error);
+    }
+
+    // Method 2: Fallback - attempt to detect common local IPs
+    if (ips.length === 0) {
+      try {
+        // This is a fallback that shows common local IP ranges
+        const commonLocalIPs = [
+          'Unable to detect - Privacy protected by browser',
+          'Common ranges: 192.168.1.x, 192.168.0.x, 10.0.0.x'
+        ];
+        return commonLocalIPs;
+      } catch (error) {
+        console.warn('Fallback method failed:', error);
+      }
+    }
+
+    return ips.length > 0 ? ips : ['Unable to detect local IP - Browser privacy settings'];
+  };
+
+  const isPrivateIP = (ip: string): boolean => {
+    const parts = ip.split('.').map(Number);
+    if (parts.length !== 4) return false;
+
+    // Check private IP ranges
+    return (
+      // 192.168.x.x
+      (parts[0] === 192 && parts[1] === 168) ||
+      // 10.x.x.x
+      (parts[0] === 10) ||
+      // 172.16.x.x - 172.31.x.x
+      (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) ||
+      // 169.254.x.x (link-local)
+      (parts[0] === 169 && parts[1] === 254)
+    );
   };
 
   const loadIPData = async () => {
@@ -288,34 +343,38 @@ export default function IPLookup() {
                   {localIPs.map((ip, index) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
-                        <span className="font-mono font-bold text-orange-600">
+                        <span className={`font-mono font-bold ${ip.startsWith('Unable') || ip.startsWith('Common') ? 'text-gray-500 text-sm' : 'text-orange-600'}`}>
                           {ip}
                         </span>
-                        <div className="flex gap-2 mt-1">
-                          {ip.startsWith('192.168.') && (
-                            <Badge variant="secondary" className="text-xs">
-                              Home Network
-                            </Badge>
-                          )}
-                          {ip.startsWith('10.') && (
-                            <Badge variant="secondary" className="text-xs">
-                              Private Network
-                            </Badge>
-                          )}
-                          {ip.startsWith('172.') && (
-                            <Badge variant="secondary" className="text-xs">
-                              Corporate Network
-                            </Badge>
-                          )}
-                        </div>
+                        {!ip.startsWith('Unable') && !ip.startsWith('Common') && (
+                          <div className="flex gap-2 mt-1">
+                            {ip.startsWith('192.168.') && (
+                              <Badge variant="secondary" className="text-xs">
+                                Home Network
+                              </Badge>
+                            )}
+                            {ip.startsWith('10.') && (
+                              <Badge variant="secondary" className="text-xs">
+                                Private Network
+                              </Badge>
+                            )}
+                            {ip.startsWith('172.') && (
+                              <Badge variant="secondary" className="text-xs">
+                                Corporate Network
+                              </Badge>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => copyToClipboard(ip, 'Local IP')}
-                      >
-                        <Copy className="w-4 h-4" />
-                      </Button>
+                      {!ip.startsWith('Unable') && !ip.startsWith('Common') && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyToClipboard(ip, 'Local IP')}
+                        >
+                          <Copy className="w-4 h-4" />
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
