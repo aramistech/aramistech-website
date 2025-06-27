@@ -651,11 +651,11 @@ User message: ${message}`
           lastName: validatedData.lastName,
           email: validatedData.email,
           phone: validatedData.phone,
-          company: validatedData.company,
-          service: validatedData.service,
-          employees: validatedData.employees,
-          challenges: validatedData.challenges,
-          contactTime: validatedData.contactTime,
+          company: validatedData.company || undefined,
+          service: validatedData.service || undefined,
+          employees: validatedData.employees || undefined,
+          challenges: validatedData.challenges || undefined,
+          contactTime: validatedData.contactTime || undefined,
         });
         console.log("Contact form email sent successfully");
       } catch (emailError) {
