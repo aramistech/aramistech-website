@@ -229,12 +229,22 @@ export default function ExitIntentPopup() {
       {/* IT Consultation Form */}
       <Dialog open={showConsultationForm} onOpenChange={() => setShowConsultationForm(false)}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogTitle className="text-xl font-bold text-blue-900 mb-4">
-            Get Your Free IT Consultation
-          </DialogTitle>
-          <DialogDescription className="text-gray-600 mb-6">
-            Tell us about your technology challenges and we'll provide personalized recommendations during your free consultation.
-          </DialogDescription>
+          {/* AramisTech Logo */}
+          <div className="flex items-center mb-6">
+            <img 
+              src="https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png" 
+              alt="AramisTech Logo" 
+              className="h-16 w-auto mr-4"
+            />
+            <div>
+              <DialogTitle className="text-xl font-bold text-blue-900 mb-2">
+                Get Your Free IT Consultation
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                Tell us about your technology challenges and we'll provide personalized recommendations during your free consultation.
+              </DialogDescription>
+            </div>
+          </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Contact Information */}
