@@ -103,42 +103,81 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <Tabs defaultValue="livechat" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
-              <TabsTrigger value="livechat" className="flex items-center gap-1 sm:gap-2">
-                <MessageCircle className="w-4 h-4" />
-                <span className="hidden xs:inline">Live Chat</span>
-                <span className="xs:hidden">Chat</span>
-              </TabsTrigger>
-              <TabsTrigger value="reviews" className="flex items-center gap-1 sm:gap-2">
-                <Star className="w-4 h-4" />
-                <span className="hidden xs:inline">Reviews</span>
-                <span className="xs:hidden">Reviews</span>
-              </TabsTrigger>
-              <TabsTrigger value="knowledge" className="flex items-center gap-2">
-                <Settings className="w-4 h-4" />
-                Knowledge Base
-              </TabsTrigger>
-              <TabsTrigger value="menu" className="flex items-center gap-2">
-                <Menu className="w-4 h-4" />
-                Menu Management
-              </TabsTrigger>
-              <TabsTrigger value="users" className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                Admin Users
-              </TabsTrigger>
-              <TabsTrigger value="media" className="flex items-center gap-2">
-                <ImageIcon className="w-4 h-4" />
-                Media Library
-              </TabsTrigger>
-              <TabsTrigger value="popup" className="flex items-center gap-2">
-                <ExternalLink className="w-4 h-4" />
-                Exit Popup
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4" />
-                Analytics
-              </TabsTrigger>
-            </TabsList>
+            {/* Mobile Tab Navigation */}
+            <div className="sm:hidden">
+              <TabsList className="flex overflow-x-auto w-full gap-1 p-1 h-auto">
+                <TabsTrigger value="livechat" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <MessageCircle className="w-4 h-4" />
+                  Chat
+                </TabsTrigger>
+                <TabsTrigger value="reviews" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <Star className="w-4 h-4" />
+                  Reviews
+                </TabsTrigger>
+                <TabsTrigger value="knowledge" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <Settings className="w-4 h-4" />
+                  KB
+                </TabsTrigger>
+                <TabsTrigger value="menu" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <Menu className="w-4 h-4" />
+                  Menu
+                </TabsTrigger>
+                <TabsTrigger value="users" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <Users className="w-4 h-4" />
+                  Users
+                </TabsTrigger>
+                <TabsTrigger value="media" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <ImageIcon className="w-4 h-4" />
+                  Media
+                </TabsTrigger>
+                <TabsTrigger value="popup" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <ExternalLink className="w-4 h-4" />
+                  Popup
+                </TabsTrigger>
+                <TabsTrigger value="analytics" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <BarChart3 className="w-4 h-4" />
+                  Stats
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            {/* Desktop Tab Navigation */}
+            <div className="hidden sm:block">
+              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
+                <TabsTrigger value="livechat" className="flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4" />
+                  Live Chat
+                </TabsTrigger>
+                <TabsTrigger value="reviews" className="flex items-center gap-2">
+                  <Star className="w-4 h-4" />
+                  Reviews
+                </TabsTrigger>
+                <TabsTrigger value="knowledge" className="flex items-center gap-2">
+                  <Settings className="w-4 h-4" />
+                  Knowledge Base
+                </TabsTrigger>
+                <TabsTrigger value="menu" className="flex items-center gap-2">
+                  <Menu className="w-4 h-4" />
+                  Menu Management
+                </TabsTrigger>
+                <TabsTrigger value="users" className="flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  Admin Users
+                </TabsTrigger>
+                <TabsTrigger value="media" className="flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4" />
+                  Media Library
+                </TabsTrigger>
+                <TabsTrigger value="popup" className="flex items-center gap-2">
+                  <ExternalLink className="w-4 h-4" />
+                  Exit Popup
+                </TabsTrigger>
+                <TabsTrigger value="analytics" className="flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4" />
+                  Analytics
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="reviews" className="space-y-4">
               <Card>
