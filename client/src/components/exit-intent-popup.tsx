@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import ITConsultationForm from "@/components/it-consultation-form";
 
 interface ExitIntentPopup {
   id: number;
@@ -20,6 +20,7 @@ interface ExitIntentPopup {
 export default function ExitIntentPopup() {
   const [isVisible, setIsVisible] = useState(false);
   const [hasShown, setHasShown] = useState(false);
+  const [isConsultationFormOpen, setIsConsultationFormOpen] = useState(false);
 
   const { data: popupData } = useQuery<{ success: boolean; popup?: ExitIntentPopup }>({
     queryKey: ["/api/exit-intent-popup"],
@@ -112,18 +113,19 @@ export default function ExitIntentPopup() {
             </p>
 
             {/* Action button */}
-            <Link href={popup.buttonUrl}>
-              <Button
-                className="w-full py-3 text-lg font-semibold"
-                onClick={() => setIsVisible(false)}
-                style={{
-                  backgroundColor: popup.buttonColor,
-                  color: popup.backgroundColor,
-                }}
-              >
-                {popup.buttonText}
-              </Button>
-            </Link>
+            <Button
+              className="w-full py-3 text-lg font-semibold"
+              onClick={() => {
+                setIsVisible(false);
+                setIsConsultationFormOpen(true);
+              }}
+              style={{
+                backgroundColor: popup.buttonColor,
+                color: popup.backgroundColor,
+              }}
+            >
+              {popup.buttonText}
+            </Button>
 
             {/* Small dismiss text */}
             <button
@@ -137,5 +139,11 @@ export default function ExitIntentPopup() {
         </div>
       </DialogContent>
     </Dialog>
-  );
+    
+    {/* IT Consultation Form */}
+    <ITConsultationForm
+      isOpen={isConsultationFormOpen}
+      onClose={() => setIsConsultationFormOpen(false)}
+    />
+  </>;
 }
