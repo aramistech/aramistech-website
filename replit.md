@@ -149,6 +149,7 @@ Changelog:
 - June 27, 2025. Resolved 404 navigation errors by fixing empty href handling in Support dropdown menu - implemented proper navigation logic for parent menu items without links and enhanced download URL processing
 - June 27, 2025. Integrated ChatGPT AI into chatbot system with OpenAI API - created intelligent customer service assistant with AramisTech branding, professional responses about IT services, and lead generation focus
 - June 27, 2025. Updated chatbot icon color to orange matching AramisTech logo branding for consistent visual identity
+- June 27, 2025. Enhanced chatbot button with slower pulse animation and outer glow hover effect for improved user engagement
 ```
 
 ## User Preferences

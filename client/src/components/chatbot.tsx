@@ -108,12 +108,17 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
   return (
     <div className={`fixed bottom-4 right-4 z-50 ${className}`}>
       {!isOpen && (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="w-14 h-14 rounded-full bg-aramis-orange hover:bg-orange-600 shadow-lg animate-pulse hover:shadow-2xl hover:shadow-orange-400/50 transition-all duration-300 hover:scale-110"
-        >
-          <MessageCircle className="w-6 h-6 text-white" />
-        </Button>
+        <div className="relative">
+          <Button
+            onClick={() => setIsOpen(true)}
+            className="w-14 h-14 rounded-full bg-aramis-orange hover:bg-orange-600 shadow-lg transition-all duration-300 hover:scale-110 animate-pulse"
+            style={{ animationDuration: '3s' }}
+          >
+            <MessageCircle className="w-6 h-6 text-white" />
+          </Button>
+          {/* Outer glow on hover */}
+          <div className="absolute inset-0 rounded-full bg-aramis-orange opacity-0 hover:opacity-30 transition-opacity duration-300 blur-lg scale-150 pointer-events-none"></div>
+        </div>
       )}
 
       {isOpen && (
