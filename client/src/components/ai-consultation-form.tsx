@@ -75,13 +75,7 @@ export default function AIConsultationForm({ isOpen, onClose }: AIConsultationFo
 
   const submitConsultation = useMutation({
     mutationFn: async (data: AIConsultationFormData) => {
-      return await apiRequest('/api/ai-consultation', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      return await apiRequest('/api/ai-consultation', 'POST', data);
     },
     onSuccess: () => {
       setIsSuccess(true);

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DynamicHeader from '@/components/dynamic-header';
 import Footer from '@/components/footer';
+import AIConsultationForm from '@/components/ai-consultation-form';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,8 @@ import { Link } from 'wouter';
 
 
 export default function AIDevelopment() {
+  const [isConsultationFormOpen, setIsConsultationFormOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-white">
       <DynamicHeader />
@@ -47,12 +50,14 @@ export default function AIDevelopment() {
                 drive efficiency and innovation for South Florida businesses.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="#contact">
-                  <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3">
-                    Start Your AI Project
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-                </Link>
+                <Button 
+                  size="lg" 
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3"
+                  onClick={() => setIsConsultationFormOpen(true)}
+                >
+                  Start Your AI Project
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
                 <Link href="#services">
                   <Button size="lg" variant="outline" className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white px-8 py-3">
                     Explore AI Services
@@ -597,12 +602,14 @@ export default function AIDevelopment() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/">
-              <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3">
-                Schedule Free AI Consultation
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3"
+              onClick={() => setIsConsultationFormOpen(true)}
+            >
+              Schedule Free AI Consultation
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
             <Link href="tel:+1-305-807-7015">
               <Button size="lg" variant="outline" className="border-white text-orange-400 hover:bg-white hover:text-blue-900 px-8 py-3">
                 Call Now: (305) 807-7015
@@ -628,6 +635,12 @@ export default function AIDevelopment() {
       </section>
 
       <Footer />
+      
+      {/* AI Consultation Form */}
+      <AIConsultationForm
+        isOpen={isConsultationFormOpen}
+        onClose={() => setIsConsultationFormOpen(false)}
+      />
     </div>
   );
 }
