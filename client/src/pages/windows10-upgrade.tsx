@@ -184,6 +184,56 @@ export default function Windows10Upgrade() {
         </div>
       </div>
 
+      {/* Video Section */}
+      <div className="bg-white py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary-blue mb-4">
+              See What Our Customers Are Saying
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Real testimonials from South Florida businesses who trusted AramisTech with their Windows 10 to Windows 11 upgrades
+            </p>
+          </div>
+          
+          <div className="relative max-w-4xl mx-auto">
+            {/* Video Container with Cool Design */}
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-blue-600 to-purple-700 p-6">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-700/20 backdrop-blur-sm"></div>
+              
+              <div className="relative bg-black rounded-xl overflow-hidden shadow-xl">
+                <video 
+                  controls 
+                  className="w-full h-auto"
+                  poster="/video-poster.jpg"
+                  preload="metadata"
+                >
+                  <source src="/Win10Interviews_1751059835993.mp4" type="video/mp4" />
+                  Your browser does not support the video tag. Please upgrade your browser to view this content.
+                </video>
+              </div>
+              
+              {/* Decorative Elements */}
+              <div className="absolute -top-3 -left-3 w-6 h-6 bg-orange-400 rounded-full opacity-80"></div>
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-blue-300 rounded-full opacity-60"></div>
+              <div className="absolute -bottom-2 -left-2 w-5 h-5 bg-purple-400 rounded-full opacity-70"></div>
+              <div className="absolute -bottom-3 -right-3 w-7 h-7 bg-orange-300 rounded-full opacity-50"></div>
+            </div>
+            
+            {/* Video Description */}
+            <div className="mt-8 text-center">
+              <div className="inline-flex items-center gap-3 bg-green-50 border border-green-200 rounded-full px-6 py-3">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <span className="text-green-700 font-semibold">27+ Years of IT Excellence</span>
+              </div>
+              <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+                Hear from real AramisTech customers about their seamless Windows 11 upgrade experience and how we kept their businesses running without interruption.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid lg:grid-cols-2 gap-12">

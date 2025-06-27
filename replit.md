@@ -175,6 +175,7 @@ Changelog:
 - June 27, 2025. Updated chatbot branding from "Powered by ChatGPT" to "Tech With A Personal Touch" for family-business feel matching AramisTech's personal service approach
 - June 27, 2025. Enhanced chatbot button with outer glow hover effect using purple and blue gradients for improved user engagement
 - June 27, 2025. Fixed local IP address detection on IP lookup page with improved WebRTC implementation, multiple STUN servers, better private IP validation, and graceful fallback handling for browser privacy restrictions
+- June 27, 2025. Added professional customer testimonial video to Windows 10 upgrade page with stunning gradient design, floating decorative elements, and strategic placement after countdown timer to build credibility and trust
 ```
 
 ## User Preferences
