@@ -49,7 +49,11 @@ function App() {
     }
 
     // Initialize WHMCS integration
-    initializeWHMCS();
+    initializeWHMCS({
+      baseUrl: 'https://aramistech.com/abilling',
+      apiIdentifier: '',
+      apiSecret: ''
+    });
   }, []);
 
   return (
