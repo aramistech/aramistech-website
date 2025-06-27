@@ -72,7 +72,7 @@ export default function KnowledgeBase() {
     <div className="min-h-screen bg-white">
       <DynamicHeader />
       
-      <main className="pt-20">
+      <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-primary-blue to-blue-600 text-white py-16">
           <div className="container mx-auto px-4">

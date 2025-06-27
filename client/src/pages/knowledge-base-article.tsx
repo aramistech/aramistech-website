@@ -47,7 +47,7 @@ export default function KnowledgeBaseArticle() {
     return (
       <div className="min-h-screen bg-white">
         <DynamicHeader />
-        <main className="pt-20">
+        <main>
           <div className="container mx-auto px-4 py-12">
             <div className="max-w-4xl mx-auto">
               <div className="animate-pulse">
@@ -71,7 +71,7 @@ export default function KnowledgeBaseArticle() {
     return (
       <div className="min-h-screen bg-white">
         <DynamicHeader />
-        <main className="pt-20">
+        <main>
           <div className="container mx-auto px-4 py-12">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-2xl font-bold text-gray-800 mb-4">Article Not Found</h1>
@@ -144,7 +144,7 @@ export default function KnowledgeBaseArticle() {
     <div className="min-h-screen bg-white">
       <DynamicHeader />
       
-      <main className="pt-20">
+      <main>
         {/* Breadcrumb */}
         <section className="bg-gray-50 py-6">
           <div className="container mx-auto px-4">
