@@ -170,8 +170,7 @@ Changelog:
 - June 27, 2025. Added AramisTech logo to IT consultation form header for professional branding and fixed API endpoint URL mismatch - form now successfully submits consultation requests with email delivery to sales@aramistech.com, confirmed working with test submission
 - June 27, 2025. Enhanced chatbot with improved technical responses for blue screen errors, network issues, slow computers, and printer problems - replaced generic responses with specific troubleshooting guidance while maintaining lead generation focus
 - June 27, 2025. Implemented urgent email notification system for technician transfer requests - when customers click "talk with a technician", sales@aramistech.com receives immediate alerts with customer details, session context, and last message for quick response
-- June 27, 2025. Replaced problematic custom live chat system with professional Tawk.to integration - provides reliable mobile apps for iOS/Android, instant push notifications, real-time chat functionality, and eliminates WebSocket errors for improved customer service experience
-- June 27, 2025. Added Gemini AI chatbot alongside Tawk.to live chat - customers get both 24/7 AI technical support (left side) for immediate troubleshooting guidance and live human chat (right side) for complex issues, creating comprehensive dual-channel customer service system
+- June 27, 2025. Removed all live chat systems (Tawk.to and Gemini chatbot) per user request - website now focuses on core lead generation through contact forms, exit intent popup, and consultation forms with email notifications to sales@aramistech.com
 ```
 
 ## User Preferences

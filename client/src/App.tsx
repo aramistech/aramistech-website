@@ -15,7 +15,6 @@ import AIDevelopment from "@/pages/ai-development";
 import KnowledgeBase from "@/pages/knowledge-base";
 import KnowledgeBaseArticle from "@/pages/knowledge-base-article";
 import SocialProofPopup from "@/components/social-proof-popup";
-import GeminiChatbot from "@/components/gemini-chatbot";
 import { useEffect } from "react";
 import { initGA } from "./lib/analytics";
 import { useAnalytics } from "./hooks/use-analytics";
@@ -66,7 +65,6 @@ function App() {
         <Router />
         <Toaster />
         <SocialProofPopup />
-        <GeminiChatbot className="fixed bottom-4 left-4 z-40" />
       </TooltipProvider>
     </QueryClientProvider>
   );
