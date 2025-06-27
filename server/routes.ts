@@ -3,7 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -1081,6 +1081,163 @@ User message: ${message}`
       res.json({ success: true });
     } catch (error) {
       res.status(400).json({ success: false, message: 'Invalid webhook data' });
+    }
+  });
+
+  // Knowledge Base API Routes
+  
+  // Public knowledge base routes
+  app.get("/api/knowledge-base/categories", async (req, res) => {
+    try {
+      const categories = await storage.getKnowledgeBaseCategories();
+      const visibleCategories = categories.filter(cat => cat.isVisible);
+      res.json({ success: true, categories: visibleCategories });
+    } catch (error) {
+      console.error("Error fetching knowledge base categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  app.get("/api/knowledge-base/articles", async (req, res) => {
+    try {
+      const categoryId = req.query.category ? parseInt(req.query.category as string) : undefined;
+      let articles;
+      
+      if (categoryId) {
+        articles = await storage.getKnowledgeBaseArticlesByCategory(categoryId);
+      } else {
+        articles = await storage.getKnowledgeBaseArticles();
+      }
+      
+      const publishedArticles = articles.filter(article => article.isPublished);
+      res.json({ success: true, articles: publishedArticles });
+    } catch (error) {
+      console.error("Error fetching knowledge base articles:", error);
+      res.status(500).json({ error: "Failed to fetch articles" });
+    }
+  });
+
+  app.get("/api/knowledge-base/article/:slug", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const article = await storage.getKnowledgeBaseArticleBySlug(slug);
+      
+      if (!article || !article.isPublished) {
+        return res.status(404).json({ error: "Article not found" });
+      }
+      
+      // Increment view count
+      await storage.incrementKnowledgeBaseArticleViews(article.id);
+      
+      res.json({ success: true, article });
+    } catch (error) {
+      console.error("Error fetching knowledge base article:", error);
+      res.status(500).json({ error: "Failed to fetch article" });
+    }
+  });
+
+  // Admin knowledge base routes (protected)
+  app.get("/api/admin/knowledge-base/categories", requireAdminAuth, async (req, res) => {
+    try {
+      const categories = await storage.getKnowledgeBaseCategories();
+      res.json({ success: true, categories });
+    } catch (error) {
+      console.error("Error fetching admin knowledge base categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  app.post("/api/admin/knowledge-base/categories", requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertKnowledgeBaseCategorySchema.parse(req.body);
+      const category = await storage.createKnowledgeBaseCategory(validatedData);
+      res.json({ success: true, category });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ success: false, message: "Validation error", errors: error.errors });
+      } else {
+        console.error("Error creating knowledge base category:", error);
+        res.status(500).json({ error: "Failed to create category" });
+      }
+    }
+  });
+
+  app.put("/api/admin/knowledge-base/categories/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertKnowledgeBaseCategorySchema.partial().parse(req.body);
+      const category = await storage.updateKnowledgeBaseCategory(id, validatedData);
+      res.json({ success: true, category });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ success: false, message: "Validation error", errors: error.errors });
+      } else {
+        console.error("Error updating knowledge base category:", error);
+        res.status(500).json({ error: "Failed to update category" });
+      }
+    }
+  });
+
+  app.delete("/api/admin/knowledge-base/categories/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteKnowledgeBaseCategory(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting knowledge base category:", error);
+      res.status(500).json({ error: "Failed to delete category" });
+    }
+  });
+
+  app.get("/api/admin/knowledge-base/articles", requireAdminAuth, async (req, res) => {
+    try {
+      const articles = await storage.getKnowledgeBaseArticles();
+      res.json({ success: true, articles });
+    } catch (error) {
+      console.error("Error fetching admin knowledge base articles:", error);
+      res.status(500).json({ error: "Failed to fetch articles" });
+    }
+  });
+
+  app.post("/api/admin/knowledge-base/articles", requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertKnowledgeBaseArticleSchema.parse(req.body);
+      const article = await storage.createKnowledgeBaseArticle(validatedData);
+      res.json({ success: true, article });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ success: false, message: "Validation error", errors: error.errors });
+      } else {
+        console.error("Error creating knowledge base article:", error);
+        res.status(500).json({ error: "Failed to create article" });
+      }
+    }
+  });
+
+  app.put("/api/admin/knowledge-base/articles/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertKnowledgeBaseArticleSchema.partial().parse(req.body);
+      const article = await storage.updateKnowledgeBaseArticle(id, validatedData);
+      res.json({ success: true, article });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ success: false, message: "Validation error", errors: error.errors });
+      } else {
+        console.error("Error updating knowledge base article:", error);
+        res.status(500).json({ error: "Failed to update article" });
+      }
+    }
+  });
+
+  app.delete("/api/admin/knowledge-base/articles/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteKnowledgeBaseArticle(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting knowledge base article:", error);
+      res.status(500).json({ error: "Failed to delete article" });
     }
   });
 

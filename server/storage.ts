@@ -1,6 +1,6 @@
 import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, isNull, gt } from "drizzle-orm";
+import { eq, desc, and, isNull, gt, sql } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 export interface IStorage {
@@ -394,7 +394,7 @@ export class DatabaseStorage implements IStorage {
     await db
       .update(knowledgeBaseArticles)
       .set({ 
-        viewCount: knowledgeBaseArticles.viewCount + 1
+        viewCount: sql`view_count + 1`
       })
       .where(eq(knowledgeBaseArticles.id, id));
   }
