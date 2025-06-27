@@ -102,10 +102,14 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <Tabs defaultValue="reviews" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="reviews" className="flex items-center gap-2">
                 <Star className="w-4 h-4" />
                 Reviews
+              </TabsTrigger>
+              <TabsTrigger value="knowledge" className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                Knowledge Base
               </TabsTrigger>
               <TabsTrigger value="menu" className="flex items-center gap-2">
                 <Menu className="w-4 h-4" />
@@ -142,6 +146,23 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <AdminReviews />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="knowledge" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Settings className="w-5 h-5" />
+                    Knowledge Base Management
+                  </CardTitle>
+                  <CardDescription>
+                    Create and manage help articles, troubleshooting guides, and IT knowledge for your customers
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <KnowledgeBaseManager />
                 </CardContent>
               </Card>
             </TabsContent>
