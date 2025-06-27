@@ -153,6 +153,7 @@ Changelog:
 - June 27, 2025. Added intelligent fallback response system to chatbot for when OpenAI API hits rate limits - provides contextual AramisTech responses based on message content
 - June 27, 2025. Switched chatbot from ChatGPT to Google Gemini 2.5 Flash for improved performance and better rate limits while maintaining all AramisTech branding and intelligent responses
 - June 27, 2025. Updated chatbot interface to display "Powered by Google Gemini" instead of ChatGPT branding for accurate service identification
+- June 27, 2025. Changed chatbot footer from "Powered by Google Gemini" to "Call us today" for stronger lead generation call-to-action
 ```
 
 ## User Preferences
