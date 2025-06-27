@@ -209,7 +209,7 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
               <Button
                 onClick={handleSendMessage}
                 disabled={inputValue.trim() === "" || isTyping}
-                className="bg-primary-blue hover:bg-blue-700"
+                className="bg-aramis-orange hover:bg-orange-600"
               >
                 <Send className="w-4 h-4" />
               </Button>
