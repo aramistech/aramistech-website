@@ -336,18 +336,18 @@ export default function AdminLiveChat() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Live Chat Management</h2>
-        <div className="flex items-center gap-4">
+      <div className="space-y-3 mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold">Live Chat Management</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           <div className="flex items-center gap-2">
-            <Label htmlFor="online-status">Online</Label>
+            <Label htmlFor="online-status" className="text-sm">Online</Label>
             <Switch
               id="online-status"
               checked={settings.isOnline}
               onCheckedChange={toggleOnlineStatus}
             />
           </div>
-          <Badge variant={isConnected ? "default" : "destructive"}>
+          <Badge variant={isConnected ? "default" : "destructive"} className="w-fit">
             {isConnected ? "Connected" : "Disconnected"}
           </Badge>
         </div>
@@ -374,7 +374,7 @@ export default function AdminLiveChat() {
                     key={session.id}
                     onClick={() => selectSession(session)}
                     className={cn(
-                      "p-3 rounded-lg border cursor-pointer transition-colors",
+                      "p-2 sm:p-3 rounded-lg border cursor-pointer transition-colors",
                       selectedSession?.id === session.id
                         ? "bg-orange-50 border-orange-200"
                         : newTransferRequests.has(session.id)
@@ -383,45 +383,45 @@ export default function AdminLiveChat() {
                     )}
                   >
                     <div className="space-y-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <h4 className="font-medium text-sm truncate flex-1">
+                      <div className="flex items-start justify-between gap-2 min-h-[20px]">
+                        <h4 className="font-medium text-sm truncate flex-1 leading-5">
                           {session.customerName}
                         </h4>
-                        <div className="flex-shrink-0">
+                        <div className="flex flex-col gap-1 items-end flex-shrink-0">
                           {newTransferRequests.has(session.id) && (
-                            <Badge variant="destructive" className="text-xs animate-pulse">
+                            <Badge variant="destructive" className="text-xs animate-pulse whitespace-nowrap">
                               🚨 NEW
                             </Badge>
                           )}
                           {session.isHumanTransfer && !newTransferRequests.has(session.id) && (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge variant="secondary" className="text-xs whitespace-nowrap">
                               Human
                             </Badge>
                           )}
                           {unreadCounts[session.id] > 0 && (
-                            <Badge variant="destructive" className="text-xs">
+                            <Badge variant="destructive" className="text-xs whitespace-nowrap">
                               {unreadCounts[session.id]}
                             </Badge>
                           )}
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
-                        <Clock className="w-3 h-3" />
-                        <span className="truncate">{formatDate(session.lastMessageAt)}</span>
+                      <div className="flex items-center gap-1 text-xs text-gray-500 min-h-[16px]">
+                        <Clock className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate leading-4">{formatDate(session.lastMessageAt)}</span>
                       </div>
                       
                       <div className="space-y-1">
                         {session.customerEmail && (
-                          <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <div className="flex items-center gap-1 text-xs text-gray-500 min-h-[16px]">
                             <Mail className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate">{session.customerEmail}</span>
+                            <span className="truncate leading-4">{session.customerEmail}</span>
                           </div>
                         )}
                         {session.customerPhone && (
-                          <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <div className="flex items-center gap-1 text-xs text-gray-500 min-h-[16px]">
                             <Phone className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate">{session.customerPhone}</span>
+                            <span className="truncate leading-4">{session.customerPhone}</span>
                           </div>
                         )}
                       </div>
