@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ITConsultationForm from "@/components/it-consultation-form";
 
@@ -21,6 +21,11 @@ export default function ExitIntentPopup() {
   const [isVisible, setIsVisible] = useState(false);
   const [hasShown, setHasShown] = useState(false);
   const [isConsultationFormOpen, setIsConsultationFormOpen] = useState(false);
+
+  // Debug logging for consultation form state
+  useEffect(() => {
+    console.log("EXIT INTENT POPUP: Consultation form state changed:", isConsultationFormOpen);
+  }, [isConsultationFormOpen]);
 
   const { data: popupData } = useQuery<{ success: boolean; popup?: ExitIntentPopup }>({
     queryKey: ["/api/exit-intent-popup"],
@@ -78,55 +83,65 @@ export default function ExitIntentPopup() {
     <>
       <Dialog open={isVisible} onOpenChange={setIsVisible}>
         <DialogContent 
-        className="max-w-md p-0 overflow-hidden"
-        style={{ 
-          backgroundColor: popup.backgroundColor,
-          color: popup.textColor,
-        }}
-      >
-        <div className="relative">
+          className="max-w-md p-0 overflow-hidden"
+          style={{ 
+            backgroundColor: popup.backgroundColor,
+            color: popup.textColor,
+          }}
+        >
+          <DialogTitle className="sr-only">{popup.title}</DialogTitle>
+          <DialogDescription className="sr-only">{popup.message}</DialogDescription>
+          
+          <div className="relative">
+            {/* Image */}
+            {popup.imageUrl && (
+              <div className="w-full h-48 overflow-hidden">
+                <img
+                  src={popup.imageUrl}
+                  alt="Popup"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
 
-          {/* Image */}
-          {popup.imageUrl && (
-            <div className="w-full h-48 overflow-hidden">
-              <img
-                src={popup.imageUrl}
-                alt="Popup"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+            {/* Content */}
+            <div className="p-6 text-center">
+              <h2 
+                className="text-2xl font-bold mb-4"
+                style={{ color: popup.textColor }}
+              >
+                {popup.title}
+              </h2>
+              
+              <p 
+                className="text-base mb-6 leading-relaxed"
+                style={{ color: popup.textColor }}
+              >
+                {popup.message}
+              </p>
 
-          {/* Content */}
-          <div className="p-6 text-center">
-            <h2 
-              className="text-2xl font-bold mb-4"
-              style={{ color: popup.textColor }}
-            >
-              {popup.title}
-            </h2>
-            
-            <p 
-              className="text-base mb-6 leading-relaxed"
-              style={{ color: popup.textColor }}
-            >
-              {popup.message}
-            </p>
-
-            {/* Action button */}
-            <Button
-              className="w-full py-3 text-lg font-semibold"
-              onClick={() => {
-                setIsVisible(false);
-                setIsConsultationFormOpen(true);
-              }}
-              style={{
-                backgroundColor: popup.buttonColor,
-                color: popup.backgroundColor,
-              }}
-            >
-              {popup.buttonText}
-            </Button>
+              {/* Action button */}
+              <Button
+                type="button"
+                className="w-full py-3 text-lg font-semibold hover:opacity-90 transition-opacity"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log("EXIT INTENT POPUP: Button clicked! Opening consultation form...");
+                  console.log("EXIT INTENT POPUP: Current form state:", isConsultationFormOpen);
+                  setIsVisible(false);
+                  setTimeout(() => {
+                    console.log("EXIT INTENT POPUP: Setting consultation form to true");
+                    setIsConsultationFormOpen(true);
+                  }, 100);
+                }}
+                style={{
+                  backgroundColor: popup.buttonColor,
+                  color: popup.backgroundColor,
+                }}
+              >
+                {popup.buttonText}
+              </Button>
 
             {/* Small dismiss text */}
             <button
