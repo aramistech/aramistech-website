@@ -4,6 +4,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Critical Warning Banner Animation */
+@keyframes urgentPulse {
+  0%, 100% { 
+    background-color: rgb(220, 38, 38);
+    transform: scale(1);
+  }
+  50% { 
+    background-color: rgb(239, 68, 68);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes urgentFlash {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.8; }
+}
+
+.critical-warning {
+  animation: urgentPulse 2s ease-in-out infinite;
+}
+
+.critical-badge {
+  animation: urgentFlash 1.5s ease-in-out infinite;
+}
+
 @keyframes slide-up {
   from {
     transform: translateY(100px);

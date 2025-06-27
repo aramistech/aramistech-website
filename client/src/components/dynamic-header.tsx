@@ -121,6 +121,29 @@ export default function DynamicHeader() {
         </div>
       </div>
 
+      {/* Critical Windows 10 Warning Banner */}
+      <div className="critical-warning text-white py-3 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center text-center">
+            <div className="flex items-center space-x-3">
+              <span className="critical-badge bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                CRITICAL
+              </span>
+              <span className="font-semibold text-sm sm:text-base animate-pulse">
+                Windows 10 Support Ending - Your Systems Become Vulnerable to New Threats
+              </span>
+              <span className="hidden sm:inline text-sm text-red-200 animate-pulse">
+                | Contact AramisTech Today
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Animated urgency indicators */}
+        <div className="absolute left-0 top-0 w-2 h-full bg-yellow-400 animate-ping"></div>
+        <div className="absolute right-0 top-0 w-2 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+      </div>
+
       {/* Main Navigation */}
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
