@@ -382,15 +382,15 @@ export default function AdminLiveChat() {
                         : "bg-white hover:bg-gray-50"
                     )}
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-medium text-sm truncate">
-                            {session.customerName}
-                          </h4>
+                    <div className="space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <h4 className="font-medium text-sm truncate flex-1">
+                          {session.customerName}
+                        </h4>
+                        <div className="flex-shrink-0">
                           {newTransferRequests.has(session.id) && (
                             <Badge variant="destructive" className="text-xs animate-pulse">
-                              🚨 NEW REQUEST
+                              🚨 NEW
                             </Badge>
                           )}
                           {session.isHumanTransfer && !newTransferRequests.has(session.id) && (
@@ -404,24 +404,26 @@ export default function AdminLiveChat() {
                             </Badge>
                           )}
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
-                          <Clock className="w-3 h-3" />
-                          {formatDate(session.lastMessageAt)}
-                        </div>
-                        <div className="flex items-center gap-3 mt-2">
-                          {session.customerEmail && (
-                            <div className="flex items-center gap-1 text-xs text-gray-500">
-                              <Mail className="w-3 h-3" />
-                              <span className="truncate">{session.customerEmail}</span>
-                            </div>
-                          )}
-                          {session.customerPhone && (
-                            <div className="flex items-center gap-1 text-xs text-gray-500">
-                              <Phone className="w-3 h-3" />
-                              <span>{session.customerPhone}</span>
-                            </div>
-                          )}
-                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <Clock className="w-3 h-3" />
+                        <span className="truncate">{formatDate(session.lastMessageAt)}</span>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        {session.customerEmail && (
+                          <div className="flex items-center gap-1 text-xs text-gray-500">
+                            <Mail className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{session.customerEmail}</span>
+                          </div>
+                        )}
+                        {session.customerPhone && (
+                          <div className="flex items-center gap-1 text-xs text-gray-500">
+                            <Phone className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{session.customerPhone}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                     {!session.adminUserId && session.isHumanTransfer && (
