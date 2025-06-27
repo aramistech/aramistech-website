@@ -124,7 +124,7 @@ export default function ChatGPTChatbot({ className = "" }: ChatGPTChatbotProps) 
               </div>
               <div>
                 <CardTitle className="text-sm font-semibold">AramisTech AI Assistant</CardTitle>
-                <p className="text-xs opacity-90">Powered by ChatGPT</p>
+                <p className="text-xs opacity-90">Tech With A Personal Touch</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
