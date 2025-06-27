@@ -43,7 +43,7 @@ export default function ExitIntentPopup() {
 
   const submitConsultation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const response = await fetch('/api/it-consultations', {
+      const response = await fetch('/api/it-consultation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
