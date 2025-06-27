@@ -1,6 +1,6 @@
-import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle } from "@shared/schema";
+import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, isNull, gt, sql } from "drizzle-orm";
+import { eq, desc, and, isNull, gt, sql, asc, ne } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 export interface IStorage {
@@ -51,6 +51,19 @@ export interface IStorage {
   updateKnowledgeBaseArticle(id: number, article: Partial<InsertKnowledgeBaseArticle>): Promise<KnowledgeBaseArticle>;
   deleteKnowledgeBaseArticle(id: number): Promise<void>;
   incrementKnowledgeBaseArticleViews(id: number): Promise<void>;
+  // Live chat management
+  createChatSession(session: InsertChatSession): Promise<ChatSession>;
+  getChatSession(sessionId: string): Promise<ChatSession | undefined>;
+  getChatSessionById(id: number): Promise<ChatSession | undefined>;
+  updateChatSession(id: number, session: Partial<InsertChatSession>): Promise<ChatSession>;
+  getActiveChatSessions(): Promise<ChatSession[]>;
+  getAdminChatSessions(adminUserId: number): Promise<ChatSession[]>;
+  addChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
+  getChatMessages(sessionId: number): Promise<ChatMessage[]>;
+  markMessagesAsRead(sessionId: number, sender: string): Promise<void>;
+  getUnreadMessageCount(sessionId: number, sender: string): Promise<number>;
+  getAdminChatSettings(userId: number): Promise<AdminChatSettings | undefined>;
+  updateAdminChatSettings(userId: number, settings: Partial<InsertAdminChatSettings>): Promise<AdminChatSettings>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -397,6 +410,101 @@ export class DatabaseStorage implements IStorage {
         viewCount: sql`view_count + 1`
       })
       .where(eq(knowledgeBaseArticles.id, id));
+  }
+
+  // Live chat management
+  async createChatSession(sessionData: InsertChatSession): Promise<ChatSession> {
+    const [session] = await db.insert(chatSessions).values(sessionData).returning();
+    return session;
+  }
+
+  async getChatSession(sessionId: string): Promise<ChatSession | undefined> {
+    const [session] = await db.select().from(chatSessions).where(eq(chatSessions.sessionId, sessionId));
+    return session;
+  }
+
+  async getChatSessionById(id: number): Promise<ChatSession | undefined> {
+    const [session] = await db.select().from(chatSessions).where(eq(chatSessions.id, id));
+    return session;
+  }
+
+  async updateChatSession(id: number, sessionData: Partial<InsertChatSession>): Promise<ChatSession> {
+    const [session] = await db.update(chatSessions)
+      .set({ ...sessionData, updatedAt: new Date() })
+      .where(eq(chatSessions.id, id))
+      .returning();
+    return session;
+  }
+
+  async getActiveChatSessions(): Promise<ChatSession[]> {
+    return await db.select().from(chatSessions)
+      .where(eq(chatSessions.status, "active"))
+      .orderBy(desc(chatSessions.lastMessageAt));
+  }
+
+  async getAdminChatSessions(adminUserId: number): Promise<ChatSession[]> {
+    return await db.select().from(chatSessions)
+      .where(eq(chatSessions.adminUserId, adminUserId))
+      .orderBy(desc(chatSessions.lastMessageAt));
+  }
+
+  async addChatMessage(messageData: InsertChatMessage): Promise<ChatMessage> {
+    const [message] = await db.insert(chatMessages).values(messageData).returning();
+    
+    // Update session last message time
+    await db.update(chatSessions)
+      .set({ lastMessageAt: new Date() })
+      .where(eq(chatSessions.id, messageData.sessionId));
+    
+    return message;
+  }
+
+  async getChatMessages(sessionId: number): Promise<ChatMessage[]> {
+    return await db.select().from(chatMessages)
+      .where(eq(chatMessages.sessionId, sessionId))
+      .orderBy(asc(chatMessages.createdAt));
+  }
+
+  async markMessagesAsRead(sessionId: number, sender: string): Promise<void> {
+    await db.update(chatMessages)
+      .set({ isRead: true })
+      .where(and(
+        eq(chatMessages.sessionId, sessionId),
+        ne(chatMessages.sender, sender)
+      ));
+  }
+
+  async getUnreadMessageCount(sessionId: number, sender: string): Promise<number> {
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(chatMessages)
+      .where(and(
+        eq(chatMessages.sessionId, sessionId),
+        ne(chatMessages.sender, sender),
+        eq(chatMessages.isRead, false)
+      ));
+    return result[0]?.count || 0;
+  }
+
+  async getAdminChatSettings(userId: number): Promise<AdminChatSettings | undefined> {
+    const [settings] = await db.select().from(adminChatSettings).where(eq(adminChatSettings.userId, userId));
+    return settings;
+  }
+
+  async updateAdminChatSettings(userId: number, settingsData: Partial<InsertAdminChatSettings>): Promise<AdminChatSettings> {
+    const existing = await this.getAdminChatSettings(userId);
+    
+    if (existing) {
+      const [settings] = await db.update(adminChatSettings)
+        .set({ ...settingsData, updatedAt: new Date() })
+        .where(eq(adminChatSettings.userId, userId))
+        .returning();
+      return settings;
+    } else {
+      const [settings] = await db.insert(adminChatSettings)
+        .values({ userId, ...settingsData })
+        .returning();
+      return settings;
+    }
   }
 }
 

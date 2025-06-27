@@ -215,3 +215,70 @@ export type KnowledgeBaseCategory = typeof knowledgeBaseCategories.$inferSelect;
 export type InsertKnowledgeBaseCategory = z.infer<typeof insertKnowledgeBaseCategorySchema>;
 export type KnowledgeBaseArticle = typeof knowledgeBaseArticles.$inferSelect;
 export type InsertKnowledgeBaseArticle = z.infer<typeof insertKnowledgeBaseArticleSchema>;
+
+// Live chat system tables
+export const chatSessions = pgTable("chat_sessions", {
+  id: serial("id").primaryKey(),
+  sessionId: varchar("session_id", { length: 255 }).notNull().unique(),
+  customerName: varchar("customer_name", { length: 255 }),
+  customerEmail: varchar("customer_email", { length: 255 }),
+  customerPhone: varchar("customer_phone", { length: 20 }),
+  status: varchar("status", { length: 20 }).default("active"), // active, transferred, closed
+  isHumanTransfer: boolean("is_human_transfer").default(false),
+  transferredAt: timestamp("transferred_at"),
+  closedAt: timestamp("closed_at"),
+  adminUserId: integer("admin_user_id").references(() => users.id),
+  lastMessageAt: timestamp("last_message_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const chatMessages = pgTable("chat_messages", {
+  id: serial("id").primaryKey(),
+  sessionId: integer("session_id").references(() => chatSessions.id, { onDelete: "cascade" }).notNull(),
+  sender: varchar("sender", { length: 20 }).notNull(), // customer, bot, admin
+  senderName: varchar("sender_name", { length: 255 }),
+  message: text("message").notNull(),
+  messageType: varchar("message_type", { length: 20 }).default("text"), // text, file, system
+  metadata: text("metadata"), // JSON string for additional data
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const adminChatSettings = pgTable("admin_chat_settings", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  isOnline: boolean("is_online").default(false),
+  awayMessage: text("away_message"),
+  notificationsEnabled: boolean("notifications_enabled").default(true),
+  autoResponseEnabled: boolean("auto_response_enabled").default(true),
+  workingHoursStart: varchar("working_hours_start", { length: 5 }).default("09:00"),
+  workingHoursEnd: varchar("working_hours_end", { length: 5 }).default("17:00"),
+  weekendAvailable: boolean("weekend_available").default(false),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Chat schemas
+export const insertChatSessionSchema = createInsertSchema(chatSessions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertChatMessageSchema = createInsertSchema(chatMessages).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAdminChatSettingsSchema = createInsertSchema(adminChatSettings).omit({
+  id: true,
+  updatedAt: true,
+});
+
+// Chat types
+export type ChatSession = typeof chatSessions.$inferSelect;
+export type InsertChatSession = z.infer<typeof insertChatSessionSchema>;
+export type ChatMessage = typeof chatMessages.$inferSelect;
+export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
+export type AdminChatSettings = typeof adminChatSettings.$inferSelect;
+export type InsertAdminChatSettings = z.infer<typeof insertAdminChatSettingsSchema>;
