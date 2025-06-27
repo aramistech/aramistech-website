@@ -1,4 +1,4 @@
-import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile } from "@shared/schema";
+import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, isNull, gt } from "drizzle-orm";
 import bcrypt from "bcryptjs";
@@ -39,6 +39,18 @@ export interface IStorage {
   getMediaFileById(id: number): Promise<MediaFile | undefined>;
   updateMediaFile(id: number, file: Partial<InsertMediaFile>): Promise<MediaFile>;
   deleteMediaFile(id: number): Promise<void>;
+  // Knowledge base management
+  getKnowledgeBaseCategories(): Promise<KnowledgeBaseCategory[]>;
+  createKnowledgeBaseCategory(category: InsertKnowledgeBaseCategory): Promise<KnowledgeBaseCategory>;
+  updateKnowledgeBaseCategory(id: number, category: Partial<InsertKnowledgeBaseCategory>): Promise<KnowledgeBaseCategory>;
+  deleteKnowledgeBaseCategory(id: number): Promise<void>;
+  getKnowledgeBaseArticles(): Promise<KnowledgeBaseArticle[]>;
+  getKnowledgeBaseArticlesByCategory(categoryId: number): Promise<KnowledgeBaseArticle[]>;
+  getKnowledgeBaseArticleBySlug(slug: string): Promise<KnowledgeBaseArticle | undefined>;
+  createKnowledgeBaseArticle(article: InsertKnowledgeBaseArticle): Promise<KnowledgeBaseArticle>;
+  updateKnowledgeBaseArticle(id: number, article: Partial<InsertKnowledgeBaseArticle>): Promise<KnowledgeBaseArticle>;
+  deleteKnowledgeBaseArticle(id: number): Promise<void>;
+  incrementKnowledgeBaseArticleViews(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -305,6 +317,86 @@ export class DatabaseStorage implements IStorage {
 
   async deleteMediaFile(id: number): Promise<void> {
     await db.delete(mediaFiles).where(eq(mediaFiles.id, id));
+  }
+
+  // Knowledge base category methods
+  async getKnowledgeBaseCategories(): Promise<KnowledgeBaseCategory[]> {
+    return await db.select().from(knowledgeBaseCategories).orderBy(knowledgeBaseCategories.orderIndex);
+  }
+
+  async createKnowledgeBaseCategory(categoryData: InsertKnowledgeBaseCategory): Promise<KnowledgeBaseCategory> {
+    const [category] = await db
+      .insert(knowledgeBaseCategories)
+      .values(categoryData)
+      .returning();
+    return category;
+  }
+
+  async updateKnowledgeBaseCategory(id: number, categoryData: Partial<InsertKnowledgeBaseCategory>): Promise<KnowledgeBaseCategory> {
+    const [category] = await db
+      .update(knowledgeBaseCategories)
+      .set({ ...categoryData, updatedAt: new Date() })
+      .where(eq(knowledgeBaseCategories.id, id))
+      .returning();
+    return category;
+  }
+
+  async deleteKnowledgeBaseCategory(id: number): Promise<void> {
+    // First delete all articles in this category
+    await db.delete(knowledgeBaseArticles).where(eq(knowledgeBaseArticles.categoryId, id));
+    // Then delete the category
+    await db.delete(knowledgeBaseCategories).where(eq(knowledgeBaseCategories.id, id));
+  }
+
+  // Knowledge base article methods
+  async getKnowledgeBaseArticles(): Promise<KnowledgeBaseArticle[]> {
+    return await db.select().from(knowledgeBaseArticles).orderBy(knowledgeBaseArticles.orderIndex);
+  }
+
+  async getKnowledgeBaseArticlesByCategory(categoryId: number): Promise<KnowledgeBaseArticle[]> {
+    return await db
+      .select()
+      .from(knowledgeBaseArticles)
+      .where(eq(knowledgeBaseArticles.categoryId, categoryId))
+      .orderBy(knowledgeBaseArticles.orderIndex);
+  }
+
+  async getKnowledgeBaseArticleBySlug(slug: string): Promise<KnowledgeBaseArticle | undefined> {
+    const [article] = await db
+      .select()
+      .from(knowledgeBaseArticles)
+      .where(eq(knowledgeBaseArticles.slug, slug));
+    return article;
+  }
+
+  async createKnowledgeBaseArticle(articleData: InsertKnowledgeBaseArticle): Promise<KnowledgeBaseArticle> {
+    const [article] = await db
+      .insert(knowledgeBaseArticles)
+      .values(articleData)
+      .returning();
+    return article;
+  }
+
+  async updateKnowledgeBaseArticle(id: number, articleData: Partial<InsertKnowledgeBaseArticle>): Promise<KnowledgeBaseArticle> {
+    const [article] = await db
+      .update(knowledgeBaseArticles)
+      .set({ ...articleData, updatedAt: new Date() })
+      .where(eq(knowledgeBaseArticles.id, id))
+      .returning();
+    return article;
+  }
+
+  async deleteKnowledgeBaseArticle(id: number): Promise<void> {
+    await db.delete(knowledgeBaseArticles).where(eq(knowledgeBaseArticles.id, id));
+  }
+
+  async incrementKnowledgeBaseArticleViews(id: number): Promise<void> {
+    await db
+      .update(knowledgeBaseArticles)
+      .set({ 
+        viewCount: knowledgeBaseArticles.viewCount + 1
+      })
+      .where(eq(knowledgeBaseArticles.id, id));
   }
 }
 

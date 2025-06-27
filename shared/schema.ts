@@ -93,6 +93,34 @@ export const mediaFiles = pgTable("media_files", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const knowledgeBaseCategories = pgTable("knowledge_base_categories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  description: text("description"),
+  orderIndex: integer("order_index").default(0),
+  isVisible: boolean("is_visible").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const knowledgeBaseArticles = pgTable("knowledge_base_articles", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  content: text("content").notNull(),
+  excerpt: text("excerpt"),
+  categoryId: integer("category_id").references(() => knowledgeBaseCategories.id),
+  tags: text("tags").array(),
+  isPublished: boolean("is_published").default(true),
+  viewCount: integer("view_count").default(0),
+  orderIndex: integer("order_index").default(0),
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -154,6 +182,19 @@ export const insertMediaFileSchema = createInsertSchema(mediaFiles).pick({
   caption: true,
 });
 
+export const insertKnowledgeBaseCategorySchema = createInsertSchema(knowledgeBaseCategories).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertKnowledgeBaseArticleSchema = createInsertSchema(knowledgeBaseArticles).omit({
+  id: true,
+  viewCount: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type UpdateUser = z.infer<typeof updateUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -170,3 +211,7 @@ export type ExitIntentPopup = typeof exitIntentPopup.$inferSelect;
 export type InsertExitIntentPopup = z.infer<typeof insertExitIntentPopupSchema>;
 export type MediaFile = typeof mediaFiles.$inferSelect;
 export type InsertMediaFile = z.infer<typeof insertMediaFileSchema>;
+export type KnowledgeBaseCategory = typeof knowledgeBaseCategories.$inferSelect;
+export type InsertKnowledgeBaseCategory = z.infer<typeof insertKnowledgeBaseCategorySchema>;
+export type KnowledgeBaseArticle = typeof knowledgeBaseArticles.$inferSelect;
+export type InsertKnowledgeBaseArticle = z.infer<typeof insertKnowledgeBaseArticleSchema>;
