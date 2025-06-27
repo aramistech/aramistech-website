@@ -101,10 +101,16 @@ export default function ChatGPTChatbot({ className = "" }: ChatGPTChatbotProps) 
       <div className={cn("fixed z-50", className)}>
         <Button
           onClick={() => setIsOpen(true)}
-          className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg transition-all duration-300 hover:scale-110"
+          className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl"
           style={{
             boxShadow: '0 4px 20px rgba(147, 51, 234, 0.4)',
             animation: 'pulse 2s infinite'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = '0 0 30px rgba(147, 51, 234, 0.7), 0 0 60px rgba(59, 130, 246, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = '0 4px 20px rgba(147, 51, 234, 0.4)';
           }}
         >
           <MessageCircle className="h-6 w-6 text-white" />
