@@ -157,7 +157,8 @@ Changelog:
 - June 27, 2025. Updated chatbot submit button to orange AramisTech branding matching logo colors for consistent visual identity
 - June 27, 2025. Enhanced chatbot responses with personal family-business tone, removed markdown formatting, and emphasized 27+ years experience for better brand representation
 - June 27, 2025. Rebuilt fallback response system with specific contextual responses for printer issues, computer problems, network troubles, security threats, email issues, and other technical categories to eliminate repetitive generic responses
-- June 27, 2025. Created comprehensive knowledge base system with 6 categories (Troubleshooting, Cybersecurity, Network & Internet, Hardware Issues, Software Installation, Data Recovery) and 15 detailed articles covering common IT topics, admin management interface, public browsing pages, SEO optimization, and AramisTech-branded content designed to generate leads while providing valuable technical guidance
+- June 27, 2025. Created comprehensive knowledge base system with 6 categories (Troubleshooting, Cybersecurity, Network & Internet, Hardware Issues, Software Installation, Data Recovery) and 21 detailed articles covering common IT topics, admin management interface, public browsing pages, SEO optimization, and AramisTech-branded content designed to generate leads while providing valuable technical guidance
+- June 27, 2025. Expanded knowledge base with comprehensive mobile email setup guides covering Office 365 Exchange and Google Workspace configuration for iPhone and Android devices, including troubleshooting guides and platform comparison articles to support business email deployment decisions
 ```
 
 ## User Preferences
