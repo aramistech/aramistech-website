@@ -146,6 +146,7 @@ Changelog:
 - June 26, 2025. Fixed menu item parentId validation error "Expected number, received null" by updating client and server schemas to properly handle null values for top-level menu items
 - June 26, 2025. Created professional AI Development service page at /ai-development with comprehensive AI/ML solutions, development process, trust indicators, and AramisTech branding - added to main navigation menu
 - June 27, 2025. Fixed critical router conflicts caused by external URLs in database menu items - created server-side download proxy system for Microsoft Quick Assist and RustDesk downloads to eliminate wouter router errors and ensure proper navigation functionality
+- June 27, 2025. Resolved 404 navigation errors by fixing empty href handling in Support dropdown menu - implemented proper navigation logic for parent menu items without links and enhanced download URL processing
 ```
 
 ## User Preferences
