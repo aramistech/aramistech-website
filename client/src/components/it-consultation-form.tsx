@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -49,6 +49,10 @@ interface ITConsultationFormProps {
 }
 
 export default function ITConsultationForm({ isOpen, onClose }: ITConsultationFormProps) {
+  // Debug logging
+  useEffect(() => {
+    console.log("IT CONSULTATION FORM - isOpen changed:", isOpen);
+  }, [isOpen]);
   const { toast } = useToast();
   const [isSuccess, setIsSuccess] = useState(false);
 

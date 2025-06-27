@@ -22,6 +22,11 @@ export default function ExitIntentPopup() {
   const [hasShown, setHasShown] = useState(false);
   const [isConsultationFormOpen, setIsConsultationFormOpen] = useState(false);
 
+  // Debug logging for consultation form state
+  useEffect(() => {
+    console.log("CONSULTATION FORM STATE CHANGED:", isConsultationFormOpen);
+  }, [isConsultationFormOpen]);
+
 
 
   const { data: popupData } = useQuery<{ success: boolean; popup?: ExitIntentPopup }>({
@@ -120,18 +125,19 @@ export default function ExitIntentPopup() {
               {/* Action button */}
               <Button
                 type="button"
-                className="w-full py-3 text-lg font-semibold hover:opacity-90 transition-opacity"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+                className="w-full py-3 text-lg font-semibold hover:opacity-90 transition-opacity cursor-pointer relative z-50"
+                onMouseDown={() => console.log("🟡 Mouse down on button")}
+                onMouseUp={() => console.log("🟡 Mouse up on button")}
+                onClick={() => {
+                  console.log("🔥 BUTTON CLICKED! Starting the process...");
                   setIsVisible(false);
-                  setTimeout(() => {
-                    setIsConsultationFormOpen(true);
-                  }, 100);
+                  setIsConsultationFormOpen(true);
+                  console.log("🔥 Form state set to true, popup closed");
                 }}
                 style={{
                   backgroundColor: popup.buttonColor,
                   color: popup.backgroundColor,
+                  pointerEvents: 'auto',
                 }}
               >
                 {popup.buttonText}
