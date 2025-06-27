@@ -53,6 +53,22 @@ export const aiConsultations = pgTable("ai_consultations", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const itConsultations = pgTable("it_consultations", {
+  id: serial("id").primaryKey(),
+  firstName: varchar("first_name", { length: 255 }).notNull(),
+  lastName: varchar("last_name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 50 }).notNull(),
+  company: varchar("company", { length: 255 }),
+  employees: varchar("employees", { length: 100 }),
+  services: text("services").array().notNull(),
+  urgency: varchar("urgency", { length: 100 }),
+  budget: varchar("budget", { length: 100 }),
+  challenges: text("challenges").notNull(),
+  preferredContactTime: varchar("preferred_contact_time", { length: 100 }),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
   customerName: text("customer_name").notNull(),
@@ -177,6 +193,11 @@ export const insertAIConsultationSchema = createInsertSchema(aiConsultations).om
   createdAt: true,
 });
 
+export const insertITConsultationSchema = createInsertSchema(itConsultations).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertReviewSchema = createInsertSchema(reviews).omit({
   id: true,
   datePosted: true,
@@ -227,6 +248,8 @@ export type QuickQuote = typeof quickQuotes.$inferSelect;
 export type InsertQuickQuote = z.infer<typeof insertQuickQuoteSchema>;
 export type AIConsultation = typeof aiConsultations.$inferSelect;
 export type InsertAIConsultation = z.infer<typeof insertAIConsultationSchema>;
+export type ITConsultation = typeof itConsultations.$inferSelect;
+export type InsertITConsultation = z.infer<typeof insertITConsultationSchema>;
 export type Review = typeof reviews.$inferSelect;
 export type InsertReview = z.infer<typeof insertReviewSchema>;
 export type MenuItem = typeof menuItems.$inferSelect;

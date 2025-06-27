@@ -10,9 +10,11 @@ export interface IStorage {
   createContact(contact: InsertContact): Promise<Contact>;
   createQuickQuote(quote: InsertQuickQuote): Promise<QuickQuote>;
   createAIConsultation(consultation: InsertAIConsultation): Promise<AIConsultation>;
+  createITConsultation(consultation: InsertITConsultation): Promise<ITConsultation>;
   getContacts(): Promise<Contact[]>;
   getQuickQuotes(): Promise<QuickQuote[]>;
   getAIConsultations(): Promise<AIConsultation[]>;
+  getITConsultations(): Promise<ITConsultation[]>;
   createReview(review: InsertReview): Promise<Review>;
   getReviews(): Promise<Review[]>;
   getVisibleReviews(): Promise<Review[]>;
