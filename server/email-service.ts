@@ -1,10 +1,12 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
-import { fromEnv } from "@aws-sdk/credential-providers";
 
 // Initialize SES client with AWS credentials from environment
 const sesClient = new SESClient({
   region: process.env.AWS_REGION || "us-east-1",
-  credentials: fromEnv(),
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
 });
 
 export interface QuickQuoteEmailData {
@@ -123,9 +125,17 @@ This email was generated automatically from your website.
   try {
     const command = new SendEmailCommand(emailParams);
     await sesClient.send(command);
-    console.log(`Quick quote email sent successfully for ${data.name}`);
+    console.log(`✅ Quick quote email sent successfully for ${data.name}`);
   } catch (error) {
-    console.error("Error sending quick quote email:", error);
+    console.error("❌ Error sending quick quote email:", error);
+    
+    // Log the quote details for manual follow-up
+    console.log(`📋 MANUAL FOLLOW-UP REQUIRED:`);
+    console.log(`   Customer: ${data.name}`);
+    console.log(`   Email: ${data.email}`);
+    console.log(`   Phone: ${data.phone}`);
+    console.log(`   Time: ${new Date().toISOString()}`);
+    
     throw new Error("Failed to send quick quote email");
   }
 }
