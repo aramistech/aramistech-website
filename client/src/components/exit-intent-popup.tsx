@@ -50,10 +50,26 @@ export default function ExitIntentPopup() {
     },
     onSuccess: () => {
       setIsSuccess(true);
+      // Reset form data
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        company: '',
+        services: [],
+        challenges: '',
+        urgency: ''
+      });
       toast({
         title: "Request Submitted",
         description: "We'll contact you within 2 business hours for your free IT consultation.",
       });
+      // Close form after short delay to show success message
+      setTimeout(() => {
+        setIsConsultationFormOpen(false);
+        setIsSuccess(false);
+      }, 3000);
     },
     onError: () => {
       toast({
