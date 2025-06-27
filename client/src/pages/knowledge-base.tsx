@@ -40,7 +40,6 @@ export default function KnowledgeBase() {
   });
 
   const { data: articlesData } = useQuery<{ success: boolean; articles: KnowledgeBaseArticle[] }>({
-    queryKey: ['/api/knowledge-base/articles', selectedCategory],
     queryKey: selectedCategory 
       ? [`/api/knowledge-base/articles?category=${selectedCategory}`]
       : ['/api/knowledge-base/articles'],

@@ -13,6 +13,7 @@ import AdminUserManager from '@/components/admin-user-manager';
 import ExitIntentManager from '@/components/exit-intent-manager';
 import MediaLibrary from '@/components/media-library';
 import AnalyticsDashboard from '@/components/analytics-dashboard';
+import KnowledgeBaseManager from '@/components/knowledge-base-manager';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();

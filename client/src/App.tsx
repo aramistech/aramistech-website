@@ -12,6 +12,8 @@ import Windows10Upgrade from "@/pages/windows10-upgrade";
 import CustomerPortal from "@/pages/customer-portal";
 import IPLookup from "@/pages/ip-lookup";
 import AIDevelopment from "@/pages/ai-development";
+import KnowledgeBase from "@/pages/knowledge-base";
+import KnowledgeBaseArticle from "@/pages/knowledge-base-article";
 import SocialProofPopup from "@/components/social-proof-popup";
 import Chatbot from "@/components/chatbot";
 import { useEffect } from "react";
@@ -30,6 +32,8 @@ function Router() {
       <Route path="/windows10-upgrade" component={Windows10Upgrade} />
       <Route path="/customer-portal" component={CustomerPortal} />
       <Route path="/ip-lookup" component={IPLookup} />
+      <Route path="/knowledge-base" component={KnowledgeBase} />
+      <Route path="/knowledge-base/:slug" component={KnowledgeBaseArticle} />
       <Route path="/admin/reviews" component={AdminReviewsPage} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
