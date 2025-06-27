@@ -21,20 +21,7 @@ export default function Header() {
   const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleDownload = (url: string, filename: string) => {
-    // Use timeout to ensure dropdown closes first
-    setTimeout(() => {
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = url;
-      document.body.appendChild(iframe);
-      
-      // Clean up after download starts
-      setTimeout(() => {
-        document.body.removeChild(iframe);
-      }, 1000);
-    }, 100);
-  };
+
   const [location, setLocation] = useLocation();
 
   // Fetch menu items from database
@@ -203,51 +190,41 @@ export default function Header() {
                     <div className="px-4 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wide">
                       Support Downloads
                     </div>
-                    <button 
-                      onClick={() => {
-                        setIsSupportDropdownOpen(false);
-                        handleDownload('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.exe', 'rustdesk-1.4.0-x86_64.exe');
-                      }}
+                    <a
+                      href="/api/download/rustdesk/windows-64"
+                      onClick={() => setIsSupportDropdownOpen(false)}
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
                       🖥️ RustDesk QuickSupport (Windows 64-bit)
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setIsSupportDropdownOpen(false);
-                        handleDownload('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86.exe', 'rustdesk-1.4.0-x86.exe');
-                      }}
+                    </a>
+                    <a
+                      href="/api/download/rustdesk/windows-32"
+                      onClick={() => setIsSupportDropdownOpen(false)}
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
                       🖥️ RustDesk QuickSupport (Windows 32-bit)
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setIsSupportDropdownOpen(false);
-                        handleDownload('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.dmg', 'rustdesk-1.4.0-x86_64.dmg');
-                      }}
+                    </a>
+                    <a
+                      href="/api/download/rustdesk/macos-intel"
+                      onClick={() => setIsSupportDropdownOpen(false)}
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
                       🍎 RustDesk QuickSupport (macOS Intel)
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setIsSupportDropdownOpen(false);
-                        handleDownload('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-aarch64.dmg', 'rustdesk-1.4.0-aarch64.dmg');
-                      }}
+                    </a>
+                    <a
+                      href="/api/download/rustdesk/macos-arm"
+                      onClick={() => setIsSupportDropdownOpen(false)}
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
                       🍎 RustDesk QuickSupport (macOS Apple Silicon)
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setIsSupportDropdownOpen(false);
-                        handleDownload('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk_1.4.0_amd64.deb', 'rustdesk_1.4.0_amd64.deb');
-                      }}
+                    </a>
+                    <a
+                      href="/api/download/rustdesk/linux-deb"
+                      onClick={() => setIsSupportDropdownOpen(false)}
                       className="block w-full text-left px-4 py-2 text-sm text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                     >
                       🐧 RustDesk QuickSupport (Linux Ubuntu/Debian)
-                    </button>
+                    </a>
                     <a 
                       href="/downloads/network-diagnostic-tool.bat"
                       download="AramisTech-Network-Diagnostic.bat"
@@ -366,56 +343,56 @@ export default function Header() {
                     <div className="py-1 text-xs font-semibold text-gray-500 uppercase tracking-wide">
                       Support Downloads
                     </div>
-                    <button 
+                    <a
+                      href="/api/download/rustdesk/windows-64"
                       onClick={() => {
                         setIsMenuOpen(false);
                         setIsMobileSupportOpen(false);
-                        handleDownload('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.exe', 'rustdesk-1.4.0-x86_64.exe');
                       }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
                       🖥️ RustDesk QuickSupport (Windows 64-bit)
-                    </button>
-                    <button 
+                    </a>
+                    <a
+                      href="/api/download/rustdesk/windows-32"
                       onClick={() => {
                         setIsMenuOpen(false);
                         setIsMobileSupportOpen(false);
-                        handleDownload('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86.exe', 'rustdesk-1.4.0-x86.exe');
                       }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
                       🖥️ RustDesk QuickSupport (Windows 32-bit)
-                    </button>
-                    <button 
+                    </a>
+                    <a
+                      href="/api/download/rustdesk/macos-intel"
                       onClick={() => {
                         setIsMenuOpen(false);
                         setIsMobileSupportOpen(false);
-                        handleDownload('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.dmg', 'rustdesk-1.4.0-x86_64.dmg');
                       }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
                       🍎 RustDesk QuickSupport (macOS Intel)
-                    </button>
-                    <button 
+                    </a>
+                    <a
+                      href="/api/download/rustdesk/macos-arm"
                       onClick={() => {
                         setIsMenuOpen(false);
                         setIsMobileSupportOpen(false);
-                        handleDownload('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-aarch64.dmg', 'rustdesk-1.4.0-aarch64.dmg');
                       }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
                       🍎 RustDesk QuickSupport (macOS Apple Silicon)
-                    </button>
-                    <button 
+                    </a>
+                    <a
+                      href="/api/download/rustdesk/linux-deb"
                       onClick={() => {
                         setIsMenuOpen(false);
                         setIsMobileSupportOpen(false);
-                        handleDownload('https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk_1.4.0_amd64.deb', 'rustdesk_1.4.0_amd64.deb');
                       }}
                       className="block w-full text-left py-2 text-sm text-professional-gray hover:text-aramis-orange"
                     >
                       🐧 RustDesk QuickSupport (Linux Ubuntu/Debian)
-                    </button>
+                    </a>
                     <a 
                       href="/downloads/network-diagnostic-tool.bat"
                       download="AramisTech-Network-Diagnostic.bat"

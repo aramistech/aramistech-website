@@ -453,6 +453,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Download proxy to bypass client router issues
+  app.get("/api/download/rustdesk/:platform", async (req, res) => {
+    const { platform } = req.params;
+    
+    const downloadUrls: Record<string, string> = {
+      'windows-64': 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.exe',
+      'windows-32': 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86.exe',
+      'macos-intel': 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-x86_64.dmg',
+      'macos-arm': 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-aarch64.dmg',
+      'linux-deb': 'https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk_1.4.0_amd64.deb'
+    };
+
+    const downloadUrl = downloadUrls[platform];
+    if (!downloadUrl) {
+      return res.status(404).json({ error: 'Platform not found' });
+    }
+
+    // Redirect to GitHub download
+    res.redirect(302, downloadUrl);
+  });
+
   // Public menu items endpoint for frontend navigation
   app.get("/api/menu-items", async (req, res) => {
     try {
