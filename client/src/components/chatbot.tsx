@@ -43,7 +43,7 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
       const response = await apiRequest("POST", "/api/chatbot", { message });
-      const data = await response.json();
+      const data = await response.json() as { response: string };
       return data.response;
     },
     onSuccess: (response) => {
