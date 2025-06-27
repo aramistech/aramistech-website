@@ -120,7 +120,7 @@ export default function Header() {
                 className="hidden sm:inline-flex items-center bg-yellow-400 text-red-800 px-3 py-1 rounded-full text-xs font-bold hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105"
                 onClick={() => window.scrollTo(0, 0)}
               >
-                <span className="mr-1">⚡</span>
+                <span className="mr-1">►</span>
                 Learn More
               </Link>
             </div>
