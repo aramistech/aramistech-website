@@ -3,6 +3,8 @@ import { MessageCircle, X, Send, Bot, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface Message {
   id: string;
@@ -37,235 +39,38 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
     scrollToBottom();
   }, [messages]);
 
-  const predefinedResponses: { [key: string]: string } = {
-    // Greetings
-    'hello': "Hello! Welcome to AramisTech. How can I assist you with your IT needs today?",
-    'hi': "Hi there! I'm here to help with any questions about our IT services.",
-    'hey': "Hey! Thanks for visiting AramisTech. What can I help you with?",
-    
-    // Services
-    'services': "We offer comprehensive IT services including:\n• Network Setup & Management\n• Cybersecurity Solutions\n• Cloud Migration\n• Hardware Installation\n• 24/7 Support\n• Data Backup & Recovery\n\nWhich service interests you most?",
-    'network': "Our network services include setup, configuration, and ongoing management of your business network infrastructure. We ensure secure, reliable connectivity for your team.",
-    'security': "We provide comprehensive cybersecurity solutions including firewalls, antivirus, employee training, and security audits to protect your business from threats.",
-    'cloud': "Our cloud migration services help you move to secure, scalable cloud solutions. We handle everything from planning to implementation and ongoing support.",
-    'backup': "We offer automated data backup and disaster recovery solutions to ensure your business data is always protected and recoverable.",
-    
-    // Technical Support Questions
-    'slow computer': "Slow computers can be caused by:\n• Too many startup programs\n• Insufficient RAM or storage\n• Malware infections\n• Outdated hardware\n• Registry issues\n\nOur technicians can diagnose and fix these issues quickly. Call us at (305) 814-4461 for a free assessment!",
-    'computer slow': "Slow computers can be caused by:\n• Too many startup programs\n• Insufficient RAM or storage\n• Malware infections\n• Outdated hardware\n• Registry issues\n\nOur technicians can diagnose and fix these issues quickly. Call us at (305) 814-4461 for a free assessment!",
-    'internet slow': "Slow internet could be due to:\n• Network congestion\n• Outdated router/modem\n• Poor Wi-Fi placement\n• ISP throttling\n• Malware\n\nWe can optimize your network for maximum speed. Call us at (305) 814-4461 for a network evaluation!",
-    'wifi problems': "Wi-Fi issues often stem from:\n• Router placement\n• Interference from other devices\n• Outdated equipment\n• Network configuration\n• Security settings\n\nOur network experts can solve these problems. Call us at (305) 814-4461 for professional Wi-Fi optimization!",
-    'virus': "If you suspect malware:\n1. Don't enter passwords/personal info\n2. Disconnect from internet\n3. Run antivirus scan\n4. Contact us immediately\n\nWe provide emergency malware removal and prevention. Call us at (305) 814-4461 for immediate assistance!",
-    'malware': "If you suspect malware:\n1. Don't enter passwords/personal info\n2. Disconnect from internet\n3. Run antivirus scan\n4. Contact us immediately\n\nWe provide emergency malware removal and prevention. Call us at (305) 814-4461 for immediate assistance!",
-    'email problems': "Email issues can include:\n• Can't send/receive emails\n• Spam filtering problems\n• Account security concerns\n• Setup on new devices\n• Outlook configuration\n\nWe handle all email platforms. Call us at (305) 814-4461 for email support!",
-    'printer': "Printer problems we solve:\n• Won't print or prints blank pages\n• Paper jams and feed issues\n• Network printer setup\n• Driver installation\n• Print quality issues\n\nOur technicians can fix it remotely or on-site. Call us at (305) 814-4461!",
-    'backup failed': "Backup failures are serious! Common causes:\n• Storage space issues\n• Network interruptions\n• Corrupted files\n• Software conflicts\n\nDon't risk losing data - call us at (305) 814-4461 immediately for backup repair and data protection!",
-    'data recovery': "Lost important files? We can help with:\n• Hard drive recovery\n• Deleted file restoration\n• Corrupted document repair\n• RAID recovery\n• SSD/flash drive recovery\n\nTime is critical for data recovery. Call us at (305) 814-4461 now!",
-    'server down': "Server issues need immediate attention:\n• Check power and connections\n• Verify network connectivity\n• Look for error messages\n• Don't restart repeatedly\n\nFor business-critical servers, call us at (305) 814-4461 for emergency support!",
-    'password reset': "Password issues we help with:\n• Windows login problems\n• Email account recovery\n• Network password resets\n• Two-factor authentication\n• Security policy setup\n\nCall us at (305) 814-4461 for secure password assistance!",
-    'software install': "Software installation problems:\n• Compatibility issues\n• License management\n• Driver conflicts\n• Business software setup\n• Updates and patches\n\nWe ensure proper software deployment. Call us at (305) 814-4461 for professional installation!",
-    'remote work': "Remote work IT support:\n• VPN setup and troubleshooting\n• Remote desktop configuration\n• Home office security\n• Cloud access issues\n• Video conferencing setup\n\nWe specialize in remote work solutions. Call us at (305) 814-4461 to optimize your home office!",
-    
-    // Business IT Challenges
-    'office 365': "Office 365/Microsoft 365 issues we resolve:\n• Email migration and setup\n• SharePoint configuration\n• Teams optimization\n• License management\n• Security compliance\n\nMaximize your Office 365 investment. Call us at (305) 814-4461 for expert configuration!",
-    'teams': "Microsoft Teams problems:\n• Audio/video quality issues\n• Screen sharing problems\n• Meeting room setup\n• Integration with phone systems\n• User training needs\n\nWe optimize Teams for seamless collaboration. Call us at (305) 814-4461!",
-    'zoom': "Video conferencing issues:\n• Poor audio/video quality\n• Connection problems\n• Screen sharing difficulties\n• Recording setup\n• Security settings\n\nWe ensure professional video meetings. Call us at (305) 814-4461 for setup assistance!",
-    'quickbooks': "QuickBooks IT support:\n• Multi-user setup\n• Database corruption\n• Network sharing issues\n• Backup and security\n• Integration problems\n\nProtect your financial data with proper IT setup. Call us at (305) 814-4461!",
-    'server': "Server problems we solve:\n• Performance issues\n• Storage management\n• User access problems\n• Backup failures\n• Security concerns\n\nBusiness servers need expert care. Call us at (305) 814-4461 for server support!",
-    'firewall': "Firewall and security issues:\n• Blocked legitimate traffic\n• Configuration problems\n• VPN access issues\n• Intrusion attempts\n• Policy management\n\nSecure your business properly. Call us at (305) 814-4461 for cybersecurity expertise!",
-    
-    // Hardware Issues
-    'computer won\'t start': "Computer won't boot? Common causes:\n• Power supply failure\n• RAM issues\n• Hard drive problems\n• Motherboard failure\n• Loose connections\n\nDon't lose your data - call us at (305) 814-4461 for immediate diagnosis!",
-    'blue screen': "Blue Screen of Death (BSOD) indicates:\n• Hardware failure\n• Driver conflicts\n• Memory problems\n• System corruption\n• Overheating\n\nThis needs professional diagnosis. Call us at (305) 814-4461 to prevent data loss!",
-    'overheating': "Computer overheating can cause:\n• Sudden shutdowns\n• Performance drops\n• Hardware damage\n• Data corruption\n\nPrevent costly damage - call us at (305) 814-4461 for cooling system repair!",
-    'hard drive': "Hard drive issues are critical:\n• Strange noises (clicking/grinding)\n• Slow file access\n• Frequent crashes\n• Error messages\n• Boot failures\n\nBack up data immediately! Call us at (305) 814-4461 for emergency data recovery!",
-    
-    // Cyber Security Concerns
-    'hacked': "If you think you've been hacked:\n1. Disconnect from internet immediately\n2. Don't use any passwords\n3. Scan for malware\n4. Check financial accounts\n5. Call us NOW\n\nCyber attacks need immediate response. Call us at (305) 814-4461 for emergency security assistance!",
-    'ransomware': "Ransomware attack response:\n1. DO NOT pay the ransom\n2. Disconnect affected systems\n3. Preserve evidence\n4. Contact authorities\n5. Call cybersecurity experts\n\nWe help businesses recover from ransomware. Call us at (305) 814-4461 immediately!",
-    'phishing': "Phishing protection tips:\n• Verify sender identity\n• Don't click suspicious links\n• Check URLs carefully\n• Use two-factor authentication\n• Train your employees\n\nWe provide comprehensive phishing protection. Call us at (305) 814-4461 for security training!",
-    'spam': "Email spam and security:\n• Advanced spam filtering\n• Email security policies\n• User education\n• Quarantine management\n• Compliance requirements\n\nProtect your business email. Call us at (305) 814-4461 for email security solutions!",
-    
-    // Contact & Business Info
-    'contact': "You can reach us at:\n📞 (305) 814-4461\n📧 sales@aramistech.com\n📍 Serving Miami & Broward\n⏰ Mon-Fri: 9am-6pm\n\nWould you like to schedule a free consultation?",
-    'phone': "Call us at (305) 814-4461 for immediate assistance. We're available Monday through Friday, 9am to 6pm.",
-    'email': "Email us at sales@aramistech.com and we'll respond within 24 hours.",
-    'hours': "We're open Monday through Friday, 9am to 6pm. For urgent issues, we offer 24/7 emergency support for our managed clients.",
-    'location': "We proudly serve businesses throughout Miami and Broward counties with on-site and remote IT support.",
-    
-    // Pricing & Consultation
-    'price': "Our pricing varies based on your specific needs. We offer free consultations to assess your requirements and provide a custom quote. Would you like to schedule one?",
-    'cost': "Costs depend on the services you need. Let's schedule a free consultation to discuss your requirements and provide accurate pricing.",
-    'consultation': "Great! We offer free IT consultations where we assess your current setup and recommend solutions. You can schedule one by calling us at (305) 814-4461 or filling out our contact form.",
-    'quote': "I'd be happy to help you get a quote! Please call us at (305) 814-4461 or use our quick quote form on the homepage for a personalized estimate.",
-    
-    // Windows 10 specific
-    'windows': "Windows 10 support ends October 14, 2025. We offer comprehensive Windows 11 migration services to keep your business secure and compliant. Check out our Windows 10 upgrade page for more details!",
-    'windows 10': "Windows 10 support ends October 14, 2025. We offer comprehensive Windows 11 migration services to keep your business secure and compliant. Check out our Windows 10 upgrade page for more details!",
-    'upgrade': "We provide seamless Windows 11 upgrades with data migration, compatibility testing, and user training. Don't wait until the last minute - let's get you upgraded safely!",
-    
-    // About company
-    'about': "AramisTech is a family-owned IT company with 27+ years of experience serving South Florida businesses. We specialize in providing reliable, professional IT solutions that help businesses grow.",
-    'experience': "We have over 27 years of experience in the IT industry, serving businesses throughout South Florida with reliable, professional IT solutions.",
-    'family': "Yes! AramisTech is a family-owned business that has been serving the South Florida community for over 27 years. We treat every client like family.",
-    
-    // Emergencies
-    'emergency': "For IT emergencies, call us immediately at (305) 814-4461. Our managed clients have access to 24/7 emergency support.",
-    'urgent': "For urgent IT issues, please call us at (305) 814-4461 right away. We prioritize emergency situations and can provide immediate assistance.",
-    'down': "If your systems are down, call us at (305) 814-4461 immediately. We understand how critical uptime is for your business.",
-    
-    // Additional Technical Issues
-    'vpn': "VPN connection problems:\n• Can't connect to company network\n• Slow VPN performance\n• Authentication failures\n• Split tunneling issues\n• Mobile device setup\n\nWe configure secure, fast VPN solutions. Call us at (305) 814-4461 for VPN support!",
-    'outlook': "Outlook email issues:\n• Won't send/receive emails\n• PST file corruption\n• Calendar sync problems\n• Profile configuration\n• Add-in conflicts\n\nWe're Outlook experts. Call us at (305) 814-4461 for email troubleshooting!",
-    'excel': "Excel and Office problems:\n• File corruption\n• Performance issues\n• Macro errors\n• Sharing and collaboration\n• Version compatibility\n\nMaximize your Office productivity. Call us at (305) 814-4461 for software optimization!",
-    'dropbox': "Cloud storage issues:\n• Sync problems\n• File conflicts\n• Access permissions\n• Storage management\n• Security concerns\n\nWe optimize cloud workflows. Call us at (305) 814-4461 for cloud solution support!",
-    'onedrive': "OneDrive sync issues:\n• Files not syncing\n• Duplicate files\n• Storage quota problems\n• Sharing permissions\n• Offline access\n\nWe ensure seamless cloud integration. Call us at (305) 814-4461!",
-    'website down': "Website or online service issues:\n• DNS problems\n• Hosting issues\n• SSL certificate errors\n• Database connections\n• Performance optimization\n\nWe support business web services. Call us at (305) 814-4461 for web assistance!",
-    
-    // Default responses
-    'help': "I can help you with information about our IT services, pricing, contact details, and scheduling consultations. What would you like to know?",
-    'thanks': "You're welcome! Is there anything else I can help you with today?"
-  };
-
-
-
-  const analyzeMessage = (message: string) => {
-    const msg = message.toLowerCase();
-    const words = msg.split(/\s+/);
-    
-    // Advanced pattern recognition with context
-    const patterns = {
-      hardware: {
-        primary: ['blue', 'bsod', 'crash', 'freeze', 'boot', 'startup', 'power', 'noise', 'overheating', 'ram', 'memory', 'motherboard'],
-        secondary: ['screen', 'death', 'won\'t', 'start', 'turn', 'hot', 'fan', 'beep'],
-        context: ['computer', 'laptop', 'pc', 'desktop', 'hardware']
-      },
-      performance: {
-        primary: ['slow', 'lag', 'sluggish', 'performance', 'speed', 'fast', 'optimize'],
-        secondary: ['takes', 'forever', 'long', 'time', 'minutes', 'hours'],
-        context: ['computer', 'system', 'running', 'loading', 'startup']
-      },
-      network: {
-        primary: ['wifi', 'internet', 'network', 'connection', 'router', 'modem', 'ethernet', 'vpn'],
-        secondary: ['connect', 'disconnected', 'dropped', 'signal', 'speed', 'slow'],
-        context: ['can\'t', 'won\'t', 'not', 'unable', 'trouble']
-      },
-      printer: {
-        primary: ['printer', 'print', 'printing', 'scanner', 'scan'],
-        secondary: ['won\'t', 'not', 'can\'t', 'jam', 'paper', 'ink', 'toner', 'queue'],
-        context: ['document', 'page', 'job', 'spooler']
-      },
-      email: {
-        primary: ['email', 'outlook', 'mail', 'exchange', 'gmail'],
-        secondary: ['send', 'receive', 'sync', 'configuration', 'setup', 'account'],
-        context: ['can\'t', 'won\'t', 'not', 'unable', 'problem']
-      },
-      security: {
-        primary: ['virus', 'malware', 'hack', 'security', 'password', 'firewall', 'antivirus', 'ransomware'],
-        secondary: ['infected', 'suspicious', 'breach', 'attack', 'phishing', 'spam'],
-        context: ['think', 'suspect', 'might', 'been', 'computer']
-      },
-      software: {
-        primary: ['software', 'program', 'application', 'app', 'office', 'word', 'excel', 'windows'],
-        secondary: ['install', 'update', 'license', 'activation', 'compatibility'],
-        context: ['won\'t', 'can\'t', 'not', 'error', 'crash']
-      }
-    };
-    
-    // Score each category
-    const scores: Record<string, number> = {};
-    for (const [category, config] of Object.entries(patterns)) {
-      let score = 0;
-      
-      // Primary keywords (high weight)
-      config.primary.forEach(keyword => {
-        if (msg.includes(keyword)) score += 10;
-      });
-      
-      // Secondary keywords (medium weight)
-      config.secondary.forEach(keyword => {
-        if (msg.includes(keyword)) score += 5;
-      });
-      
-      // Context keywords (low weight)
-      config.context.forEach(keyword => {
-        if (msg.includes(keyword)) score += 2;
-      });
-      
-      // Phrase bonus
-      if (category === 'hardware' && (msg.includes('blue screen') || msg.includes('won\'t boot'))) score += 20;
-      if (category === 'printer' && (msg.includes('won\'t print') || msg.includes('not printing'))) score += 20;
-      if (category === 'network' && (msg.includes('wifi not working') || msg.includes('no internet'))) score += 20;
-      
-      scores[category] = score;
+  // ChatGPT API integration
+  const chatMutation = useMutation({
+    mutationFn: async (message: string) => {
+      const response = await apiRequest("POST", "/api/chatbot", { message });
+      const data = await response.json();
+      return data.response;
+    },
+    onSuccess: (response) => {
+      const botResponse: Message = {
+        id: Date.now().toString(),
+        text: response,
+        isBot: true,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, botResponse]);
+      setIsTyping(false);
+    },
+    onError: (error) => {
+      const errorResponse: Message = {
+        id: Date.now().toString(),
+        text: "I apologize, but I'm having technical difficulties. Please call us directly at (305) 814-4461 or email sales@aramistech.com for immediate assistance.",
+        isBot: true,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorResponse]);
+      setIsTyping(false);
     }
-    
-    return scores;
-  };
+  });
 
-  const getBotResponse = (userMessage: string): string => {
-    const msg = userMessage.toLowerCase();
-    console.log('Chatbot received:', msg);
-    
-    const scores = analyzeMessage(msg);
-    const topCategory = Object.keys(scores).reduce((a, b) => (scores[a] || 0) > (scores[b] || 0) ? a : b);
-    const confidence = scores[topCategory] || 0;
-    
-    console.log('Analysis scores:', scores, 'Top:', topCategory, 'Confidence:', confidence);
-    
-    // High confidence responses with specific guidance
-    if (confidence >= 10) {
-      switch (topCategory) {
-        case 'hardware':
-          if (msg.includes('blue') || msg.includes('bsod')) {
-            return "Blue Screen of Death detected! This critical error usually indicates:\n• Faulty RAM or memory issues\n• Driver conflicts or corruption\n• Hardware component failure\n• Overheating problems\n• Hard drive errors\n\nBSOD errors can cause data loss if not addressed immediately. Our technicians can diagnose the exact cause and prevent further damage. Call us at (305) 814-4461 for emergency hardware diagnosis!";
-          }
-          if (msg.includes('boot') || msg.includes('start')) {
-            return "Boot failure detected! When computers won't start, common causes include:\n• Hard drive failure or corruption\n• Power supply problems\n• RAM or motherboard issues\n• BIOS/UEFI configuration errors\n• Operating system corruption\n\nBoot problems require immediate attention to recover your data and restore functionality. Call us at (305) 814-4461 for emergency boot repair!";
-          }
-          return "Hardware issue detected! Computer hardware problems include:\n• System crashes and blue screens\n• Boot and startup failures\n• Overheating and noise issues\n• Memory and storage problems\n• Power supply failures\n\nHardware diagnostics require professional tools and expertise. Call us at (305) 814-4461 for comprehensive hardware troubleshooting!";
-          
-        case 'printer':
-          return "Printer problems detected! Common printing issues we resolve:\n• Printer won't respond or print\n• Paper jams and feed problems\n• Poor print quality or blank pages\n• Network printer connection issues\n• Driver installation and updates\n• Print spooler and queue errors\n\nPrinter issues can halt business productivity. Our technicians handle all printer brands and models. Call us at (305) 814-4461 for printer repair and setup!";
-          
-        case 'performance':
-          return "Performance issues detected! Slow computer symptoms include:\n• Long startup and shutdown times\n• Programs taking forever to load\n• System freezing and unresponsiveness\n• Internet browsing sluggishness\n• File operations taking too long\n\nPerformance problems often indicate deeper system issues. We optimize computers for maximum speed and efficiency. Call us at (305) 814-4461 for performance tuning!";
-          
-        case 'network':
-          return "Network connectivity issues detected! Internet and WiFi problems include:\n• Intermittent or no internet connection\n• Slow download and upload speeds\n• WiFi signal and range problems\n• Router and modem configuration issues\n• VPN and remote access failures\n\nNetwork problems affect business productivity and communication. Our network specialists ensure reliable connectivity. Call us at (305) 814-4461 for network optimization!";
-          
-        case 'email':
-          return "Email communication problems detected! Common email issues include:\n• Unable to send or receive messages\n• Outlook synchronization errors\n• Email account configuration problems\n• Mobile device email setup issues\n• Server connection and authentication errors\n\nEmail problems can cost business opportunities. We're email experts who resolve issues quickly. Call us at (305) 814-4461 for email support!";
-          
-        case 'security':
-          return "Security threat detected! Cybersecurity issues require immediate attention:\n• Virus and malware infections\n• Ransomware attacks and prevention\n• Suspicious system behavior\n• Password security breaches\n• Firewall and antivirus configuration\n\nDon't risk your business data and reputation. Security threats need professional intervention. Call us immediately at (305) 814-4461 for emergency security assistance!";
-          
-        case 'software':
-          return "Software problems detected! Application and program issues include:\n• Programs crashing or won't start\n• Installation and update failures\n• License activation problems\n• Compatibility and performance issues\n• File association errors\n\nSoftware conflicts can be complex to diagnose and resolve. We handle all business applications and operating systems. Call us at (305) 814-4461 for software support!";
-      }
-    }
-    
-    // Check for specific predefined responses
-    for (const [key, response] of Object.entries(predefinedResponses)) {
-      if (msg.includes(key)) {
-        return response;
-      }
-    }
-    
-    // General tech terms fallback
-    const techTerms = ['problem', 'issue', 'error', 'help', 'fix', 'repair', 'broken', 'trouble', 'support'];
-    if (techTerms.some(term => msg.includes(term))) {
-      return "Technical issues can be complex and frustrating! Our IT experts provide comprehensive support:\n• Hardware diagnostics and repair\n• Software troubleshooting and optimization\n• Network connectivity solutions\n• Security and virus removal\n• Email and communication fixes\n• Emergency technical support\n\nWith 27+ years of experience serving South Florida businesses, we quickly diagnose and resolve IT problems. Call us at (305) 814-4461 for expert assistance!";
-    }
-    
-    // Default intelligent response
-    return "Hello! I'm AramisTech's AI assistant, ready to help with your technology needs. Whether you're experiencing computer problems, network issues, email troubles, or security concerns, our expert team provides professional IT solutions for South Florida businesses. Call us at (305) 814-4461 for immediate assistance!";
-  };
+  const handleSendMessage = async () => {
+    if (inputValue.trim() === "") return;
 
-  const handleSendMessage = () => {
-    if (!inputValue.trim()) return;
-
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputValue,
@@ -277,100 +82,102 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
     setInputValue("");
     setIsTyping(true);
 
-    // Simulate bot typing delay
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: getBotResponse(inputValue),
-        isBot: true,
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, botResponse]);
-      setIsTyping(false);
-    }, 1000 + Math.random() * 1000); // 1-2 second delay
+    // Send message to ChatGPT
+    chatMutation.mutate(inputValue);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
+    if (e.key === 'Enter') {
       handleSendMessage();
     }
   };
 
-  if (!isOpen) {
-    return (
-      <div className={`fixed bottom-6 right-6 z-50 ${className}`}>
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="h-14 w-14 rounded-full bg-aramis-orange hover:bg-aramis-orange/90 animate-pulse-slow chatbot-glow"
-        >
-          <MessageCircle className="h-6 w-6 text-white" />
-        </Button>
-      </div>
-    );
-  }
+  const formatMessage = (text: string) => {
+    return text.split('\n').map((line, index) => (
+      <span key={index}>
+        {line}
+        {index < text.split('\n').length - 1 && <br />}
+      </span>
+    ));
+  };
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
-    <div className={`fixed bottom-6 right-6 z-50 ${className}`}>
-      <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-80 h-96 flex flex-col">
-        {/* Header */}
-        <div className="bg-primary-blue text-white p-4 rounded-t-lg flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Bot className="h-5 w-5" />
-            <div>
-              <h3 className="font-semibold text-sm">AramisTech Assistant</h3>
-              <p className="text-xs opacity-90">Online now</p>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsOpen(false)}
-            className="text-white hover:bg-white/10 h-8 w-8 p-0"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+    <div className={`fixed bottom-4 right-4 z-50 ${className}`}>
+      {!isOpen && (
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="w-14 h-14 rounded-full bg-primary-blue hover:bg-blue-700 shadow-lg animate-pulse"
+        >
+          <MessageCircle className="w-6 h-6 text-white" />
+        </Button>
+      )}
 
-        {/* Messages */}
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.isBot ? 'justify-start' : 'justify-end'}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.isBot
-                      ? 'bg-gray-100 text-gray-800'
-                      : 'bg-aramis-orange text-white'
-                  }`}
-                >
-                  <div className="flex items-start space-x-2">
-                    {message.isBot && (
-                      <Bot className="h-4 w-4 mt-0.5 text-primary-blue" />
-                    )}
-                    <div className="flex-1">
-                      <p className="text-sm whitespace-pre-line">{message.text}</p>
-                      <p className={`text-xs mt-1 ${message.isBot ? 'text-gray-500' : 'text-white/70'}`}>
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </p>
-                    </div>
-                    {!message.isBot && (
-                      <User className="h-4 w-4 mt-0.5 text-white" />
-                    )}
-                  </div>
-                </div>
+      {isOpen && (
+        <div className="bg-white rounded-lg shadow-2xl w-80 h-96 flex flex-col border border-gray-200">
+          {/* Header */}
+          <div className="bg-primary-blue text-white p-4 rounded-t-lg flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <Bot className="w-5 h-5" />
+              <div>
+                <h3 className="font-semibold">AramisTech Support</h3>
+                <p className="text-xs text-blue-100">Online • Powered by AI</p>
               </div>
-            ))}
-            
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
-                  <div className="flex items-center space-x-2">
-                    <Bot className="h-4 w-4 text-primary-blue" />
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsOpen(false)}
+              className="text-white hover:bg-blue-600 p-1"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* Messages */}
+          <ScrollArea className="flex-1 p-4">
+            <div className="space-y-4">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex gap-2 ${message.isBot ? 'justify-start' : 'justify-end'}`}
+                >
+                  {message.isBot && (
+                    <div className="w-8 h-8 bg-primary-blue rounded-full flex items-center justify-center flex-shrink-0">
+                      <Bot className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[70%] p-3 rounded-lg ${
+                      message.isBot
+                        ? 'bg-gray-100 text-gray-800'
+                        : 'bg-primary-blue text-white'
+                    }`}
+                  >
+                    <p className="text-sm">{formatMessage(message.text)}</p>
+                    <p className={`text-xs mt-1 ${
+                      message.isBot ? 'text-gray-500' : 'text-blue-100'
+                    }`}>
+                      {formatTime(message.timestamp)}
+                    </p>
+                  </div>
+                  {!message.isBot && (
+                    <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
+                      <User className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                </div>
+              ))}
+              
+              {isTyping && (
+                <div className="flex gap-2 justify-start">
+                  <div className="w-8 h-8 bg-primary-blue rounded-full flex items-center justify-center flex-shrink-0">
+                    <Bot className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="bg-gray-100 text-gray-800 p-3 rounded-lg">
                     <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -378,36 +185,36 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-          <div ref={messagesEndRef} />
-        </ScrollArea>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
 
-        {/* Input */}
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex space-x-2">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
-              className="flex-1 text-sm"
-              disabled={isTyping}
-            />
-            <Button
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isTyping}
-              className="bg-aramis-orange hover:bg-aramis-orange/90 h-10 w-10 p-0"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
+          {/* Input */}
+          <div className="p-4 border-t border-gray-200">
+            <div className="flex gap-2">
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Type your message..."
+                className="flex-1"
+                disabled={isTyping}
+              />
+              <Button
+                onClick={handleSendMessage}
+                disabled={inputValue.trim() === "" || isTyping}
+                className="bg-primary-blue hover:bg-blue-700"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              Powered by ChatGPT • (305) 814-4461
+            </p>
           </div>
-          <p className="text-xs text-gray-500 mt-2 text-center">
-            For detailed assistance, call (305) 814-4461
-          </p>
         </div>
-      </div>
+      )}
     </div>
   );
 }

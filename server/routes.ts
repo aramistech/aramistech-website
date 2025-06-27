@@ -479,6 +479,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.redirect(302, 'https://apps.microsoft.com/store/detail/9p7bp5vnwkx5');
   });
 
+  // ChatGPT integration for chatbot
+  app.post("/api/chatbot", async (req, res) => {
+    try {
+      const { message } = req.body;
+      
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+          messages: [
+            {
+              role: 'system',
+              content: `You are a helpful customer service assistant for AramisTech, a family-owned IT services company with 27+ years of experience serving South Florida businesses. 
+
+AramisTech Services:
+- IT Support & Helpdesk
+- Network Setup & Management
+- Cybersecurity Solutions
+- Cloud Computing Services
+- Server Management
+- Hardware Installation & Repair
+- Software Installation & Training
+- Emergency IT Support
+- Backup & Recovery Solutions
+- Windows 10 Upgrade Services
+- AI Development & Automation
+
+Company Details:
+- Phone: (305) 814-4461
+- Email: sales@aramistech.com
+- Serving Miami & Broward County
+- Hours: Monday-Friday 9am-6pm
+- Family-owned business since 1998
+
+Guidelines:
+- Always be helpful, professional, and friendly
+- Use "call us" and "email us" for personal touch
+- Guide users toward contacting AramisTech for professional help
+- Provide specific technical guidance when appropriate
+- Ask clarifying questions to better understand their needs
+- Mention relevant services that could help solve their problems
+- Keep responses concise but informative`
+            },
+            {
+              role: 'user',
+              content: message
+            }
+          ],
+          max_tokens: 300,
+          temperature: 0.7,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const aiResponse = data.choices[0]?.message?.content || 'I apologize, but I encountered an issue. Please call us at (305) 814-4461 for immediate assistance.';
+
+      res.json({ response: aiResponse });
+    } catch (error) {
+      console.error('ChatGPT API Error:', error);
+      res.status(500).json({ 
+        error: 'I apologize, but I\'m having technical difficulties. Please call us directly at (305) 814-4461 or email sales@aramistech.com for immediate assistance.' 
+      });
+    }
+  });
+
   // Public menu items endpoint for frontend navigation
   app.get("/api/menu-items", async (req, res) => {
     try {
