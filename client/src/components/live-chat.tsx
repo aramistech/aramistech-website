@@ -293,14 +293,55 @@ export default function LiveChat({ className = "" }: LiveChatProps) {
         method: 'POST',
       });
 
-      if (response.ok) {
-        ws.current?.send(JSON.stringify({
-          type: 'transfer_to_human',
-          sessionId: session.sessionId
-        }));
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Add system message to indicate transfer
+        const transferMessage = {
+          id: Date.now(),
+          sender: 'system',
+          senderName: 'AramisTech System',
+          message: "You've been connected to our technical support team. A technician will respond to you shortly during business hours (Mon-Fri 9am-6pm).",
+          messageType: 'text',
+          createdAt: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, transferMessage]);
+        
+        // Update session status
+        setSession(prev => prev ? { ...prev, isHumanTransfer: true, status: 'transferred' } : null);
+
+        // Send via WebSocket if available
+        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+          ws.current.send(JSON.stringify({
+            type: 'transfer_to_human',
+            sessionId: session.sessionId
+          }));
+        }
+      } else {
+        // Show error message
+        const errorMessage = {
+          id: Date.now(),
+          sender: 'system',
+          senderName: 'AramisTech System',
+          message: "Unable to transfer to human agent right now. Please call us directly at (305) 814-4461 for immediate assistance.",
+          messageType: 'text',
+          createdAt: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, errorMessage]);
       }
     } catch (error) {
       console.error('Error requesting human agent:', error);
+      
+      // Show fallback message
+      const errorMessage = {
+        id: Date.now(),
+        sender: 'system',
+        senderName: 'AramisTech System',
+        message: "Unable to transfer to human agent right now. Please call us directly at (305) 814-4461 for immediate assistance.",
+        messageType: 'text',
+        createdAt: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     }
   };
 
