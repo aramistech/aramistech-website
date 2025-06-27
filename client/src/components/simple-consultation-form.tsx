@@ -6,22 +6,35 @@ interface SimpleConsultationFormProps {
 }
 
 export default function SimpleConsultationForm({ isOpen, onClose }: SimpleConsultationFormProps) {
-  console.log("Simple form render - isOpen:", isOpen);
+  console.log("🟢 Simple form render - isOpen:", isOpen);
+  
+  if (!isOpen) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      console.log("Simple form dialog onOpenChange:", open);
+    <Dialog open={true} onOpenChange={(open) => {
+      console.log("🟢 Simple form dialog onOpenChange:", open);
       if (!open) onClose();
     }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Simple Test Form</DialogTitle>
+          <DialogTitle>IT Consultation Request</DialogTitle>
         </DialogHeader>
-        <div className="p-4">
-          <p>This is a simple test form to verify dialog functionality.</p>
+        <div className="p-6">
+          <p className="text-gray-700 mb-4">
+            Thank you for your interest! Our IT experts will contact you within 2 business hours.
+          </p>
+          <div className="space-y-3">
+            <p><strong>What we'll discuss:</strong></p>
+            <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+              <li>Your current IT challenges</li>
+              <li>Technology recommendations</li>
+              <li>Custom solutions for your business</li>
+              <li>Pricing and implementation timeline</li>
+            </ul>
+          </div>
           <button 
             onClick={onClose}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+            className="mt-6 w-full px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
           >
             Close
           </button>
