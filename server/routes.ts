@@ -4,14 +4,14 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
 import { z } from "zod";
 import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
-import { sendQuickQuoteEmail, sendContactEmail } from "./email-service";
+import { sendQuickQuoteEmail, sendContactEmail, sendAIConsultationEmail } from "./email-service";
 import { testAWSConnection } from "./test-aws";
 
 // Configure multer for file uploads
@@ -712,6 +712,53 @@ User message: ${message}`
         res.status(500).json({ 
           success: false, 
           message: "Failed to submit quick quote form" 
+        });
+      }
+    }
+  });
+
+  // AI consultation form submission
+  app.post("/api/ai-consultation", async (req, res) => {
+    try {
+      const validatedData = insertAIConsultationSchema.parse(req.body);
+      const consultation = await storage.createAIConsultation(validatedData);
+      
+      // Send email notification to sales team
+      try {
+        await sendAIConsultationEmail({
+          firstName: validatedData.firstName,
+          lastName: validatedData.lastName,
+          email: validatedData.email,
+          phone: validatedData.phone,
+          company: validatedData.company || undefined,
+          industry: validatedData.industry || undefined,
+          businessSize: validatedData.businessSize || undefined,
+          currentAIUsage: validatedData.currentAIUsage || undefined,
+          aiInterests: validatedData.aiInterests || [],
+          projectTimeline: validatedData.projectTimeline || undefined,
+          budget: validatedData.budget || undefined,
+          projectDescription: validatedData.projectDescription,
+          preferredContactTime: validatedData.preferredContactTime || undefined,
+        });
+        console.log("AI consultation email sent successfully");
+      } catch (emailError) {
+        console.error("Failed to send AI consultation email:", emailError);
+        // Don't fail the request if email fails, just log the error
+      }
+      
+      res.json({ success: true, consultation });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ 
+          success: false, 
+          message: "Validation error", 
+          errors: error.errors 
+        });
+      } else {
+        console.error("AI consultation submission error:", error);
+        res.status(500).json({ 
+          success: false, 
+          message: "Failed to submit AI consultation request" 
         });
       }
     }

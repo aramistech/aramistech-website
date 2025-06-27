@@ -27,6 +27,22 @@ export interface ContactEmailData {
   contactTime?: string | null;
 }
 
+export interface AIConsultationEmailData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  company?: string | null;
+  industry?: string | null;
+  businessSize?: string | null;
+  currentAIUsage?: string | null;
+  aiInterests: string[];
+  projectTimeline?: string | null;
+  budget?: string | null;
+  projectDescription: string;
+  preferredContactTime?: string | null;
+}
+
 export async function sendQuickQuoteEmail(data: QuickQuoteEmailData): Promise<void> {
   // Use a verified email address - this needs to be verified in AWS SES first
   const sourceEmail = process.env.SES_VERIFIED_EMAIL || "noreply@aramistech.com";
@@ -261,5 +277,132 @@ This email was generated automatically from your website.
   } catch (error) {
     console.error("Error sending contact email:", error);
     throw new Error("Failed to send contact email");
+  }
+}
+
+export async function sendAIConsultationEmail(data: AIConsultationEmailData): Promise<void> {
+  const sourceEmail = process.env.SES_VERIFIED_EMAIL || "noreply@aramistech.com";
+  
+  const emailParams = {
+    Source: sourceEmail,
+    Destination: {
+      ToAddresses: ["sales@aramistech.com"],
+    },
+    Message: {
+      Subject: {
+        Data: "AI Development Consultation - AramisTech",
+        Charset: "UTF-8",
+      },
+      Body: {
+        Html: {
+          Data: `
+            <html>
+              <head>
+                <style>
+                  body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                  .header { background-color: #f97316; color: white; padding: 20px; text-align: center; }
+                  .content { padding: 20px; }
+                  .info-box { background-color: #f8f9fa; border-left: 4px solid #f97316; padding: 15px; margin: 10px 0; }
+                  .ai-interests { background-color: #e0f2fe; border-left: 4px solid #0277bd; padding: 15px; margin: 20px 0; }
+                  .project-details { background-color: #f3e5f5; border-left: 4px solid #7b1fa2; padding: 15px; margin: 20px 0; }
+                  .contact-info { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+                  .footer { background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #666; }
+                  .ai-list { margin: 10px 0; }
+                  .ai-list li { margin: 5px 0; }
+                </style>
+              </head>
+              <body>
+                <div class="header">
+                  <h1>🤖 AI Development Consultation Request</h1>
+                  <p>AramisTech - Professional AI Solutions</p>
+                </div>
+                
+                <div class="content">
+                  <div class="info-box">
+                    <h3>Customer Information</h3>
+                    <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
+                    <p><strong>Email:</strong> ${data.email}</p>
+                    <p><strong>Phone:</strong> ${data.phone}</p>
+                    ${data.company ? `<p><strong>Company:</strong> ${data.company}</p>` : ''}
+                    ${data.industry ? `<p><strong>Industry:</strong> ${data.industry}</p>` : ''}
+                    ${data.businessSize ? `<p><strong>Business Size:</strong> ${data.businessSize}</p>` : ''}
+                  </div>
+                  
+                  <div class="ai-interests">
+                    <h3>🎯 AI Solutions of Interest</h3>
+                    <ul class="ai-list">
+                      ${data.aiInterests.map(interest => `<li>${interest}</li>`).join('')}
+                    </ul>
+                    ${data.currentAIUsage ? `<p><strong>Current AI Usage:</strong> ${data.currentAIUsage}</p>` : ''}
+                  </div>
+                  
+                  <div class="project-details">
+                    <h3>📋 Project Details</h3>
+                    <p><strong>Project Description:</strong></p>
+                    <p style="background-color: white; padding: 10px; border-radius: 5px;">${data.projectDescription}</p>
+                    ${data.projectTimeline ? `<p><strong>Timeline:</strong> ${data.projectTimeline}</p>` : ''}
+                    ${data.budget ? `<p><strong>Budget Range:</strong> ${data.budget}</p>` : ''}
+                    ${data.preferredContactTime ? `<p><strong>Preferred Contact Time:</strong> ${data.preferredContactTime}</p>` : ''}
+                  </div>
+                  
+                  <div class="contact-info">
+                    <h3>🚀 AI Consultation Required</h3>
+                    <p>Customer is interested in AI development services and expects expert consultation within 2 hours during business hours.</p>
+                    <p><strong>This is a high-value AI development lead - prioritize immediate follow-up!</strong></p>
+                  </div>
+                </div>
+                
+                <div class="footer">
+                  <p>AramisTech - 27+ Years of Professional IT Solutions</p>
+                  <p>This email was generated automatically from your AI Development consultation form.</p>
+                </div>
+              </body>
+            </html>
+          `,
+          Charset: "UTF-8",
+        },
+        Text: {
+          Data: `
+AI DEVELOPMENT CONSULTATION REQUEST - AramisTech
+
+Customer Information:
+Name: ${data.firstName} ${data.lastName}
+Email: ${data.email}
+Phone: ${data.phone}
+${data.company ? `Company: ${data.company}` : ''}
+${data.industry ? `Industry: ${data.industry}` : ''}
+${data.businessSize ? `Business Size: ${data.businessSize}` : ''}
+
+AI Solutions of Interest:
+${data.aiInterests.map(interest => `- ${interest}`).join('\n')}
+${data.currentAIUsage ? `Current AI Usage: ${data.currentAIUsage}` : ''}
+
+Project Details:
+Project Description: ${data.projectDescription}
+${data.projectTimeline ? `Timeline: ${data.projectTimeline}` : ''}
+${data.budget ? `Budget Range: ${data.budget}` : ''}
+${data.preferredContactTime ? `Preferred Contact Time: ${data.preferredContactTime}` : ''}
+
+🚀 AI CONSULTATION REQUIRED
+Customer is interested in AI development services and expects expert consultation within 2 hours during business hours.
+THIS IS A HIGH-VALUE AI DEVELOPMENT LEAD - PRIORITIZE IMMEDIATE FOLLOW-UP!
+
+---
+AramisTech - 27+ Years of Professional IT Solutions
+This email was generated automatically from your AI Development consultation form.
+          `,
+          Charset: "UTF-8",
+        },
+      },
+    },
+  };
+
+  try {
+    const command = new SendEmailCommand(emailParams);
+    await sesClient.send(command);
+    console.log(`AI consultation email sent successfully for ${data.firstName} ${data.lastName}`);
+  } catch (error) {
+    console.error("Error sending AI consultation email:", error);
+    throw new Error("Failed to send AI consultation email");
   }
 }

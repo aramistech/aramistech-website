@@ -117,6 +117,21 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(quickQuotes.createdAt));
   }
 
+  async createAIConsultation(insertConsultation: InsertAIConsultation): Promise<AIConsultation> {
+    const [consultation] = await db
+      .insert(aiConsultations)
+      .values(insertConsultation)
+      .returning();
+    return consultation;
+  }
+
+  async getAIConsultations(): Promise<AIConsultation[]> {
+    return await db
+      .select()
+      .from(aiConsultations)
+      .orderBy(desc(aiConsultations.createdAt));
+  }
+
   async createReview(insertReview: InsertReview): Promise<Review> {
     const [review] = await db
       .insert(reviews)
