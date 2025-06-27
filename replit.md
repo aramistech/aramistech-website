@@ -156,6 +156,7 @@ Changelog:
 - June 27, 2025. Changed chatbot footer from "Powered by Google Gemini" to "Call us today" for stronger lead generation call-to-action
 - June 27, 2025. Updated chatbot submit button to orange AramisTech branding matching logo colors for consistent visual identity
 - June 27, 2025. Enhanced chatbot responses with personal family-business tone, removed markdown formatting, and emphasized 27+ years experience for better brand representation
+- June 27, 2025. Rebuilt fallback response system with specific contextual responses for printer issues, computer problems, network troubles, security threats, email issues, and other technical categories to eliminate repetitive generic responses
 ```
 
 ## User Preferences

@@ -479,37 +479,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.redirect(302, 'https://apps.microsoft.com/store/detail/9p7bp5vnwkx5');
   });
 
-  // Fallback responses for when ChatGPT is unavailable
+  // Enhanced fallback responses for when Gemini is unavailable
   const getFallbackResponse = (message: string): string => {
     const lowerMessage = message.toLowerCase();
     
     // Greeting responses
     if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-      return "Hello! I'm here to help with your IT needs. AramisTech has been serving South Florida businesses for 27+ years. How can we assist you today? Call us at (305) 814-4461 or email sales@aramistech.com.";
+      return "Hello! We're AramisTech, a family-owned IT company that's been helping South Florida businesses for over 27 years. What technical challenge can we help you solve today? Call us at (305) 814-4461!";
     }
     
-    // Service inquiries
-    if (lowerMessage.includes('service') || lowerMessage.includes('help') || lowerMessage.includes('support')) {
-      return "We offer comprehensive IT services including cybersecurity, network management, Windows 10 upgrades, business solutions, and AI development. For personalized service, call us at (305) 814-4461 or email sales@aramistech.com.";
+    // Printer issues
+    if (lowerMessage.includes('printer') || lowerMessage.includes('print')) {
+      return "Printer problems can be so frustrating! We've been fixing printer issues for businesses across Miami and Broward County for 27+ years. Our team can help with connectivity, driver issues, paper jams, or complete printer setup. Call us at (305) 814-4461 and we'll get your printing back on track quickly!";
     }
     
-    // Technical issues
-    if (lowerMessage.includes('computer') || lowerMessage.includes('network') || lowerMessage.includes('slow') || lowerMessage.includes('virus') || lowerMessage.includes('problem')) {
-      return "We can help with computer and network issues! Our experienced technicians provide remote and on-site support. Call us immediately at (305) 814-4461 for technical assistance, or email sales@aramistech.com.";
+    // Computer/hardware issues
+    if (lowerMessage.includes('computer') || lowerMessage.includes('laptop') || lowerMessage.includes('desktop') || lowerMessage.includes('hardware')) {
+      return "Computer troubles? We understand how disruptive that can be to your business! Our experienced technicians have been solving hardware issues for South Florida companies since 1998. We provide both remote and on-site support. Call us at (305) 814-4461 for immediate help!";
+    }
+    
+    // Network issues
+    if (lowerMessage.includes('network') || lowerMessage.includes('internet') || lowerMessage.includes('wifi') || lowerMessage.includes('connection')) {
+      return "Network connectivity issues can shut down your entire operation! Our team specializes in network troubleshooting and has kept South Florida businesses connected for over 27 years. We can diagnose and fix your network problems quickly. Call us at (305) 814-4461 for immediate network support!";
+    }
+    
+    // Slow performance
+    if (lowerMessage.includes('slow') || lowerMessage.includes('freezing') || lowerMessage.includes('running slow')) {
+      return "A slow computer can kill productivity! We've been speeding up business computers in Miami and Broward County for 27+ years. Our team can diagnose what's slowing you down and get your system running like new. Call us at (305) 814-4461 for fast performance solutions!";
+    }
+    
+    // Security/virus issues
+    if (lowerMessage.includes('virus') || lowerMessage.includes('malware') || lowerMessage.includes('security') || lowerMessage.includes('hacked')) {
+      return "Security threats are serious business! We've been protecting South Florida companies from cyber threats for over 27 years. Our cybersecurity experts can clean infections and strengthen your defenses. Don't wait - call us immediately at (305) 814-4461 for security assistance!";
+    }
+    
+    // Email issues
+    if (lowerMessage.includes('email') || lowerMessage.includes('outlook') || lowerMessage.includes('mail')) {
+      return "Email problems can disrupt your entire workflow! Our team has been solving email issues for South Florida businesses for 27+ years. Whether it's setup, syncing, or connectivity problems, we can get your email working perfectly. Call us at (305) 814-4461!";
+    }
+    
+    // Server issues
+    if (lowerMessage.includes('server') || lowerMessage.includes('backup')) {
+      return "Server problems need immediate attention! We've been managing business servers across Miami and Broward County for over 27 years. Our experienced team can handle everything from server crashes to backup failures. Call us now at (305) 814-4461 for emergency server support!";
     }
     
     // Windows 10 specific
     if (lowerMessage.includes('windows') || lowerMessage.includes('upgrade') || lowerMessage.includes('windows 10')) {
-      return "Windows 10 support ends October 14, 2025! We provide professional upgrade services to keep your business secure. Don't wait - call us at (305) 814-4461 to schedule your Windows upgrade consultation.";
+      return "Windows 10 support ends October 14, 2025! Don't get caught with unsecured systems. We've been helping South Florida businesses with Windows upgrades for decades. Our team makes the transition smooth and secure. Call us at (305) 814-4461 to schedule your upgrade consultation!";
     }
     
     // Pricing inquiries
     if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('quote')) {
-      return "We provide customized pricing based on your specific IT needs. As a family-owned business, we offer competitive rates and personalized service. Call us at (305) 814-4461 for a free consultation and quote.";
+      return "Every business has unique IT needs, so we provide customized pricing. As a family-owned company with 27+ years of experience, we offer competitive rates and personalized service you won't find with big corporations. Call us at (305) 814-4461 for a free consultation and honest quote!";
+    }
+    
+    // General service inquiries
+    if (lowerMessage.includes('service') || lowerMessage.includes('help') || lowerMessage.includes('support')) {
+      return "We're here to solve your IT challenges! With 27+ years serving South Florida businesses, we handle everything from network setup to cybersecurity to emergency repairs. Our family-owned approach means you get personal attention and reliable solutions. Call us at (305) 814-4461!";
     }
     
     // Default response
-    return "Thanks for contacting AramisTech! We're a family-owned IT company with 27+ years of experience serving South Florida businesses. For immediate assistance, call us at (305) 814-4461 or email sales@aramistech.com. We're here to help!";
+    return "We're AramisTech, your local IT experts! Whatever technical challenge you're facing, our family-owned team has been solving similar problems for South Florida businesses for over 27 years. Let's talk about how we can help you specifically - call us at (305) 814-4461!";
   };
 
   // ChatGPT integration for chatbot with fallback system
