@@ -12,6 +12,7 @@ import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } fr
 import { z } from "zod";
 import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
 import { sendQuickQuoteEmail, sendContactEmail } from "./email-service";
+import { testAWSConnection } from "./test-aws";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), 'uploads');

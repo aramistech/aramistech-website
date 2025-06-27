@@ -26,8 +26,11 @@ export interface ContactEmailData {
 }
 
 export async function sendQuickQuoteEmail(data: QuickQuoteEmailData): Promise<void> {
+  // Use a verified email address - this needs to be verified in AWS SES first
+  const sourceEmail = process.env.SES_VERIFIED_EMAIL || "noreply@aramistech.com";
+  
   const emailParams = {
-    Source: "noreply@aramistech.com", // Must be verified in AWS SES
+    Source: sourceEmail,
     Destination: {
       ToAddresses: ["sales@aramistech.com"],
     },
@@ -128,8 +131,11 @@ This email was generated automatically from your website.
 }
 
 export async function sendContactEmail(data: ContactEmailData): Promise<void> {
+  // Use a verified email address - this needs to be verified in AWS SES first
+  const sourceEmail = process.env.SES_VERIFIED_EMAIL || "noreply@aramistech.com";
+  
   const emailParams = {
-    Source: "noreply@aramistech.com", // Must be verified in AWS SES
+    Source: sourceEmail,
     Destination: {
       ToAddresses: ["sales@aramistech.com"],
     },
