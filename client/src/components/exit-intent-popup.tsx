@@ -20,7 +20,7 @@ interface ExitIntentPopup {
 export default function ExitIntentPopup() {
   const [isVisible, setIsVisible] = useState(false);
   const [hasShown, setHasShown] = useState(false);
-  const [isConsultationFormOpen, setIsConsultationFormOpen] = useState(false);
+  const [showConsultationForm, setShowConsultationForm] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -67,7 +67,8 @@ export default function ExitIntentPopup() {
       });
       // Close form after short delay to show success message
       setTimeout(() => {
-        setIsConsultationFormOpen(false);
+        setShowConsultationForm(false);
+        setIsVisible(false);
         setIsSuccess(false);
       }, 3000);
     },
@@ -148,7 +149,7 @@ export default function ExitIntentPopup() {
 
   return (
     <>
-      <Dialog open={isVisible && !isConsultationFormOpen} onOpenChange={setIsVisible}>
+      <Dialog open={isVisible && !showConsultationForm} onOpenChange={setIsVisible}>
         <DialogContent 
           className="max-w-md p-0 overflow-hidden z-[9999]"
           style={{ 
@@ -192,11 +193,13 @@ export default function ExitIntentPopup() {
               {/* Action button */}
               <div 
                 className="w-full py-3 text-lg font-semibold cursor-pointer text-center rounded-md hover:opacity-90 transition-opacity"
-                onClick={() => {
-                  setIsVisible(false);
-                  setIsConsultationFormOpen(true);
+                onClick={(e) => {
+                  console.log("Button clicked!", e);
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowConsultationForm(true);
+                  console.log("Switching to consultation form");
                 }}
-
                 style={{
                   backgroundColor: popup.buttonColor,
                   color: popup.backgroundColor,
@@ -219,7 +222,7 @@ export default function ExitIntentPopup() {
       </Dialog>
       
       {/* IT Consultation Form */}
-      <Dialog open={isConsultationFormOpen} onOpenChange={() => setIsConsultationFormOpen(false)}>
+      <Dialog open={showConsultationForm} onOpenChange={() => setShowConsultationForm(false)}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogTitle className="text-xl font-bold text-blue-900 mb-4">
             Get Your Free IT Consultation
@@ -362,7 +365,7 @@ export default function ExitIntentPopup() {
               </button>
               <button
                 type="button"
-                onClick={() => setIsConsultationFormOpen(false)}
+                onClick={() => setShowConsultationForm(false)}
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
               >
                 Cancel
