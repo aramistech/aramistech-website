@@ -46,7 +46,7 @@ export default function KnowledgeBaseArticle() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
-        <Header />
+        <DynamicHeader />
         <main className="pt-20">
           <div className="container mx-auto px-4 py-12">
             <div className="max-w-4xl mx-auto">
@@ -70,7 +70,7 @@ export default function KnowledgeBaseArticle() {
   if (error || !articleData?.success) {
     return (
       <div className="min-h-screen bg-white">
-        <Header />
+        <DynamicHeader />
         <main className="pt-20">
           <div className="container mx-auto px-4 py-12">
             <div className="max-w-4xl mx-auto text-center">
@@ -142,7 +142,7 @@ export default function KnowledgeBaseArticle() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <DynamicHeader />
       
       <main className="pt-20">
         {/* Breadcrumb */}
