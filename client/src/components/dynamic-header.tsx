@@ -122,7 +122,7 @@ export default function DynamicHeader() {
       </div>
 
       {/* Critical Windows 10 Warning Banner */}
-      <div className="critical-warning text-white py-2 relative overflow-hidden">
+      <div className="critical-warning text-white py-1 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center text-center">
             <div className="flex items-center space-x-3">
