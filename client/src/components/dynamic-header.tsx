@@ -82,6 +82,9 @@ export default function DynamicHeader() {
       } else if (item.href.startsWith('http://') || item.href.startsWith('https://')) {
         // Handle external URLs by opening in new tab
         window.open(item.href, '_blank', 'noopener,noreferrer');
+      } else if (item.href.startsWith('/api/download/')) {
+        // Handle download links directly
+        window.location.href = item.href;
       } else {
         setLocation(item.href);
         setTimeout(() => window.scrollTo(0, 0), 100);
