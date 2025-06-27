@@ -181,6 +181,7 @@ Changelog:
 - June 27, 2025. Enhanced video auto-play to include audio - video now attempts to play with sound when scrolling into view, with smart fallback to muted play if browser blocks audio, includes user education about browser audio policies
 - June 27, 2025. Added clickable link from "Click to Learn more" text on Windows 10 upgrade page to AI development page with AramisTech orange branding and hover effects
 - June 27, 2025. Updated "Call Now" button text color to orange on Windows 10 upgrade page to match AramisTech branding with blue hover effect
+- June 27, 2025. Added fun robot emojis to "See What Our AI-Enhanced Fans Are Saying!" title on Windows 10 upgrade page for playful tech appeal
 ```
 
 ## User Preferences
