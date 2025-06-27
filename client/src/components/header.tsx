@@ -104,7 +104,7 @@ export default function Header() {
       </div>
 
       {/* Critical Windows 10 Warning Banner */}
-      <div className="critical-warning text-white py-3 relative overflow-hidden">
+      <div className="critical-warning text-white py-2 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center text-center">
             <div className="flex items-center space-x-3">
@@ -117,7 +117,7 @@ export default function Header() {
               </span>
               <Link 
                 href="/windows10-upgrade" 
-                className="hidden sm:inline-flex items-center bg-yellow-400 text-red-800 px-3 py-1 rounded-full text-xs font-bold hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105"
+                className="hidden sm:inline-flex items-center bg-red-700 text-white px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:bg-red-800 transition-all duration-300 transform hover:scale-105"
                 onClick={() => window.scrollTo(0, 0)}
               >
                 <span className="mr-1">►</span>

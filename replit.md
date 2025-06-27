@@ -194,6 +194,7 @@ Changelog:
 - June 27, 2025. Removed pulsing animation from "Learn More" button per user request - button now remains static while maintaining yellow styling, lightning bolt icon, and hover effects
 - June 27, 2025. Changed "Learn More" button icon from lightning bolt to solid arrow triangle (►) for better visibility and clearer action indication
 - June 27, 2025. Enhanced IP lookup page local IP detection with improved WebRTC implementation, multiple detection methods, and comprehensive user guidance when browser privacy settings block IP detection - now provides helpful instructions for manual IP discovery across Windows, Mac, and Linux platforms
+- June 27, 2025. Made critical warning banner thinner (reduced padding from py-3 to py-2) and changed "Learn More" button from yellow to solid red with white border outline for better visual hierarchy and reduced competition with main site content
 ```
 
 ## User Preferences
