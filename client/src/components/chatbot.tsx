@@ -215,7 +215,7 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
               </Button>
             </div>
             <p className="text-xs text-gray-500 mt-2 text-center">
-              Powered by ChatGPT • (305) 814-4461
+              Powered by Google Gemini • (305) 814-4461
             </p>
           </div>
         </div>
