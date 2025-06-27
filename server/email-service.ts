@@ -57,6 +57,156 @@ export interface ITConsultationEmailData {
   preferredContactTime?: string | null;
 }
 
+export interface TechnicianTransferEmailData {
+  customerName: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  sessionId: string;
+  transferTime: Date;
+  lastMessage?: string;
+}
+
+export async function sendTechnicianTransferNotification(data: TechnicianTransferEmailData): Promise<void> {
+  const subject = "🚨 URGENT: Customer Requesting Live Technician Support";
+  
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Technician Transfer Request</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .logo { font-size: 28px; font-weight: bold; margin-bottom: 10px; }
+        .content { background: white; padding: 30px; border: 1px solid #e5e7eb; }
+        .customer-info { background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .info-row { display: flex; margin-bottom: 10px; }
+        .label { font-weight: bold; min-width: 120px; color: #374151; }
+        .value { color: #1f2937; }
+        .urgent { background: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        .footer { background: #f9fafb; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; border: 1px solid #e5e7eb; border-top: none; }
+        .cta-button { background: #ef4444; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; margin: 10px 0; }
+        .phone-link { color: #1e40af; text-decoration: none; font-weight: bold; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="logo">AramisTech</div>
+          <div>Customer Requesting Live Support</div>
+        </div>
+        
+        <div class="content">
+          <div class="urgent">
+            <strong>⚠️ IMMEDIATE ACTION REQUIRED</strong><br>
+            A customer has requested to speak with a live technician. Please respond immediately.
+          </div>
+          
+          <div class="customer-info">
+            <h3 style="margin-top: 0; color: #1f2937;">Customer Information</h3>
+            <div class="info-row">
+              <span class="label">Name:</span>
+              <span class="value">${data.customerName}</span>
+            </div>
+            ${data.customerEmail ? `
+            <div class="info-row">
+              <span class="label">Email:</span>
+              <span class="value"><a href="mailto:${data.customerEmail}">${data.customerEmail}</a></span>
+            </div>
+            ` : ''}
+            ${data.customerPhone ? `
+            <div class="info-row">
+              <span class="label">Phone:</span>
+              <span class="value"><a href="tel:${data.customerPhone}" class="phone-link">${data.customerPhone}</a></span>
+            </div>
+            ` : ''}
+            <div class="info-row">
+              <span class="label">Session ID:</span>
+              <span class="value">${data.sessionId}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Transfer Time:</span>
+              <span class="value">${data.transferTime.toLocaleString()}</span>
+            </div>
+            ${data.lastMessage ? `
+            <div class="info-row">
+              <span class="label">Last Message:</span>
+              <span class="value">"${data.lastMessage}"</span>
+            </div>
+            ` : ''}
+          </div>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <p><strong>Customer is waiting for live support!</strong></p>
+            <p>Log into the admin dashboard immediately to respond to this customer.</p>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <p style="margin: 0; color: #6b7280;">
+            <strong>AramisTech Live Chat System</strong><br>
+            Professional IT Solutions since 1998
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const textContent = `
+URGENT: Customer Requesting Live Technician Support
+
+Customer Information:
+- Name: ${data.customerName}
+${data.customerEmail ? `- Email: ${data.customerEmail}` : ''}
+${data.customerPhone ? `- Phone: ${data.customerPhone}` : ''}
+- Session ID: ${data.sessionId}
+- Transfer Time: ${data.transferTime.toLocaleString()}
+${data.lastMessage ? `- Last Message: "${data.lastMessage}"` : ''}
+
+IMMEDIATE ACTION REQUIRED:
+A customer has requested to speak with a live technician. Please log into the admin dashboard immediately to respond.
+
+AramisTech Live Chat System
+Professional IT Solutions since 1998
+  `;
+
+  const params = {
+    Source: "AramisTech Live Chat <sales@aramistech.com>",
+    Destination: {
+      ToAddresses: ["sales@aramistech.com"],
+    },
+    Message: {
+      Subject: {
+        Data: subject,
+        Charset: "UTF-8",
+      },
+      Body: {
+        Html: {
+          Data: htmlContent,
+          Charset: "UTF-8",
+        },
+        Text: {
+          Data: textContent,
+          Charset: "UTF-8",
+        },
+      },
+    },
+  };
+
+  try {
+    const command = new SendEmailCommand(params);
+    await sesClient.send(command);
+    console.log("Technician transfer notification sent successfully");
+  } catch (error) {
+    console.error("Error sending technician transfer notification:", error);
+    throw error;
+  }
+}
+
 export async function sendQuickQuoteEmail(data: QuickQuoteEmailData): Promise<void> {
   // Use a verified email address - this needs to be verified in AWS SES first
   const sourceEmail = process.env.SES_VERIFIED_EMAIL || "noreply@aramistech.com";

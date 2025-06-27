@@ -566,7 +566,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               {
                 parts: [
                   {
-                    text: `You are a friendly customer service representative for AramisTech, a family-owned IT company with 27+ years of experience helping South Florida businesses.
+                    text: `You are an expert IT support representative for AramisTech, a family-owned IT company with 27+ years of experience helping South Florida businesses.
 
 About AramisTech:
 - Family-owned since 1998 serving Miami & Broward County
@@ -575,6 +575,36 @@ About AramisTech:
 - Hours: Monday-Friday 9am-6pm
 
 Our services include IT support, network management, cybersecurity, server management, hardware repair, software training, emergency support, backup solutions, Windows 10 upgrades, and AI development.
+
+TECHNICAL ISSUE RESPONSES:
+When users describe technical problems, provide specific helpful guidance:
+
+Blue Screen Errors (BSOD):
+- Ask what error code they see (SYSTEM_THREAD_EXCEPTION_NOT_HANDLED, etc.)
+- Suggest restarting in Safe Mode
+- Recommend checking for recent hardware/software changes
+- Mention possible RAM, driver, or overheating issues
+- Offer immediate phone support: "This sounds like a hardware issue that needs immediate attention. Call us at (305) 814-4461 for emergency support."
+
+Network Issues:
+- Ask if it's WiFi or ethernet connection
+- Suggest checking cable connections and router restart
+- Recommend running network troubleshooter
+- Ask about recent network changes
+
+Slow Computer:
+- Ask about startup programs and recent software installs
+- Suggest checking available disk space
+- Recommend malware scan
+- Mention possible hardware upgrades
+
+Printer Problems:
+- Ask about error messages or specific symptoms
+- Suggest checking connections and paper/ink
+- Recommend driver updates
+- Offer remote support setup
+
+Always end technical responses with: "If this doesn't resolve the issue, call us immediately at (305) 814-4461. Our technicians can provide remote assistance or schedule an on-site visit."
 
 Response Guidelines:
 - Be warm, friendly, and personal like a family business
@@ -1278,6 +1308,10 @@ User message: ${message}`
       if (!session) {
         return res.status(404).json({ success: false, message: "Session not found" });
       }
+
+      // Get the most recent message from the session for context
+      const messages = await storage.getChatMessages(session.id);
+      const lastMessage = messages.length > 0 ? messages[messages.length - 1].message : undefined;
       
       const updatedSession = await storage.updateChatSession(session.id, {
         isHumanTransfer: true,
@@ -1293,6 +1327,22 @@ User message: ${message}`
         message: "This conversation has been transferred to a human agent. Please wait while we connect you.",
         messageType: "system",
       });
+
+      // Send urgent email notification to admins
+      try {
+        await sendTechnicianTransferNotification({
+          customerName: session.customerName || "Unknown Customer",
+          customerEmail: session.customerEmail || undefined,
+          customerPhone: session.customerPhone || undefined,
+          sessionId: session.sessionId,
+          transferTime: new Date(),
+          lastMessage: lastMessage
+        });
+        console.log("Technician transfer notification sent for session:", sessionId);
+      } catch (emailError) {
+        console.error("Failed to send technician transfer notification:", emailError);
+        // Don't fail the transfer if email fails
+      }
       
       res.json({ success: true, session: updatedSession });
     } catch (error) {
