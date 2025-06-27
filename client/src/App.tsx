@@ -15,7 +15,7 @@ import AIDevelopment from "@/pages/ai-development";
 import KnowledgeBase from "@/pages/knowledge-base";
 import KnowledgeBaseArticle from "@/pages/knowledge-base-article";
 import SocialProofPopup from "@/components/social-proof-popup";
-import Chatbot from "@/components/chatbot";
+import LiveChat from "@/components/live-chat";
 import { useEffect } from "react";
 import { initGA } from "./lib/analytics";
 import { useAnalytics } from "./hooks/use-analytics";
@@ -66,7 +66,7 @@ function App() {
         <Router />
         <Toaster />
         <SocialProofPopup />
-        <Chatbot className="fixed bottom-4 right-4 z-50" />
+        <LiveChat className="fixed bottom-4 right-4 z-50" />
       </TooltipProvider>
     </QueryClientProvider>
   );

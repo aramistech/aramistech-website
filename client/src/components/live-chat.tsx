@@ -173,7 +173,7 @@ export default function LiveChat({ className = "" }: LiveChatProps) {
     }
   };
 
-  const sendBotMessage = async (message: string) => {
+  const sendBotMessage = async (userMessage: string) => {
     if (!session || !ws.current) return;
 
     try {
@@ -183,7 +183,7 @@ export default function LiveChat({ className = "" }: LiveChatProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: inputMessage }),
+        body: JSON.stringify({ message: userMessage }),
       });
 
       const data = await response.json();

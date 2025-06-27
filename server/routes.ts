@@ -1382,11 +1382,19 @@ User message: ${message}`
 
   const httpServer = createServer(app);
   
-  // Setup WebSocket server for live chat on a separate port
-  const wss = new WebSocketServer({ port: 8080 });
+  // Setup WebSocket server for live chat - only in production or when not in dev mode
+  let wss: any = null;
   
-  wss.on('connection', (ws: WebSocket) => {
-    console.log('New WebSocket connection');
+  if (process.env.NODE_ENV !== 'development') {
+    wss = new WebSocketServer({ server: httpServer });
+  } else {
+    // In development, create a simple API endpoint for testing
+    console.log('WebSocket server disabled in development mode');
+  }
+  
+  if (wss) {
+    wss.on('connection', (ws: WebSocket) => {
+      console.log('New WebSocket connection');
     
     ws.on('message', async (message: string) => {
       try {
@@ -1413,10 +1421,10 @@ User message: ${message}`
               });
               
               // Broadcast message to all clients in this session
-              wss.clients.forEach((client) => {
+              wss.clients.forEach((client: any) => {
                 if (client !== ws && 
                     client.readyState === WebSocket.OPEN && 
-                    (client as any).sessionId === data.sessionId) {
+                    client.sessionId === data.sessionId) {
                   client.send(JSON.stringify({
                     type: 'new_message',
                     message: chatMessage
@@ -1526,10 +1534,11 @@ User message: ${message}`
       }
     });
     
-    ws.on('close', () => {
-      console.log('WebSocket connection closed');
+      ws.on('close', () => {
+        console.log('WebSocket connection closed');
+      });
     });
-  });
+  }
   
   return httpServer;
 }
