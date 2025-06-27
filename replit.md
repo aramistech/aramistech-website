@@ -182,6 +182,7 @@ Changelog:
 - June 27, 2025. Added clickable link from "Click to Learn more" text on Windows 10 upgrade page to AI development page with AramisTech orange branding and hover effects
 - June 27, 2025. Updated "Call Now" button text color to orange on Windows 10 upgrade page to match AramisTech branding with blue hover effect
 - June 27, 2025. Added fun robot emojis to "See What Our AI-Enhanced Fans Are Saying!" title on Windows 10 upgrade page for playful tech appeal
+- June 27, 2025. Fixed "Click to Learn more" link to scroll to top of AI development page instead of loading in middle of page
 ```
 
 ## User Preferences

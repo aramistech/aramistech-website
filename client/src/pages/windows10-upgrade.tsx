@@ -287,7 +287,7 @@ export default function Windows10Upgrade() {
                 <span className="text-green-700 font-semibold">27+ Years of IT Excellence</span>
               </div>
               <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-                This video showcases the expertise of our AI development team and what they can do for your business. <Link href="/ai-development" className="text-orange-600 hover:text-orange-700 font-semibold underline transition-colors">Click to Learn more</Link>
+                This video showcases the expertise of our AI development team and what they can do for your business. <Link href="/ai-development" className="text-orange-600 hover:text-orange-700 font-semibold underline transition-colors" onClick={() => setTimeout(() => window.scrollTo(0, 0), 100)}>Click to Learn more</Link>
               </p>
               <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-xl mx-auto">
                 <p className="text-blue-800 text-sm">
