@@ -117,10 +117,11 @@ export default function Header() {
               </span>
               <Link 
                 href="/windows10-upgrade" 
-                className="hidden sm:inline text-sm text-yellow-300 hover:text-yellow-100 professional-text underline transition-colors"
+                className="hidden sm:inline-flex items-center bg-yellow-400 text-red-800 px-3 py-1 rounded-full text-xs font-bold hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 animate-pulse"
                 onClick={() => window.scrollTo(0, 0)}
               >
-                | Learn More
+                <span className="mr-1">⚡</span>
+                Learn More
               </Link>
             </div>
           </div>
