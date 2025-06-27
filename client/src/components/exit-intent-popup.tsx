@@ -85,11 +85,13 @@ export default function ExitIntentPopup() {
     <>
       <Dialog open={isVisible} onOpenChange={setIsVisible}>
         <DialogContent 
-          className="max-w-md p-0 overflow-hidden"
+          className="max-w-md p-0 overflow-hidden z-[9999]"
           style={{ 
             backgroundColor: popup.backgroundColor,
             color: popup.textColor,
           }}
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
         >
           <DialogTitle className="sr-only">{popup.title}</DialogTitle>
           <DialogDescription className="sr-only">{popup.message}</DialogDescription>
@@ -123,25 +125,23 @@ export default function ExitIntentPopup() {
               </p>
 
               {/* Action button */}
-              <Button
-                type="button"
-                className="w-full py-3 text-lg font-semibold hover:opacity-90 transition-opacity cursor-pointer relative z-50"
-                onMouseDown={() => console.log("🟡 Mouse down on button")}
-                onMouseUp={() => console.log("🟡 Mouse up on button")}
+              <div 
+                className="w-full py-3 text-lg font-semibold cursor-pointer text-center rounded-md hover:opacity-90 transition-opacity"
                 onClick={() => {
                   console.log("🔥 BUTTON CLICKED! Starting the process...");
                   setIsVisible(false);
                   setIsConsultationFormOpen(true);
                   console.log("🔥 Form state set to true, popup closed");
                 }}
+                onMouseDown={() => console.log("🟡 Mouse down on button")}
+                onMouseUp={() => console.log("🟡 Mouse up on button")}
                 style={{
                   backgroundColor: popup.buttonColor,
                   color: popup.backgroundColor,
-                  pointerEvents: 'auto',
                 }}
               >
                 {popup.buttonText}
-              </Button>
+              </div>
 
             {/* Small dismiss text */}
             <button
