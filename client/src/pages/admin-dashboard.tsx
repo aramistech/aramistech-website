@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, MessageCircle } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import AdminReviews from '@/components/admin-reviews';
 import MenuManager from '@/components/menu-manager';
 import AdminUserManager from '@/components/admin-user-manager';
@@ -14,7 +14,6 @@ import ExitIntentManager from '@/components/exit-intent-manager';
 import MediaLibrary from '@/components/media-library';
 import AnalyticsDashboard from '@/components/analytics-dashboard';
 import KnowledgeBaseManager from '@/components/knowledge-base-manager';
-import AdminLiveChat from '@/components/admin-live-chat';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -102,14 +101,10 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <Tabs defaultValue="livechat" className="space-y-4">
+          <Tabs defaultValue="reviews" className="space-y-4">
             {/* Mobile Tab Navigation */}
             <div className="sm:hidden">
               <TabsList className="flex overflow-x-auto w-full gap-1 p-1 h-auto">
-                <TabsTrigger value="livechat" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <MessageCircle className="w-4 h-4" />
-                  Chat
-                </TabsTrigger>
                 <TabsTrigger value="reviews" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
                   <Star className="w-4 h-4" />
                   Reviews
@@ -143,11 +138,7 @@ export default function AdminDashboard() {
 
             {/* Desktop Tab Navigation */}
             <div className="hidden sm:block">
-              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
-                <TabsTrigger value="livechat" className="flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4" />
-                  Live Chat
-                </TabsTrigger>
+              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
                 <TabsTrigger value="reviews" className="flex items-center gap-2">
                   <Star className="w-4 h-4" />
                   Reviews
@@ -196,22 +187,7 @@ export default function AdminDashboard() {
               </Card>
             </TabsContent>
 
-            <TabsContent value="livechat" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MessageCircle className="w-5 h-5" />
-                    Live Chat Management
-                  </CardTitle>
-                  <CardDescription>
-                    Manage customer chat conversations and provide real-time support
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <AdminLiveChat />
-                </CardContent>
-              </Card>
-            </TabsContent>
+
 
             <TabsContent value="knowledge" className="space-y-4">
               <Card>
