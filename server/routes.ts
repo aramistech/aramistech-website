@@ -11,7 +11,7 @@ import fs from "fs";
 import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
 import { z } from "zod";
 import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
-import { sendQuickQuoteEmail, sendContactEmail, sendAIConsultationEmail, sendITConsultationEmail } from "./email-service";
+import { sendQuickQuoteEmail, sendContactEmail, sendAIConsultationEmail, sendITConsultationEmail, sendTechnicianTransferNotification } from "./email-service";
 import { testAWSConnection } from "./test-aws";
 
 // Configure multer for file uploads
@@ -1647,6 +1647,10 @@ User message: ${message}`
             // Transfer chat to human agent
             const transferSession = await storage.getChatSession(data.sessionId);
             if (transferSession) {
+              // Get the most recent message for context
+              const messages = await storage.getChatMessages(transferSession.id);
+              const lastMessage = messages.length > 0 ? messages[messages.length - 1].message : undefined;
+
               await storage.updateChatSession(transferSession.id, {
                 isHumanTransfer: true,
                 transferredAt: new Date(),
@@ -1660,6 +1664,21 @@ User message: ${message}`
                 message: 'This conversation has been transferred to a human agent. Please wait while we connect you.',
                 messageType: 'system',
               });
+
+              // Send urgent email notification to admins
+              try {
+                await sendTechnicianTransferNotification({
+                  customerName: transferSession.customerName || "Unknown Customer",
+                  customerEmail: transferSession.customerEmail || undefined,
+                  customerPhone: transferSession.customerPhone || undefined,
+                  sessionId: transferSession.sessionId,
+                  transferTime: new Date(),
+                  lastMessage: lastMessage
+                });
+                console.log("Technician transfer notification sent for WebSocket session:", data.sessionId);
+              } catch (emailError) {
+                console.error("Failed to send technician transfer notification via WebSocket:", emailError);
+              }
               
               // Notify all clients in session about transfer
               wss.clients.forEach((client) => {
