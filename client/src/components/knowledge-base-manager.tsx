@@ -120,10 +120,7 @@ export default function KnowledgeBaseManager() {
 
   const createCategoryMutation = useMutation({
     mutationFn: async (data: CategoryFormData) => {
-      return await apiRequest('/api/admin/knowledge-base/categories', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
+      return await apiRequest('POST', '/api/admin/knowledge-base/categories', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/knowledge-base/categories'] });
@@ -146,10 +143,7 @@ export default function KnowledgeBaseManager() {
 
   const updateCategoryMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: CategoryFormData }) => {
-      return await apiRequest(`/api/admin/knowledge-base/categories/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-      });
+      return await apiRequest('PUT', `/api/admin/knowledge-base/categories/${id}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/knowledge-base/categories'] });
@@ -172,9 +166,7 @@ export default function KnowledgeBaseManager() {
 
   const deleteCategoryMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest(`/api/admin/knowledge-base/categories/${id}`, {
-        method: 'DELETE',
-      });
+      return await apiRequest('DELETE', `/api/admin/knowledge-base/categories/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/knowledge-base/categories'] });
@@ -195,10 +187,7 @@ export default function KnowledgeBaseManager() {
 
   const createArticleMutation = useMutation({
     mutationFn: async (data: ArticleFormData) => {
-      return await apiRequest('/api/admin/knowledge-base/articles', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
+      return await apiRequest('POST', '/api/admin/knowledge-base/articles', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/knowledge-base/articles'] });
@@ -221,10 +210,7 @@ export default function KnowledgeBaseManager() {
 
   const updateArticleMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: ArticleFormData }) => {
-      return await apiRequest(`/api/admin/knowledge-base/articles/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-      });
+      return await apiRequest('PUT', `/api/admin/knowledge-base/articles/${id}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/knowledge-base/articles'] });
@@ -247,9 +233,7 @@ export default function KnowledgeBaseManager() {
 
   const deleteArticleMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest(`/api/admin/knowledge-base/articles/${id}`, {
-        method: 'DELETE',
-      });
+      return await apiRequest('DELETE', `/api/admin/knowledge-base/articles/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/knowledge-base/articles'] });
