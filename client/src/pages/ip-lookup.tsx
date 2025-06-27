@@ -82,31 +82,40 @@ export default function IPLookup() {
       return webrtcIPs;
     }
 
-    // Method 2: Try Network Information API (limited support)
-    try {
-      const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
-      if (connection && connection.effectiveType) {
-        console.log('Network connection detected:', connection.effectiveType);
+    // Method 2: Try to guess network type based on public IP
+    let networkHint = '';
+    if (publicIP?.ip) {
+      // Check if we can infer anything from the public IP
+      const ipParts = publicIP.ip.split('.');
+      if (ipParts.length === 4) {
+        networkHint = 'Likely using NAT/Router - Check router admin panel for device list';
       }
-    } catch (error) {
-      console.log('Network Information API not available');
     }
 
     // Method 3: Return helpful guidance for finding local IP
-    return [
-      'Local IP detection blocked by browser privacy settings',
+    const guidance = [
+      'Browser privacy protection prevents automatic detection',
       '',
-      'To find your local IP address:',
-      '• Windows: Open Command Prompt → type "ipconfig"',
-      '• Mac: System Preferences → Network → Advanced → TCP/IP',
-      '• Linux: Terminal → type "hostname -I" or "ip addr"',
-      '',
-      'Common private IP ranges:',
-      '• 192.168.1.x (Most home routers)',
-      '• 192.168.0.x (Default router settings)',
-      '• 10.0.0.x (Corporate networks)',
-      '• 172.16-31.x.x (Enterprise networks)'
+      'Quick ways to find your local IP:',
+      '• Windows: Press Win+R → type "cmd" → type "ipconfig"',
+      '• Mac: System Preferences → Network → Select connection',
+      '• Router: Check connected devices in router admin panel',
+      ''
     ];
+
+    if (networkHint) {
+      guidance.push(networkHint, '');
+    }
+
+    guidance.push(
+      'Most common IP ranges:',
+      '• 192.168.1.x (Typical home setup)',
+      '• 192.168.0.x (Default router config)',
+      '• 10.0.0.x (Some routers/corporate)',
+      '• 172.16-31.x.x (Enterprise networks)'
+    );
+
+    return guidance;
   };
 
   const tryWebRTCDetection = (): Promise<string[]> => {
