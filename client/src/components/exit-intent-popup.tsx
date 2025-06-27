@@ -114,6 +114,12 @@ export default function ExitIntentPopup() {
   useEffect(() => {
     if (!popup?.isActive || hasShown) return;
 
+    // For testing: Show popup after 3 seconds
+    const testTimer = setTimeout(() => {
+      setIsVisible(true);
+      setHasShown(true);
+    }, 3000);
+
     let timeoutId: NodeJS.Timeout;
     let isMouseLeaving = false;
 
@@ -145,6 +151,7 @@ export default function ExitIntentPopup() {
     return () => {
       document.removeEventListener("mouseleave", handleMouseLeave);
       document.removeEventListener("mouseenter", handleMouseEnter);
+      clearTimeout(testTimer);
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
