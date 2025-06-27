@@ -110,7 +110,7 @@ export default function Chatbot({ className = "" }: ChatbotProps) {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="w-14 h-14 rounded-full bg-aramis-orange hover:bg-orange-600 shadow-lg animate-pulse"
+          className="w-14 h-14 rounded-full bg-aramis-orange hover:bg-orange-600 shadow-lg animate-pulse hover:shadow-2xl hover:shadow-orange-400/50 transition-all duration-300 hover:scale-110"
         >
           <MessageCircle className="w-6 h-6 text-white" />
         </Button>
