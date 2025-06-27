@@ -189,6 +189,7 @@ Changelog:
 - June 27, 2025. Added critical red warning banner below topbar with urgent Windows 10 messaging and multiple animations - features pulsing background, flashing critical badge, animated text, and yellow urgency indicators to convey threat urgency
 - June 27, 2025. Updated warning banner text to "Your Systems Will Become Vulnerable to New Threats" and replaced contact message with "Learn More" link that navigates to Windows 10 upgrade page from top
 - June 27, 2025. Enhanced warning banner with professional glow animation for text while maintaining flashing critical badge - replaced pulsing with subtle white shadow effect for more corporate appearance
+- June 27, 2025. Added AlertTriangle icon to critical warning banner badge matching the Windows 10 upgrade page design for consistent visual messaging across all pages
 ```
 
 ## User Preferences

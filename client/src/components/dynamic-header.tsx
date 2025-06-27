@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, AlertTriangle } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { trackClick } from "@/lib/analytics";
@@ -126,7 +126,8 @@ export default function DynamicHeader() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center text-center">
             <div className="flex items-center space-x-3">
-              <span className="critical-badge bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+              <span className="critical-badge bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
+                <AlertTriangle className="w-3 h-3 mr-1" />
                 CRITICAL
               </span>
               <span className="font-semibold text-sm sm:text-base professional-text">
