@@ -84,8 +84,8 @@ export default function AdminLiveChat() {
     },
   });
 
-  const sessions: ChatSession[] = sessionsData?.sessions || [];
-  const settings: AdminChatSettings = settingsData?.settings || {
+  const sessions: ChatSession[] = (sessionsData as any)?.sessions || [];
+  const settings: AdminChatSettings = (settingsData as any)?.settings || {
     isOnline: false,
     awayMessage: "",
     notificationsEnabled: true,
