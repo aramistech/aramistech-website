@@ -171,6 +171,7 @@ Changelog:
 - June 27, 2025. Enhanced chatbot with improved technical responses for blue screen errors, network issues, slow computers, and printer problems - replaced generic responses with specific troubleshooting guidance while maintaining lead generation focus
 - June 27, 2025. Implemented urgent email notification system for technician transfer requests - when customers click "talk with a technician", sales@aramistech.com receives immediate alerts with customer details, session context, and last message for quick response
 - June 27, 2025. Removed all live chat systems (Tawk.to and Gemini chatbot) per user request - website now focuses on core lead generation through contact forms, exit intent popup, and consultation forms with email notifications to sales@aramistech.com
+- June 27, 2025. Integrated ChatGPT-powered chatbot with OpenAI API - provides intelligent customer service assistant with AramisTech branding, professional responses about IT services, and lead generation focus
 ```
 
 ## User Preferences

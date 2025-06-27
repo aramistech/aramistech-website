@@ -545,7 +545,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return "We're AramisTech, your local IT experts! Whatever technical challenge you're facing, our family-owned team has been solving similar problems for South Florida businesses for over 27 years. Let's talk about how we can help you specifically - call us at (305) 814-4461!";
   };
 
-  // ChatGPT integration for chatbot with fallback system
+  // ChatGPT API endpoint for intelligent chatbot
+  app.post("/api/chatgpt", async (req, res) => {
+    try {
+      const { message } = req.body;
+      
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      // Use OpenAI ChatGPT API
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            messages: [
+              {
+                role: 'system',
+                content: `You are a professional customer service representative for AramisTech, a family-owned IT company with 27+ years of experience serving South Florida businesses.
+
+About AramisTech:
+- Family-owned IT company since 1998
+- Serving Miami & Broward County
+- Phone: (305) 814-4461
+- Email: sales@aramistech.com
+- Business hours: Monday-Friday 9am-6pm
+
+Our comprehensive IT services include:
+- Computer repair and troubleshooting
+- Network setup and maintenance
+- Cybersecurity solutions
+- Server management and cloud solutions
+- Hardware installation and upgrades
+- Software installation and training
+- Emergency IT support
+- Data backup and recovery
+- Windows 10 upgrade services
+- AI development and integration
+
+Your role:
+1. Provide helpful, specific technical guidance when customers describe IT problems
+2. Always maintain a professional, friendly tone
+3. Include AramisTech contact information when appropriate
+4. For complex issues, recommend calling or emailing for personalized assistance
+5. Never provide generic "call us" responses - give specific helpful advice first
+6. Use simple language that non-technical customers can understand
+
+For technical issues, provide step-by-step troubleshooting guidance while encouraging professional support for complex problems.`
+              },
+              {
+                role: 'user',
+                content: message
+              }
+            ],
+            max_tokens: 500,
+            temperature: 0.7
+          })
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error?.message || 'OpenAI API error');
+        }
+
+        const botResponse = data.choices[0]?.message?.content || "I'm having trouble processing your request right now. Please call us at (305) 814-4461 for immediate assistance.";
+        
+        res.json({ response: botResponse });
+      } catch (openaiError) {
+        console.error('OpenAI API Error:', openaiError);
+        
+        // Provide helpful fallback response
+        const fallbackResponse = "I'm experiencing technical difficulties at the moment. For immediate IT support, please call AramisTech at (305) 814-4461 or email sales@aramistech.com. Our experienced technicians are here to help with all your technology needs.";
+        res.json({ response: fallbackResponse });
+      }
+    } catch (error) {
+      console.error('ChatGPT Endpoint Error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  // Legacy Gemini chatbot endpoint (keeping for compatibility)
   app.post("/api/chatbot", async (req, res) => {
     try {
       const { message } = req.body;
