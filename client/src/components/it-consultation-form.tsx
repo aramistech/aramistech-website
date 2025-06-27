@@ -99,6 +99,7 @@ export default function ITConsultationForm({ isOpen, onClose }: ITConsultationFo
   };
 
   const handleClose = () => {
+    console.log("🔴 IT Form handleClose called");
     setIsSuccess(false);
     onClose();
   };
@@ -152,7 +153,12 @@ export default function ITConsultationForm({ isOpen, onClose }: ITConsultationFo
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      console.log("🔴 IT Dialog onOpenChange called with:", open);
+      if (!open) {
+        handleClose();
+      }
+    }}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-blue-900">

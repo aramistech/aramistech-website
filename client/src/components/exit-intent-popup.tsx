@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ITConsultationForm from "@/components/it-consultation-form";
+import SimpleConsultationForm from "@/components/simple-consultation-form";
 
 interface ExitIntentPopup {
   id: number;
@@ -156,10 +157,13 @@ export default function ExitIntentPopup() {
       </DialogContent>
       </Dialog>
       
-      {/* IT Consultation Form */}
-      <ITConsultationForm
+      {/* Simple Test Form */}
+      <SimpleConsultationForm
         isOpen={isConsultationFormOpen}
-        onClose={() => setIsConsultationFormOpen(false)}
+        onClose={() => {
+          console.log("🔴 Closing consultation form");
+          setIsConsultationFormOpen(false);
+        }}
       />
     </>
   );
