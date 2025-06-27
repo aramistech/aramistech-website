@@ -444,33 +444,138 @@ export default function AIDevelopment() {
               </CardContent>
             </Card>
 
-            {/* AI-Powered Promo Videos */}
-            <Card className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-orange-500">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="p-3 bg-orange-100 rounded-lg mr-4 group-hover:bg-orange-200 transition-colors">
-                    <Video className="w-6 h-6 text-orange-600" />
+            {/* AI-Powered Promo Videos - Wide Layout */}
+            <Card className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-orange-500 md:col-span-2 lg:col-span-3">
+              <CardContent className="p-8">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">
+                  {/* Content Section */}
+                  <div className="flex-1">
+                    <div className="flex items-center mb-4">
+                      <div className="p-3 bg-orange-100 rounded-lg mr-4 group-hover:bg-orange-200 transition-colors">
+                        <Video className="w-6 h-6 text-orange-600" />
+                      </div>
+                      <h3 className="text-2xl font-semibold text-gray-900">AI-Powered Promo Videos</h3>
+                    </div>
+                    <p className="text-gray-600 mb-6 text-lg">
+                      Professional promotional videos created with cutting-edge AI tools, including intelligent 
+                      editing, custom prompts, and automated post-production for maximum marketing impact.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
+                        <span className="text-gray-700 font-medium">AI-Enhanced Editing</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
+                        <span className="text-gray-700 font-medium">Custom Script Generation</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
+                        <span className="text-gray-700 font-medium">Automated Visual Effects</span>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">AI-Powered Promo Videos</h3>
+                  
+                  {/* Animation Section */}
+                  <div className="w-full lg:w-80 h-48 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl flex items-center justify-center relative overflow-hidden">
+                    <svg 
+                      width="200" 
+                      height="120" 
+                      viewBox="0 0 200 120" 
+                      className="text-orange-600"
+                    >
+                      {/* Video Frame */}
+                      <rect 
+                        x="20" 
+                        y="20" 
+                        width="160" 
+                        height="80" 
+                        rx="8" 
+                        fill="currentColor" 
+                        fillOpacity="0.1" 
+                        stroke="currentColor" 
+                        strokeWidth="2"
+                      />
+                      
+                      {/* Play Button */}
+                      <circle 
+                        cx="100" 
+                        cy="60" 
+                        r="15" 
+                        fill="currentColor" 
+                        fillOpacity="0.8"
+                      >
+                        <animate 
+                          attributeName="r" 
+                          values="15;18;15" 
+                          dur="2s" 
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                      <polygon 
+                        points="95,55 95,65 105,60" 
+                        fill="white"
+                      />
+                      
+                      {/* AI Enhancement Particles */}
+                      {Array.from({ length: 8 }).map((_, i) => (
+                        <circle 
+                          key={i}
+                          cx={30 + (i * 20)} 
+                          cy={30 + (i % 2) * 60} 
+                          r="2" 
+                          fill="currentColor" 
+                          fillOpacity="0.6"
+                        >
+                          <animate 
+                            attributeName="opacity" 
+                            values="0.2;1;0.2" 
+                            dur={`${1.5 + i * 0.2}s`} 
+                            repeatCount="indefinite"
+                          />
+                          <animate 
+                            attributeName="cy" 
+                            values={`${30 + (i % 2) * 60};${25 + (i % 2) * 60};${30 + (i % 2) * 60}`} 
+                            dur={`${2 + i * 0.1}s`} 
+                            repeatCount="indefinite"
+                          />
+                        </circle>
+                      ))}
+                      
+                      {/* Timeline */}
+                      <rect 
+                        x="25" 
+                        y="105" 
+                        width="150" 
+                        height="4" 
+                        rx="2" 
+                        fill="currentColor" 
+                        fillOpacity="0.2"
+                      />
+                      <rect 
+                        x="25" 
+                        y="105" 
+                        width="60" 
+                        height="4" 
+                        rx="2" 
+                        fill="currentColor" 
+                        fillOpacity="0.8"
+                      >
+                        <animate 
+                          attributeName="width" 
+                          values="0;150;0" 
+                          dur="4s" 
+                          repeatCount="indefinite"
+                        />
+                      </rect>
+                    </svg>
+                    
+                    {/* Floating Elements */}
+                    <div className="absolute top-4 right-4 w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
+                    <div className="absolute bottom-6 left-6 w-2 h-2 bg-orange-500 rounded-full animate-bounce"></div>
+                    <div className="absolute top-8 left-8 w-2 h-2 bg-orange-300 rounded-full animate-ping"></div>
+                  </div>
                 </div>
-                <p className="text-gray-600 mb-4">
-                  Professional promotional videos created with cutting-edge AI tools, including intelligent 
-                  editing, custom prompts, and automated post-production for maximum marketing impact.
-                </p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    AI-Enhanced Editing
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Custom Script Generation
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Automated Visual Effects
-                  </li>
-                </ul>
               </CardContent>
             </Card>
           </div>

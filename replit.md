@@ -184,6 +184,7 @@ Changelog:
 - June 27, 2025. Added fun robot emojis to "See What Our AI-Enhanced Fans Are Saying!" title on Windows 10 upgrade page for playful tech appeal
 - June 27, 2025. Fixed "Click to Learn more" link to scroll to top of AI development page instead of loading in middle of page
 - June 27, 2025. Added AI-Powered Promo Videos service to AI development page with professional design, custom AI tools for editing, script generation, and automated visual effects - seamlessly integrated with existing service cards
+- June 27, 2025. Enhanced AI-Powered Promo Videos service with wide layout design and animated video production visualization featuring pulsing play button, AI enhancement particles, animated timeline, and floating elements in AramisTech orange branding
 ```
 
 ## User Preferences
