@@ -102,15 +102,17 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <Tabs defaultValue="reviews" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-8">
-              <TabsTrigger value="reviews" className="flex items-center gap-2">
-                <Star className="w-4 h-4" />
-                Reviews
-              </TabsTrigger>
-              <TabsTrigger value="livechat" className="flex items-center gap-2">
+          <Tabs defaultValue="livechat" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
+              <TabsTrigger value="livechat" className="flex items-center gap-1 sm:gap-2">
                 <MessageCircle className="w-4 h-4" />
-                Live Chat
+                <span className="hidden xs:inline">Live Chat</span>
+                <span className="xs:hidden">Chat</span>
+              </TabsTrigger>
+              <TabsTrigger value="reviews" className="flex items-center gap-1 sm:gap-2">
+                <Star className="w-4 h-4" />
+                <span className="hidden xs:inline">Reviews</span>
+                <span className="xs:hidden">Reviews</span>
               </TabsTrigger>
               <TabsTrigger value="knowledge" className="flex items-center gap-2">
                 <Settings className="w-4 h-4" />

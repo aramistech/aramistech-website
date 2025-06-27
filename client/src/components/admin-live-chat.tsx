@@ -353,14 +353,21 @@ export default function AdminLiveChat() {
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Sessions List */}
-        <Card className="lg:col-span-1">
+        <Card className="md:col-span-1">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Active Chats ({sessions.length})</CardTitle>
+            <CardTitle className="text-sm font-medium flex items-center justify-between">
+              Active Chats ({sessions.length})
+              {sessions.filter(s => newTransferRequests.has(s.id)).length > 0 && (
+                <Badge variant="destructive" className="animate-pulse">
+                  {sessions.filter(s => newTransferRequests.has(s.id)).length} New
+                </Badge>
+              )}
+            </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <ScrollArea className="h-96">
+            <ScrollArea className="h-64 md:h-96">
               <div className="space-y-1 p-3">
                 {sessions.map((session) => (
                   <div
@@ -443,7 +450,7 @@ export default function AdminLiveChat() {
         </Card>
 
         {/* Chat Interface */}
-        <Card className="lg:col-span-2">
+        <Card className="md:col-span-2">
           {selectedSession ? (
             <>
               <CardHeader className="pb-3">
