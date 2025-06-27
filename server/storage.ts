@@ -1,4 +1,4 @@
-import { users, contacts, quickQuotes, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings } from "@shared/schema";
+import { users, contacts, quickQuotes, aiConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, isNull, gt, sql, asc, ne } from "drizzle-orm";
 import bcrypt from "bcryptjs";
@@ -9,8 +9,10 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   createContact(contact: InsertContact): Promise<Contact>;
   createQuickQuote(quote: InsertQuickQuote): Promise<QuickQuote>;
+  createAIConsultation(consultation: InsertAIConsultation): Promise<AIConsultation>;
   getContacts(): Promise<Contact[]>;
   getQuickQuotes(): Promise<QuickQuote[]>;
+  getAIConsultations(): Promise<AIConsultation[]>;
   createReview(review: InsertReview): Promise<Review>;
   getReviews(): Promise<Review[]>;
   getVisibleReviews(): Promise<Review[]>;
