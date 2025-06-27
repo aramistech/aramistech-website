@@ -21,6 +21,16 @@ export default function ExitIntentPopup() {
   const [isVisible, setIsVisible] = useState(false);
   const [hasShown, setHasShown] = useState(false);
   const [showConsultationForm, setShowConsultationForm] = useState(false);
+  
+  // Debug: Log state changes
+  useEffect(() => {
+    console.log("🔄 showConsultationForm changed:", showConsultationForm);
+  }, [showConsultationForm]);
+
+  useEffect(() => {
+    console.log("🔄 isVisible changed:", isVisible);
+  }, [isVisible]);
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -143,9 +153,11 @@ export default function ExitIntentPopup() {
 
 
 
-  if (!popup?.isActive || !isVisible) {
+  if (!popup?.isActive) {
     return null;
   }
+
+  console.log("🚀 RENDER STATE:", { isVisible, showConsultationForm, hasShown });
 
   return (
     <>
@@ -194,11 +206,13 @@ export default function ExitIntentPopup() {
               <div 
                 className="w-full py-3 text-lg font-semibold cursor-pointer text-center rounded-md hover:opacity-90 transition-opacity"
                 onClick={(e) => {
-                  console.log("Button clicked!", e);
+                  console.log("🔥 BUTTON CLICKED! Event:", e.type);
+                  console.log("🔥 Current states - isVisible:", isVisible, "showConsultationForm:", showConsultationForm);
                   e.preventDefault();
                   e.stopPropagation();
+                  console.log("🔥 About to set showConsultationForm to true");
                   setShowConsultationForm(true);
-                  console.log("Switching to consultation form");
+                  console.log("🔥 setShowConsultationForm(true) called");
                 }}
                 style={{
                   backgroundColor: popup.buttonColor,
