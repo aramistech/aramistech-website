@@ -22,14 +22,7 @@ export default function ExitIntentPopup() {
   const [hasShown, setHasShown] = useState(false);
   const [showConsultationForm, setShowConsultationForm] = useState(false);
   
-  // Debug: Log state changes
-  useEffect(() => {
-    console.log("🔄 showConsultationForm changed:", showConsultationForm);
-  }, [showConsultationForm]);
 
-  useEffect(() => {
-    console.log("🔄 isVisible changed:", isVisible);
-  }, [isVisible]);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -114,11 +107,7 @@ export default function ExitIntentPopup() {
   useEffect(() => {
     if (!popup?.isActive || hasShown) return;
 
-    // For testing: Show popup after 3 seconds
-    const testTimer = setTimeout(() => {
-      setIsVisible(true);
-      setHasShown(true);
-    }, 3000);
+    // Remove test timer - exit intent detection will handle popup display
 
     let timeoutId: NodeJS.Timeout;
     let isMouseLeaving = false;
@@ -151,7 +140,6 @@ export default function ExitIntentPopup() {
     return () => {
       document.removeEventListener("mouseleave", handleMouseLeave);
       document.removeEventListener("mouseenter", handleMouseEnter);
-      clearTimeout(testTimer);
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
@@ -164,7 +152,7 @@ export default function ExitIntentPopup() {
     return null;
   }
 
-  console.log("🚀 RENDER STATE:", { isVisible, showConsultationForm, hasShown });
+
 
   return (
     <>
@@ -213,13 +201,9 @@ export default function ExitIntentPopup() {
               <div 
                 className="w-full py-3 text-lg font-semibold cursor-pointer text-center rounded-md hover:opacity-90 transition-opacity"
                 onClick={(e) => {
-                  console.log("🔥 BUTTON CLICKED! Event:", e.type);
-                  console.log("🔥 Current states - isVisible:", isVisible, "showConsultationForm:", showConsultationForm);
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log("🔥 About to set showConsultationForm to true");
                   setShowConsultationForm(true);
-                  console.log("🔥 setShowConsultationForm(true) called");
                 }}
                 style={{
                   backgroundColor: popup.buttonColor,
