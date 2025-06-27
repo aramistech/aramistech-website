@@ -79,6 +79,9 @@ export default function DynamicHeader() {
     if (item.href) {
       if (item.href.startsWith('#')) {
         scrollToSection(item.href.substring(1));
+      } else if (item.href.startsWith('http://') || item.href.startsWith('https://')) {
+        // Handle external URLs by opening in new tab
+        window.open(item.href, '_blank', 'noopener,noreferrer');
       } else {
         setLocation(item.href);
         setTimeout(() => window.scrollTo(0, 0), 100);

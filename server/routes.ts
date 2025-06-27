@@ -474,6 +474,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.redirect(302, downloadUrl);
   });
 
+  // Microsoft Quick Assist proxy
+  app.get("/api/download/microsoft-quick-assist", async (req, res) => {
+    res.redirect(302, 'https://apps.microsoft.com/store/detail/9p7bp5vnwkx5');
+  });
+
   // Public menu items endpoint for frontend navigation
   app.get("/api/menu-items", async (req, res) => {
     try {
