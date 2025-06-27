@@ -151,6 +151,7 @@ Changelog:
 - June 27, 2025. Updated chatbot icon color to orange matching AramisTech logo branding for consistent visual identity
 - June 27, 2025. Enhanced chatbot button with slower pulse animation and outer glow hover effect for improved user engagement
 - June 27, 2025. Added intelligent fallback response system to chatbot for when OpenAI API hits rate limits - provides contextual AramisTech responses based on message content
+- June 27, 2025. Switched chatbot from ChatGPT to Google Gemini 2.5 Flash for improved performance and better rate limits while maintaining all AramisTech branding and intelligent responses
 ```
 
 ## User Preferences

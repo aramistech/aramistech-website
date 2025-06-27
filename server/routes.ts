@@ -521,20 +521,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Message is required' });
       }
 
-      // Try ChatGPT first, but fallback gracefully if it fails
+      // Try Google Gemini first, but fallback gracefully if it fails
       try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-            messages: [
+            contents: [
               {
-                role: 'system',
-                content: `You are a helpful customer service assistant for AramisTech, a family-owned IT services company with 27+ years of experience serving South Florida businesses. 
+                parts: [
+                  {
+                    text: `You are a helpful customer service assistant for AramisTech, a family-owned IT services company with 27+ years of experience serving South Florida businesses. 
 
 AramisTech Services:
 - IT Support & Helpdesk
@@ -563,31 +562,35 @@ Guidelines:
 - Provide specific technical guidance when appropriate
 - Ask clarifying questions to better understand their needs
 - Mention relevant services that could help solve their problems
-- Keep responses concise but informative`
-              },
-              {
-                role: 'user',
-                content: message
+- Keep responses concise but informative
+
+User message: ${message}`
+                  }
+                ]
               }
             ],
-            max_tokens: 300,
-            temperature: 0.7,
+            generationConfig: {
+              temperature: 0.7,
+              topK: 40,
+              topP: 0.95,
+              maxOutputTokens: 300,
+            }
           }),
         });
 
         if (response.ok) {
           const data = await response.json();
-          const aiResponse = data.choices[0]?.message?.content;
+          const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
           if (aiResponse) {
             return res.json({ response: aiResponse });
           }
         }
         
-        // If we get here, ChatGPT didn't work properly
-        throw new Error('ChatGPT response failed');
+        // If we get here, Gemini didn't work properly
+        throw new Error('Gemini response failed');
         
       } catch (aiError) {
-        console.log('ChatGPT unavailable, using fallback response for:', message.substring(0, 50));
+        console.log('Gemini unavailable, using fallback response for:', message.substring(0, 50));
         
         // Use intelligent fallback response
         const fallbackResponse = getFallbackResponse(message);
