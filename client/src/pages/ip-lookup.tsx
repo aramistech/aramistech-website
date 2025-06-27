@@ -75,102 +75,117 @@ export default function IPLookup() {
     }
   };
 
-  const getLocalIPs = async () => {
-    const ips: string[] = [];
-    
-    try {
-      // Method 1: WebRTC with improved candidate handling
-      const pc = new RTCPeerConnection({
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:stun1.l.google.com:19302' },
-          { urls: 'stun:stun2.l.google.com:19302' }
-        ]
-      });
-
-      // Create a data channel to trigger candidate gathering
-      const dataChannel = pc.createDataChannel('ip-discovery', { ordered: false });
+  const getLocalIPs = async (): Promise<string[]> => {
+    return new Promise((resolve) => {
+      const ips: string[] = [];
+      let completed = false;
       
-      const candidatePromise = new Promise<string[]>((resolve) => {
-        const foundIPs: string[] = [];
-        let timeoutId: NodeJS.Timeout;
+      try {
+        // Enhanced WebRTC configuration with multiple STUN servers
+        const pc = new RTCPeerConnection({
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+            { urls: 'stun:stun3.l.google.com:19302' },
+            { urls: 'stun:stun4.l.google.com:19302' }
+          ]
+        });
 
-        pc.onicecandidate = (event) => {
-          if (event.candidate) {
-            const candidate = event.candidate.candidate;
-            
-            // Match IPv4 addresses
-            const ipv4Match = candidate.match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
-            if (ipv4Match && ipv4Match[1]) {
-              const ip = ipv4Match[1];
-              
-              // Check if it's a private IP and not already found
-              if (!foundIPs.includes(ip) && isPrivateIP(ip)) {
-                foundIPs.push(ip);
+        // Create data channel to ensure candidate gathering
+        pc.createDataChannel('');
+
+        pc.onicecandidate = (ice) => {
+          if (!ice || !ice.candidate || !ice.candidate.candidate) return;
+          
+          const candidate = ice.candidate.candidate;
+          console.log('ICE candidate:', candidate);
+          
+          // Extract IP from candidate string
+          const ipRegex = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/g;
+          const matches = candidate.match(ipRegex);
+          
+          if (matches) {
+            matches.forEach(ip => {
+              // Validate and filter private IPs
+              if (isValidPrivateIP(ip) && !ips.includes(ip)) {
+                console.log('Found local IP:', ip);
+                ips.push(ip);
               }
-            }
+            });
           }
         };
 
         pc.onicegatheringstatechange = () => {
-          if (pc.iceGatheringState === 'complete') {
-            clearTimeout(timeoutId);
+          console.log('ICE gathering state:', pc.iceGatheringState);
+          if (pc.iceGatheringState === 'complete' && !completed) {
+            completed = true;
             pc.close();
-            resolve(foundIPs);
+            if (ips.length > 0) {
+              resolve(ips);
+            } else {
+              resolve(['Unable to detect - Browser privacy protection enabled']);
+            }
           }
         };
 
-        // Fallback timeout
-        timeoutId = setTimeout(() => {
-          pc.close();
-          resolve(foundIPs);
-        }, 3000);
-      });
+        // Create offer and set local description to start ICE gathering
+        pc.createOffer().then(offer => {
+          pc.setLocalDescription(offer);
+        }).catch(err => {
+          console.error('Error creating offer:', err);
+          if (!completed) {
+            completed = true;
+            pc.close();
+            resolve(['Error detecting local IP']);
+          }
+        });
 
-      // Create offer to start ICE gathering
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-      
-      const webrtcIPs = await candidatePromise;
-      ips.push(...webrtcIPs);
+        // Timeout fallback
+        setTimeout(() => {
+          if (!completed) {
+            completed = true;
+            pc.close();
+            if (ips.length > 0) {
+              resolve(ips);
+            } else {
+              resolve(['Unable to detect - Check browser settings']);
+            }
+          }
+        }, 5000);
 
-    } catch (error) {
-      console.warn('WebRTC method failed:', error);
-    }
-
-    // Method 2: Fallback - attempt to detect common local IPs
-    if (ips.length === 0) {
-      try {
-        // This is a fallback that shows common local IP ranges
-        const commonLocalIPs = [
-          'Unable to detect - Privacy protected by browser',
-          'Common ranges: 192.168.1.x, 192.168.0.x, 10.0.0.x'
-        ];
-        return commonLocalIPs;
       } catch (error) {
-        console.warn('Fallback method failed:', error);
+        console.error('WebRTC error:', error);
+        resolve(['WebRTC not supported']);
       }
-    }
-
-    return ips.length > 0 ? ips : ['Unable to detect local IP - Browser privacy settings'];
+    });
   };
 
-  const isPrivateIP = (ip: string): boolean => {
+  const isValidPrivateIP = (ip: string): boolean => {
     const parts = ip.split('.').map(Number);
-    if (parts.length !== 4) return false;
+    if (parts.length !== 4 || parts.some(part => isNaN(part) || part < 0 || part > 255)) {
+      return false;
+    }
 
-    // Check private IP ranges
+    // Check for private IP ranges
+    const [a, b] = parts;
+    
+    // Exclude loopback and invalid ranges first
+    if (a === 0 || a === 127) return false;
+    
     return (
       // 192.168.x.x
-      (parts[0] === 192 && parts[1] === 168) ||
+      (a === 192 && b === 168) ||
       // 10.x.x.x
-      (parts[0] === 10) ||
+      (a === 10) ||
       // 172.16.x.x - 172.31.x.x
-      (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) ||
+      (a === 172 && b >= 16 && b <= 31) ||
       // 169.254.x.x (link-local)
-      (parts[0] === 169 && parts[1] === 254)
+      (a === 169 && b === 254)
     );
   };
+
+
 
   const loadIPData = async () => {
     setLoading(true);
