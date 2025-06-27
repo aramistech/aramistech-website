@@ -90,6 +90,7 @@ export default function DynamicHeader() {
         setTimeout(() => window.scrollTo(0, 0), 100);
       }
     }
+    // If no href (like Support dropdown), just close menus without navigation
     setActiveDropdown(null);
     setIsMenuOpen(false);
   };
