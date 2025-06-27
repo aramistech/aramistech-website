@@ -22,10 +22,7 @@ export default function ExitIntentPopup() {
   const [hasShown, setHasShown] = useState(false);
   const [isConsultationFormOpen, setIsConsultationFormOpen] = useState(false);
 
-  // Debug logging for consultation form state
-  useEffect(() => {
-    console.log("EXIT INTENT POPUP: Consultation form state changed:", isConsultationFormOpen);
-  }, [isConsultationFormOpen]);
+
 
   const { data: popupData } = useQuery<{ success: boolean; popup?: ExitIntentPopup }>({
     queryKey: ["/api/exit-intent-popup"],
@@ -127,11 +124,8 @@ export default function ExitIntentPopup() {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log("EXIT INTENT POPUP: Button clicked! Opening consultation form...");
-                  console.log("EXIT INTENT POPUP: Current form state:", isConsultationFormOpen);
                   setIsVisible(false);
                   setTimeout(() => {
-                    console.log("EXIT INTENT POPUP: Setting consultation form to true");
                     setIsConsultationFormOpen(true);
                   }, 100);
                 }}

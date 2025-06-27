@@ -163,6 +163,8 @@ Changelog:
 - June 27, 2025. Fixed mobile live chat management interface for iPhone access - resolved overlapping text issue with proper vertical spacing, responsive design, and touch-friendly interface for managing customer conversations from mobile devices
 - June 27, 2025. Implemented Amazon SES email delivery system for quick quote and contact forms - professional email templates with AramisTech branding automatically send customer inquiries to sales@aramistech.com for immediate follow-up, AWS credentials configured and SES permissions verified for reliable email delivery
 - June 27, 2025. Created comprehensive AI Development consultation form system with detailed project requirements capture, database storage, professional email templates titled "AI Development Consultation", and integration with AI Development page buttons for seamless lead generation from AI service inquiries
+- June 27, 2025. Built complete IT consultation form system with detailed service selection, business requirements capture, urgency levels, and professional email templates - integrated with exit intent popup to convert abandoning visitors into consultation leads sent to sales@aramistech.com
+- June 27, 2025. Fixed critical exit intent popup button functionality - resolved dialog event handling issue that caused immediate form closure, ensuring IT consultation form opens and stays visible for lead capture
 ```
 
 ## User Preferences
