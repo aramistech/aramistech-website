@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Header from "@/components/header";
+import DynamicHeader from "@/components/dynamic-header";
 import Footer from "@/components/footer";
 
 interface KnowledgeBaseCategory {
@@ -70,7 +70,7 @@ export default function KnowledgeBase() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <DynamicHeader />
       
       <main className="pt-20">
         {/* Hero Section */}

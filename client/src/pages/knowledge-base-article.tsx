@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import Header from "@/components/header";
+import DynamicHeader from "@/components/dynamic-header";
 import Footer from "@/components/footer";
 
 interface KnowledgeBaseArticle {
