@@ -70,6 +70,15 @@ export default function LiveChat({ className = "" }: LiveChatProps) {
     if (!session) return;
 
     setConnectionStatus('connecting');
+    
+    // In development mode, simulate connection since WebSocket is disabled
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Development mode: Simulating WebSocket connection');
+      setIsConnected(true);
+      setConnectionStatus('connected');
+      return;
+    }
+    
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.hostname;
     const wsUrl = `${protocol}//${host}:8080`;
@@ -174,7 +183,7 @@ export default function LiveChat({ className = "" }: LiveChatProps) {
   };
 
   const sendBotMessage = async (userMessage: string) => {
-    if (!session || !ws.current) return;
+    if (!session) return;
 
     try {
       // Use existing chatbot logic from the current system
@@ -187,45 +196,92 @@ export default function LiveChat({ className = "" }: LiveChatProps) {
       });
 
       const data = await response.json();
+      let botResponseText = "I'm having trouble processing your request right now. Would you like to speak with one of our technicians? You can call us at (305) 814-4461 or email info@aramistech.com for immediate assistance.";
+      
       if (data.success) {
+        botResponseText = data.response;
+      }
+
+      // Add bot message to UI
+      const botMessage = {
+        id: Date.now() + 1,
+        sender: 'bot',
+        senderName: 'AramisTech Assistant',
+        message: botResponseText,
+        messageType: 'text',
+        createdAt: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, botMessage]);
+      setIsTyping(false);
+
+      // In production with WebSocket, also send via WebSocket
+      if (process.env.NODE_ENV !== 'development' && ws.current) {
         ws.current.send(JSON.stringify({
           type: 'bot_response',
           sessionId: session.sessionId,
-          message: data.response
+          message: botResponseText
         }));
       }
     } catch (error) {
       console.error('Error getting bot response:', error);
+      
       // Fallback message
-      ws.current.send(JSON.stringify({
-        type: 'bot_response',
-        sessionId: session.sessionId,
-        message: "I'm having trouble processing your request right now. Would you like to speak with one of our technicians? You can call us at (305) 814-4461 or email info@aramistech.com for immediate assistance."
-      }));
+      const fallbackMessage = {
+        id: Date.now() + 1,
+        sender: 'bot',
+        senderName: 'AramisTech Assistant',
+        message: "I'm having trouble processing your request right now. Would you like to speak with one of our technicians? You can call us at (305) 814-4461 or email info@aramistech.com for immediate assistance.",
+        messageType: 'text',
+        createdAt: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, fallbackMessage]);
+      setIsTyping(false);
     }
   };
 
   const sendMessage = async () => {
-    if (!inputMessage.trim() || !session || !ws.current || !isConnected) return;
+    if (!inputMessage.trim() || !session) return;
 
     const messageText = inputMessage.trim();
     setInputMessage("");
 
-    // Send customer message
-    ws.current.send(JSON.stringify({
-      type: 'send_message',
-      sessionId: session.sessionId,
+    // Add customer message to UI immediately
+    const customerMessage = {
+      id: Date.now(),
       sender: 'customer',
       senderName: customerInfo.name,
-      message: messageText
-    }));
+      message: messageText,
+      messageType: 'text',
+      createdAt: new Date().toISOString()
+    };
+    setMessages(prev => [...prev, customerMessage]);
 
-    // If not yet transferred to human, get AI response
-    if (!session.isHumanTransfer) {
-      setIsTyping(true);
-      setTimeout(() => {
-        sendBotMessage(messageText);
-      }, 1500); // Slight delay to simulate thinking
+    // In development mode, use direct API calls instead of WebSocket
+    if (process.env.NODE_ENV === 'development' || !ws.current || !isConnected) {
+      // If not yet transferred to human, get AI response
+      if (!session.isHumanTransfer) {
+        setIsTyping(true);
+        setTimeout(() => {
+          sendBotMessage(messageText);
+        }, 1500); // Slight delay to simulate thinking
+      }
+    } else {
+      // Send via WebSocket in production
+      ws.current.send(JSON.stringify({
+        type: 'send_message',
+        sessionId: session.sessionId,
+        sender: 'customer',
+        senderName: customerInfo.name,
+        message: messageText
+      }));
+
+      // If not yet transferred to human, get AI response
+      if (!session.isHumanTransfer) {
+        setIsTyping(true);
+        setTimeout(() => {
+          sendBotMessage(messageText);
+        }, 1500); // Slight delay to simulate thinking
+      }
     }
   };
 
