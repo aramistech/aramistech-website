@@ -84,7 +84,7 @@ export default function ExitIntentPopup() {
 
   return (
     <>
-      <Dialog open={isVisible} onOpenChange={setIsVisible}>
+      <Dialog open={isVisible && !isConsultationFormOpen} onOpenChange={setIsVisible}>
         <DialogContent 
           className="max-w-md p-0 overflow-hidden z-[9999]"
           style={{ 
@@ -129,13 +129,10 @@ export default function ExitIntentPopup() {
               <div 
                 className="w-full py-3 text-lg font-semibold cursor-pointer text-center rounded-md hover:opacity-90 transition-opacity"
                 onClick={() => {
-                  console.log("🔥 BUTTON CLICKED! Starting the process...");
                   setIsVisible(false);
                   setIsConsultationFormOpen(true);
-                  console.log("🔥 Form state set to true, popup closed");
                 }}
-                onMouseDown={() => console.log("🟡 Mouse down on button")}
-                onMouseUp={() => console.log("🟡 Mouse up on button")}
+
                 style={{
                   backgroundColor: popup.buttonColor,
                   color: popup.backgroundColor,
@@ -157,11 +154,10 @@ export default function ExitIntentPopup() {
       </DialogContent>
       </Dialog>
       
-      {/* Simple Test Form */}
-      <SimpleConsultationForm
+      {/* IT Consultation Form */}
+      <ITConsultationForm
         isOpen={isConsultationFormOpen}
         onClose={() => {
-          console.log("🔴 Closing consultation form");
           setIsConsultationFormOpen(false);
         }}
       />

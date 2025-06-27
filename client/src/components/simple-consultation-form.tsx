@@ -7,11 +7,9 @@ interface SimpleConsultationFormProps {
 
 export default function SimpleConsultationForm({ isOpen, onClose }: SimpleConsultationFormProps) {
   console.log("🟢 Simple form render - isOpen:", isOpen);
-  
-  if (!isOpen) return null;
 
   return (
-    <Dialog open={true} onOpenChange={(open) => {
+    <Dialog open={isOpen} onOpenChange={(open) => {
       console.log("🟢 Simple form dialog onOpenChange:", open);
       if (!open) onClose();
     }}>
