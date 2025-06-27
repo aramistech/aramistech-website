@@ -75,8 +75,9 @@ export default function ExitIntentPopup() {
   }
 
   return (
-    <Dialog open={isVisible} onOpenChange={setIsVisible}>
-      <DialogContent 
+    <>
+      <Dialog open={isVisible} onOpenChange={setIsVisible}>
+        <DialogContent 
         className="max-w-md p-0 overflow-hidden"
         style={{ 
           backgroundColor: popup.backgroundColor,
@@ -138,12 +139,13 @@ export default function ExitIntentPopup() {
           </div>
         </div>
       </DialogContent>
-    </Dialog>
-    
-    {/* IT Consultation Form */}
-    <ITConsultationForm
-      isOpen={isConsultationFormOpen}
-      onClose={() => setIsConsultationFormOpen(false)}
-    />
-  </>;
+      </Dialog>
+      
+      {/* IT Consultation Form */}
+      <ITConsultationForm
+        isOpen={isConsultationFormOpen}
+        onClose={() => setIsConsultationFormOpen(false)}
+      />
+    </>
+  );
 }
