@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
 import { insertContactSchema, insertQuickQuoteSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema } from "@shared/schema";
@@ -1084,6 +1085,144 @@ User message: ${message}`
     }
   });
 
+  // Live Chat API Routes
+  
+  // Public live chat routes
+  app.post("/api/chat/session", async (req, res) => {
+    try {
+      const { customerName, customerEmail, customerPhone } = req.body;
+      const sessionId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      const session = await storage.createChatSession({
+        sessionId,
+        customerName,
+        customerEmail,
+        customerPhone,
+        status: "active",
+        isHumanTransfer: false,
+      });
+      
+      res.json({ success: true, session });
+    } catch (error) {
+      console.error("Error creating chat session:", error);
+      res.status(500).json({ success: false, message: "Failed to create chat session" });
+    }
+  });
+
+  app.get("/api/chat/session/:sessionId", async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      const session = await storage.getChatSession(sessionId);
+      
+      if (!session) {
+        return res.status(404).json({ success: false, message: "Session not found" });
+      }
+      
+      res.json({ success: true, session });
+    } catch (error) {
+      console.error("Error fetching chat session:", error);
+      res.status(500).json({ success: false, message: "Failed to fetch session" });
+    }
+  });
+
+  app.get("/api/chat/session/:sessionId/messages", async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      const session = await storage.getChatSession(sessionId);
+      
+      if (!session) {
+        return res.status(404).json({ success: false, message: "Session not found" });
+      }
+      
+      const messages = await storage.getChatMessages(session.id);
+      res.json({ success: true, messages });
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
+      res.status(500).json({ success: false, message: "Failed to fetch messages" });
+    }
+  });
+
+  app.post("/api/chat/session/:sessionId/transfer", async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      const session = await storage.getChatSession(sessionId);
+      
+      if (!session) {
+        return res.status(404).json({ success: false, message: "Session not found" });
+      }
+      
+      const updatedSession = await storage.updateChatSession(session.id, {
+        isHumanTransfer: true,
+        transferredAt: new Date(),
+        status: "transferred"
+      });
+      
+      // Add system message about transfer
+      await storage.addChatMessage({
+        sessionId: session.id,
+        sender: "system",
+        senderName: "System",
+        message: "This conversation has been transferred to a human agent. Please wait while we connect you.",
+        messageType: "system",
+      });
+      
+      res.json({ success: true, session: updatedSession });
+    } catch (error) {
+      console.error("Error transferring chat:", error);
+      res.status(500).json({ success: false, message: "Failed to transfer chat" });
+    }
+  });
+
+  // Admin chat routes
+  app.get("/api/admin/chat/sessions", requireAdminAuth, async (req, res) => {
+    try {
+      const sessions = await storage.getActiveChatSessions();
+      res.json({ success: true, sessions });
+    } catch (error) {
+      console.error("Error fetching admin chat sessions:", error);
+      res.status(500).json({ success: false, message: "Failed to fetch sessions" });
+    }
+  });
+
+  app.put("/api/admin/chat/session/:id/assign", requireAdminAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const adminUserId = (req as any).adminUser.id;
+      
+      const session = await storage.updateChatSession(parseInt(id), {
+        adminUserId,
+        status: "active"
+      });
+      
+      res.json({ success: true, session });
+    } catch (error) {
+      console.error("Error assigning chat session:", error);
+      res.status(500).json({ success: false, message: "Failed to assign session" });
+    }
+  });
+
+  app.get("/api/admin/chat/settings", requireAdminAuth, async (req, res) => {
+    try {
+      const adminUserId = (req as any).adminUser.id;
+      const settings = await storage.getAdminChatSettings(adminUserId);
+      res.json({ success: true, settings });
+    } catch (error) {
+      console.error("Error fetching chat settings:", error);
+      res.status(500).json({ success: false, message: "Failed to fetch settings" });
+    }
+  });
+
+  app.put("/api/admin/chat/settings", requireAdminAuth, async (req, res) => {
+    try {
+      const adminUserId = (req as any).adminUser.id;
+      const settings = await storage.updateAdminChatSettings(adminUserId, req.body);
+      res.json({ success: true, settings });
+    } catch (error) {
+      console.error("Error updating chat settings:", error);
+      res.status(500).json({ success: false, message: "Failed to update settings" });
+    }
+  });
+
   // Knowledge Base API Routes
   
   // Public knowledge base routes
@@ -1242,5 +1381,155 @@ User message: ${message}`
   });
 
   const httpServer = createServer(app);
+  
+  // Setup WebSocket server for live chat on a separate port
+  const wss = new WebSocketServer({ port: 8080 });
+  
+  wss.on('connection', (ws: WebSocket) => {
+    console.log('New WebSocket connection');
+    
+    ws.on('message', async (message: string) => {
+      try {
+        const data = JSON.parse(message);
+        
+        switch (data.type) {
+          case 'join_session':
+            // Join a chat session
+            (ws as any).sessionId = data.sessionId;
+            (ws as any).userType = data.userType; // 'customer' or 'admin'
+            (ws as any).userId = data.userId;
+            break;
+            
+          case 'send_message':
+            // Send a message in the chat
+            const session = await storage.getChatSession(data.sessionId);
+            if (session) {
+              const chatMessage = await storage.addChatMessage({
+                sessionId: session.id,
+                sender: data.sender,
+                senderName: data.senderName,
+                message: data.message,
+                messageType: 'text',
+              });
+              
+              // Broadcast message to all clients in this session
+              wss.clients.forEach((client) => {
+                if (client !== ws && 
+                    client.readyState === WebSocket.OPEN && 
+                    (client as any).sessionId === data.sessionId) {
+                  client.send(JSON.stringify({
+                    type: 'new_message',
+                    message: chatMessage
+                  }));
+                }
+              });
+              
+              // Send confirmation back to sender
+              ws.send(JSON.stringify({
+                type: 'message_sent',
+                message: chatMessage
+              }));
+            }
+            break;
+            
+          case 'bot_response':
+            // Handle AI bot responses
+            const botSession = await storage.getChatSession(data.sessionId);
+            if (botSession) {
+              const botMessage = await storage.addChatMessage({
+                sessionId: botSession.id,
+                sender: 'bot',
+                senderName: 'AramisTech Assistant',
+                message: data.message,
+                messageType: 'text',
+              });
+              
+              // Send bot message to customer
+              wss.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN && 
+                    (client as any).sessionId === data.sessionId) {
+                  client.send(JSON.stringify({
+                    type: 'new_message',
+                    message: botMessage
+                  }));
+                }
+              });
+            }
+            break;
+            
+          case 'transfer_to_human':
+            // Transfer chat to human agent
+            const transferSession = await storage.getChatSession(data.sessionId);
+            if (transferSession) {
+              await storage.updateChatSession(transferSession.id, {
+                isHumanTransfer: true,
+                transferredAt: new Date(),
+                status: "transferred"
+              });
+              
+              const systemMessage = await storage.addChatMessage({
+                sessionId: transferSession.id,
+                sender: 'system',
+                senderName: 'System',
+                message: 'This conversation has been transferred to a human agent. Please wait while we connect you.',
+                messageType: 'system',
+              });
+              
+              // Notify all clients in session about transfer
+              wss.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN && 
+                    (client as any).sessionId === data.sessionId) {
+                  client.send(JSON.stringify({
+                    type: 'chat_transferred',
+                    message: systemMessage
+                  }));
+                }
+              });
+              
+              // Notify admin clients about new transfer
+              wss.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN && 
+                    (client as any).userType === 'admin') {
+                  client.send(JSON.stringify({
+                    type: 'new_transfer',
+                    session: transferSession
+                  }));
+                }
+              });
+            }
+            break;
+            
+          case 'admin_online':
+            // Admin went online
+            if (data.userId) {
+              await storage.updateAdminChatSettings(data.userId, {
+                isOnline: true
+              });
+            }
+            break;
+            
+          case 'admin_offline':
+            // Admin went offline
+            if (data.userId) {
+              await storage.updateAdminChatSettings(data.userId, {
+                isOnline: false
+              });
+            }
+            break;
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+        ws.send(JSON.stringify({
+          type: 'error',
+          message: 'Failed to process message'
+        }));
+      }
+    });
+    
+    ws.on('close', () => {
+      console.log('WebSocket connection closed');
+    });
+  });
+  
   return httpServer;
 }
