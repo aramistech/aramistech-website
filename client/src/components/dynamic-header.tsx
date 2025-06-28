@@ -19,6 +19,7 @@ export default function DynamicHeader() {
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState<number | null>(null);
   const [showMobilePopup, setShowMobilePopup] = useState(false);
   const [isWarningDismissed, setIsWarningDismissed] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [location, setLocation] = useLocation();
 
@@ -28,6 +29,17 @@ export default function DynamicHeader() {
     if (dismissed === 'true') {
       setIsWarningDismissed(true);
     }
+  }, []);
+
+  // Handle scroll for header shrinking
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const dismissWarning = () => {
@@ -250,12 +262,12 @@ export default function DynamicHeader() {
 
       {/* Main Navigation */}
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        <div className={`flex justify-between items-center transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
           <div className="flex items-center">
             <img 
               src="https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png" 
               alt="AramisTech Logo" 
-              className="h-20 w-auto"
+              className={`w-auto transition-all duration-300 ${isScrolled ? 'h-12' : 'h-20'}`}
             />
           </div>
           
@@ -315,9 +327,12 @@ export default function DynamicHeader() {
           <div className="lg:hidden">
             <button
               onClick={toggleMenu}
-              className="text-professional-gray hover:text-aramis-orange p-2"
+              className={`text-professional-gray hover:text-aramis-orange transition-all duration-300 ${isScrolled ? 'p-1' : 'p-2'}`}
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? 
+                <X className={`transition-all duration-300 ${isScrolled ? 'h-5 w-5' : 'h-6 w-6'}`} /> : 
+                <Menu className={`transition-all duration-300 ${isScrolled ? 'h-5 w-5' : 'h-6 w-6'}`} />
+              }
             </button>
           </div>
         </div>
