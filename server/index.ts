@@ -55,6 +55,7 @@ app.use((req, res, next) => {
   // Initialize admin user and default data
   await createDefaultAdmin();
   await setupDefaultMenuItems();
+  await createDefaultSecurityAlert();
   
   const server = await registerRoutes(app);
 
