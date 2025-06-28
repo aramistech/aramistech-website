@@ -12,6 +12,7 @@ import AdminUserManager from '@/components/admin-user-manager';
 import ExitIntentManager from '@/components/exit-intent-manager';
 import MediaLibrary from '@/components/media-library';
 import MediaGallery from '@/components/media-gallery';
+import ImageReplacementDemo from '@/components/image-replacement-demo';
 import AnalyticsDashboard from '@/components/analytics-dashboard';
 import KnowledgeBaseManager from '@/components/knowledge-base-manager';
 import SecurityAlertsManager from '@/components/security-alerts-manager';
@@ -72,6 +73,7 @@ export default function AdminDashboard() {
     { id: 'knowledge', label: 'Knowledge', icon: Book },
     { id: 'media', label: 'Media Library', icon: ImageIcon },
     { id: 'gallery', label: 'Gallery', icon: ImageIcon },
+    { id: 'demo', label: 'Image Demo', icon: Settings },
     { id: 'popup', label: 'Exit Popup', icon: ExternalLink },
     { id: 'calculator', label: 'Calculator', icon: Calculator },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
@@ -219,6 +221,24 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <MediaGallery />
+            </CardContent>
+          </Card>
+        );
+
+      case 'demo':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                How to Replace Website Images
+              </CardTitle>
+              <CardDescription>
+                Learn how to use your media library images throughout your website
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ImageReplacementDemo />
             </CardContent>
           </Card>
         );
