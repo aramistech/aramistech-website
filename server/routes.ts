@@ -374,18 +374,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auto-detect images endpoint
   app.get("/api/admin/auto-detect-images", requireAdminAuth, async (req, res) => {
     try {
-      const fs = require('fs');
-      const path = require('path');
-      const glob = require('glob');
+      const fs = await import('fs');
+      const path = await import('path');
+      const glob = await import('glob');
       
       const detectedImages: any[] = [];
       
       // Scan all TSX files in client/src
-      const tsxFiles = glob.sync('client/src/**/*.tsx', { cwd: process.cwd() });
+      const tsxFiles = glob.default.sync('client/src/**/*.tsx', { cwd: process.cwd() });
       
       for (const filePath of tsxFiles) {
-        const fullPath = path.join(process.cwd(), filePath);
-        const content = fs.readFileSync(fullPath, 'utf8');
+        const fullPath = path.default.join(process.cwd(), filePath);
+        const content = fs.default.readFileSync(fullPath, 'utf8');
         const lines = content.split('\n');
         
         lines.forEach((line: string, index: number) => {
