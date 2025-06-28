@@ -133,7 +133,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, altText, caption }: { id: number; altText: string; caption: string }) => {
-      return await apiRequest(`/api/admin/media/${id}`, "PUT", { altText, caption });
+      return await apiRequest("PUT", `/api/admin/media/${id}`, { altText, caption });
     },
     onSuccess: () => {
       toast({
@@ -156,7 +156,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest(`/api/admin/media/${id}`, "DELETE");
+      return await apiRequest("DELETE", `/api/admin/media/${id}`);
     },
     onSuccess: () => {
       toast({
