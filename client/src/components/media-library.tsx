@@ -110,18 +110,20 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
     },
     onSuccess: (data) => {
       const count = data.importedCount || 0;
+      const totalFound = data.totalFound || 0;
       toast({
         title: "Success",
-        description: `Scanned website and imported ${count} image(s)`,
+        description: `Scanned website and imported ${count} of ${totalFound} image(s) found`,
       });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/media"] });
       setImageUrl('');
       setIsUploadDialogOpen(false);
     },
     onError: (error) => {
+      console.error('Website scan error:', error);
       toast({
         title: "Error",
-        description: "Failed to scan website for images",
+        description: error.message || "Failed to scan website for images",
         variant: "destructive",
       });
     },

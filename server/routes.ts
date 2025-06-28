@@ -768,9 +768,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         files: importedFiles,
         totalFound: imageUrls.size
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error scanning website:", error);
-      res.status(500).json({ error: "Failed to scan website for images" });
+      console.error("Error details:", error?.message, error?.stack);
+      res.status(500).json({ 
+        error: "Failed to scan website for images", 
+        details: error?.message || "Unknown error"
+      });
     }
   });
 
