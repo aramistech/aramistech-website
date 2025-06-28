@@ -30,7 +30,7 @@ import MenuManager from '@/components/menu-manager';
 import AdminUserManager from '@/components/admin-user-manager';
 import ExitIntentManager from '@/components/exit-intent-manager';
 import MediaLibrary from '@/components/media-library';
-import MediaGallery from '@/components/media-gallery';
+
 import ImageReplacementDemo from '@/components/image-replacement-demo';
 import AnalyticsDashboard from '@/components/analytics-dashboard';
 import KnowledgeBaseManager from '@/components/knowledge-base-manager';
@@ -108,7 +108,6 @@ export default function AdminDashboard() {
     { id: 'colors', label: 'Colors', icon: Palette },
     { id: 'knowledge', label: 'Knowledge', icon: Book },
     { id: 'media', label: 'Media Library', icon: ImageIcon },
-    { id: 'gallery', label: 'Gallery', icon: ImageIcon },
     { id: 'demo', label: 'Image Demo', icon: Settings },
     { id: 'popup', label: 'Exit Popup', icon: ExternalLink },
     { id: 'calculator', label: 'Calculator', icon: Calculator },
@@ -313,23 +312,7 @@ export default function AdminDashboard() {
           </Card>
         );
 
-      case 'gallery':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ImageIcon className="w-5 h-5" />
-                Media Gallery
-              </CardTitle>
-              <CardDescription>
-                View all uploaded and scanned images in your media library
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <MediaGallery />
-            </CardContent>
-          </Card>
-        );
+
 
       case 'demo':
         return (

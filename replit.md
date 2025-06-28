@@ -221,7 +221,7 @@ Changelog:
 - June 28, 2025. Integrated service calculator management into protected admin dashboard as dedicated tab - admins can now securely manage pricing categories, service options, view customer quote submissions, adjust base prices and hourly rates, toggle active/inactive services, and modify display order through authenticated admin interface
 - June 28, 2025. Converted admin dashboard navigation from horizontal top tabs to collapsible left sidebar - includes smooth transitions, icon-only collapsed mode, all management sections accessible through vertical navigation, improved space utilization and modern interface design
 - June 28, 2025. Enhanced media library with drag-and-drop functionality and URL-based image importing - users can now drag multiple images directly onto upload zone, import images from any public URL, tabbed upload interface with visual feedback, supports multiple file selection, and automatic image validation with proper error handling
-- June 28, 2025. Integrated comprehensive website scanning functionality into media library with intelligent image detection from HTML and CSS backgrounds, URL conversion, size filtering, and batch import capabilities - successfully added password-protected Gallery tab within admin dashboard for secure media viewing and management
+- June 28, 2025. Added drag-and-drop reordering functionality to admin dashboard navigation menu using DnD Kit library - menu items can be reordered by dragging grip handles, with smooth animations and instant updates, removed redundant Gallery tab to streamline interface since media viewing is already available in Media Library
 ```
 
 ## User Preferences
