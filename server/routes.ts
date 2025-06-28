@@ -282,6 +282,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Security alerts management routes
+  app.get('/api/security-alert', async (req, res) => {
+    try {
+      const alert = await storage.getSecurityAlert();
+      res.json({ success: true, alert });
+    } catch (error) {
+      console.error("Error fetching security alert:", error);
+      res.status(500).json({ success: false, message: "Failed to fetch security alert" });
+    }
+  });
+
+  app.put('/api/admin/security-alert', requireAdminAuth, async (req, res) => {
+    try {
+      const alert = await storage.updateSecurityAlert(req.body);
+      res.json({ success: true, alert });
+    } catch (error) {
+      console.error("Error updating security alert:", error);
+      res.status(500).json({ success: false, message: "Failed to update security alert" });
+    }
+  });
+
   // Media management routes
   app.post("/api/admin/media/upload", requireAdminAuth, upload.single('file'), async (req, res) => {
     try {

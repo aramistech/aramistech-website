@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield } from 'lucide-react';
 import AdminReviews from '@/components/admin-reviews';
 import MenuManager from '@/components/menu-manager';
 import AdminUserManager from '@/components/admin-user-manager';
@@ -14,6 +14,7 @@ import ExitIntentManager from '@/components/exit-intent-manager';
 import MediaLibrary from '@/components/media-library';
 import AnalyticsDashboard from '@/components/analytics-dashboard';
 import KnowledgeBaseManager from '@/components/knowledge-base-manager';
+import SecurityAlertsManager from '@/components/security-alerts-manager';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -125,6 +126,10 @@ export default function AdminDashboard() {
                   <ImageIcon className="w-4 h-4" />
                   Media
                 </TabsTrigger>
+                <TabsTrigger value="security" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <Shield className="w-4 h-4" />
+                  Alerts
+                </TabsTrigger>
                 <TabsTrigger value="popup" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
                   <ExternalLink className="w-4 h-4" />
                   Popup
@@ -138,7 +143,7 @@ export default function AdminDashboard() {
 
             {/* Desktop Tab Navigation */}
             <div className="hidden sm:block">
-              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
+              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
                 <TabsTrigger value="reviews" className="flex items-center gap-2">
                   <Star className="w-4 h-4" />
                   Reviews
@@ -154,6 +159,10 @@ export default function AdminDashboard() {
                 <TabsTrigger value="users" className="flex items-center gap-2">
                   <Users className="w-4 h-4" />
                   Admin Users
+                </TabsTrigger>
+                <TabsTrigger value="security" className="flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Security Alerts
                 </TabsTrigger>
                 <TabsTrigger value="media" className="flex items-center gap-2">
                   <ImageIcon className="w-4 h-4" />
