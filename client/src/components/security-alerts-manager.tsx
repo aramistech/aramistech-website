@@ -89,12 +89,17 @@ export default function SecurityAlertsManager() {
       if (!res.ok) throw new Error('Failed to update security alert');
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Success",
         description: "Security alert updated successfully",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/security-alert'] });
+      // Update form data with the returned data to maintain consistency
+      setFormData(data.alert);
+      // Invalidate queries after a delay to prevent immediate form reset
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['/api/security-alert'] });
+      }, 100);
     },
     onError: () => {
       toast({
@@ -106,10 +111,10 @@ export default function SecurityAlertsManager() {
   });
 
   useEffect(() => {
-    if (alertData?.alert) {
+    if (alertData?.alert && !updateMutation.isPending) {
       setFormData(alertData.alert);
     }
-  }, [alertData]);
+  }, [alertData, updateMutation.isPending]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -349,9 +354,9 @@ export default function SecurityAlertsManager() {
               <Label htmlFor="backgroundColor">Banner Background Color</Label>
               <div className="space-y-3">
                 {/* Predefined Colors */}
-                <Select value={formData.backgroundColor} onValueChange={(value) => handleChange('backgroundColor', value)}>
+                <Select value={colorOptions.find(opt => opt.value === formData.backgroundColor)?.value || 'custom'} onValueChange={(value) => handleChange('backgroundColor', value)}>
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Select a color or use custom" />
                   </SelectTrigger>
                   <SelectContent>
                     {colorOptions.map((option) => (
@@ -362,6 +367,12 @@ export default function SecurityAlertsManager() {
                         </div>
                       </SelectItem>
                     ))}
+                    <SelectItem value="custom">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded border bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500"></div>
+                        <span>Custom Color</span>
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 
@@ -391,9 +402,9 @@ export default function SecurityAlertsManager() {
               <Label htmlFor="buttonBackgroundColor">Button Background Color</Label>
               <div className="space-y-3">
                 {/* Predefined Colors */}
-                <Select value={formData.buttonBackgroundColor} onValueChange={(value) => handleChange('buttonBackgroundColor', value)}>
+                <Select value={colorOptions.find(opt => opt.value === formData.buttonBackgroundColor)?.value || 'custom'} onValueChange={(value) => handleChange('buttonBackgroundColor', value)}>
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Select a color or use custom" />
                   </SelectTrigger>
                   <SelectContent>
                     {colorOptions.map((option) => (
@@ -404,6 +415,12 @@ export default function SecurityAlertsManager() {
                         </div>
                       </SelectItem>
                     ))}
+                    <SelectItem value="custom">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded border bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500"></div>
+                        <span>Custom Color</span>
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 
@@ -433,9 +450,9 @@ export default function SecurityAlertsManager() {
               <Label htmlFor="buttonTextColor">Button Text Color</Label>
               <div className="space-y-3">
                 {/* Predefined Colors */}
-                <Select value={formData.buttonTextColor} onValueChange={(value) => handleChange('buttonTextColor', value)}>
+                <Select value={colorOptions.find(opt => opt.value === formData.buttonTextColor)?.value || 'custom'} onValueChange={(value) => handleChange('buttonTextColor', value)}>
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Select a color or use custom" />
                   </SelectTrigger>
                   <SelectContent>
                     {colorOptions.map((option) => (
@@ -446,6 +463,12 @@ export default function SecurityAlertsManager() {
                         </div>
                       </SelectItem>
                     ))}
+                    <SelectItem value="custom">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 rounded border bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500"></div>
+                        <span>Custom Color</span>
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 
