@@ -17,6 +17,7 @@ export default function DynamicHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState<number | null>(null);
+  const [showMobilePopup, setShowMobilePopup] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [location, setLocation] = useLocation();
 
@@ -150,34 +151,66 @@ export default function DynamicHeader() {
         <div className="absolute right-0 top-0 w-2 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
       </div>
 
-      {/* Critical Windows 10 Warning Banner - Mobile Vertical Sidebar */}
-      <div className="sm:hidden fixed left-0 top-0 h-full w-8 z-50">
-        <div className="critical-warning text-white h-full w-full relative overflow-hidden flex flex-col justify-center">
-          <div className="transform -rotate-90 whitespace-nowrap">
-            <div className="flex items-center space-x-1 text-xs">
-              <span className="critical-badge bg-red-500 text-white px-1 py-0.5 rounded text-xs font-bold flex items-center">
-                <AlertTriangle className="w-2 h-2 mr-0.5" />
-                CRITICAL
-              </span>
-              <span className="font-semibold">
-                Windows 10 Support Ending
-              </span>
-              <Link 
-                href="/windows10-upgrade" 
-                className="inline-flex items-center bg-red-600 text-white px-1 py-0.5 rounded text-xs font-bold border border-white hover:bg-red-700 transition-all"
-                onClick={() => window.scrollTo(0, 0)}
-              >
-                <span className="mr-0.5">►</span>
-                Learn
-              </Link>
-            </div>
+      {/* Critical Windows 10 Warning Button - Mobile */}
+      <div className="sm:hidden fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
+        <button
+          onClick={() => setShowMobilePopup(true)}
+          className="critical-warning text-white px-2 py-4 relative overflow-hidden transform -rotate-90 origin-center bg-red-600 hover:bg-red-700 transition-all duration-300"
+        >
+          <div className="flex items-center space-x-1">
+            <span className="critical-badge bg-red-500 text-white px-1 py-0.5 rounded-full text-xs font-bold flex items-center">
+              <AlertTriangle className="w-2 h-2 mr-0.5" />
+              CRITICAL
+            </span>
+            <span className="font-semibold text-xs whitespace-nowrap">
+              Windows 10 Alert
+            </span>
           </div>
           
           {/* Animated urgency indicators */}
-          <div className="absolute top-0 left-0 h-2 w-full bg-yellow-400 animate-ping"></div>
-          <div className="absolute bottom-0 left-0 h-2 w-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
-        </div>
+          <div className="absolute left-0 top-0 w-1 h-full bg-yellow-400 animate-ping"></div>
+          <div className="absolute right-0 top-0 w-1 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+        </button>
       </div>
+
+      {/* Mobile Popup Modal */}
+      {showMobilePopup && (
+        <div className="sm:hidden fixed inset-0 z-[60] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setShowMobilePopup(false)}></div>
+          <div className="critical-warning text-white p-6 m-4 rounded-lg shadow-xl relative z-10 max-w-sm">
+            <button 
+              onClick={() => setShowMobilePopup(false)}
+              className="absolute top-2 right-2 text-white hover:text-gray-300"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="flex items-center mb-4">
+              <span className="critical-badge bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center mr-3">
+                <AlertTriangle className="w-3 h-3 mr-1" />
+                CRITICAL
+              </span>
+              <h3 className="font-bold text-sm">Security Alert</h3>
+            </div>
+            
+            <p className="text-sm mb-4 leading-relaxed">
+              Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats
+            </p>
+            
+            <Link 
+              href="/windows10-upgrade" 
+              className="inline-flex items-center bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105 w-full justify-center"
+              onClick={() => {
+                setShowMobilePopup(false);
+                window.scrollTo(0, 0);
+              }}
+            >
+              <span className="mr-2">►</span>
+              Learn More
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Main Navigation */}
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
