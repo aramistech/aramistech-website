@@ -69,7 +69,7 @@ export default function Hero() {
                   <Phone className="inline-block w-4 h-4 mr-2" />
                   Call Now
                 </div>
-                <div className="text-sm font-normal">
+                <div className="text-base font-normal">
                   (305) 814-4461
                 </div>
               </a>

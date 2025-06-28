@@ -202,6 +202,7 @@ Changelog:
 - June 28, 2025. Adjusted button sizing on main page hero section - made both "Schedule Free Consultation" and "Call Now" buttons the same height using min-height and proper vertical centering
 - June 28, 2025. Fixed button width consistency on main page hero section - both buttons now have equal width (w-64) and proper responsive behavior with flex-1 on mobile
 - June 28, 2025. Made "Call Now" text size match "Schedule Free Consultation" by adding text-base class for consistent typography across both hero buttons
+- June 28, 2025. Increased phone number text size from text-sm to text-base for better readability and visual prominence in call button
 ```
 
 ## User Preferences
