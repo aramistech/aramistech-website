@@ -3,10 +3,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator, ChevronLeft, ChevronRight, Book } from 'lucide-react';
 import AdminReviews from '@/components/admin-reviews';
 import MenuManager from '@/components/menu-manager';
 import AdminUserManager from '@/components/admin-user-manager';
@@ -21,412 +20,363 @@ import ServiceCalculatorManager from '@/components/service-calculator-manager';
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [activeTab, setActiveTab] = useState('reviews');
   const queryClient = useQueryClient();
 
-  // Check admin authentication
-  const { data: adminUser, isLoading: authLoading } = useQuery({
+  // Verify authentication
+  const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['/api/admin/me'],
     retry: false,
   });
 
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      const res = await apiRequest('POST', '/api/admin/logout');
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.clear();
-      toast({
-        title: "Logged out",
-        description: "You have been logged out successfully",
-      });
-      setLocation('/admin/login');
-    },
-    onError: () => {
-      // Force logout even if API fails
-      queryClient.clear();
-      setLocation('/admin/login');
-    },
-  });
-
-  // Redirect to login if not authenticated
-  if (authLoading) {
+  if (userLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Checking authentication...</p>
+          <div className="text-lg font-medium">Loading...</div>
         </div>
       </div>
     );
   }
 
-  if (!adminUser) {
+  if (!user) {
     setLocation('/admin/login');
     return null;
   }
 
-  const handleLogout = () => {
-    logoutMutation.mutate();
+  const handleLogout = async () => {
+    try {
+      await apiRequest('/api/admin/logout', 'POST');
+      toast({
+        title: "Success",
+        description: "Logged out successfully",
+      });
+      setLocation('/admin/login');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to logout",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const menuItems = [
+    { id: 'reviews', label: 'Reviews', icon: Star },
+    { id: 'menu', label: 'Menu', icon: Menu },
+    { id: 'users', label: 'Users', icon: Users },
+    { id: 'security', label: 'Security', icon: Shield },
+    { id: 'colors', label: 'Colors', icon: Palette },
+    { id: 'knowledge', label: 'Knowledge', icon: Book },
+    { id: 'media', label: 'Media', icon: ImageIcon },
+    { id: 'popup', label: 'Exit Popup', icon: ExternalLink },
+    { id: 'calculator', label: 'Calculator', icon: Calculator },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+  ];
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'reviews':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="w-5 h-5" />
+                Customer Reviews Management
+              </CardTitle>
+              <CardDescription>
+                Manage customer testimonials and reviews
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AdminReviews />
+            </CardContent>
+          </Card>
+        );
+
+      case 'menu':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Menu className="w-5 h-5" />
+                Website Menu Management
+              </CardTitle>
+              <CardDescription>
+                Organize navigation menu items with drag-and-drop functionality
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <MenuManager />
+            </CardContent>
+          </Card>
+        );
+
+      case 'users':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="w-5 h-5" />
+                Admin User Management
+              </CardTitle>
+              <CardDescription>
+                Create, edit, and manage admin accounts with dashboard access
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AdminUserManager />
+            </CardContent>
+          </Card>
+        );
+
+      case 'security':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="w-5 h-5" />
+                Security Alerts Management
+              </CardTitle>
+              <CardDescription>
+                Configure website security warnings with custom content, icons, colors, and visibility settings
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <SecurityAlertsManager />
+            </CardContent>
+          </Card>
+        );
+
+      case 'colors':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Palette className="w-5 h-5" />
+                Color Palette Management
+              </CardTitle>
+              <CardDescription>
+                Manage brand colors and color schemes used throughout the website
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ColorPaletteManager />
+            </CardContent>
+          </Card>
+        );
+
+      case 'knowledge':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Book className="w-5 h-5" />
+                Knowledge Base Management
+              </CardTitle>
+              <CardDescription>
+                Create and manage help articles, categories, and technical documentation
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <KnowledgeBaseManager />
+            </CardContent>
+          </Card>
+        );
+
+      case 'media':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ImageIcon className="w-5 h-5" />
+                Media Library
+              </CardTitle>
+              <CardDescription>
+                Upload and manage images for your website content
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <MediaLibrary />
+            </CardContent>
+          </Card>
+        );
+
+      case 'popup':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ExternalLink className="w-5 h-5" />
+                Exit Intent Popup
+              </CardTitle>
+              <CardDescription>
+                Configure the popup that appears when visitors try to leave your site
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ExitIntentManager />
+            </CardContent>
+          </Card>
+        );
+
+      case 'calculator':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calculator className="w-5 h-5" />
+                Service Calculator Management
+              </CardTitle>
+              <CardDescription>
+                Manage service categories, pricing, and customer quote submissions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ServiceCalculatorManager />
+            </CardContent>
+          </Card>
+        );
+
+      case 'analytics':
+        return (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Reviews</CardTitle>
+                <Star className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0</div>
+                <p className="text-xs text-muted-foreground">Customer testimonials</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Contacts</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0</div>
+                <p className="text-xs text-muted-foreground">Contact form submissions</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Quick Quotes</CardTitle>
+                <Calculator className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0</div>
+                <p className="text-xs text-muted-foreground">Quote requests</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                <Settings className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0</div>
+                <p className="text-xs text-muted-foreground">Admin accounts</p>
+              </CardContent>
+            </Card>
+            <div className="col-span-full">
+              <AnalyticsDashboard />
+            </div>
+          </div>
+        );
+
+      default:
+        return (
+          <Card>
+            <CardContent className="p-6">
+              <div className="text-center">
+                <h3 className="text-lg font-medium">Welcome to AramisTech Admin Dashboard</h3>
+                <p className="text-gray-600 mt-2">Select a section from the sidebar to get started.</p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Settings className="w-8 h-8 text-blue-600 mr-3" />
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">AramisTech Admin</h1>
-                <p className="text-sm text-gray-500">Dashboard</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
-                Welcome, {(adminUser as any)?.user?.username || 'Admin'}
-              </span>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Collapsible Sidebar */}
+      <div className={`bg-white border-r border-gray-200 shadow-sm transition-all duration-300 ${
+        sidebarCollapsed ? 'w-16' : 'w-64'
+      } flex flex-col`}>
+        {/* Sidebar Header */}
+        <div className="p-4 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            {!sidebarCollapsed && (
+              <h1 className="text-lg font-bold text-gray-900">AramisTech Admin</h1>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="p-2"
+            >
+              {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            </Button>
+          </div>
+        </div>
+
+        {/* Navigation Menu */}
+        <div className="flex-1 p-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
               <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-                disabled={logoutMutation.isPending}
+                key={item.id}
+                variant={activeTab === item.id ? "default" : "ghost"}
+                className={`w-full justify-start mb-1 ${
+                  sidebarCollapsed ? 'px-2' : 'px-3'
+                } ${activeTab === item.id ? 'bg-aramis-orange hover:bg-orange-600 text-white' : ''}`}
+                onClick={() => setActiveTab(item.id)}
               >
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
+                <Icon className="w-4 h-4" />
+                {!sidebarCollapsed && <span className="ml-2">{item.label}</span>}
               </Button>
+            );
+          })}
+        </div>
+
+        {/* Logout Button */}
+        <div className="p-2 border-t border-gray-200">
+          <Button
+            variant="outline"
+            onClick={handleLogout}
+            className={`w-full justify-start ${sidebarCollapsed ? 'px-2' : 'px-3'}`}
+          >
+            <LogOut className="w-4 h-4" />
+            {!sidebarCollapsed && <span className="ml-2">Logout</span>}
+          </Button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Top Header */}
+        <div className="bg-white border-b border-gray-200 shadow-sm">
+          <div className="px-6 py-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900">
+                {menuItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
+              </h2>
+              <span className="text-sm text-gray-500">Welcome back, {user.username}</span>
             </div>
           </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <Tabs defaultValue="reviews" className="space-y-4">
-            {/* Mobile Tab Navigation */}
-            <div className="sm:hidden">
-              <TabsList className="flex overflow-x-auto w-full gap-1 p-1 h-auto">
-                <TabsTrigger value="reviews" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <Star className="w-4 h-4" />
-                  Reviews
-                </TabsTrigger>
-                <TabsTrigger value="knowledge" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <Settings className="w-4 h-4" />
-                  KB
-                </TabsTrigger>
-                <TabsTrigger value="menu" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <Menu className="w-4 h-4" />
-                  Menu
-                </TabsTrigger>
-                <TabsTrigger value="users" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <Users className="w-4 h-4" />
-                  Users
-                </TabsTrigger>
-                <TabsTrigger value="media" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <ImageIcon className="w-4 h-4" />
-                  Media
-                </TabsTrigger>
-                <TabsTrigger value="security" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <Shield className="w-4 h-4" />
-                  Alerts
-                </TabsTrigger>
-                <TabsTrigger value="colors" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <Palette className="w-4 h-4" />
-                  Colors
-                </TabsTrigger>
-                <TabsTrigger value="popup" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <ExternalLink className="w-4 h-4" />
-                  Popup
-                </TabsTrigger>
-                <TabsTrigger value="calculator" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <Calculator className="w-4 h-4" />
-                  Pricing
-                </TabsTrigger>
-                <TabsTrigger value="analytics" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
-                  <BarChart3 className="w-4 h-4" />
-                  Stats
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            {/* Desktop Tab Navigation */}
-            <div className="hidden sm:block">
-              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10">
-                <TabsTrigger value="reviews" className="flex items-center gap-2">
-                  <Star className="w-4 h-4" />
-                  Reviews
-                </TabsTrigger>
-                <TabsTrigger value="knowledge" className="flex items-center gap-2">
-                  <Settings className="w-4 h-4" />
-                  Knowledge Base
-                </TabsTrigger>
-                <TabsTrigger value="menu" className="flex items-center gap-2">
-                  <Menu className="w-4 h-4" />
-                  Menu Management
-                </TabsTrigger>
-                <TabsTrigger value="users" className="flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  Admin Users
-                </TabsTrigger>
-                <TabsTrigger value="security" className="flex items-center gap-2">
-                  <Shield className="w-4 h-4" />
-                  Security Alerts
-                </TabsTrigger>
-                <TabsTrigger value="colors" className="flex items-center gap-2">
-                  <Palette className="w-4 h-4" />
-                  Color Palette
-                </TabsTrigger>
-                <TabsTrigger value="media" className="flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4" />
-                  Media Library
-                </TabsTrigger>
-                <TabsTrigger value="popup" className="flex items-center gap-2">
-                  <ExternalLink className="w-4 h-4" />
-                  Exit Popup
-                </TabsTrigger>
-                <TabsTrigger value="calculator" className="flex items-center gap-2">
-                  <Calculator className="w-4 h-4" />
-                  Service Calculator
-                </TabsTrigger>
-                <TabsTrigger value="analytics" className="flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4" />
-                  Analytics
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent value="reviews" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Star className="w-5 h-5" />
-                    Customer Reviews Management
-                  </CardTitle>
-                  <CardDescription>
-                    Manage customer reviews that appear on your website
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <AdminReviews />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-
-
-            <TabsContent value="knowledge" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Settings className="w-5 h-5" />
-                    Knowledge Base Management
-                  </CardTitle>
-                  <CardDescription>
-                    Create and manage help articles, troubleshooting guides, and IT knowledge for your customers
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <KnowledgeBaseManager />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="menu" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Menu className="w-5 h-5" />
-                    Website Menu Management
-                  </CardTitle>
-                  <CardDescription>
-                    Manage your website navigation menu items and submenus
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <MenuManager />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="users" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="w-5 h-5" />
-                    Admin User Management
-                  </CardTitle>
-                  <CardDescription>
-                    Create, edit, and manage admin accounts with dashboard access
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <AdminUserManager />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="security" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="w-5 h-5" />
-                    Security Alerts Management
-                  </CardTitle>
-                  <CardDescription>
-                    Configure website security warnings with custom content, icons, colors, and visibility settings
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <SecurityAlertsManager />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="colors" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Palette className="w-5 h-5" />
-                    Global Color Palette
-                  </CardTitle>
-                  <CardDescription>
-                    Create and manage a global color palette for consistent branding across all website elements
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ColorPaletteManager />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="media" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <ImageIcon className="w-5 h-5" />
-                    Media Library
-                  </CardTitle>
-                  <CardDescription>
-                    Upload and manage images for your website content
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <MediaLibrary />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="popup" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <ExternalLink className="w-5 h-5" />
-                    Exit Intent Popup
-                  </CardTitle>
-                  <CardDescription>
-                    Configure the popup that appears when visitors try to leave your site
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ExitIntentManager />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="calculator" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calculator className="w-5 h-5" />
-                    Service Calculator Management
-                  </CardTitle>
-                  <CardDescription>
-                    Manage service categories, pricing, and customer quote submissions
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ServiceCalculatorManager />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="analytics" className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Total Reviews
-                    </CardTitle>
-                    <Star className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">0</div>
-                    <p className="text-xs text-muted-foreground">
-                      Customer testimonials
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Menu Items
-                    </CardTitle>
-                    <Menu className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">0</div>
-                    <p className="text-xs text-muted-foreground">
-                      Navigation links
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Contact Forms
-                    </CardTitle>
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">0</div>
-                    <p className="text-xs text-muted-foreground">
-                      This month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Quote Requests
-                    </CardTitle>
-                    <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">0</div>
-                    <p className="text-xs text-muted-foreground">
-                      This month
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Analytics Dashboard</CardTitle>
-                  <CardDescription>
-                    Detailed analytics and reporting coming soon
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <AnalyticsDashboard />
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+        {/* Content Area */}
+        <div className="flex-1 p-6 overflow-auto">
+          {renderContent()}
         </div>
-      </main>
+      </div>
     </div>
   );
 }
