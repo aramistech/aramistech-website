@@ -1,6 +1,23 @@
-import { Facebook, Linkedin, Twitter, Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Facebook, Linkedin, Twitter, Phone, Mail, MapPin, Clock, Shield } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function Footer() {
+  const [isWarningDismissed, setIsWarningDismissed] = useState(false);
+
+  useEffect(() => {
+    const dismissed = localStorage.getItem('criticalWarningDismissed');
+    if (dismissed === 'true') {
+      setIsWarningDismissed(true);
+    }
+  }, []);
+
+  const enableWarning = () => {
+    localStorage.removeItem('criticalWarningDismissed');
+    setIsWarningDismissed(false);
+    // Refresh page to show warning button
+    window.location.reload();
+  };
+
   return (
     <footer className="bg-professional-gray text-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,9 +81,21 @@ export default function Footer() {
         
         <div className="border-t border-gray-600 pt-8 mt-12">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              &copy; 2024 AramisTech Corp. All rights reserved. | Privacy Policy | Terms of Service
-            </p>
+            <div className="flex flex-col md:flex-row items-center md:space-x-4">
+              <p className="text-gray-400 text-sm">
+                &copy; 2024 AramisTech Corp. All rights reserved. | Privacy Policy | Terms of Service
+              </p>
+              {isWarningDismissed && (
+                <button
+                  onClick={enableWarning}
+                  className="text-gray-500 hover:text-gray-300 text-xs flex items-center space-x-1 mt-2 md:mt-0 transition-colors"
+                  title="Re-enable security alerts"
+                >
+                  <Shield className="w-3 h-3" />
+                  <span>Security alerts</span>
+                </button>
+              )}
+            </div>
             <p className="text-gray-400 text-sm mt-4 md:mt-0">
               Proudly serving South Florida for 27+ years
             </p>

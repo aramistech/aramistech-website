@@ -190,10 +190,10 @@ export default function DynamicHeader() {
                 e.stopPropagation();
                 dismissWarning();
               }}
-              className="absolute -top-1 -left-1 bg-gray-800 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-gray-600 transition-colors"
+              className="absolute -top-1 -left-1 bg-black bg-opacity-70 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-opacity-90 transition-all"
               title="Hide warning"
             >
-              <X className="w-3 h-3" />
+              <X className="w-3 h-3 text-white" />
             </button>
           </div>
         </div>
