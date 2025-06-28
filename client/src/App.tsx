@@ -15,6 +15,7 @@ import AIDevelopment from "@/pages/ai-development";
 import KnowledgeBase from "@/pages/knowledge-base";
 import KnowledgeBaseArticle from "@/pages/knowledge-base-article";
 import ServiceCalculator from "@/pages/service-calculator";
+import AdminServiceCalculator from "@/pages/admin-service-calculator";
 import SocialProofPopup from "@/components/social-proof-popup";
 import ChatGPTChatbot from "@/components/chatgpt-chatbot";
 import { useEffect } from "react";
@@ -39,6 +40,7 @@ function Router() {
       <Route path="/admin/reviews" component={AdminReviewsPage} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
+      <Route path="/admin/service-calculator" component={AdminServiceCalculator} />
       <Route component={NotFound} />
     </Switch>
   );

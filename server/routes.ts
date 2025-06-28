@@ -4,7 +4,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema, insertColorPaletteSchema, insertPricingCalculationSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema, insertColorPaletteSchema, insertPricingCalculationSchema, insertServiceCategorySchema, insertServiceOptionSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -408,6 +408,96 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching service calculations:", error);
       res.status(500).json({ success: false, error: "Failed to fetch calculations" });
+    }
+  });
+
+  // Service Categories Management
+  app.get('/api/admin/service-categories', requireAdminAuth, async (req, res) => {
+    try {
+      const categories = await storage.getServiceCategories();
+      res.json({ success: true, categories });
+    } catch (error) {
+      console.error("Error fetching service categories:", error);
+      res.status(500).json({ success: false, error: "Failed to fetch categories" });
+    }
+  });
+
+  app.post('/api/admin/service-categories', requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertServiceCategorySchema.parse(req.body);
+      const category = await storage.createServiceCategory(validatedData);
+      res.json({ success: true, category });
+    } catch (error) {
+      console.error("Error creating service category:", error);
+      res.status(500).json({ success: false, error: "Failed to create category" });
+    }
+  });
+
+  app.put('/api/admin/service-categories/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertServiceCategorySchema.partial().parse(req.body);
+      const category = await storage.updateServiceCategory(id, validatedData);
+      res.json({ success: true, category });
+    } catch (error) {
+      console.error("Error updating service category:", error);
+      res.status(500).json({ success: false, error: "Failed to update category" });
+    }
+  });
+
+  app.delete('/api/admin/service-categories/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteServiceCategory(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting service category:", error);
+      res.status(500).json({ success: false, error: "Failed to delete category" });
+    }
+  });
+
+  // Service Options Management
+  app.get('/api/admin/service-options', requireAdminAuth, async (req, res) => {
+    try {
+      const options = await storage.getServiceOptions();
+      res.json({ success: true, options });
+    } catch (error) {
+      console.error("Error fetching service options:", error);
+      res.status(500).json({ success: false, error: "Failed to fetch options" });
+    }
+  });
+
+  app.post('/api/admin/service-options', requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertServiceOptionSchema.parse(req.body);
+      const option = await storage.createServiceOption(validatedData);
+      res.json({ success: true, option });
+    } catch (error) {
+      console.error("Error creating service option:", error);
+      res.status(500).json({ success: false, error: "Failed to create option" });
+    }
+  });
+
+  app.put('/api/admin/service-options/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertServiceOptionSchema.partial().parse(req.body);
+      const option = await storage.updateServiceOption(id, validatedData);
+      res.json({ success: true, option });
+    } catch (error) {
+      console.error("Error updating service option:", error);
+      res.status(500).json({ success: false, error: "Failed to update option" });
+    }
+  });
+
+  app.delete('/api/admin/service-options/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteServiceOption(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting service option:", error);
+      res.status(500).json({ success: false, error: "Failed to delete option" });
     }
   });
 
