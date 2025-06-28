@@ -371,6 +371,148 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Auto-detect images endpoint
+  app.get("/api/admin/auto-detect-images", requireAdminAuth, async (req, res) => {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const glob = require('glob');
+      
+      const detectedImages: any[] = [];
+      
+      // Scan all TSX files in client/src
+      const tsxFiles = glob.sync('client/src/**/*.tsx', { cwd: process.cwd() });
+      
+      for (const filePath of tsxFiles) {
+        const fullPath = path.join(process.cwd(), filePath);
+        const content = fs.readFileSync(fullPath, 'utf8');
+        const lines = content.split('\n');
+        
+        lines.forEach((line: string, index: number) => {
+          // Detect src= images
+          const srcMatch = line.match(/src=["']([^"']+\.(jpg|jpeg|png|gif|webp|svg)[^"']*)["']/i);
+          if (srcMatch) {
+            const imageUrl = srcMatch[1];
+            // Skip data: URLs and very short URLs
+            if (!imageUrl.startsWith('data:') && imageUrl.length > 10) {
+              detectedImages.push({
+                id: generateImageId(filePath, imageUrl),
+                label: generateImageLabel(imageUrl, filePath),
+                description: `Image found in ${filePath.replace('client/src/', '')}`,
+                currentUrl: imageUrl,
+                filePath: filePath,
+                lineNumber: index + 1,
+                category: categorizeImage(filePath, imageUrl),
+                detectionType: 'src'
+              });
+            }
+          }
+          
+          // Detect background images in style attributes
+          const bgMatch = line.match(/backgroundImage:\s*[`"']([^`"']+\.(jpg|jpeg|png|gif|webp)[^`"']*)[`"']/i);
+          if (bgMatch) {
+            const imageUrl = bgMatch[1];
+            detectedImages.push({
+              id: generateImageId(filePath, imageUrl),
+              label: generateImageLabel(imageUrl, filePath),
+              description: `Background image found in ${filePath.replace('client/src/', '')}`,
+              currentUrl: imageUrl,
+              filePath: filePath,
+              lineNumber: index + 1,
+              category: categorizeImage(filePath, imageUrl),
+              detectionType: 'background'
+            });
+          }
+          
+          // Detect CSS url() in template literals
+          const urlMatch = line.match(/url\(([^)]+\.(jpg|jpeg|png|gif|webp)[^)]*)\)/i);
+          if (urlMatch) {
+            const imageUrl = urlMatch[1].replace(/['"]/g, '');
+            detectedImages.push({
+              id: generateImageId(filePath, imageUrl),
+              label: generateImageLabel(imageUrl, filePath),
+              description: `CSS background image found in ${filePath.replace('client/src/', '')}`,
+              currentUrl: imageUrl,
+              filePath: filePath,
+              lineNumber: index + 1,
+              category: categorizeImage(filePath, imageUrl),
+              detectionType: 'css-url'
+            });
+          }
+          
+          // Detect poster attributes for videos
+          const posterMatch = line.match(/poster=["']([^"']+\.(jpg|jpeg|png|gif|webp|svg)[^"']*)["']/i);
+          if (posterMatch) {
+            const imageUrl = posterMatch[1];
+            detectedImages.push({
+              id: generateImageId(filePath, imageUrl),
+              label: generateImageLabel(imageUrl, filePath),
+              description: `Video poster found in ${filePath.replace('client/src/', '')}`,
+              currentUrl: imageUrl,
+              filePath: filePath,
+              lineNumber: index + 1,
+              category: 'Video & Media',
+              detectionType: 'poster'
+            });
+          }
+        });
+      }
+      
+      // Helper functions
+      function generateImageId(filePath: string, imageUrl: string): string {
+        const fileName = path.basename(filePath, '.tsx');
+        const urlPart = imageUrl.split('/').pop()?.split('.')[0] || 'image';
+        return `${fileName}-${urlPart}`.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
+      }
+      
+      function generateImageLabel(imageUrl: string, filePath: string): string {
+        if (imageUrl.includes('aramistech.com') && imageUrl.includes('Logo')) {
+          return 'AramisTech Logo';
+        }
+        if (imageUrl.includes('unsplash.com')) {
+          if (imageUrl.includes('office') || imageUrl.includes('technology')) return 'Office Technology';
+          if (imageUrl.includes('team') || imageUrl.includes('business')) return 'Business Team';
+          if (imageUrl.includes('skyline') || imageUrl.includes('city')) return 'City Skyline';
+        }
+        if (filePath.includes('team.tsx')) return 'Team Member Photo';
+        if (filePath.includes('hero.tsx')) return 'Hero Image';
+        if (filePath.includes('about.tsx')) return 'About Section Image';
+        if (filePath.includes('contact.tsx')) return 'Contact Section Image';
+        if (filePath.includes('windows10')) return 'Windows 10 Image';
+        
+        const fileName = imageUrl.split('/').pop()?.split('.')[0] || 'Image';
+        return fileName.charAt(0).toUpperCase() + fileName.slice(1);
+      }
+      
+      function categorizeImage(filePath: string, imageUrl: string): string {
+        if (imageUrl.includes('Logo') || imageUrl.includes('logo')) return 'Company Branding';
+        if (filePath.includes('team.tsx')) return 'Team Photos';
+        if (filePath.includes('hero.tsx') || filePath.includes('about.tsx') || filePath.includes('contact.tsx')) return 'Section Images';
+        if (filePath.includes('windows10')) return 'Page Backgrounds';
+        if (imageUrl.includes('poster') || filePath.includes('video')) return 'Video & Media';
+        return 'Other Images';
+      }
+      
+      // Remove duplicates based on currentUrl
+      const uniqueImages = detectedImages.filter((image, index, self) => 
+        index === self.findIndex(i => i.currentUrl === image.currentUrl)
+      );
+      
+      res.json({ 
+        success: true, 
+        images: uniqueImages,
+        totalFound: uniqueImages.length
+      });
+      
+    } catch (error: any) {
+      console.error("Auto-detect images error:", error);
+      res.status(500).json({ 
+        error: "Failed to auto-detect images", 
+        details: error?.message || "Unknown error"
+      });
+    }
+  });
+
   // Visual Image Manager API
   app.post('/api/admin/update-website-image', requireAdminAuth, async (req, res) => {
     try {
