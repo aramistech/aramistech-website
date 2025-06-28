@@ -86,6 +86,8 @@ export async function createDefaultSecurityAlert() {
       buttonLink: '/windows10-upgrade',
       backgroundColor: '#dc2626',
       textColor: '#ffffff',
+      buttonBackgroundColor: '#ffffff',
+      buttonTextColor: '#000000',
       iconType: 'AlertTriangle',
       mobileTitle: 'Windows 10 Support Ending',
       mobileSubtitle: 'Critical Security Alert',

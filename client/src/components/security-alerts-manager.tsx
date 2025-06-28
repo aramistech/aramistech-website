@@ -19,6 +19,8 @@ interface SecurityAlert {
   buttonLink: string;
   backgroundColor: string;
   textColor: string;
+  buttonBackgroundColor: string;
+  buttonTextColor: string;
   iconType: string;
   mobileTitle: string;
   mobileSubtitle: string;
@@ -57,8 +59,10 @@ export default function SecurityAlertsManager() {
     message: "Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats",
     buttonText: "Learn More",
     buttonLink: "/windows10-upgrade",
-    backgroundColor: "bg-red-600",
-    textColor: "text-white",
+    backgroundColor: "#dc2626",
+    textColor: "#ffffff",
+    buttonBackgroundColor: "#ffffff",
+    buttonTextColor: "#000000",
     iconType: "AlertTriangle",
     mobileTitle: "CRITICAL SECURITY ALERT",
     mobileSubtitle: "Windows 10 Support Ending",
@@ -327,9 +331,10 @@ export default function SecurityAlertsManager() {
           <CardHeader>
             <CardTitle>Appearance</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
+            {/* Banner Background Color */}
             <div>
-              <Label htmlFor="backgroundColor">Background Color</Label>
+              <Label htmlFor="backgroundColor">Banner Background Color</Label>
               <div className="space-y-3">
                 {/* Predefined Colors */}
                 <Select value={formData.backgroundColor} onValueChange={(value) => handleChange('backgroundColor', value)}>
@@ -364,6 +369,90 @@ export default function SecurityAlertsManager() {
                       style={{ backgroundColor: formData.backgroundColor }}
                     ></div>
                     <span className="text-sm text-gray-600">{formData.backgroundColor}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Button Colors */}
+            <div>
+              <Label htmlFor="buttonBackgroundColor">Button Background Color</Label>
+              <div className="space-y-3">
+                {/* Predefined Colors */}
+                <Select value={formData.buttonBackgroundColor} onValueChange={(value) => handleChange('buttonBackgroundColor', value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {colorOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <div className="flex items-center space-x-2">
+                          <div className={`w-4 h-4 rounded ${option.preview}`}></div>
+                          <span>{option.label}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                {/* Custom Color Picker */}
+                <div className="flex items-center space-x-3">
+                  <Label htmlFor="customButtonColor" className="text-sm text-gray-600">Or choose custom color:</Label>
+                  <input
+                    type="color"
+                    id="customButtonColor"
+                    value={formData.buttonBackgroundColor}
+                    onChange={(e) => handleChange('buttonBackgroundColor', e.target.value)}
+                    className="w-12 h-8 border border-gray-300 rounded cursor-pointer"
+                  />
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-4 h-4 rounded border"
+                      style={{ backgroundColor: formData.buttonBackgroundColor }}
+                    ></div>
+                    <span className="text-sm text-gray-600">{formData.buttonBackgroundColor}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Button Text Color */}
+            <div>
+              <Label htmlFor="buttonTextColor">Button Text Color</Label>
+              <div className="space-y-3">
+                {/* Predefined Colors */}
+                <Select value={formData.buttonTextColor} onValueChange={(value) => handleChange('buttonTextColor', value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {colorOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <div className="flex items-center space-x-2">
+                          <div className={`w-4 h-4 rounded ${option.preview}`}></div>
+                          <span>{option.label}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                {/* Custom Color Picker */}
+                <div className="flex items-center space-x-3">
+                  <Label htmlFor="customButtonTextColor" className="text-sm text-gray-600">Or choose custom color:</Label>
+                  <input
+                    type="color"
+                    id="customButtonTextColor"
+                    value={formData.buttonTextColor}
+                    onChange={(e) => handleChange('buttonTextColor', e.target.value)}
+                    className="w-12 h-8 border border-gray-300 rounded cursor-pointer"
+                  />
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-4 h-4 rounded border"
+                      style={{ backgroundColor: formData.buttonTextColor }}
+                    ></div>
+                    <span className="text-sm text-gray-600">{formData.buttonTextColor}</span>
                   </div>
                 </div>
               </div>

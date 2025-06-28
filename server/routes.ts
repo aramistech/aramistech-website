@@ -304,6 +304,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         buttonLink: req.body.buttonLink,
         backgroundColor: req.body.backgroundColor,
         textColor: req.body.textColor,
+        buttonBackgroundColor: req.body.buttonBackgroundColor,
+        buttonTextColor: req.body.buttonTextColor,
         iconType: req.body.iconType,
         mobileTitle: req.body.mobileTitle,
         mobileSubtitle: req.body.mobileSubtitle,

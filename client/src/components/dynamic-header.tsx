@@ -214,8 +214,8 @@ export default function DynamicHeader() {
                   href={securityAlert?.buttonLink || '/windows10-upgrade'}
                   className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:opacity-90 transition-all duration-300 transform hover:scale-105"
                   style={{ 
-                    backgroundColor: securityAlert?.backgroundColor || '#dc2626',
-                    color: securityAlert?.textColor || 'white'
+                    backgroundColor: securityAlert?.buttonBackgroundColor || '#ffffff',
+                    color: securityAlert?.buttonTextColor || '#000000'
                   }}
                   onClick={() => window.scrollTo(0, 0)}
                 >
@@ -327,8 +327,8 @@ export default function DynamicHeader() {
                   href={securityAlert?.buttonLink || '/windows10-upgrade'}
                   className="inline-flex items-center px-6 py-3 rounded-full text-base font-bold border-2 border-white hover:opacity-90 transition-all duration-300 transform hover:scale-105 w-full justify-center"
                   style={{ 
-                    backgroundColor: securityAlert?.backgroundColor || '#dc2626',
-                    color: securityAlert?.textColor || 'white'
+                    backgroundColor: securityAlert?.buttonBackgroundColor || '#ffffff',
+                    color: securityAlert?.buttonTextColor || '#000000'
                   }}
                   onClick={() => {
                     setShowMobilePopup(false);
