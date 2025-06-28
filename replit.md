@@ -200,6 +200,7 @@ Changelog:
 - June 28, 2025. Modified chatbot to use specific ChatGPT assistant (asst_kOnaeaUjcLezWfBXoDuI7vVl) with OpenAI Assistants API - implemented thread-based conversation system for persistent context across messages and enhanced conversation continuity
 - June 28, 2025. Fixed "Call now" button layout on main page hero section - separated "Call Now" and phone number "(305) 814-4461" into two lines with proper visual hierarchy
 - June 28, 2025. Adjusted button sizing on main page hero section - made both "Schedule Free Consultation" and "Call Now" buttons the same height using min-height and proper vertical centering
+- June 28, 2025. Fixed button width consistency on main page hero section - both buttons now have equal width (w-64) and proper responsive behavior with flex-1 on mobile
 ```
 
 ## User Preferences
