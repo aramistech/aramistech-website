@@ -15,6 +15,7 @@ import MediaLibrary from '@/components/media-library';
 import AnalyticsDashboard from '@/components/analytics-dashboard';
 import KnowledgeBaseManager from '@/components/knowledge-base-manager';
 import SecurityAlertsManager from '@/components/security-alerts-manager';
+import ColorPaletteManager from '@/components/color-palette-manager';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();

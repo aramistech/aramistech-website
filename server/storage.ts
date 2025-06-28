@@ -570,6 +570,32 @@ export class DatabaseStorage implements IStorage {
       return alert;
     }
   }
+
+  // Color palette management
+  async getColorPalette(): Promise<ColorPalette[]> {
+    return await db.select().from(colorPalette)
+      .where(eq(colorPalette.isActive, true))
+      .orderBy(asc(colorPalette.orderIndex), asc(colorPalette.name));
+  }
+
+  async createColorPaletteItem(color: InsertColorPalette): Promise<ColorPalette> {
+    const [newColor] = await db.insert(colorPalette)
+      .values(color)
+      .returning();
+    return newColor;
+  }
+
+  async updateColorPaletteItem(id: number, color: Partial<InsertColorPalette>): Promise<ColorPalette> {
+    const [updatedColor] = await db.update(colorPalette)
+      .set(color)
+      .where(eq(colorPalette.id, id))
+      .returning();
+    return updatedColor;
+  }
+
+  async deleteColorPaletteItem(id: number): Promise<void> {
+    await db.delete(colorPalette).where(eq(colorPalette.id, id));
+  }
 }
 
 export const storage = new DatabaseStorage();

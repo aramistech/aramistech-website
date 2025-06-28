@@ -4,7 +4,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema, insertColorPaletteSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -324,6 +324,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating security alert:", error);
       res.status(500).json({ success: false, message: "Failed to update security alert" });
+    }
+  });
+
+  // Color Palette API endpoints
+  app.get('/api/admin/color-palette', requireAdminAuth, async (req, res) => {
+    try {
+      const colors = await storage.getColorPalette();
+      res.json({ success: true, colors });
+    } catch (error) {
+      console.error("Error fetching color palette:", error);
+      res.status(500).json({ success: false, error: "Failed to fetch color palette" });
+    }
+  });
+
+  app.post('/api/admin/color-palette', requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertColorPaletteSchema.parse(req.body);
+      const color = await storage.createColorPaletteItem(validatedData);
+      res.json({ success: true, color });
+    } catch (error) {
+      console.error("Error creating color palette item:", error);
+      res.status(500).json({ success: false, error: "Failed to create color palette item" });
+    }
+  });
+
+  app.put('/api/admin/color-palette/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const color = await storage.updateColorPaletteItem(id, req.body);
+      res.json({ success: true, color });
+    } catch (error) {
+      console.error("Error updating color palette item:", error);
+      res.status(500).json({ success: false, error: "Failed to update color palette item" });
+    }
+  });
+
+  app.delete('/api/admin/color-palette/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteColorPaletteItem(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting color palette item:", error);
+      res.status(500).json({ success: false, error: "Failed to delete color palette item" });
     }
   });
 
