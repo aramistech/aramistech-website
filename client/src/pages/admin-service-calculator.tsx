@@ -97,9 +97,9 @@ export default function AdminServiceCalculator() {
     queryKey: ["/api/admin/service-calculations"],
   });
 
-  const categories: ServiceCategory[] = categoriesResponse?.categories || [];
-  const options: ServiceOption[] = optionsResponse?.options || [];
-  const calculations: PricingCalculation[] = calculationsResponse?.calculations || [];
+  const categories: ServiceCategory[] = (categoriesResponse as any)?.categories || [];
+  const options: ServiceOption[] = (optionsResponse as any)?.options || [];
+  const calculations: PricingCalculation[] = (calculationsResponse as any)?.calculations || [];
 
   // Category form
   const categoryForm = useForm({
