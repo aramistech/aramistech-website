@@ -22,6 +22,7 @@ interface ChatGPTChatbotProps {
 export default function ChatGPTChatbot({ className = "" }: ChatGPTChatbotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [threadId, setThreadId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -42,17 +43,25 @@ export default function ChatGPTChatbot({ className = "" }: ChatGPTChatbotProps) 
     scrollToBottom();
   }, [messages]);
 
-  // ChatGPT API integration
+  // ChatGPT Assistant API integration
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
-      const response = await apiRequest("POST", "/api/chatgpt", { message });
-      const data = await response.json() as { response: string };
-      return data.response;
+      const response = await apiRequest("POST", "/api/chatgpt", { 
+        message,
+        threadId: threadId 
+      });
+      const data = await response.json() as { response: string; threadId?: string };
+      return data;
     },
-    onSuccess: (response) => {
+    onSuccess: (data) => {
+      // Store the threadId for future messages
+      if (data.threadId && !threadId) {
+        setThreadId(data.threadId);
+      }
+      
       const botResponse: Message = {
         id: Date.now().toString(),
-        text: response,
+        text: data.response,
         isBot: true,
         timestamp: new Date()
       };

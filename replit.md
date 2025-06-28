@@ -197,6 +197,7 @@ Changelog:
 - June 27, 2025. Made critical warning banner thinner (reduced padding from py-3 to py-2) and changed "Learn More" button from yellow to solid red with white border outline for better visual hierarchy and reduced competition with main site content
 - June 27, 2025. Updated "Learn More" button to use exact same red color as banner (bg-red-600) for perfect color matching and visual cohesion
 - June 27, 2025. Made critical warning banner even thinner (reduced padding from py-2 to py-1) for minimal visual footprint while maintaining visibility and functionality
+- June 28, 2025. Modified chatbot to use specific ChatGPT assistant (asst_kOnaeaUjcLezWfBXoDuI7vVl) with OpenAI Assistants API - implemented thread-based conversation system for persistent context across messages and enhanced conversation continuity
 ```
 
 ## User Preferences

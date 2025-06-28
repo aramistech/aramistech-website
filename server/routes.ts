@@ -545,87 +545,134 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return "We're AramisTech, your local IT experts! Whatever technical challenge you're facing, our family-owned team has been solving similar problems for South Florida businesses for over 27 years. Let's talk about how we can help you specifically - call us at (305) 814-4461!";
   };
 
-  // ChatGPT API endpoint for intelligent chatbot
+  // ChatGPT Assistant API endpoint for intelligent chatbot
   app.post("/api/chatgpt", async (req, res) => {
     try {
-      const { message } = req.body;
+      const { message, threadId } = req.body;
       
       if (!message || typeof message !== 'string') {
         return res.status(400).json({ error: 'Message is required' });
       }
 
-      // Use OpenAI ChatGPT API
+      const assistantId = 'asst_kOnaeaUjcLezWfBXoDuI7vVl';
+
+      // Use OpenAI Assistants API
       try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        let currentThreadId = threadId;
+
+        // Create a new thread if none provided
+        if (!currentThreadId) {
+          const threadResponse = await fetch('https://api.openai.com/v1/threads', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+              'OpenAI-Beta': 'assistants=v2'
+            },
+            body: JSON.stringify({})
+          });
+
+          if (!threadResponse.ok) {
+            throw new Error(`Thread creation failed: ${threadResponse.status} ${threadResponse.statusText}`);
+          }
+
+          const threadData = await threadResponse.json();
+          currentThreadId = threadData.id;
+        }
+
+        // Add message to thread
+        const messageResponse = await fetch(`https://api.openai.com/v1/threads/${currentThreadId}/messages`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'OpenAI-Beta': 'assistants=v2'
           },
           body: JSON.stringify({
-            model: 'gpt-4o',
-            messages: [
-              {
-                role: 'system',
-                content: `You are a professional customer service representative for AramisTech, a family-owned IT company with 27+ years of experience serving South Florida businesses.
-
-About AramisTech:
-- Family-owned IT company since 1998
-- Serving Miami & Broward County
-- Phone: (305) 814-4461
-- Email: sales@aramistech.com
-- Business hours: Monday-Friday 9am-6pm
-
-Our comprehensive IT services include:
-- Computer repair and troubleshooting
-- Network setup and maintenance
-- Cybersecurity solutions
-- Server management and cloud solutions
-- Hardware installation and upgrades
-- Software installation and training
-- Emergency IT support
-- Data backup and recovery
-- Windows 10 upgrade services
-- AI development and integration
-
-Your role:
-1. Provide helpful, specific technical guidance when customers describe IT problems
-2. Always maintain a professional, friendly tone
-3. Include AramisTech contact information when appropriate
-4. For complex issues, recommend calling or emailing for personalized assistance
-5. Never provide generic "call us" responses - give specific helpful advice first
-6. Use simple language that non-technical customers can understand
-
-For technical issues, provide step-by-step troubleshooting guidance while encouraging professional support for complex problems.`
-              },
-              {
-                role: 'user',
-                content: message
-              }
-            ],
-            max_tokens: 500,
-            temperature: 0.7
+            role: 'user',
+            content: message
           })
         });
 
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.error?.message || 'OpenAI API error');
+        if (!messageResponse.ok) {
+          throw new Error(`Message creation failed: ${messageResponse.status} ${messageResponse.statusText}`);
         }
 
-        const botResponse = data.choices[0]?.message?.content || "I'm having trouble processing your request right now. Please call us at (305) 814-4461 for immediate assistance.";
+        // Run the assistant
+        const runResponse = await fetch(`https://api.openai.com/v1/threads/${currentThreadId}/runs`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'OpenAI-Beta': 'assistants=v2'
+          },
+          body: JSON.stringify({
+            assistant_id: assistantId
+          })
+        });
+
+        if (!runResponse.ok) {
+          throw new Error(`Run creation failed: ${runResponse.status} ${runResponse.statusText}`);
+        }
+
+        const runData = await runResponse.json();
+        const runId = runData.id;
+
+        // Poll for completion
+        let runStatus = 'queued';
+        let attempts = 0;
+        const maxAttempts = 30;
+
+        while (runStatus !== 'completed' && runStatus !== 'failed' && attempts < maxAttempts) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          const statusResponse = await fetch(`https://api.openai.com/v1/threads/${currentThreadId}/runs/${runId}`, {
+            headers: {
+              'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+              'OpenAI-Beta': 'assistants=v2'
+            }
+          });
+
+          if (statusResponse.ok) {
+            const statusData = await statusResponse.json();
+            runStatus = statusData.status;
+          }
+          attempts++;
+        }
+
+        if (runStatus !== 'completed') {
+          throw new Error('Assistant run did not complete in time');
+        }
+
+        // Get the assistant's response
+        const messagesResponse = await fetch(`https://api.openai.com/v1/threads/${currentThreadId}/messages`, {
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'OpenAI-Beta': 'assistants=v2'
+          }
+        });
+
+        if (!messagesResponse.ok) {
+          throw new Error(`Messages retrieval failed: ${messagesResponse.status} ${messagesResponse.statusText}`);
+        }
+
+        const messagesData = await messagesResponse.json();
+        const assistantMessage = messagesData.data[0];
+        const botResponse = assistantMessage?.content?.[0]?.text?.value || "I'm having trouble processing your request right now. Please call us at (305) 814-4461 for immediate assistance.";
         
-        res.json({ response: botResponse });
+        res.json({ 
+          response: botResponse,
+          threadId: currentThreadId
+        });
       } catch (openaiError) {
-        console.error('OpenAI API Error:', openaiError);
+        console.error('OpenAI Assistant API Error:', openaiError);
         
         // Provide helpful fallback response
         const fallbackResponse = "I'm experiencing technical difficulties at the moment. For immediate IT support, please call AramisTech at (305) 814-4461 or email sales@aramistech.com. Our experienced technicians are here to help with all your technology needs.";
         res.json({ response: fallbackResponse });
       }
     } catch (error) {
-      console.error('ChatGPT Endpoint Error:', error);
+      console.error('ChatGPT Assistant Endpoint Error:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
