@@ -169,19 +169,33 @@ export default function DynamicHeader() {
       {/* Critical Windows 10 Warning Button - Mobile */}
       {!isWarningDismissed && (
         <div className="sm:hidden fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
-          <button
-            onClick={() => setShowMobilePopup(true)}
-            className="critical-warning text-white p-3 relative overflow-hidden bg-red-600 hover:bg-red-700 transition-all duration-300 rounded-l-lg shadow-lg"
-          >
-            <div className="flex flex-col items-center space-y-1">
-              <AlertTriangle className="w-6 h-6 animate-pulse" />
-              <span className="font-bold text-xs">CRITICAL</span>
-            </div>
+          <div className="relative">
+            <button
+              onClick={() => setShowMobilePopup(true)}
+              className="critical-warning text-white p-3 relative overflow-hidden bg-red-600 hover:bg-red-700 transition-all duration-300 rounded-l-lg shadow-lg"
+            >
+              <div className="flex flex-col items-center space-y-1">
+                <AlertTriangle className="w-6 h-6 animate-pulse" />
+                <span className="font-bold text-xs">CRITICAL</span>
+              </div>
+              
+              {/* Animated urgency indicators */}
+              <div className="absolute top-0 left-0 h-1 w-full bg-yellow-400 animate-ping"></div>
+              <div className="absolute bottom-0 left-0 h-1 w-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+            </button>
             
-            {/* Animated urgency indicators */}
-            <div className="absolute top-0 left-0 h-1 w-full bg-yellow-400 animate-ping"></div>
-            <div className="absolute bottom-0 left-0 h-1 w-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
-          </button>
+            {/* Dismiss button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                dismissWarning();
+              }}
+              className="absolute -top-1 -left-1 bg-gray-800 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-gray-600 transition-colors"
+              title="Hide warning"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
         </div>
       )}
 
@@ -215,7 +229,7 @@ export default function DynamicHeader() {
                 
                 <Link 
                   href="/windows10-upgrade" 
-                  className="inline-flex items-center bg-red-600 text-white px-6 py-3 rounded-full text-base font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105 w-full justify-center mb-4"
+                  className="inline-flex items-center bg-red-600 text-white px-6 py-3 rounded-full text-base font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105 w-full justify-center"
                   onClick={() => {
                     setShowMobilePopup(false);
                     window.scrollTo(0, 0);
@@ -224,13 +238,6 @@ export default function DynamicHeader() {
                   <span className="mr-2">►</span>
                   Get Protected Now
                 </Link>
-                
-                <button 
-                  onClick={dismissWarning}
-                  className="text-white text-sm underline hover:text-gray-300 transition-colors w-full text-center"
-                >
-                  Don't show this warning again
-                </button>
               </div>
               
               {/* Animated urgency indicators */}
