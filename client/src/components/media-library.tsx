@@ -80,7 +80,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
     imageFiles.forEach(file => {
       uploadMutation.mutate(file);
     });
-  }, []);
+  }, [toast]);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -359,16 +359,25 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
       </div>
 
       {files.length === 0 ? (
-        <Card className="border-dashed">
+        <Card 
+          className={`border-dashed transition-colors ${
+            isDragOver ? 'border-aramis-orange bg-orange-50' : 'border-gray-300'
+          }`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <ImageIcon className="w-12 h-12 text-muted-foreground mb-4" />
-            <p className="text-lg font-medium mb-2">No images uploaded yet</p>
-            <p className="text-sm text-muted-foreground mb-4">
-              Upload your first image to get started
+            <Upload className={`w-12 h-12 mb-4 ${isDragOver ? 'text-aramis-orange' : 'text-muted-foreground'}`} />
+            <p className="text-lg font-medium mb-2">
+              {isDragOver ? 'Drop images here' : 'No images uploaded yet'}
             </p>
-            <Button onClick={() => fileInputRef.current?.click()}>
+            <p className="text-sm text-muted-foreground mb-4">
+              {isDragOver ? 'Release to upload' : 'Drag & drop images or click to add them'}
+            </p>
+            <Button onClick={() => setIsUploadDialogOpen(true)} className="bg-aramis-orange hover:bg-orange-600">
               <Upload className="w-4 h-4 mr-2" />
-              Upload Image
+              Add Images
             </Button>
           </CardContent>
         </Card>
