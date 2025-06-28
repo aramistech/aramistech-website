@@ -57,12 +57,48 @@ export default function DynamicHeader() {
     },
   });
 
+  // Fetch security alert settings from database
+  const { data: alertData } = useQuery({
+    queryKey: ['/api/security-alert'],
+    queryFn: async () => {
+      const res = await fetch('/api/security-alert');
+      return res.json();
+    },
+  });
+
   const menuItems: MenuItem[] = menuData?.menuItems || [];
   const mainMenuItems = menuItems.filter(item => !item.parentId && item.isVisible)
     .sort((a, b) => a.orderIndex - b.orderIndex);
   const getSubMenuItems = (parentId: number) => 
     menuItems.filter(item => item.parentId === parentId && item.isVisible)
       .sort((a, b) => a.orderIndex - b.orderIndex);
+
+  // Get security alert settings
+  const securityAlert = alertData?.alert;
+  const isAlertEnabled = securityAlert?.isEnabled !== false && !isWarningDismissed;
+
+  // Function to get icon component based on iconType
+  const getIconComponent = (iconType: string) => {
+    switch (iconType) {
+      case 'Shield': return <Shield className="w-3 h-3 mr-1" />;
+      case 'Bell': return <Bell className="w-3 h-3 mr-1" />;
+      case 'Zap': return <Zap className="w-3 h-3 mr-1" />;
+      case 'AlertCircle': return <AlertCircle className="w-3 h-3 mr-1" />;
+      case 'Info': return <Info className="w-3 h-3 mr-1" />;
+      default: return <AlertTriangle className="w-3 h-3 mr-1" />;
+    }
+  };
+
+  const getMobileIconComponent = (iconType: string) => {
+    switch (iconType) {
+      case 'Shield': return Shield;
+      case 'Bell': return Bell;
+      case 'Zap': return Zap;
+      case 'AlertCircle': return AlertCircle;
+      case 'Info': return Info;
+      default: return AlertTriangle;
+    }
+  };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -149,34 +185,52 @@ export default function DynamicHeader() {
         </div>
       </div>
 
-      {/* Critical Windows 10 Warning Banner - Desktop */}
-      <div className="hidden sm:block critical-warning text-white py-1 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center text-center">
-            <div className="flex items-center space-x-3">
-              <span className="critical-badge bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
-                <AlertTriangle className="w-3 h-3 mr-1" />
-                CRITICAL
-              </span>
-              <span className="font-semibold text-sm sm:text-base professional-text">
-                Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats
-              </span>
-              <Link 
-                href="/windows10-upgrade" 
-                className="inline-flex items-center bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105"
-                onClick={() => window.scrollTo(0, 0)}
-              >
-                <span className="mr-1">►</span>
-                Learn More
-              </Link>
+      {/* Security Alert Banner - Desktop */}
+      {isAlertEnabled && (
+        <div 
+          className="hidden sm:block critical-warning text-white py-1 relative overflow-hidden"
+          style={{ backgroundColor: securityAlert?.backgroundColor || '#dc2626' }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-center text-center">
+              <div className="flex items-center space-x-3">
+                <span 
+                  className="critical-badge px-2 py-1 rounded-full text-xs font-bold flex items-center"
+                  style={{ 
+                    backgroundColor: securityAlert?.backgroundColor ? '#ef4444' : '#ef4444',
+                    color: securityAlert?.textColor || 'white'
+                  }}
+                >
+                  {getIconComponent(securityAlert?.iconType || 'AlertTriangle')}
+                  CRITICAL
+                </span>
+                <span 
+                  className="font-semibold text-sm sm:text-base professional-text"
+                  style={{ color: securityAlert?.textColor || 'white' }}
+                >
+                  {securityAlert?.title || 'Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats'}
+                </span>
+                <Link 
+                  href={securityAlert?.buttonLink || '/windows10-upgrade'}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:opacity-90 transition-all duration-300 transform hover:scale-105"
+                  style={{ 
+                    backgroundColor: securityAlert?.backgroundColor || '#dc2626',
+                    color: securityAlert?.textColor || 'white'
+                  }}
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  <span className="mr-1">►</span>
+                  {securityAlert?.buttonText || 'Learn More'}
+                </Link>
+              </div>
             </div>
           </div>
+          
+          {/* Animated urgency indicators */}
+          <div className="absolute left-0 top-0 w-2 h-full bg-yellow-400 animate-ping"></div>
+          <div className="absolute right-0 top-0 w-2 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
         </div>
-        
-        {/* Animated urgency indicators */}
-        <div className="absolute left-0 top-0 w-2 h-full bg-yellow-400 animate-ping"></div>
-        <div className="absolute right-0 top-0 w-2 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
-      </div>
+      )}
 
       {/* Critical Windows 10 Warning Button - Mobile */}
       {!isWarningDismissed && (

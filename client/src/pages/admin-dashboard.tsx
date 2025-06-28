@@ -249,6 +249,23 @@ export default function AdminDashboard() {
               </Card>
             </TabsContent>
 
+            <TabsContent value="security" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5" />
+                    Security Alerts Management
+                  </CardTitle>
+                  <CardDescription>
+                    Configure website security warnings with custom content, icons, colors, and visibility settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <SecurityAlertsManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             <TabsContent value="media" className="space-y-4">
               <Card>
                 <CardHeader>
