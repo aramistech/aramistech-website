@@ -20,11 +20,22 @@ interface MediaFile {
 export default function ImageReplacementDemo() {
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
 
-  const { data: mediaResponse } = useQuery({
+  const { data: mediaResponse, isLoading } = useQuery<{ success: boolean; files: MediaFile[] }>({
     queryKey: ['/api/admin/media'],
   });
 
   const mediaFiles: MediaFile[] = mediaResponse?.files || [];
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-aramis-orange mx-auto mb-2"></div>
+          <p className="text-gray-600">Loading media files...</p>
+        </div>
+      </div>
+    );
+  }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
