@@ -135,7 +135,7 @@ export default function DynamicHeader() {
               </span>
               <Link 
                 href="/windows10-upgrade" 
-                className="hidden sm:inline-flex items-center bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105"
                 onClick={() => window.scrollTo(0, 0)}
               >
                 <span className="mr-1">►</span>
