@@ -176,6 +176,26 @@ export default function VisualImageManager() {
     return groups;
   }, {} as Record<string, WebsiteImage[]>);
 
+  // Handle manual scan
+  const handleManualScan = async () => {
+    setIsScanning(true);
+    try {
+      await refetchAutoDetect();
+      toast({
+        title: "Scan Complete",
+        description: `Found ${autoDetectResponse?.totalFound || 0} images across your website`,
+      });
+    } catch (error) {
+      toast({
+        title: "Scan Failed", 
+        description: "Unable to scan codebase for images",
+        variant: "destructive",
+      });
+    } finally {
+      setIsScanning(false);
+    }
+  };
+
   const updateImageMutation = useMutation({
     mutationFn: async ({ imageId, newMediaId }: { imageId: string; newMediaId: number }) => {
       return apiRequest("/api/admin/update-website-image", "POST", { imageId, newMediaId });
@@ -186,7 +206,8 @@ export default function VisualImageManager() {
         description: "Website image has been updated successfully",
       });
       setSelectedImage(null);
-      window.location.reload(); // Refresh to show changes
+      // Refresh auto-detection to show updated URLs
+      refetchAutoDetect();
     },
     onError: (error: any) => {
       toast({
@@ -214,12 +235,37 @@ export default function VisualImageManager() {
 
   return (
     <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h3 className="text-lg font-semibold mb-2">Visual Image Manager</h3>
-        <p className="text-sm text-muted-foreground">
-          Click to replace any image across your website with media library assets
-        </p>
+      {/* Header with scan controls */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h3 className="text-lg font-semibold">Visual Image Manager</h3>
+          <p className="text-sm text-muted-foreground">
+            {autoDetectedImages.length > 0 
+              ? `Auto-detected ${autoDetectedImages.length} images` 
+              : "Click to replace any image across your website"}
+          </p>
+        </div>
+        <Button
+          onClick={handleManualScan}
+          disabled={isScanning || isLoadingAutoDetect}
+          className="flex items-center gap-2"
+          variant="outline"
+        >
+          {isScanning || isLoadingAutoDetect ? (
+            <RefreshCw className="h-4 w-4 animate-spin" />
+          ) : (
+            <RefreshCw className="h-4 w-4" />
+          )}
+          {isScanning ? "Scanning..." : "Scan for Images"}
+        </Button>
       </div>
+
+      {isLoadingAutoDetect && (
+        <div className="flex items-center justify-center py-8">
+          <RefreshCw className="h-6 w-6 animate-spin mr-2" />
+          <span>Scanning codebase for images...</span>
+        </div>
+      )}
 
       {Object.entries(groupedImages).map(([category, images]) => (
         <div key={category} className="space-y-4">
