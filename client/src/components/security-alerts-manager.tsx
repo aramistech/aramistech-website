@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { AlertTriangle, Shield, Bell, Zap, AlertCircle, Info } from "lucide-react";
+import ColorPickerWithPalette from "@/components/color-picker-with-palette";
 
 interface SecurityAlert {
   id: number;
@@ -350,148 +351,36 @@ export default function SecurityAlertsManager() {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Banner Background Color */}
-            <div>
-              <Label htmlFor="backgroundColor">Banner Background Color</Label>
-              <div className="space-y-3">
-                {/* Predefined Colors */}
-                <Select value={colorOptions.find(opt => opt.value === formData.backgroundColor)?.value || 'custom'} onValueChange={(value) => handleChange('backgroundColor', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a color or use custom" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {colorOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-center space-x-2">
-                          <div className={`w-4 h-4 rounded ${option.preview}`}></div>
-                          <span>{option.label}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="custom">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 rounded border bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500"></div>
-                        <span>Custom Color</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                
-                {/* Custom Color Picker */}
-                <div className="flex items-center space-x-3">
-                  <Label htmlFor="customColor" className="text-sm text-gray-600">Or choose custom color:</Label>
-                  <input
-                    type="color"
-                    id="customColor"
-                    value={formData.backgroundColor}
-                    onChange={(e) => handleChange('backgroundColor', e.target.value)}
-                    className="w-12 h-8 border border-gray-300 rounded cursor-pointer"
-                  />
-                  <div className="flex items-center space-x-2">
-                    <div 
-                      className="w-4 h-4 rounded border"
-                      style={{ backgroundColor: formData.backgroundColor }}
-                    ></div>
-                    <span className="text-sm text-gray-600">{formData.backgroundColor}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ColorPickerWithPalette
+              value={formData.backgroundColor || '#dc2626'}
+              onChange={(value) => handleChange('backgroundColor', value)}
+              label="Banner Background Color"
+              id="backgroundColor"
+            />
 
-            {/* Button Colors */}
-            <div>
-              <Label htmlFor="buttonBackgroundColor">Button Background Color</Label>
-              <div className="space-y-3">
-                {/* Predefined Colors */}
-                <Select value={colorOptions.find(opt => opt.value === formData.buttonBackgroundColor)?.value || 'custom'} onValueChange={(value) => handleChange('buttonBackgroundColor', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a color or use custom" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {colorOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-center space-x-2">
-                          <div className={`w-4 h-4 rounded ${option.preview}`}></div>
-                          <span>{option.label}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="custom">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 rounded border bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500"></div>
-                        <span>Custom Color</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                
-                {/* Custom Color Picker */}
-                <div className="flex items-center space-x-3">
-                  <Label htmlFor="customButtonColor" className="text-sm text-gray-600">Or choose custom color:</Label>
-                  <input
-                    type="color"
-                    id="customButtonColor"
-                    value={formData.buttonBackgroundColor}
-                    onChange={(e) => handleChange('buttonBackgroundColor', e.target.value)}
-                    className="w-12 h-8 border border-gray-300 rounded cursor-pointer"
-                  />
-                  <div className="flex items-center space-x-2">
-                    <div 
-                      className="w-4 h-4 rounded border"
-                      style={{ backgroundColor: formData.buttonBackgroundColor }}
-                    ></div>
-                    <span className="text-sm text-gray-600">{formData.buttonBackgroundColor}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Button Background Color */}
+            <ColorPickerWithPalette
+              value={formData.buttonBackgroundColor || '#dc2626'}
+              onChange={(value) => handleChange('buttonBackgroundColor', value)}
+              label="Button Background Color"
+              id="buttonBackgroundColor"
+            />
 
             {/* Button Text Color */}
-            <div>
-              <Label htmlFor="buttonTextColor">Button Text Color</Label>
-              <div className="space-y-3">
-                {/* Predefined Colors */}
-                <Select value={colorOptions.find(opt => opt.value === formData.buttonTextColor)?.value || 'custom'} onValueChange={(value) => handleChange('buttonTextColor', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a color or use custom" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {colorOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-center space-x-2">
-                          <div className={`w-4 h-4 rounded ${option.preview}`}></div>
-                          <span>{option.label}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="custom">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 rounded border bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500"></div>
-                        <span>Custom Color</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                
-                {/* Custom Color Picker */}
-                <div className="flex items-center space-x-3">
-                  <Label htmlFor="customButtonTextColor" className="text-sm text-gray-600">Or choose custom color:</Label>
-                  <input
-                    type="color"
-                    id="customButtonTextColor"
-                    value={formData.buttonTextColor}
-                    onChange={(e) => handleChange('buttonTextColor', e.target.value)}
-                    className="w-12 h-8 border border-gray-300 rounded cursor-pointer"
-                  />
-                  <div className="flex items-center space-x-2">
-                    <div 
-                      className="w-4 h-4 rounded border"
-                      style={{ backgroundColor: formData.buttonTextColor }}
-                    ></div>
-                    <span className="text-sm text-gray-600">{formData.buttonTextColor}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ColorPickerWithPalette
+              value={formData.buttonTextColor || '#ffffff'}
+              onChange={(value) => handleChange('buttonTextColor', value)}
+              label="Button Text Color"
+              id="buttonTextColor"
+            />
+
+            {/* Banner Text Color */}
+            <ColorPickerWithPalette
+              value={formData.textColor || '#ffffff'}
+              onChange={(value) => handleChange('textColor', value)}
+              label="Banner Text Color"
+              id="textColor"
+            />
           </CardContent>
         </Card>
 
