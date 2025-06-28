@@ -19,9 +19,14 @@ export default function QuickImageReplacer() {
   const { toast } = useToast();
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
-  const { data: mediaFiles = [], isLoading } = useQuery<MediaFile[]>({
+  const { data: mediaResponse, isLoading, error } = useQuery<{success: boolean, files: MediaFile[]}>({
     queryKey: ["/api/admin/media"],
   });
+
+  // Extract files from response structure
+  const mediaFiles = mediaResponse?.files || [];
+
+
 
   const copyImageUrl = async (id: number) => {
     const url = `/api/media/${id}/file`;
@@ -111,7 +116,7 @@ export default function QuickImageReplacer() {
           <h3 className="font-semibold mb-3">Available Images (Click to Copy URL):</h3>
           {mediaFiles.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {mediaFiles.map((file) => (
+              {mediaFiles.map((file: MediaFile) => (
                 <div key={file.id} className="group cursor-pointer">
                   <div 
                     className="relative border-2 rounded-lg overflow-hidden transition-all hover:border-aramis-orange hover:shadow-lg"
