@@ -385,7 +385,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           customerPhone: validatedData.customerPhone || '',
           companyName: validatedData.companyName || '',
           totalEstimate: validatedData.totalEstimate || '0',
-          selectedServices: validatedData.selectedServices || [],
+          selectedServices: Array.isArray(validatedData.selectedServices) ? validatedData.selectedServices : [],
           projectDescription: validatedData.projectDescription || '',
           urgencyLevel: validatedData.urgencyLevel || 'normal',
         });

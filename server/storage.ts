@@ -1,4 +1,4 @@
-import { users, contacts, quickQuotes, aiConsultations, itConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, securityAlerts, colorPalette, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type ITConsultation, type InsertITConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings, type SecurityAlert, type InsertSecurityAlert, type ColorPalette, type InsertColorPalette } from "@shared/schema";
+import { users, contacts, quickQuotes, aiConsultations, itConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, securityAlerts, colorPalette, serviceCategories, serviceOptions, pricingCalculations, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type ITConsultation, type InsertITConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings, type SecurityAlert, type InsertSecurityAlert, type ColorPalette, type InsertColorPalette, type ServiceCategory, type InsertServiceCategory, type ServiceOption, type InsertServiceOption, type PricingCalculation, type InsertPricingCalculation } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, isNull, gt, sql, asc, ne } from "drizzle-orm";
 import bcrypt from "bcryptjs";
@@ -607,6 +607,71 @@ export class DatabaseStorage implements IStorage {
 
   async deleteColorPaletteItem(id: number): Promise<void> {
     await db.delete(colorPalette).where(eq(colorPalette.id, id));
+  }
+
+  // Service calculator management
+  async getServiceCategories(): Promise<ServiceCategory[]> {
+    return db.select().from(serviceCategories).orderBy(asc(serviceCategories.displayOrder));
+  }
+
+  async createServiceCategory(category: InsertServiceCategory): Promise<ServiceCategory> {
+    const [newCategory] = await db.insert(serviceCategories).values(category).returning();
+    return newCategory;
+  }
+
+  async updateServiceCategory(id: number, category: Partial<InsertServiceCategory>): Promise<ServiceCategory> {
+    const [updatedCategory] = await db.update(serviceCategories)
+      .set(category)
+      .where(eq(serviceCategories.id, id))
+      .returning();
+    return updatedCategory;
+  }
+
+  async deleteServiceCategory(id: number): Promise<void> {
+    await db.delete(serviceCategories).where(eq(serviceCategories.id, id));
+  }
+
+  async getServiceOptions(categoryId?: number): Promise<ServiceOption[]> {
+    if (categoryId) {
+      return db.select().from(serviceOptions)
+        .where(eq(serviceOptions.categoryId, categoryId))
+        .orderBy(asc(serviceOptions.displayOrder));
+    }
+    return db.select().from(serviceOptions).orderBy(asc(serviceOptions.displayOrder));
+  }
+
+  async createServiceOption(option: InsertServiceOption): Promise<ServiceOption> {
+    const [newOption] = await db.insert(serviceOptions).values(option).returning();
+    return newOption;
+  }
+
+  async updateServiceOption(id: number, option: Partial<InsertServiceOption>): Promise<ServiceOption> {
+    const [updatedOption] = await db.update(serviceOptions)
+      .set(option)
+      .where(eq(serviceOptions.id, id))
+      .returning();
+    return updatedOption;
+  }
+
+  async deleteServiceOption(id: number): Promise<void> {
+    await db.delete(serviceOptions).where(eq(serviceOptions.id, id));
+  }
+
+  async createPricingCalculation(calculation: InsertPricingCalculation): Promise<PricingCalculation> {
+    const [newCalculation] = await db.insert(pricingCalculations).values(calculation).returning();
+    return newCalculation;
+  }
+
+  async getPricingCalculations(): Promise<PricingCalculation[]> {
+    return db.select().from(pricingCalculations).orderBy(desc(pricingCalculations.createdAt));
+  }
+
+  async updatePricingCalculation(id: number, calculation: Partial<InsertPricingCalculation>): Promise<PricingCalculation> {
+    const [updatedCalculation] = await db.update(pricingCalculations)
+      .set(calculation)
+      .where(eq(pricingCalculations.id, id))
+      .returning();
+    return updatedCalculation;
   }
 }
 

@@ -177,7 +177,7 @@ export default function ServiceCalculator() {
   };
 
   const calculateServiceCost = (service: SelectedService, options: ServiceOption[]): number => {
-    let totalCost = parseFloat(service.basePrice);
+    let totalCost = parseFloat(service.basePrice.toString());
     
     // Add hourly rate calculation
     if (service.estimatedHours > 0) {
@@ -265,7 +265,7 @@ export default function ServiceCalculator() {
         customerPhone: customerInfo.phone,
         companyName: customerInfo.company,
         selectedServices: selectedServices,
-        totalEstimate: totalEstimate,
+        totalEstimate: totalEstimate.toString(),
         estimateBreakdown: selectedServices.map(service => ({
           service: service.categoryName,
           cost: calculateServiceCost(service, serviceOptions[service.categoryId] || [])
