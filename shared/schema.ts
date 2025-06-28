@@ -455,3 +455,27 @@ export type ServiceOption = typeof serviceOptions.$inferSelect;
 export type InsertServiceOption = z.infer<typeof insertServiceOptionSchema>;
 export type PricingCalculation = typeof pricingCalculations.$inferSelect;
 export type InsertPricingCalculation = z.infer<typeof insertPricingCalculationSchema>;
+
+// Page content management
+export const pageContent = pgTable("page_content", {
+  id: serial("id").primaryKey(),
+  page: varchar("page", { length: 100 }).notNull(),
+  section: varchar("section", { length: 100 }).notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  imageUrl: varchar("image_url", { length: 500 }),
+  imageAlt: varchar("image_alt", { length: 255 }),
+  displayOrder: integer("display_order").notNull().default(1),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPageContentSchema = createInsertSchema(pageContent).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type PageContent = typeof pageContent.$inferSelect;
+export type InsertPageContent = z.infer<typeof insertPageContentSchema>;
