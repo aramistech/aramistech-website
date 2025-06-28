@@ -411,6 +411,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           targetIndex: 2
         },
         // Section Images
+        'hero-it-team': {
+          filePath: 'client/src/components/hero.tsx',
+          searchPattern: 'https://images.unsplash.com/photo-1551434678-e076c223a692'
+        },
         'about-office': {
           filePath: 'client/src/components/about.tsx',
           searchPattern: 'https://images.unsplash.com/photo-1497366216548-37526070297c'

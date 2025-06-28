@@ -109,6 +109,15 @@ export default function VisualImageManager() {
     
     // Section Images
     {
+      id: "hero-it-team",
+      label: "Professional IT Team",
+      description: "Hero section image - Professional IT team working with technology",
+      currentUrl: "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      filePath: "client/src/components/hero.tsx",
+      lineNumber: 91,
+      category: "Section Images"
+    },
+    {
       id: "about-office",
       label: "Office Technology Setup",
       description: "Modern office technology setup image in About section",
