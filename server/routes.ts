@@ -371,6 +371,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Visual Image Manager API
+  app.post('/api/admin/update-website-image', requireAdminAuth, async (req, res) => {
+    try {
+      const { imageId, newMediaId } = req.body;
+      const fs = require('fs');
+      const path = require('path');
+      
+      // Define image mappings
+      const imageMap: Record<string, {filePath: string, targetIndex?: number}> = {
+        'aramis-team': {
+          filePath: 'client/src/components/team.tsx',
+          targetIndex: 0 // First team member
+        },
+        'gabriel-team': {
+          filePath: 'client/src/components/team.tsx',
+          targetIndex: 1 // Second team member
+        },
+        'aramism-team': {
+          filePath: 'client/src/components/team.tsx',
+          targetIndex: 2 // Third team member (Aramis M)
+        }
+      };
+
+      const imageConfig = imageMap[imageId];
+      if (!imageConfig) {
+        return res.status(400).json({ error: 'Invalid image ID' });
+      }
+
+      // Read the file
+      const filePath = path.join(process.cwd(), imageConfig.filePath);
+      let fileContent = fs.readFileSync(filePath, 'utf8');
+      
+      // Split into lines for easier manipulation
+      const lines = fileContent.split('\n');
+      let foundImages = 0;
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        
+        // Look for image lines
+        if (line.includes('image:') && (line.includes('"/api/media/') || line.includes('"https://aramistech.com'))) {
+          // Update the correct occurrence based on target index
+          if (foundImages === imageConfig.targetIndex) {
+            lines[i] = line.replace(/image: "[^"]*"/, `image: "/api/media/${newMediaId}/file"`);
+            break;
+          }
+          foundImages++;
+        }
+      }
+
+      // Write the updated content back
+      const updatedContent = lines.join('\n');
+      fs.writeFileSync(filePath, updatedContent, 'utf8');
+
+      res.json({ success: true, message: 'Image updated successfully' });
+    } catch (error) {
+      console.error('Error updating website image:', error);
+      res.status(500).json({ error: 'Failed to update image' });
+    }
+  });
+
   // Service Calculator API endpoints
   app.post('/api/service-calculator/submit', async (req, res) => {
     try {

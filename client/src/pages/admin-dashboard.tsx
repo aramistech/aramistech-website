@@ -31,8 +31,8 @@ import AdminUserManager from '@/components/admin-user-manager';
 import ExitIntentManager from '@/components/exit-intent-manager';
 import MediaLibrary from '@/components/media-library';
 
-import ImageReplacementDemo from '@/components/image-replacement-demo';
-import QuickImageReplacer from '@/components/quick-image-replacer';
+
+import VisualImageManager from '@/components/visual-image-manager';
 import AnalyticsDashboard from '@/components/analytics-dashboard';
 import KnowledgeBaseManager from '@/components/knowledge-base-manager';
 import SecurityAlertsManager from '@/components/security-alerts-manager';
@@ -109,7 +109,7 @@ export default function AdminDashboard() {
     { id: 'colors', label: 'Colors', icon: Palette },
     { id: 'knowledge', label: 'Knowledge', icon: Book },
     { id: 'media', label: 'Media Library', icon: ImageIcon },
-    { id: 'demo', label: 'Image Demo', icon: Settings },
+    { id: 'demo', label: 'Visual Images', icon: Settings },
     { id: 'popup', label: 'Exit Popup', icon: ExternalLink },
     { id: 'calculator', label: 'Calculator', icon: Calculator },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
@@ -316,22 +316,7 @@ export default function AdminDashboard() {
 
 
       case 'demo':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="w-5 h-5" />
-                Quick Image Replacer
-              </CardTitle>
-              <CardDescription>
-                Click any image to copy its URL, then replace existing images in your code files
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <QuickImageReplacer />
-            </CardContent>
-          </Card>
-        );
+        return <VisualImageManager />;
 
       case 'popup':
         return (
