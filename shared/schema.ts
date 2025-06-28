@@ -306,6 +306,24 @@ export const adminChatSettings = pgTable("admin_chat_settings", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const securityAlerts = pgTable("security_alerts", {
+  id: serial("id").primaryKey(),
+  isEnabled: boolean("is_enabled").default(true),
+  title: varchar("title", { length: 255 }).notNull().default("CRITICAL"),
+  message: text("message").notNull().default("Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats"),
+  buttonText: varchar("button_text", { length: 100 }).notNull().default("Learn More"),
+  buttonLink: varchar("button_link", { length: 255 }).notNull().default("/windows10-upgrade"),
+  backgroundColor: varchar("background_color", { length: 50 }).notNull().default("bg-red-600"),
+  textColor: varchar("text_color", { length: 50 }).notNull().default("text-white"),
+  iconType: varchar("icon_type", { length: 50 }).notNull().default("AlertTriangle"),
+  mobileTitle: varchar("mobile_title", { length: 255 }).notNull().default("CRITICAL SECURITY ALERT"),
+  mobileSubtitle: varchar("mobile_subtitle", { length: 255 }).notNull().default("Windows 10 Support Ending"),
+  mobileDescription: text("mobile_description").notNull().default("Your Systems Will Become Vulnerable to New Threats. Microsoft is ending Windows 10 support on October 14, 2025. After this date, your systems will no longer receive security updates, leaving them exposed to new cyber threats."),
+  mobileButtonText: varchar("mobile_button_text", { length: 100 }).notNull().default("Get Protected Now"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Chat schemas
 export const insertChatSessionSchema = createInsertSchema(chatSessions).omit({
   id: true,
@@ -323,6 +341,12 @@ export const insertAdminChatSettingsSchema = createInsertSchema(adminChatSetting
   updatedAt: true,
 });
 
+export const insertSecurityAlertSchema = createInsertSchema(securityAlerts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Chat types
 export type ChatSession = typeof chatSessions.$inferSelect;
 export type InsertChatSession = z.infer<typeof insertChatSessionSchema>;
@@ -330,3 +354,7 @@ export type ChatMessage = typeof chatMessages.$inferSelect;
 export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
 export type AdminChatSettings = typeof adminChatSettings.$inferSelect;
 export type InsertAdminChatSettings = z.infer<typeof insertAdminChatSettingsSchema>;
+
+// Security Alert types
+export type SecurityAlert = typeof securityAlerts.$inferSelect;
+export type InsertSecurityAlert = z.infer<typeof insertSecurityAlertSchema>;

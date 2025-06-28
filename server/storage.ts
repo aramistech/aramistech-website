@@ -1,4 +1,4 @@
-import { users, contacts, quickQuotes, aiConsultations, itConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type ITConsultation, type InsertITConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings } from "@shared/schema";
+import { users, contacts, quickQuotes, aiConsultations, itConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, securityAlerts, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type ITConsultation, type InsertITConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings, type SecurityAlert, type InsertSecurityAlert } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, isNull, gt, sql, asc, ne } from "drizzle-orm";
 import bcrypt from "bcryptjs";
@@ -68,6 +68,9 @@ export interface IStorage {
   getUnreadMessageCount(sessionId: number, sender: string): Promise<number>;
   getAdminChatSettings(userId: number): Promise<AdminChatSettings | undefined>;
   updateAdminChatSettings(userId: number, settings: Partial<InsertAdminChatSettings>): Promise<AdminChatSettings>;
+  // Security alerts management
+  getSecurityAlert(): Promise<SecurityAlert | undefined>;
+  updateSecurityAlert(alert: Partial<InsertSecurityAlert>): Promise<SecurityAlert>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -538,6 +541,28 @@ export class DatabaseStorage implements IStorage {
         .values({ userId, ...settingsData })
         .returning();
       return settings;
+    }
+  }
+
+  async getSecurityAlert(): Promise<SecurityAlert | undefined> {
+    const [alert] = await db.select().from(securityAlerts).limit(1);
+    return alert;
+  }
+
+  async updateSecurityAlert(alertData: Partial<InsertSecurityAlert>): Promise<SecurityAlert> {
+    const existing = await this.getSecurityAlert();
+    
+    if (existing) {
+      const [alert] = await db.update(securityAlerts)
+        .set({ ...alertData, updatedAt: new Date() })
+        .where(eq(securityAlerts.id, existing.id))
+        .returning();
+      return alert;
+    } else {
+      const [alert] = await db.insert(securityAlerts)
+        .values(alertData)
+        .returning();
+      return alert;
     }
   }
 }
