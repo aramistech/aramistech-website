@@ -30,16 +30,27 @@ export default function VisualImageManager() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedImage, setSelectedImage] = useState<WebsiteImage | null>(null);
-  const [isEditing, setIsEditing] = useState<string | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
 
   const { data: mediaResponse } = useQuery<{success: boolean, files: MediaFile[]}>({
     queryKey: ["/api/admin/media"],
   });
 
-  const mediaFiles = mediaResponse?.files || [];
+  // Auto-detect images from codebase
+  const { data: autoDetectResponse, isLoading: isLoadingAutoDetect, refetch: refetchAutoDetect } = useQuery<{
+    success: boolean;
+    images: WebsiteImage[];
+    totalFound: number;
+  }>({
+    queryKey: ["/api/admin/auto-detect-images"],
+    staleTime: 30000, // Cache for 30 seconds
+  });
 
-  // Define all the website images that can be replaced
-  const websiteImages: WebsiteImage[] = [
+  const mediaFiles = mediaResponse?.files || [];
+  const autoDetectedImages = autoDetectResponse?.images || [];
+
+  // Use auto-detected images, fallback to manual list if auto-detection fails
+  const websiteImages: WebsiteImage[] = autoDetectedImages.length > 0 ? autoDetectedImages : [
     // Company Logos (appears in header, footer, and various pages)
     {
       id: "company-logo-header",

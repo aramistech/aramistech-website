@@ -372,20 +372,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Auto-detect images endpoint
-  app.get("/api/admin/auto-detect-images", requireAdminAuth, async (req, res) => {
+  app.get("/api/admin/auto-detect-images", requireAdminAuth, (req, res) => {
     try {
-      const fs = await import('fs');
-      const path = await import('path');
-      const glob = await import('glob');
+      const fs = require('fs');
+      const path = require('path');
+      const { globSync } = require('glob');
       
       const detectedImages: any[] = [];
       
       // Scan all TSX files in client/src
-      const tsxFiles = glob.default.sync('client/src/**/*.tsx', { cwd: process.cwd() });
+      const tsxFiles = globSync('client/src/**/*.tsx', { cwd: process.cwd() });
       
       for (const filePath of tsxFiles) {
-        const fullPath = path.default.join(process.cwd(), filePath);
-        const content = fs.default.readFileSync(fullPath, 'utf8');
+        const fullPath = path.join(process.cwd(), filePath);
+        const content = fs.readFileSync(fullPath, 'utf8');
         const lines = content.split('\n');
         
         lines.forEach((line: string, index: number) => {
@@ -402,8 +402,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 currentUrl: imageUrl,
                 filePath: filePath,
                 lineNumber: index + 1,
-                category: categorizeImage(filePath, imageUrl),
-                detectionType: 'src'
+                category: categorizeImage(filePath, imageUrl)
               });
             }
           }
@@ -419,8 +418,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               currentUrl: imageUrl,
               filePath: filePath,
               lineNumber: index + 1,
-              category: categorizeImage(filePath, imageUrl),
-              detectionType: 'background'
+              category: categorizeImage(filePath, imageUrl)
             });
           }
           
@@ -435,8 +433,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               currentUrl: imageUrl,
               filePath: filePath,
               lineNumber: index + 1,
-              category: categorizeImage(filePath, imageUrl),
-              detectionType: 'css-url'
+              category: categorizeImage(filePath, imageUrl)
             });
           }
           
@@ -451,21 +448,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
               currentUrl: imageUrl,
               filePath: filePath,
               lineNumber: index + 1,
-              category: 'Video & Media',
-              detectionType: 'poster'
+              category: 'Video & Media'
             });
           }
         });
       }
       
       // Helper functions
-      const generateImageId = (filePath: string, imageUrl: string): string => {
+      function generateImageId(filePath: string, imageUrl: string): string {
         const fileName = path.basename(filePath, '.tsx');
         const urlPart = imageUrl.split('/').pop()?.split('.')[0] || 'image';
         return `${fileName}-${urlPart}`.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
-      };
+      }
       
-      const generateImageLabel = (imageUrl: string, filePath: string): string => {
+      function generateImageLabel(imageUrl: string, filePath: string): string {
         if (imageUrl.includes('aramistech.com') && imageUrl.includes('Logo')) {
           return 'AramisTech Logo';
         }
@@ -482,16 +478,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const fileName = imageUrl.split('/').pop()?.split('.')[0] || 'Image';
         return fileName.charAt(0).toUpperCase() + fileName.slice(1);
-      };
+      }
       
-      const categorizeImage = (filePath: string, imageUrl: string): string => {
+      function categorizeImage(filePath: string, imageUrl: string): string {
         if (imageUrl.includes('Logo') || imageUrl.includes('logo')) return 'Company Branding';
         if (filePath.includes('team.tsx')) return 'Team Photos';
         if (filePath.includes('hero.tsx') || filePath.includes('about.tsx') || filePath.includes('contact.tsx')) return 'Section Images';
         if (filePath.includes('windows10')) return 'Page Backgrounds';
         if (imageUrl.includes('poster') || filePath.includes('video')) return 'Video & Media';
         return 'Other Images';
-      };
+      }
       
       // Remove duplicates based on currentUrl
       const uniqueImages = detectedImages.filter((image, index, self) => 
