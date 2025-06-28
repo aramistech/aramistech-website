@@ -91,10 +91,10 @@ export default function VisualImageManager() {
     {
       id: "windows10-video-poster",
       label: "Customer Testimonial Video Poster",
-      description: "Poster image for customer testimonial video",
-      currentUrl: "/api/media/20/file",
+      description: "Poster image for customer testimonial video on Windows 10 upgrade page",
+      currentUrl: "/video-poster.svg",
       filePath: "client/src/pages/windows10-upgrade.tsx",
-      lineNumber: 450,
+      lineNumber: 630,
       category: "Video & Media"
     },
     // Service Images (can be added for service cards)

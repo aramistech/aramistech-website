@@ -405,7 +405,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         'windows10-video-poster': {
           filePath: 'client/src/pages/windows10-upgrade.tsx',
-          searchPattern: 'poster="/api/media/20/file"'
+          searchPattern: 'poster="/video-poster.svg"'
         },
         // Service Images (placeholders for future use)
         'service-network': {
