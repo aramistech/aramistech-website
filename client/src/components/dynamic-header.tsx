@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown, AlertTriangle, Shield } from "lucide-react";
+import { Menu, X, ChevronDown, AlertTriangle, Shield, Bell, Zap, AlertCircle, Info } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { trackClick } from "@/lib/analytics";
@@ -232,17 +232,26 @@ export default function DynamicHeader() {
         </div>
       )}
 
-      {/* Critical Windows 10 Warning Button - Mobile */}
-      {!isWarningDismissed && (
+      {/* Security Alert Button - Mobile */}
+      {isAlertEnabled && (
         <div className="sm:hidden fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
           <div className="relative">
             <button
               onClick={() => setShowMobilePopup(true)}
-              className="critical-warning text-white p-3 relative overflow-hidden bg-red-600 hover:bg-red-700 transition-all duration-300 rounded-l-lg shadow-lg"
+              className="critical-warning text-white p-3 relative overflow-hidden hover:opacity-90 transition-all duration-300 rounded-l-lg shadow-lg"
+              style={{ backgroundColor: securityAlert?.backgroundColor || '#dc2626' }}
             >
               <div className="flex flex-col items-center space-y-1">
-                <AlertTriangle className="w-6 h-6 animate-pulse" />
-                <span className="font-bold text-xs">CRITICAL</span>
+                {(() => {
+                  const IconComponent = getMobileIconComponent(securityAlert?.iconType || 'AlertTriangle');
+                  return <IconComponent className="w-6 h-6 animate-pulse" style={{ color: securityAlert?.textColor || 'white' }} />;
+                })()}
+                <span 
+                  className="font-bold text-xs"
+                  style={{ color: securityAlert?.textColor || 'white' }}
+                >
+                  CRITICAL
+                </span>
               </div>
               
               {/* Animated urgency indicators */}
@@ -270,39 +279,64 @@ export default function DynamicHeader() {
         <>
           <div className="sm:hidden fixed inset-0 z-[60] bg-black bg-opacity-50" onClick={() => setShowMobilePopup(false)}></div>
           <div className={`sm:hidden fixed right-0 top-0 h-full w-80 z-[70] transform transition-transform duration-300 ease-in-out ${showMobilePopup ? 'translate-x-0' : 'translate-x-full'}`}>
-            <div className="critical-warning text-white h-full w-full relative overflow-hidden flex flex-col">
+            <div 
+              className="critical-warning text-white h-full w-full relative overflow-hidden flex flex-col"
+              style={{ backgroundColor: securityAlert?.backgroundColor || '#dc2626' }}
+            >
               <div className="p-6">
                 <button 
                   onClick={() => setShowMobilePopup(false)}
-                  className="absolute top-4 right-4 text-white hover:text-gray-300"
+                  className="absolute top-4 right-4 hover:opacity-75"
+                  style={{ color: securityAlert?.textColor || 'white' }}
                 >
                   <X className="w-6 h-6" />
                 </button>
                 
                 <div className="flex items-center mb-6">
-                  <AlertTriangle className="w-8 h-8 mr-3 text-yellow-400" />
+                  {(() => {
+                    const IconComponent = getMobileIconComponent(securityAlert?.iconType || 'AlertTriangle');
+                    return <IconComponent className="w-8 h-8 mr-3 text-yellow-400" />;
+                  })()}
                   <div>
-                    <span className="critical-badge bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                    <span 
+                      className="critical-badge px-2 py-1 rounded-full text-xs font-bold"
+                      style={{ 
+                        backgroundColor: '#ef4444',
+                        color: securityAlert?.textColor || 'white' 
+                      }}
+                    >
                       CRITICAL SECURITY ALERT
                     </span>
-                    <h3 className="font-bold text-lg mt-2">Windows 10 Support Ending</h3>
+                    <h3 
+                      className="font-bold text-lg mt-2"
+                      style={{ color: securityAlert?.textColor || 'white' }}
+                    >
+                      {securityAlert?.mobileTitle || 'Windows 10 Support Ending'}
+                    </h3>
                   </div>
                 </div>
                 
-                <p className="text-base mb-6 leading-relaxed">
-                  Your Systems Will Become Vulnerable to New Threats. Microsoft is ending Windows 10 support on October 14, 2025. After this date, your systems will no longer receive security updates, leaving them exposed to new cyber threats.
+                <p 
+                  className="text-base mb-6 leading-relaxed"
+                  style={{ color: securityAlert?.textColor || 'white' }}
+                >
+                  {securityAlert?.mobileDescription || 'Your Systems Will Become Vulnerable to New Threats. Microsoft is ending Windows 10 support on October 14, 2025. After this date, your systems will no longer receive security updates, leaving them exposed to new cyber threats.'}
                 </p>
                 
                 <Link 
-                  href="/windows10-upgrade" 
-                  className="inline-flex items-center bg-red-600 text-white px-6 py-3 rounded-full text-base font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105 w-full justify-center"
+                  href={securityAlert?.buttonLink || '/windows10-upgrade'}
+                  className="inline-flex items-center px-6 py-3 rounded-full text-base font-bold border-2 border-white hover:opacity-90 transition-all duration-300 transform hover:scale-105 w-full justify-center"
+                  style={{ 
+                    backgroundColor: securityAlert?.backgroundColor || '#dc2626',
+                    color: securityAlert?.textColor || 'white'
+                  }}
                   onClick={() => {
                     setShowMobilePopup(false);
                     window.scrollTo(0, 0);
                   }}
                 >
                   <span className="mr-2">►</span>
-                  Get Protected Now
+                  {securityAlert?.mobileButtonText || 'Get Protected Now'}
                 </Link>
               </div>
               

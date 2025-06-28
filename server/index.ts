@@ -1,7 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { createDefaultAdmin, setupDefaultMenuItems } from "./setup-admin";
+import { createDefaultAdmin, setupDefaultMenuItems, createDefaultSecurityAlert } from "./setup-admin";
 import path from "path";
 
 const app = express();

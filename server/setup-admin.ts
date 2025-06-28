@@ -67,3 +67,33 @@ export async function setupDefaultMenuItems() {
     console.error('Error creating default menu items:', error);
   }
 }
+
+export async function createDefaultSecurityAlert() {
+  try {
+    // Check if security alert already exists
+    const existingAlert = await storage.getSecurityAlert();
+    
+    if (existingAlert) {
+      console.log('Security alert already exists');
+      return;
+    }
+
+    await storage.updateSecurityAlert({
+      isEnabled: true,
+      title: 'Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats',
+      message: 'Microsoft is ending Windows 10 support on October 14, 2025. After this date, your systems will no longer receive security updates.',
+      buttonText: 'Learn More',
+      buttonLink: '/windows10-upgrade',
+      backgroundColor: '#dc2626',
+      textColor: '#ffffff',
+      iconType: 'AlertTriangle',
+      mobileTitle: 'Windows 10 Support Ending',
+      mobileSubtitle: 'Critical Security Alert',
+      mobileDescription: 'Your Systems Will Become Vulnerable to New Threats. Microsoft is ending Windows 10 support on October 14, 2025. After this date, your systems will no longer receive security updates, leaving them exposed to new cyber threats.',
+      mobileButtonText: 'Get Protected Now'
+    });
+    console.log('Default security alert created');
+  } catch (error) {
+    console.error('Error creating default security alert:', error);
+  }
+}
