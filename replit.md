@@ -218,6 +218,7 @@ Changelog:
 - June 28, 2025. Completed comprehensive Security Alerts management system with database schema, admin interface for customizable content/icons/colors/visibility, custom color picker supporting any hex color, mobile and desktop warning systems with dismissal functionality, and database-driven alerts replacing hardcoded values
 - June 28, 2025. Built complete global color palette system with database schema, API endpoints, admin interface for managing brand colors by category, ColorPickerWithPalette component with visual previews and palette integration, and seamless integration with Security Alerts for consistent brand color usage across all website elements
 - June 28, 2025. Created comprehensive service calculator/pricing tool with 6 IT service categories (Network Setup, Cybersecurity, Cloud Migration, IT Support, Software Development, Remote Support), real-time pricing calculations, dynamic hourly rate adjustments, professional contact form integration, Amazon SES email delivery system, database storage for quote submissions, and added to Support dropdown menu for easy customer access
+- June 28, 2025. Integrated service calculator management into protected admin dashboard as dedicated tab - admins can now securely manage pricing categories, service options, view customer quote submissions, adjust base prices and hourly rates, toggle active/inactive services, and modify display order through authenticated admin interface
 ```
 
 ## User Preferences

@@ -335,6 +335,23 @@ export default function AdminDashboard() {
               </Card>
             </TabsContent>
 
+            <TabsContent value="calculator" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calculator className="w-5 h-5" />
+                    Service Calculator Management
+                  </CardTitle>
+                  <CardDescription>
+                    Manage service categories, pricing, and customer quote submissions
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ServiceCalculatorManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             <TabsContent value="analytics" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>

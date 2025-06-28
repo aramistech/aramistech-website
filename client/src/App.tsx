@@ -40,7 +40,7 @@ function Router() {
       <Route path="/admin/reviews" component={AdminReviewsPage} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
-      <Route path="/admin/service-calculator" component={AdminServiceCalculator} />
+
       <Route component={NotFound} />
     </Switch>
   );
