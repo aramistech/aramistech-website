@@ -4,7 +4,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema, insertColorPaletteSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema, insertColorPaletteSchema, insertPricingCalculationSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -368,6 +368,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting color palette item:", error);
       res.status(500).json({ success: false, error: "Failed to delete color palette item" });
+    }
+  });
+
+  // Service Calculator API endpoints
+  app.post('/api/service-calculator/submit', async (req, res) => {
+    try {
+      const validatedData = insertPricingCalculationSchema.parse(req.body);
+      const calculation = await storage.createPricingCalculation(validatedData);
+      
+      // Send email notification (integrate with existing email service)
+      try {
+        await sendServiceCalculatorEmail({
+          customerName: validatedData.customerName || '',
+          customerEmail: validatedData.customerEmail || '',
+          customerPhone: validatedData.customerPhone || '',
+          companyName: validatedData.companyName || '',
+          totalEstimate: validatedData.totalEstimate || '0',
+          selectedServices: validatedData.selectedServices || [],
+          projectDescription: validatedData.projectDescription || '',
+          urgencyLevel: validatedData.urgencyLevel || 'normal',
+        });
+      } catch (emailError) {
+        console.error("Email sending failed:", emailError);
+        // Continue even if email fails
+      }
+
+      res.json({ success: true, calculation });
+    } catch (error) {
+      console.error("Error submitting service calculation:", error);
+      res.status(500).json({ success: false, error: "Failed to submit calculation" });
+    }
+  });
+
+  app.get('/api/admin/service-calculations', requireAdminAuth, async (req, res) => {
+    try {
+      const calculations = await storage.getPricingCalculations();
+      res.json({ success: true, calculations });
+    } catch (error) {
+      console.error("Error fetching service calculations:", error);
+      res.status(500).json({ success: false, error: "Failed to fetch calculations" });
     }
   });
 

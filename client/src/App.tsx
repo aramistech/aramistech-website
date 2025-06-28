@@ -14,6 +14,7 @@ import IPLookup from "@/pages/ip-lookup";
 import AIDevelopment from "@/pages/ai-development";
 import KnowledgeBase from "@/pages/knowledge-base";
 import KnowledgeBaseArticle from "@/pages/knowledge-base-article";
+import ServiceCalculator from "@/pages/service-calculator";
 import SocialProofPopup from "@/components/social-proof-popup";
 import ChatGPTChatbot from "@/components/chatgpt-chatbot";
 import { useEffect } from "react";
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/ip-lookup" component={IPLookup} />
       <Route path="/knowledge-base" component={KnowledgeBase} />
       <Route path="/knowledge-base/:slug" component={KnowledgeBaseArticle} />
+      <Route path="/service-calculator" component={ServiceCalculator} />
       <Route path="/admin/reviews" component={AdminReviewsPage} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />

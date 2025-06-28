@@ -265,7 +265,7 @@ export default function ServiceCalculator() {
         customerPhone: customerInfo.phone,
         companyName: customerInfo.company,
         selectedServices: selectedServices,
-        totalEstimate: totalEstimate.toString(),
+        totalEstimate: totalEstimate,
         estimateBreakdown: selectedServices.map(service => ({
           service: service.categoryName,
           cost: calculateServiceCost(service, serviceOptions[service.categoryId] || [])
