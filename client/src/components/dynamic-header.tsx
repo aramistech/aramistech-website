@@ -121,8 +121,8 @@ export default function DynamicHeader() {
         </div>
       </div>
 
-      {/* Critical Windows 10 Warning Banner */}
-      <div className="critical-warning text-white py-1 relative overflow-hidden">
+      {/* Critical Windows 10 Warning Banner - Desktop */}
+      <div className="hidden sm:block critical-warning text-white py-1 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center text-center">
             <div className="flex items-center space-x-3">
@@ -135,7 +135,7 @@ export default function DynamicHeader() {
               </span>
               <Link 
                 href="/windows10-upgrade" 
-                className="hidden sm:inline-flex items-center bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105"
                 onClick={() => window.scrollTo(0, 0)}
               >
                 <span className="mr-1">►</span>
@@ -148,6 +148,35 @@ export default function DynamicHeader() {
         {/* Animated urgency indicators */}
         <div className="absolute left-0 top-0 w-2 h-full bg-yellow-400 animate-ping"></div>
         <div className="absolute right-0 top-0 w-2 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+      </div>
+
+      {/* Critical Windows 10 Warning Banner - Mobile Vertical Sidebar */}
+      <div className="sm:hidden fixed left-0 top-1/2 transform -translate-y-1/2 z-50">
+        <div className="critical-warning text-white relative overflow-hidden transform -rotate-90 origin-center">
+          <div className="px-4 py-2">
+            <div className="flex items-center space-x-2">
+              <span className="critical-badge bg-red-500 text-white px-1 py-0.5 rounded-full text-xs font-bold flex items-center">
+                <AlertTriangle className="w-2 h-2 mr-0.5" />
+                CRITICAL
+              </span>
+              <span className="font-semibold text-xs whitespace-nowrap">
+                Windows 10 Support Ending
+              </span>
+              <Link 
+                href="/windows10-upgrade" 
+                className="inline-flex items-center bg-red-600 text-white px-2 py-0.5 rounded-full text-xs font-bold border border-white hover:bg-red-700 transition-all"
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                <span className="mr-0.5">►</span>
+                Learn More
+              </Link>
+            </div>
+          </div>
+          
+          {/* Animated urgency indicators */}
+          <div className="absolute left-0 top-0 w-1 h-full bg-yellow-400 animate-ping"></div>
+          <div className="absolute right-0 top-0 w-1 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+        </div>
       </div>
 
       {/* Main Navigation */}

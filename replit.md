@@ -211,6 +211,7 @@ Changelog:
 - June 28, 2025. Added hover effect to "Don't Wait Until It's Too Late" section call button - phone number changes from orange to blue on hover for consistent interactive behavior across all call buttons
 - June 28, 2025. Enhanced "Don't Wait Until It's Too Late" button hover effect - phone icon now also changes from orange to blue on hover using group-hover:stroke-blue-600 for complete visual consistency
 - June 28, 2025. Added hover effect to hero section call button phone icon - Phone icon now changes from orange to blue on hover matching the phone number behavior for complete visual consistency across all Windows 10 upgrade page call buttons
+- June 28, 2025. Created mobile-specific vertical sidebar version of critical warning banner - appears as rotated sidebar on left edge of mobile screens only, while desktop retains horizontal banner layout for optimal mobile user experience
 ```
 
 ## User Preferences
