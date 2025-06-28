@@ -51,36 +51,50 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
   // Drag and drop handlers
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(true);
   }, []);
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    if (!dropZoneRef.current?.contains(e.relatedTarget as Node)) {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+    
+    if (x < rect.left || x >= rect.right || y < rect.top || y >= rect.bottom) {
       setIsDragOver(false);
     }
   }, []);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(false);
     
     const files = Array.from(e.dataTransfer.files);
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
     
-    if (imageFiles.length === 0) {
+    if (files.length > 0 && imageFiles.length === 0) {
       toast({
         title: "Error",
-        description: "Please drop only image files",
+        description: "Please drop only image files (JPG, PNG, GIF, WebP)",
         variant: "destructive",
       });
       return;
     }
 
-    imageFiles.forEach(file => {
-      uploadMutation.mutate(file);
-    });
-  }, [toast]);
+    if (imageFiles.length > 0) {
+      toast({
+        title: "Success",
+        description: `Uploading ${imageFiles.length} image(s)...`,
+      });
+      
+      imageFiles.forEach(file => {
+        uploadMutation.mutate(file);
+      });
+    }
+  }, [toast, uploadMutation]);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -182,24 +196,25 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
   });
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
+    const files = Array.from(event.target.files || []);
+    
+    for (const file of files) {
       if (file.size > 10 * 1024 * 1024) {
         toast({
           title: "Error",
-          description: "File size must be less than 10MB",
+          description: `${file.name}: File size must be less than 10MB`,
           variant: "destructive",
         });
-        return;
+        continue;
       }
       
       if (!file.type.startsWith('image/')) {
         toast({
           title: "Error",
-          description: "Only image files are allowed",
+          description: `${file.name}: Only image files are allowed`,
           variant: "destructive",
         });
-        return;
+        continue;
       }
       
       uploadMutation.mutate(file);
@@ -298,56 +313,71 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={() => fileInputRef.current?.click()}
-                    className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                    className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200 ${
                       isDragOver 
-                        ? 'border-aramis-orange bg-orange-50' 
+                        ? 'border-aramis-orange bg-orange-50 scale-[1.02]' 
                         : 'border-gray-300 hover:border-aramis-orange hover:bg-gray-50'
                     }`}
                   >
-                    <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragOver ? 'text-aramis-orange' : 'text-gray-400'}`} />
+                    <Upload className={`w-12 h-12 mx-auto mb-4 transition-colors ${isDragOver ? 'text-aramis-orange' : 'text-gray-400'}`} />
                     <p className="text-lg font-medium mb-2">
-                      {isDragOver ? 'Drop images here' : 'Drag & drop images'}
+                      {isDragOver ? 'Drop images here!' : 'Drag & drop images'}
                     </p>
                     <p className="text-sm text-gray-500 mb-4">
                       or click to browse files
                     </p>
                     <p className="text-xs text-gray-400">
-                      Supports JPG, PNG, GIF, WebP
+                      Supports JPG, PNG, GIF, WebP (max 10MB each)
                     </p>
                   </div>
                   
                   {uploadMutation.isPending && (
                     <div className="text-center">
-                      <div className="text-sm text-gray-600">Uploading...</div>
+                      <div className="text-sm text-aramis-orange font-medium">Uploading image...</div>
                     </div>
                   )}
                 </TabsContent>
                 
                 <TabsContent value="url" className="space-y-4 mt-4">
-                  <div className="space-y-3">
-                    <Label htmlFor="image-url">Image URL</Label>
-                    <Input
-                      id="image-url"
-                      placeholder="https://example.com/image.jpg"
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                    />
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="image-url">Image URL</Label>
+                      <Input
+                        id="image-url"
+                        placeholder="https://example.com/image.jpg"
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        disabled={urlImportMutation.isPending}
+                      />
+                    </div>
+                    
                     <Button 
-                      onClick={() => urlImportMutation.mutate(imageUrl)}
-                      disabled={!imageUrl || urlImportMutation.isPending}
-                      className="w-full bg-aramis-orange hover:bg-orange-600"
+                      onClick={() => {
+                        if (imageUrl.trim()) {
+                          urlImportMutation.mutate(imageUrl.trim());
+                        }
+                      }}
+                      disabled={!imageUrl.trim() || urlImportMutation.isPending}
+                      className="w-full bg-aramis-orange hover:bg-orange-600 disabled:opacity-50"
                     >
                       <CloudDownload className="w-4 h-4 mr-2" />
-                      {urlImportMutation.isPending ? "Importing..." : "Import Image"}
+                      {urlImportMutation.isPending ? "Importing image..." : "Import Image"}
                     </Button>
+
+                    {urlImportMutation.isPending && (
+                      <div className="text-center">
+                        <div className="text-sm text-aramis-orange font-medium">Downloading image from URL...</div>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                     <div className="flex items-start gap-2">
-                      <Link className="w-4 h-4 text-blue-600 mt-0.5" />
+                      <Link className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                       <div className="text-sm text-blue-800">
                         <p className="font-medium mb-1">Import from URL</p>
-                        <p>Paste any public image URL to download and store it in your media library.</p>
+                        <p>Paste any public image URL (JPG, PNG, GIF, WebP) to download and store it in your media library.</p>
+                        <p className="mt-1 text-xs">Example: https://example.com/image.jpg</p>
                       </div>
                     </div>
                   </div>
