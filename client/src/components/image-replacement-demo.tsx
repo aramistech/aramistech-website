@@ -152,7 +152,7 @@ export default function ImageReplacementDemo() {
                     size="sm"
                     className="bg-aramis-orange hover:bg-orange-600 text-white"
                     onClick={() => {
-                      copyToClipboard(`/api/admin/media/${selectedImageId}/file`);
+                      copyToClipboard(`/api/media/${selectedImageId}/file`);
                       // Show visual feedback
                       const button = document.activeElement as HTMLButtonElement;
                       if (button) {

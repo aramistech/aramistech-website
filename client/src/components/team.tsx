@@ -4,7 +4,7 @@ const teamMembers = [
   {
     name: "Aramis Figueroa",
     role: "IT NETWORK SPECIALIST",
-    image: "/api/admin/media/20/file",
+    image: "/api/media/20/file",
     description: "With over 27 years of experience in the technology industry, Aramis specializes in network solutions, cloud services, and custom server setups. As the founder of AramisTech Corp, he's dedicated to helping businesses thrive in the digital landscape.",
     email: "aramis@aramistech.com"
   },

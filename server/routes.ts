@@ -539,7 +539,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Serve media files by ID
+  // Public route for serving media files (for frontend use)
+  app.get("/api/media/:id/file", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const file = await storage.getMediaFileById(id);
+      
+      if (!file) {
+        return res.status(404).json({ error: "File not found" });
+      }
+
+      // Check if file exists on filesystem
+      if (!fs.existsSync(file.filePath)) {
+        return res.status(404).json({ error: "File not found on disk" });
+      }
+
+      // Set appropriate content type
+      res.setHeader('Content-Type', file.mimeType);
+      res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+      
+      // Send the file
+      res.sendFile(path.resolve(file.filePath));
+    } catch (error) {
+      console.error("Error serving media file:", error);
+      res.status(500).json({ error: "Failed to serve file" });
+    }
+  });
+
+  // Admin-only route for serving media files (for dashboard use)
   app.get("/api/admin/media/:id/file", requireAdminAuth, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
