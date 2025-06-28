@@ -695,3 +695,104 @@ This email was generated automatically from your exit intent consultation form.
     throw new Error("Failed to send IT consultation email");
   }
 }
+
+async function sendServiceCalculatorEmail(data: {
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  companyName: string;
+  totalEstimate: string;
+  selectedServices: any[];
+  projectDescription: string;
+  urgencyLevel: string;
+}) {
+  const servicesList = data.selectedServices.map(service => 
+    `- ${service.categoryName || service.service}: $${service.cost || service.basePrice}`
+  ).join('\n');
+
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; padding: 30px; text-align: center;">
+        <h1 style="margin: 0; font-size: 28px;">Service Calculator Quote</h1>
+        <p style="margin: 10px 0 0 0; opacity: 0.9;">AramisTech - Professional IT Solutions</p>
+      </div>
+      
+      <div style="padding: 30px; background-color: #f8f9fa;">
+        <h2 style="color: #1f2937; margin-bottom: 20px;">New Service Quote Request</h2>
+        
+        <div style="background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #f97316;">
+          <h3 style="color: #f97316; margin-top: 0;">Customer Information</h3>
+          <p><strong>Name:</strong> ${data.customerName}</p>
+          <p><strong>Email:</strong> ${data.customerEmail}</p>
+          <p><strong>Phone:</strong> ${data.customerPhone || 'Not provided'}</p>
+          <p><strong>Company:</strong> ${data.companyName || 'Not provided'}</p>
+          <p><strong>Urgency:</strong> ${data.urgencyLevel.charAt(0).toUpperCase() + data.urgencyLevel.slice(1)}</p>
+        </div>
+
+        <div style="background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #f97316;">
+          <h3 style="color: #f97316; margin-top: 0;">Quote Summary</h3>
+          <div style="background: #f0f9ff; padding: 15px; border-radius: 6px; text-align: center; margin-bottom: 15px;">
+            <div style="font-size: 24px; font-weight: bold; color: #0369a1;">$${data.totalEstimate}</div>
+            <div style="color: #64748b; font-size: 14px;">Estimated Total</div>
+          </div>
+          <h4 style="color: #374151;">Selected Services:</h4>
+          <div style="background: #f9fafb; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 14px; line-height: 1.6;">
+${servicesList}
+          </div>
+        </div>
+
+        ${data.projectDescription ? `
+        <div style="background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #f97316;">
+          <h3 style="color: #f97316; margin-top: 0;">Project Description</h3>
+          <p style="color: #374151; line-height: 1.6;">${data.projectDescription}</p>
+        </div>
+        ` : ''}
+
+        <div style="background: #1f2937; color: white; padding: 20px; border-radius: 8px; text-align: center;">
+          <h3 style="margin-top: 0; color: white;">Next Steps</h3>
+          <p style="margin: 0; opacity: 0.9;">Our team will review your requirements and contact you within 24 hours with a detailed proposal.</p>
+        </div>
+      </div>
+      
+      <div style="text-align: center; padding: 20px; color: #6b7280; font-size: 14px;">
+        <p>AramisTech - Professional IT Solutions</p>
+        <p>27+ Years Serving South Florida Businesses</p>
+        <p>(305) 814-4461 | sales@aramistech.com</p>
+      </div>
+    </div>
+  `;
+
+  const emailParams = {
+    Destination: {
+      ToAddresses: ['sales@aramistech.com'],
+    },
+    Message: {
+      Subject: {
+        Data: `Service Quote Request - $${data.totalEstimate} - ${data.customerName}`,
+        Charset: 'UTF-8',
+      },
+      Body: {
+        Html: {
+          Data: htmlContent,
+          Charset: 'UTF-8',
+        },
+        Text: {
+          Data: `Service Calculator Quote - AramisTech\n\nCustomer: ${data.customerName}\nEmail: ${data.customerEmail}\nTotal: $${data.totalEstimate}\n\nServices:\n${servicesList}`,
+          Charset: 'UTF-8',
+        },
+      },
+    },
+    Source: 'sales@aramistech.com',
+  };
+
+  try {
+    const command = new SendEmailCommand(emailParams);
+    await sesClient.send(command);
+    console.log(`Service calculator email sent successfully for ${data.customerName}`);
+  } catch (error) {
+    console.error("Error sending service calculator email:", error);
+    throw new Error("Failed to send service calculator email");
+  }
+}
+
+export { sendServiceCalculatorEmail };
