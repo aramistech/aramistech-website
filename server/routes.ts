@@ -459,13 +459,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Helper functions
-      function generateImageId(filePath: string, imageUrl: string): string {
+      const generateImageId = (filePath: string, imageUrl: string): string => {
         const fileName = path.basename(filePath, '.tsx');
         const urlPart = imageUrl.split('/').pop()?.split('.')[0] || 'image';
         return `${fileName}-${urlPart}`.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
-      }
+      };
       
-      function generateImageLabel(imageUrl: string, filePath: string): string {
+      const generateImageLabel = (imageUrl: string, filePath: string): string => {
         if (imageUrl.includes('aramistech.com') && imageUrl.includes('Logo')) {
           return 'AramisTech Logo';
         }
@@ -482,16 +482,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const fileName = imageUrl.split('/').pop()?.split('.')[0] || 'Image';
         return fileName.charAt(0).toUpperCase() + fileName.slice(1);
-      }
+      };
       
-      function categorizeImage(filePath: string, imageUrl: string): string {
+      const categorizeImage = (filePath: string, imageUrl: string): string => {
         if (imageUrl.includes('Logo') || imageUrl.includes('logo')) return 'Company Branding';
         if (filePath.includes('team.tsx')) return 'Team Photos';
         if (filePath.includes('hero.tsx') || filePath.includes('about.tsx') || filePath.includes('contact.tsx')) return 'Section Images';
         if (filePath.includes('windows10')) return 'Page Backgrounds';
         if (imageUrl.includes('poster') || filePath.includes('video')) return 'Video & Media';
         return 'Other Images';
-      }
+      };
       
       // Remove duplicates based on currentUrl
       const uniqueImages = detectedImages.filter((image, index, self) => 

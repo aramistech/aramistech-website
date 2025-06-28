@@ -120,7 +120,7 @@ export default function VisualImageManager() {
   }, {} as Record<string, AutoDetectedImage[]>);
 
   const getCategoryColor = (category: string) => {
-    const colors = {
+    const colors: Record<string, string> = {
       'Company Branding': 'bg-blue-500',
       'Team Photos': 'bg-green-500',
       'Section Images': 'bg-purple-500',
