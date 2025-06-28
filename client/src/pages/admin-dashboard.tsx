@@ -473,22 +473,25 @@ export default function AdminDashboard() {
 
         {/* Navigation Menu */}
         <div className="flex-1 p-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Button
-                key={item.id}
-                variant={activeTab === item.id ? "default" : "ghost"}
-                className={`w-full justify-start mb-1 ${
-                  sidebarCollapsed ? 'px-2' : 'px-3'
-                } ${activeTab === item.id ? 'bg-aramis-orange hover:bg-orange-600 text-white' : ''}`}
-                onClick={() => setActiveTab(item.id)}
-              >
-                <Icon className="w-4 h-4" />
-                {!sidebarCollapsed && <span className="ml-2">{item.label}</span>}
-              </Button>
-            );
-          })}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={menuItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
+              {menuItems.map((item) => (
+                <SortableMenuItem
+                  key={item.id}
+                  id={item.id}
+                  label={item.label}
+                  icon={item.icon}
+                  isActive={activeTab === item.id}
+                  isCollapsed={sidebarCollapsed}
+                  onClick={() => setActiveTab(item.id)}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
         </div>
 
         {/* Logout Button */}
@@ -513,7 +516,7 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-bold text-gray-900">
                 {menuItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
               </h2>
-              <span className="text-sm text-gray-500">Welcome back, {user.username}</span>
+              <span className="text-sm text-gray-500">Welcome back, {(user as any)?.username}</span>
             </div>
           </div>
         </div>
