@@ -379,18 +379,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const path = require('path');
       
       // Define image mappings
-      const imageMap: Record<string, {filePath: string, targetIndex?: number}> = {
+      const imageMap: Record<string, {filePath: string, targetIndex?: number, searchPattern?: string}> = {
+        // Team Photos
         'aramis-team': {
           filePath: 'client/src/components/team.tsx',
-          targetIndex: 0 // First team member
+          targetIndex: 0
         },
         'gabriel-team': {
           filePath: 'client/src/components/team.tsx',
-          targetIndex: 1 // Second team member
+          targetIndex: 1
         },
         'aramism-team': {
           filePath: 'client/src/components/team.tsx',
-          targetIndex: 2 // Third team member (Aramis M)
+          targetIndex: 2
+        },
+        // About Section Images
+        'about-office': {
+          filePath: 'client/src/components/about.tsx',
+          searchPattern: 'https://images.unsplash.com/photo-1497366216548-37526070297c'
+        },
+        // Windows 10 Page Images
+        'windows10-hero': {
+          filePath: 'client/src/pages/windows10-upgrade.tsx',
+          searchPattern: '/windows10-bg.png'
+        },
+        'windows10-video-poster': {
+          filePath: 'client/src/pages/windows10-upgrade.tsx',
+          searchPattern: 'poster="/api/media/20/file"'
+        },
+        // Service Images (placeholders for future use)
+        'service-network': {
+          filePath: 'client/src/components/services.tsx',
+          searchPattern: 'placeholder-network-image'
+        },
+        'service-security': {
+          filePath: 'client/src/components/services.tsx',
+          searchPattern: 'placeholder-security-image'
+        },
+        'service-cloud': {
+          filePath: 'client/src/components/services.tsx',
+          searchPattern: 'placeholder-cloud-image'
         }
       };
 
@@ -403,27 +431,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const filePath = path.join(process.cwd(), imageConfig.filePath);
       let fileContent = fs.readFileSync(filePath, 'utf8');
       
-      // Split into lines for easier manipulation
-      const lines = fileContent.split('\n');
-      let foundImages = 0;
-      
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        
-        // Look for image lines
-        if (line.includes('image:') && (line.includes('"/api/media/') || line.includes('"https://aramistech.com'))) {
-          // Update the correct occurrence based on target index
-          if (foundImages === imageConfig.targetIndex) {
-            lines[i] = line.replace(/image: "[^"]*"/, `image: "/api/media/${newMediaId}/file"`);
-            break;
+      if (imageConfig.searchPattern) {
+        // Handle specific pattern replacement (for non-team images)
+        if (imageConfig.searchPattern.includes('poster=')) {
+          // Special case for video poster
+          fileContent = fileContent.replace(
+            /poster="[^"]*"/g,
+            `poster="/api/media/${newMediaId}/file"`
+          );
+        } else {
+          // Handle different image contexts
+          if (imageConfig.searchPattern.includes('unsplash.com')) {
+            // Replace Unsplash URLs in src attributes
+            const regex = new RegExp(`src="[^"]*${imageConfig.searchPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^"]*"`, 'g');
+            fileContent = fileContent.replace(regex, `src="/api/media/${newMediaId}/file"`);
+          } else if (imageConfig.searchPattern.startsWith('/')) {
+            // Replace background images in CSS style attributes
+            const regex = new RegExp(`url\\([^)]*${imageConfig.searchPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^)]*\\)`, 'g');
+            fileContent = fileContent.replace(regex, `url(/api/media/${newMediaId}/file)`);
+            
+            // Also handle src attributes for the same image
+            const srcRegex = new RegExp(`src="[^"]*${imageConfig.searchPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^"]*"`, 'g');
+            fileContent = fileContent.replace(srcRegex, `src="/api/media/${newMediaId}/file"`);
           }
-          foundImages++;
         }
+      } else if (imageConfig.targetIndex !== undefined) {
+        // Handle team member images with target index
+        const lines = fileContent.split('\n');
+        let foundImages = 0;
+        
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          
+          // Look for image lines
+          if (line.includes('image:') && (line.includes('"/api/media/') || line.includes('"https://aramistech.com'))) {
+            // Update the correct occurrence based on target index
+            if (foundImages === imageConfig.targetIndex) {
+              lines[i] = line.replace(/image: "[^"]*"/, `image: "/api/media/${newMediaId}/file"`);
+              break;
+            }
+            foundImages++;
+          }
+        }
+        fileContent = lines.join('\n');
       }
 
       // Write the updated content back
-      const updatedContent = lines.join('\n');
-      fs.writeFileSync(filePath, updatedContent, 'utf8');
+      fs.writeFileSync(filePath, fileContent, 'utf8');
 
       res.json({ success: true, message: 'Image updated successfully' });
     } catch (error) {

@@ -40,6 +40,7 @@ export default function VisualImageManager() {
 
   // Define all the website images that can be replaced
   const websiteImages: WebsiteImage[] = [
+    // Team Photos
     {
       id: "aramis-team",
       label: "Aramis Figueroa",
@@ -66,6 +67,63 @@ export default function VisualImageManager() {
       filePath: "client/src/components/team.tsx", 
       lineNumber: 14,
       category: "Team Photos"
+    },
+    // About Section
+    {
+      id: "about-office",
+      label: "Office Technology Setup",
+      description: "Modern office technology setup image in About section",
+      currentUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      filePath: "client/src/components/about.tsx",
+      lineNumber: 17,
+      category: "Section Images"
+    },
+    // Windows 10 Page
+    {
+      id: "windows10-hero",
+      label: "Windows 10 Hero Background",
+      description: "Background image for Windows 10 upgrade page hero section",
+      currentUrl: "/windows10-bg.png",
+      filePath: "client/src/pages/windows10-upgrade.tsx",
+      lineNumber: 151,
+      category: "Page Backgrounds"
+    },
+    {
+      id: "windows10-video-poster",
+      label: "Customer Testimonial Video Poster",
+      description: "Poster image for customer testimonial video",
+      currentUrl: "/api/media/20/file",
+      filePath: "client/src/pages/windows10-upgrade.tsx",
+      lineNumber: 450,
+      category: "Video & Media"
+    },
+    // Service Images (can be added for service cards)
+    {
+      id: "service-network",
+      label: "Network Setup Service",
+      description: "Image for network setup and configuration services",
+      currentUrl: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      filePath: "client/src/components/services.tsx",
+      lineNumber: 1,
+      category: "Service Cards"
+    },
+    {
+      id: "service-security",
+      label: "Cybersecurity Service",
+      description: "Image for cybersecurity and protection services",
+      currentUrl: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      filePath: "client/src/components/services.tsx",
+      lineNumber: 2,
+      category: "Service Cards"
+    },
+    {
+      id: "service-cloud",
+      label: "Cloud Solutions Service",
+      description: "Image for cloud migration and storage services",
+      currentUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      filePath: "client/src/components/services.tsx",
+      lineNumber: 3,
+      category: "Service Cards"
     }
   ];
 
