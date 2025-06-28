@@ -155,61 +155,66 @@ export default function DynamicHeader() {
       <div className="sm:hidden fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
         <button
           onClick={() => setShowMobilePopup(true)}
-          className="critical-warning text-white px-2 py-4 relative overflow-hidden transform -rotate-90 origin-center bg-red-600 hover:bg-red-700 transition-all duration-300"
+          className="critical-warning text-white p-3 relative overflow-hidden bg-red-600 hover:bg-red-700 transition-all duration-300 rounded-l-lg shadow-lg"
         >
-          <div className="flex items-center space-x-1">
-            <span className="critical-badge bg-red-500 text-white px-1 py-0.5 rounded-full text-xs font-bold flex items-center">
-              <AlertTriangle className="w-2 h-2 mr-0.5" />
-              CRITICAL
-            </span>
-            <span className="font-semibold text-xs whitespace-nowrap">
-              Windows 10 Alert
-            </span>
+          <div className="flex flex-col items-center space-y-1">
+            <AlertTriangle className="w-6 h-6 animate-pulse" />
+            <span className="font-bold text-xs">CRITICAL</span>
           </div>
           
           {/* Animated urgency indicators */}
-          <div className="absolute left-0 top-0 w-1 h-full bg-yellow-400 animate-ping"></div>
-          <div className="absolute right-0 top-0 w-1 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+          <div className="absolute top-0 left-0 h-1 w-full bg-yellow-400 animate-ping"></div>
+          <div className="absolute bottom-0 left-0 h-1 w-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
         </button>
       </div>
 
-      {/* Mobile Popup Modal */}
+      {/* Mobile Slide-in Panel */}
       {showMobilePopup && (
-        <div className="sm:hidden fixed inset-0 z-[60] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setShowMobilePopup(false)}></div>
-          <div className="critical-warning text-white p-6 m-4 rounded-lg shadow-xl relative z-10 max-w-sm">
-            <button 
-              onClick={() => setShowMobilePopup(false)}
-              className="absolute top-2 right-2 text-white hover:text-gray-300"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            
-            <div className="flex items-center mb-4">
-              <span className="critical-badge bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center mr-3">
-                <AlertTriangle className="w-3 h-3 mr-1" />
-                CRITICAL
-              </span>
-              <h3 className="font-bold text-sm">Security Alert</h3>
+        <>
+          <div className="sm:hidden fixed inset-0 z-[60] bg-black bg-opacity-50" onClick={() => setShowMobilePopup(false)}></div>
+          <div className={`sm:hidden fixed right-0 top-0 h-full w-80 z-[70] transform transition-transform duration-300 ease-in-out ${showMobilePopup ? 'translate-x-0' : 'translate-x-full'}`}>
+            <div className="critical-warning text-white h-full w-full relative overflow-hidden flex flex-col">
+              <div className="p-6">
+                <button 
+                  onClick={() => setShowMobilePopup(false)}
+                  className="absolute top-4 right-4 text-white hover:text-gray-300"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+                
+                <div className="flex items-center mb-6">
+                  <AlertTriangle className="w-8 h-8 mr-3 text-yellow-400" />
+                  <div>
+                    <span className="critical-badge bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                      CRITICAL SECURITY ALERT
+                    </span>
+                    <h3 className="font-bold text-lg mt-2">Windows 10 Support Ending</h3>
+                  </div>
+                </div>
+                
+                <p className="text-base mb-6 leading-relaxed">
+                  Your Systems Will Become Vulnerable to New Threats. Microsoft is ending Windows 10 support on October 14, 2025. After this date, your systems will no longer receive security updates, leaving them exposed to new cyber threats.
+                </p>
+                
+                <Link 
+                  href="/windows10-upgrade" 
+                  className="inline-flex items-center bg-red-600 text-white px-6 py-3 rounded-full text-base font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105 w-full justify-center"
+                  onClick={() => {
+                    setShowMobilePopup(false);
+                    window.scrollTo(0, 0);
+                  }}
+                >
+                  <span className="mr-2">►</span>
+                  Learn More & Get Protected
+                </Link>
+              </div>
+              
+              {/* Animated urgency indicators */}
+              <div className="absolute top-0 left-0 h-2 w-full bg-yellow-400 animate-ping"></div>
+              <div className="absolute bottom-0 left-0 h-2 w-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
             </div>
-            
-            <p className="text-sm mb-4 leading-relaxed">
-              Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats
-            </p>
-            
-            <Link 
-              href="/windows10-upgrade" 
-              className="inline-flex items-center bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105 w-full justify-center"
-              onClick={() => {
-                setShowMobilePopup(false);
-                window.scrollTo(0, 0);
-              }}
-            >
-              <span className="mr-2">►</span>
-              Learn More
-            </Link>
           </div>
-        </div>
+        </>
       )}
 
       {/* Main Navigation */}
