@@ -207,6 +207,7 @@ Changelog:
 - June 28, 2025. Updated phone number color to orange in "Don't Wait Until It's Too Late" section button on Windows 10 upgrade page for consistent branding across all call-to-action buttons
 - June 28, 2025. Fixed phone icon visibility on Windows 10 upgrade page - made phone icons properly colored (orange for hero button, white for blue background button) to ensure clear visibility alongside phone numbers
 - June 28, 2025. Completed phone icon fix for "Don't Wait Until It's Too Late" section - replaced lucide-react Phone with custom SVG and changed color to orange (#f97316) for proper visibility on white button background, matching AramisTech brand colors
+- June 28, 2025. Added hover effect to Windows 10 upgrade page hero section call button - phone number changes from orange to blue on hover using group-hover modifier for enhanced interactivity
 ```
 
 ## User Preferences
