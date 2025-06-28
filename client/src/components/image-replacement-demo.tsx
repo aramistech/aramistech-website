@@ -131,8 +131,12 @@ export default function ImageReplacementDemo() {
                           ✓
                         </div>
                       )}
+                      <div className="absolute top-1 left-1 bg-blue-600 text-white rounded px-1 text-xs font-bold">
+                        {file.id}
+                      </div>
                     </div>
                     <p className="text-xs text-gray-600 mt-1 truncate">{file.originalName}</p>
+                    <p className="text-xs text-blue-600 font-mono">ID: {file.id}</p>
                   </div>
                 ))}
               </div>
