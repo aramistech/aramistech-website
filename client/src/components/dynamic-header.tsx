@@ -59,13 +59,13 @@ export default function DynamicHeader() {
 
   // Fetch security alert settings from database
   const { data: alertData } = useQuery({
-    queryKey: ['/api/security-alert'],
+    queryKey: ['/api/security-alert', 'v2'],
     queryFn: async () => {
       const res = await fetch('/api/security-alert?' + new Date().getTime());
       return res.json();
     },
     staleTime: 0,
-    cacheTime: 0,
+    gcTime: 0,
   });
 
   const menuItems: MenuItem[] = menuData?.menuItems || [];
