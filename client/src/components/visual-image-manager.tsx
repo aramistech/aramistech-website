@@ -99,10 +99,10 @@ export default function VisualImageManager() {
     {
       id: "team-aramis-m",
       label: "Aramis M. Figueroa",
-      description: "COO photo in team section",
-      currentUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
+      description: "IT/Software Developer photo in team section",
+      currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/Grayprofile-pic2-600x600-1.png",
       filePath: "client/src/components/team.tsx",
-      lineNumber: 39,
+      lineNumber: 14,
       category: "Team Photos"
     },
     // Section Images
