@@ -220,6 +220,7 @@ Changelog:
 - June 28, 2025. Created comprehensive service calculator/pricing tool with 6 IT service categories (Network Setup, Cybersecurity, Cloud Migration, IT Support, Software Development, Remote Support), real-time pricing calculations, dynamic hourly rate adjustments, professional contact form integration, Amazon SES email delivery system, database storage for quote submissions, and added to Support dropdown menu for easy customer access
 - June 28, 2025. Integrated service calculator management into protected admin dashboard as dedicated tab - admins can now securely manage pricing categories, service options, view customer quote submissions, adjust base prices and hourly rates, toggle active/inactive services, and modify display order through authenticated admin interface
 - June 28, 2025. Converted admin dashboard navigation from horizontal top tabs to collapsible left sidebar - includes smooth transitions, icon-only collapsed mode, all management sections accessible through vertical navigation, improved space utilization and modern interface design
+- June 28, 2025. Enhanced media library with drag-and-drop functionality and URL-based image importing - users can now drag multiple images directly onto upload zone, import images from any public URL, tabbed upload interface with visual feedback, supports multiple file selection, and automatic image validation with proper error handling
 ```
 
 ## User Preferences

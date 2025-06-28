@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +6,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Upload, Image as ImageIcon, Trash2, Edit, Check, X, Copy } from "lucide-react";
+import { Upload, Image as ImageIcon, Trash2, Edit, Check, X, Copy, Link, CloudDownload } from "lucide-react";
 
 interface MediaFile {
   id: number;
@@ -33,7 +35,11 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
   const [editingFile, setEditingFile] = useState<MediaFile | null>(null);
   const [editAltText, setEditAltText] = useState("");
   const [editCaption, setEditCaption] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dropZoneRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const { data: mediaData, isLoading } = useQuery<{ success: boolean; files: MediaFile[] }>({
@@ -41,6 +47,40 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
   });
 
   const files = mediaData?.files || [];
+
+  // Drag and drop handlers
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    if (!dropZoneRef.current?.contains(e.relatedTarget as Node)) {
+      setIsDragOver(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    
+    if (imageFiles.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please drop only image files",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    imageFiles.forEach(file => {
+      uploadMutation.mutate(file);
+    });
+  }, []);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -114,6 +154,28 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
       toast({
         title: "Error",
         description: "Failed to delete image",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const urlImportMutation = useMutation({
+    mutationFn: async (url: string) => {
+      return await apiRequest('/api/admin/media/import-url', 'POST', { url });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Image imported from URL successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/media"] });
+      setImageUrl('');
+      setIsUploadDialogOpen(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to import image from URL",
         variant: "destructive",
       });
     },
@@ -207,17 +269,92 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
             ref={fileInputRef}
             type="file"
             accept="image/*"
+            multiple
             onChange={handleFileSelect}
             className="hidden"
           />
-          <Button 
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploadMutation.isPending}
-            className="flex items-center gap-2"
-          >
-            <Upload className="w-4 h-4" />
-            {uploadMutation.isPending ? "Uploading..." : "Upload Image"}
-          </Button>
+          <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2 bg-aramis-orange hover:bg-orange-600">
+                <Upload className="w-4 h-4" />
+                Add Images
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Add Images to Media Library</DialogTitle>
+              </DialogHeader>
+              
+              <Tabs defaultValue="upload" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="upload">Upload Files</TabsTrigger>
+                  <TabsTrigger value="url">Import from URL</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="upload" className="space-y-4 mt-4">
+                  <div
+                    ref={dropZoneRef}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                      isDragOver 
+                        ? 'border-aramis-orange bg-orange-50' 
+                        : 'border-gray-300 hover:border-aramis-orange hover:bg-gray-50'
+                    }`}
+                  >
+                    <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragOver ? 'text-aramis-orange' : 'text-gray-400'}`} />
+                    <p className="text-lg font-medium mb-2">
+                      {isDragOver ? 'Drop images here' : 'Drag & drop images'}
+                    </p>
+                    <p className="text-sm text-gray-500 mb-4">
+                      or click to browse files
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Supports JPG, PNG, GIF, WebP
+                    </p>
+                  </div>
+                  
+                  {uploadMutation.isPending && (
+                    <div className="text-center">
+                      <div className="text-sm text-gray-600">Uploading...</div>
+                    </div>
+                  )}
+                </TabsContent>
+                
+                <TabsContent value="url" className="space-y-4 mt-4">
+                  <div className="space-y-3">
+                    <Label htmlFor="image-url">Image URL</Label>
+                    <Input
+                      id="image-url"
+                      placeholder="https://example.com/image.jpg"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                    />
+                    <Button 
+                      onClick={() => urlImportMutation.mutate(imageUrl)}
+                      disabled={!imageUrl || urlImportMutation.isPending}
+                      className="w-full bg-aramis-orange hover:bg-orange-600"
+                    >
+                      <CloudDownload className="w-4 h-4 mr-2" />
+                      {urlImportMutation.isPending ? "Importing..." : "Import Image"}
+                    </Button>
+                  </div>
+                  
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="flex items-start gap-2">
+                      <Link className="w-4 h-4 text-blue-600 mt-0.5" />
+                      <div className="text-sm text-blue-800">
+                        <p className="font-medium mb-1">Import from URL</p>
+                        <p>Paste any public image URL to download and store it in your media library.</p>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

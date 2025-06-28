@@ -573,6 +573,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/admin/media/import-url", requireAdminAuth, async (req, res) => {
+    try {
+      const { url } = req.body;
+      
+      if (!url) {
+        return res.status(400).json({ error: "URL is required" });
+      }
+
+      // Validate URL format
+      let imageUrl;
+      try {
+        imageUrl = new URL(url);
+      } catch (error) {
+        return res.status(400).json({ error: "Invalid URL format" });
+      }
+
+      // Download image from URL
+      const response = await fetch(imageUrl.toString());
+      
+      if (!response.ok) {
+        return res.status(400).json({ error: "Failed to download image from URL" });
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.startsWith('image/')) {
+        return res.status(400).json({ error: "URL does not point to an image" });
+      }
+
+      // Generate filename
+      const urlPath = imageUrl.pathname;
+      const originalName = path.basename(urlPath) || 'imported-image';
+      const ext = path.extname(originalName) || '.jpg';
+      const baseName = path.basename(originalName, ext);
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const fileName = `imported-${baseName}-${uniqueSuffix}${ext}`;
+      const filePath = path.join(uploadDir, fileName);
+
+      // Save image to filesystem
+      const buffer = await response.arrayBuffer();
+      const uint8Array = new Uint8Array(buffer);
+      fs.writeFileSync(filePath, uint8Array);
+
+      // Get file stats
+      const stats = fs.statSync(filePath);
+      const fileUrl = `/uploads/${fileName}`;
+
+      const mediaData = {
+        fileName: fileName,
+        originalName: originalName,
+        mimeType: contentType,
+        fileSize: stats.size,
+        filePath: filePath,
+        url: fileUrl,
+        altText: '',
+        caption: '',
+      };
+
+      const validatedData = insertMediaFileSchema.parse(mediaData);
+      const file = await storage.uploadMediaFile(validatedData);
+      
+      res.json({ success: true, file });
+    } catch (error) {
+      console.error("Error importing image from URL:", error);
+      res.status(500).json({ error: "Failed to import image from URL" });
+    }
+  });
+
   // Admin user management routes
   app.get("/api/admin/users", requireAdminAuth, async (req, res) => {
     try {
