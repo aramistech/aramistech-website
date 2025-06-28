@@ -18,7 +18,7 @@ const teamMembers = [
   {
     name: "Gabriel Figueroa",
     role: "IT TECHNICIAN",
-    image: "https://aramistech.com/wp-content/uploads/2024/09/GabyPic-370x371-1.png",
+    image: "/api/media/21/file",
     description: "With over 2 years of experience in troubleshooting, maintaining, and optimizing IT systems. Known for his dedication to resolving technical issues quickly and efficiently with expertise in network maintenance and diagnostics.",
     email: "gabriel@aramistech.com"
   }

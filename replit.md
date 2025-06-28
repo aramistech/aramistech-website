@@ -226,6 +226,7 @@ Changelog:
 - June 28, 2025. Enhanced Image Demo with simplified image replacement system - fixed outdated Gallery references, created visual image picker with click-to-select functionality, added one-click URL copying with visual feedback, and streamlined 4-step process for replacing website images with media library assets
 - June 28, 2025. Created public media file serving endpoint at /api/media/:id/file for frontend image access - resolved authentication issues preventing media library images from displaying on public website, maintains separate admin-only endpoint for dashboard security
 - June 28, 2025. Successfully updated Aramis Figueroa team member image to use media library asset (ID 15) - replaced external URL with internal media system, enhanced Image Demo with visible ID numbers for easy image identification and selection
+- June 28, 2025. Updated Gabriel Figueroa team member image to use media library asset (ID 21) - completed team photo migration to internal media management system
 ```
 
 ## User Preferences
