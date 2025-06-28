@@ -38,13 +38,13 @@ const iconOptions = [
 ];
 
 const colorOptions = [
-  { value: "bg-red-600", label: "Red", preview: "bg-red-600" },
-  { value: "bg-orange-600", label: "Orange", preview: "bg-orange-600" },
-  { value: "bg-yellow-600", label: "Yellow", preview: "bg-yellow-600" },
-  { value: "bg-blue-600", label: "Blue", preview: "bg-blue-600" },
-  { value: "bg-purple-600", label: "Purple", preview: "bg-purple-600" },
-  { value: "bg-green-600", label: "Green", preview: "bg-green-600" },
-  { value: "bg-gray-600", label: "Gray", preview: "bg-gray-600" },
+  { value: "#dc2626", label: "Red", preview: "bg-red-600" },
+  { value: "#ea580c", label: "Orange", preview: "bg-orange-600" },
+  { value: "#ca8a04", label: "Yellow", preview: "bg-yellow-600" },
+  { value: "#2563eb", label: "Blue", preview: "bg-blue-600" },
+  { value: "#9333ea", label: "Purple", preview: "bg-purple-600" },
+  { value: "#16a34a", label: "Green", preview: "bg-green-600" },
+  { value: "#4b5563", label: "Gray", preview: "bg-gray-600" },
 ];
 
 export default function SecurityAlertsManager() {
@@ -177,7 +177,10 @@ export default function SecurityAlertsManager() {
               <div>
                 <h4 className="font-semibold mb-2">Mobile Warning Button</h4>
                 <div className="flex items-center space-x-4">
-                  <div className={`${formData.backgroundColor} text-white p-3 rounded-l-lg shadow-lg`}>
+                  <div 
+                    className="text-white p-3 rounded-l-lg shadow-lg"
+                    style={{ backgroundColor: formData.backgroundColor }}
+                  >
                     <div className="flex flex-col items-center space-y-1">
                       <IconComponent className="w-6 h-6" />
                       <span className="font-bold text-xs">{formData.title}</span>
@@ -327,21 +330,43 @@ export default function SecurityAlertsManager() {
           <CardContent className="space-y-4">
             <div>
               <Label htmlFor="backgroundColor">Background Color</Label>
-              <Select value={formData.backgroundColor} onValueChange={(value) => handleChange('backgroundColor', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {colorOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      <div className="flex items-center space-x-2">
-                        <div className={`w-4 h-4 rounded ${option.preview}`}></div>
-                        <span>{option.label}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-3">
+                {/* Predefined Colors */}
+                <Select value={formData.backgroundColor} onValueChange={(value) => handleChange('backgroundColor', value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {colorOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <div className="flex items-center space-x-2">
+                          <div className={`w-4 h-4 rounded ${option.preview}`}></div>
+                          <span>{option.label}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                {/* Custom Color Picker */}
+                <div className="flex items-center space-x-3">
+                  <Label htmlFor="customColor" className="text-sm text-gray-600">Or choose custom color:</Label>
+                  <input
+                    type="color"
+                    id="customColor"
+                    value={formData.backgroundColor}
+                    onChange={(e) => handleChange('backgroundColor', e.target.value)}
+                    className="w-12 h-8 border border-gray-300 rounded cursor-pointer"
+                  />
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-4 h-4 rounded border"
+                      style={{ backgroundColor: formData.backgroundColor }}
+                    ></div>
+                    <span className="text-sm text-gray-600">{formData.backgroundColor}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
