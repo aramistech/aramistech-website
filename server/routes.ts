@@ -960,6 +960,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.redirect(302, 'https://apps.microsoft.com/store/detail/9p7bp5vnwkx5');
   });
 
+  // Serve debug media page
+  app.get("/debug-media", (req, res) => {
+    res.sendFile(path.resolve("debug-media.html"));
+  });
+
   // Enhanced fallback responses for when Gemini is unavailable
   const getFallbackResponse = (message: string): string => {
     const lowerMessage = message.toLowerCase();

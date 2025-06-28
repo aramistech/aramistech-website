@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Media Library Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .image-item { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        .image-item img { max-width: 100%; height: 150px; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <h1>Available Media Files</h1>
+    <div class="image-grid" id="imageGrid"></div>
+
+    <script>
+        // Test multiple image IDs to see what's available
+        const testIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+        const grid = document.getElementById('imageGrid');
+        
+        testIds.forEach(id => {
+            const div = document.createElement('div');
+            div.className = 'image-item';
+            
+            const img = document.createElement('img');
+            img.src = `/api/media/${id}/file`;
+            img.onerror = function() {
+                div.innerHTML = `<p>ID ${id}: Not found</p>`;
+            };
+            img.onload = function() {
+                div.innerHTML = `
+                    <img src="/api/media/${id}/file" alt="Image ${id}">
+                    <p><strong>ID: ${id}</strong></p>
+                    <p>URL: /api/media/${id}/file</p>
+                `;
+            };
+            
+            grid.appendChild(div);
+        });
+    </script>
+</body>
+</html>
