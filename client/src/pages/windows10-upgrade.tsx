@@ -619,7 +619,7 @@ export default function Windows10Upgrade() {
               onClick={() => window.open('tel:+13058144461', '_self')}
             >
               <Phone className="w-5 h-5 mr-2" />
-              (305) 814-4461
+              <span className="text-aramis-orange">(305) 814-4461</span>
             </Button>
           </div>
         </div>

@@ -204,6 +204,7 @@ Changelog:
 - June 28, 2025. Made "Call Now" text size match "Schedule Free Consultation" by adding text-base class for consistent typography across both hero buttons
 - June 28, 2025. Increased phone number text size from text-sm to text-base for better readability and visual prominence in call button
 - June 28, 2025. Changed phone number color to orange (text-aramis-orange) in Windows 10 upgrade page bottom button for better brand consistency and visual emphasis
+- June 28, 2025. Updated phone number color to orange in "Don't Wait Until It's Too Late" section button on Windows 10 upgrade page for consistent branding across all call-to-action buttons
 ```
 
 ## User Preferences
