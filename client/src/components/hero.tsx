@@ -63,10 +63,15 @@ export default function Hero() {
               </button>
               <a 
                 href="tel:(305) 814-4461" 
-                className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-primary-blue transition-colors text-center"
+                className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-primary-blue transition-colors text-center flex flex-col items-center gap-1"
               >
-                <Phone className="inline-block w-4 h-4 mr-2" />
-                Call Now: (305) 814-4461
+                <div className="flex items-center">
+                  <Phone className="inline-block w-4 h-4 mr-2" />
+                  Call Now
+                </div>
+                <div className="text-sm font-normal">
+                  (305) 814-4461
+                </div>
               </a>
             </div>
             <div className="flex items-center space-x-6 text-sm">

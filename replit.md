@@ -198,6 +198,7 @@ Changelog:
 - June 27, 2025. Updated "Learn More" button to use exact same red color as banner (bg-red-600) for perfect color matching and visual cohesion
 - June 27, 2025. Made critical warning banner even thinner (reduced padding from py-2 to py-1) for minimal visual footprint while maintaining visibility and functionality
 - June 28, 2025. Modified chatbot to use specific ChatGPT assistant (asst_kOnaeaUjcLezWfBXoDuI7vVl) with OpenAI Assistants API - implemented thread-based conversation system for persistent context across messages and enhanced conversation continuity
+- June 28, 2025. Fixed "Call now" button layout on main page hero section - separated "Call Now" and phone number "(305) 814-4461" into two lines with proper visual hierarchy
 ```
 
 ## User Preferences
