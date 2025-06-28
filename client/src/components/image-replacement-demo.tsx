@@ -170,7 +170,7 @@ export default function ImageReplacementDemo() {
                 </div>
                 <div className="bg-white p-3 rounded border">
                   <code className="text-sm break-all font-mono text-blue-700">
-                    /api/admin/media/{selectedImageId}/file
+                    /api/media/{selectedImageId}/file
                   </code>
                 </div>
                 <p className="text-xs text-gray-600 mt-2">
@@ -203,14 +203,14 @@ export default function ImageReplacementDemo() {
               <div>
                 <p className="text-sm font-medium mb-2">For HTML files:</p>
                 <div className="bg-gray-900 text-green-400 p-3 rounded text-xs font-mono">
-                  &lt;img src="/api/admin/media/YOUR_IMAGE_ID/file" alt="Description" /&gt;
+                  &lt;img src="/api/media/YOUR_IMAGE_ID/file" alt="Description" /&gt;
                 </div>
               </div>
 
               <div>
                 <p className="text-sm font-medium mb-2">For CSS backgrounds:</p>
                 <div className="bg-gray-900 text-green-400 p-3 rounded text-xs font-mono">
-                  background-image: url('/api/admin/media/YOUR_IMAGE_ID/file');
+                  background-image: url('/api/media/YOUR_IMAGE_ID/file');
                 </div>
               </div>
 

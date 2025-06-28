@@ -224,6 +224,7 @@ Changelog:
 - June 28, 2025. Added drag-and-drop reordering functionality to admin dashboard navigation menu using DnD Kit library - menu items can be reordered by dragging grip handles, with smooth animations and instant updates, removed redundant Gallery tab to streamline interface since media viewing is already available in Media Library
 - June 28, 2025. Fixed media library delete functionality by correcting API request parameter order for HTTP methods - resolved "not a valid HTTP method" error that prevented image deletion
 - June 28, 2025. Enhanced Image Demo with simplified image replacement system - fixed outdated Gallery references, created visual image picker with click-to-select functionality, added one-click URL copying with visual feedback, and streamlined 4-step process for replacing website images with media library assets
+- June 28, 2025. Created public media file serving endpoint at /api/media/:id/file for frontend image access - resolved authentication issues preventing media library images from displaying on public website, maintains separate admin-only endpoint for dashboard security
 ```
 
 ## User Preferences
