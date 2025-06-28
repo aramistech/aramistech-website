@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette } from 'lucide-react';
 import AdminReviews from '@/components/admin-reviews';
 import MenuManager from '@/components/menu-manager';
 import AdminUserManager from '@/components/admin-user-manager';
@@ -131,6 +131,10 @@ export default function AdminDashboard() {
                   <Shield className="w-4 h-4" />
                   Alerts
                 </TabsTrigger>
+                <TabsTrigger value="colors" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <Palette className="w-4 h-4" />
+                  Colors
+                </TabsTrigger>
                 <TabsTrigger value="popup" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
                   <ExternalLink className="w-4 h-4" />
                   Popup
@@ -144,7 +148,7 @@ export default function AdminDashboard() {
 
             {/* Desktop Tab Navigation */}
             <div className="hidden sm:block">
-              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
+              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-9">
                 <TabsTrigger value="reviews" className="flex items-center gap-2">
                   <Star className="w-4 h-4" />
                   Reviews
@@ -164,6 +168,10 @@ export default function AdminDashboard() {
                 <TabsTrigger value="security" className="flex items-center gap-2">
                   <Shield className="w-4 h-4" />
                   Security Alerts
+                </TabsTrigger>
+                <TabsTrigger value="colors" className="flex items-center gap-2">
+                  <Palette className="w-4 h-4" />
+                  Color Palette
                 </TabsTrigger>
                 <TabsTrigger value="media" className="flex items-center gap-2">
                   <ImageIcon className="w-4 h-4" />
@@ -263,6 +271,23 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <SecurityAlertsManager />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="colors" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Palette className="w-5 h-5" />
+                    Global Color Palette
+                  </CardTitle>
+                  <CardDescription>
+                    Create and manage a global color palette for consistent branding across all website elements
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ColorPaletteManager />
                 </CardContent>
               </Card>
             </TabsContent>
