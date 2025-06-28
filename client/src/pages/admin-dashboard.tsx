@@ -317,34 +317,20 @@ export default function AdminDashboard() {
 
       case 'demo':
         return (
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="w-5 h-5" />
-                  Quick Image Replacer
-                </CardTitle>
-                <CardDescription>
-                  Copy image URLs and replace them in your code files yourself
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <QuickImageReplacer />
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Advanced Guide</CardTitle>
-                <CardDescription>
-                  Detailed instructions for image replacement
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ImageReplacementDemo />
-              </CardContent>
-            </Card>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Quick Image Replacer
+              </CardTitle>
+              <CardDescription>
+                Click any image to copy its URL, then replace existing images in your code files
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <QuickImageReplacer />
+            </CardContent>
+          </Card>
         );
 
       case 'popup':
