@@ -326,6 +326,18 @@ export const securityAlerts = pgTable("security_alerts", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const colorPalette = pgTable("color_palette", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  hexValue: varchar("hex_value", { length: 7 }).notNull(),
+  description: text("description"),
+  category: varchar("category", { length: 50 }).default("general"),
+  orderIndex: integer("order_index").default(0),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Chat schemas
 export const insertChatSessionSchema = createInsertSchema(chatSessions).omit({
   id: true,
@@ -349,6 +361,12 @@ export const insertSecurityAlertSchema = createInsertSchema(securityAlerts).omit
   updatedAt: true,
 });
 
+export const insertColorPaletteSchema = createInsertSchema(colorPalette).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Chat types
 export type ChatSession = typeof chatSessions.$inferSelect;
 export type InsertChatSession = z.infer<typeof insertChatSessionSchema>;
@@ -360,3 +378,7 @@ export type InsertAdminChatSettings = z.infer<typeof insertAdminChatSettingsSche
 // Security Alert types
 export type SecurityAlert = typeof securityAlerts.$inferSelect;
 export type InsertSecurityAlert = z.infer<typeof insertSecurityAlertSchema>;
+
+// Color Palette types
+export type ColorPalette = typeof colorPalette.$inferSelect;
+export type InsertColorPalette = z.infer<typeof insertColorPaletteSchema>;

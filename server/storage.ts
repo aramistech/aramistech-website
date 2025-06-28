@@ -1,4 +1,4 @@
-import { users, contacts, quickQuotes, aiConsultations, itConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, securityAlerts, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type ITConsultation, type InsertITConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings, type SecurityAlert, type InsertSecurityAlert } from "@shared/schema";
+import { users, contacts, quickQuotes, aiConsultations, itConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, securityAlerts, colorPalette, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type ITConsultation, type InsertITConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings, type SecurityAlert, type InsertSecurityAlert, type ColorPalette, type InsertColorPalette } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, isNull, gt, sql, asc, ne } from "drizzle-orm";
 import bcrypt from "bcryptjs";
@@ -71,6 +71,11 @@ export interface IStorage {
   // Security alerts management
   getSecurityAlert(): Promise<SecurityAlert | undefined>;
   updateSecurityAlert(alert: Partial<InsertSecurityAlert>): Promise<SecurityAlert>;
+  // Color palette management
+  getColorPalette(): Promise<ColorPalette[]>;
+  createColorPaletteItem(color: InsertColorPalette): Promise<ColorPalette>;
+  updateColorPaletteItem(id: number, color: Partial<InsertColorPalette>): Promise<ColorPalette>;
+  deleteColorPaletteItem(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
