@@ -5,13 +5,11 @@
 @tailwind utilities;
 
 /* Critical Warning Banner Animation */
-@keyframes urgentPulse {
+@keyframes urgentTransform {
   0%, 100% { 
-    background-color: rgb(220, 38, 38);
     transform: scale(1);
   }
   50% { 
-    background-color: rgb(239, 68, 68);
     transform: scale(1.02);
   }
 }
@@ -27,7 +25,7 @@
 }
 
 .critical-warning {
-  animation: urgentPulse 2s ease-in-out infinite;
+  animation: urgentTransform 2s ease-in-out infinite;
 }
 
 .critical-badge {
