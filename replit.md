@@ -213,6 +213,7 @@ Changelog:
 - June 28, 2025. Added hover effect to hero section call button phone icon - Phone icon now changes from orange to blue on hover matching the phone number behavior for complete visual consistency across all Windows 10 upgrade page call buttons
 - June 28, 2025. Created mobile-specific critical warning system - compact warning icon button on right edge that triggers full-width slide-in panel from right side with detailed security alert message, large warning icon, and call-to-action button
 - June 28, 2025. Shortened mobile warning panel button text from "Learn More & Get Protected" to "Get Protected Now" for better single-line display on mobile devices
+- June 28, 2025. Added dismissal functionality to mobile critical warning system - users can permanently hide the warning button via "Don't show this warning again" option with localStorage persistence
 ```
 
 ## User Preferences
