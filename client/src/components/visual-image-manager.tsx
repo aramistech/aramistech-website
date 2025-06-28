@@ -40,6 +40,44 @@ export default function VisualImageManager() {
 
   // Define all the website images that can be replaced
   const websiteImages: WebsiteImage[] = [
+    // Company Logos (appears in header, footer, and various pages)
+    {
+      id: "company-logo-header",
+      label: "AramisTech Logo (Header)",
+      description: "Main company logo in website header navigation",
+      currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png",
+      filePath: "client/src/components/header.tsx",
+      lineNumber: 140,
+      category: "Company Branding"
+    },
+    {
+      id: "company-logo-footer",
+      label: "AramisTech Logo (Footer)",
+      description: "Company logo in website footer section",
+      currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png",
+      filePath: "client/src/components/footer.tsx",
+      lineNumber: 27,
+      category: "Company Branding"
+    },
+    {
+      id: "company-logo-dynamic-header",
+      label: "AramisTech Logo (Dynamic Header)",
+      description: "Company logo in dynamic page headers",
+      currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png",
+      filePath: "client/src/components/dynamic-header.tsx",
+      lineNumber: 140,
+      category: "Company Branding"
+    },
+    {
+      id: "company-logo-exit-popup",
+      label: "AramisTech Logo (Exit Popup)",
+      description: "Company logo in exit intent popup",
+      currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png",
+      filePath: "client/src/components/exit-intent-popup.tsx",
+      lineNumber: 50,
+      category: "Company Branding"
+    },
+    
     // Team Photos
     {
       id: "aramis-team",
@@ -68,7 +106,8 @@ export default function VisualImageManager() {
       lineNumber: 14,
       category: "Team Photos"
     },
-    // About Section
+    
+    // Section Images
     {
       id: "about-office",
       label: "Office Technology Setup",
@@ -78,7 +117,8 @@ export default function VisualImageManager() {
       lineNumber: 17,
       category: "Section Images"
     },
-    // Windows 10 Page
+    
+    // Page Backgrounds
     {
       id: "windows10-hero",
       label: "Windows 10 Hero Background",
@@ -88,6 +128,8 @@ export default function VisualImageManager() {
       lineNumber: 151,
       category: "Page Backgrounds"
     },
+    
+    // Video & Media
     {
       id: "windows10-video-poster",
       label: "Customer Testimonial Video Poster",
@@ -96,34 +138,6 @@ export default function VisualImageManager() {
       filePath: "client/src/pages/windows10-upgrade.tsx",
       lineNumber: 630,
       category: "Video & Media"
-    },
-    // Service Images (can be added for service cards)
-    {
-      id: "service-network",
-      label: "Network Setup Service",
-      description: "Image for network setup and configuration services",
-      currentUrl: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-      filePath: "client/src/components/services.tsx",
-      lineNumber: 1,
-      category: "Service Cards"
-    },
-    {
-      id: "service-security",
-      label: "Cybersecurity Service",
-      description: "Image for cybersecurity and protection services",
-      currentUrl: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-      filePath: "client/src/components/services.tsx",
-      lineNumber: 2,
-      category: "Service Cards"
-    },
-    {
-      id: "service-cloud",
-      label: "Cloud Solutions Service",
-      description: "Image for cloud migration and storage services",
-      currentUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-      filePath: "client/src/components/services.tsx",
-      lineNumber: 3,
-      category: "Service Cards"
     }
   ];
 

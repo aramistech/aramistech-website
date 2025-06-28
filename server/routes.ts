@@ -380,6 +380,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Define image mappings
       const imageMap: Record<string, {filePath: string, targetIndex?: number, searchPattern?: string}> = {
+        // Company Logo Images
+        'company-logo-header': {
+          filePath: 'client/src/components/header.tsx',
+          searchPattern: 'https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png'
+        },
+        'company-logo-footer': {
+          filePath: 'client/src/components/footer.tsx',
+          searchPattern: 'https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png'
+        },
+        'company-logo-dynamic-header': {
+          filePath: 'client/src/components/dynamic-header.tsx',
+          searchPattern: 'https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png'
+        },
+        'company-logo-exit-popup': {
+          filePath: 'client/src/components/exit-intent-popup.tsx',
+          searchPattern: 'https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png'
+        },
         // Team Photos
         'aramis-team': {
           filePath: 'client/src/components/team.tsx',
@@ -393,32 +410,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           filePath: 'client/src/components/team.tsx',
           targetIndex: 2
         },
-        // About Section Images
+        // Section Images
         'about-office': {
           filePath: 'client/src/components/about.tsx',
           searchPattern: 'https://images.unsplash.com/photo-1497366216548-37526070297c'
         },
-        // Windows 10 Page Images
+        // Page Background Images
         'windows10-hero': {
           filePath: 'client/src/pages/windows10-upgrade.tsx',
           searchPattern: '/windows10-bg.png'
         },
+        // Video & Media
         'windows10-video-poster': {
           filePath: 'client/src/pages/windows10-upgrade.tsx',
           searchPattern: 'poster="/video-poster.svg"'
-        },
-        // Service Images (placeholders for future use)
-        'service-network': {
-          filePath: 'client/src/components/services.tsx',
-          searchPattern: 'placeholder-network-image'
-        },
-        'service-security': {
-          filePath: 'client/src/components/services.tsx',
-          searchPattern: 'placeholder-security-image'
-        },
-        'service-cloud': {
-          filePath: 'client/src/components/services.tsx',
-          searchPattern: 'placeholder-cloud-image'
         }
       };
 
