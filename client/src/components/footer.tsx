@@ -88,7 +88,7 @@ export default function Footer() {
               {isWarningDismissed && (
                 <button
                   onClick={enableWarning}
-                  className="text-gray-500 hover:text-gray-300 text-xs flex items-center space-x-1 mt-2 md:mt-0 transition-colors"
+                  className="text-red-600 hover:text-red-700 text-xs flex items-center space-x-1 mt-2 md:mt-0 transition-colors"
                   title="Re-enable security alerts"
                 >
                   <Shield className="w-3 h-3" />

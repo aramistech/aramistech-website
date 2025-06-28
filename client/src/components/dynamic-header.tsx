@@ -383,7 +383,7 @@ export default function DynamicHeader() {
                     setIsMenuOpen(false);
                     window.location.reload();
                   }}
-                  className="w-full mt-2 text-gray-500 hover:text-gray-700 text-sm flex items-center justify-center space-x-2 py-2 transition-colors"
+                  className="w-full mt-2 text-red-600 hover:text-red-700 text-sm flex items-center justify-center space-x-2 py-2 transition-colors"
                   title="Re-enable security alerts"
                 >
                   <Shield className="w-4 h-4" />
