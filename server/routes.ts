@@ -4,7 +4,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -295,9 +295,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put('/api/admin/security-alert', requireAdminAuth, async (req, res) => {
     try {
-      // Filter out timestamp fields that should be handled by the database
-      const { id, createdAt, updatedAt, ...alertData } = req.body;
-      const alert = await storage.updateSecurityAlert(alertData);
+      // Manually filter out problematic timestamp fields and validate
+      const allowedFields = {
+        isEnabled: req.body.isEnabled,
+        title: req.body.title,
+        message: req.body.message,
+        buttonText: req.body.buttonText,
+        buttonLink: req.body.buttonLink,
+        backgroundColor: req.body.backgroundColor,
+        textColor: req.body.textColor,
+        iconType: req.body.iconType,
+        mobileTitle: req.body.mobileTitle,
+        mobileSubtitle: req.body.mobileSubtitle,
+        mobileDescription: req.body.mobileDescription,
+        mobileButtonText: req.body.mobileButtonText,
+      };
+      
+      // Remove undefined fields
+      const cleanData = Object.fromEntries(
+        Object.entries(allowedFields).filter(([_, value]) => value !== undefined)
+      );
+      
+      console.log("Clean security alert data:", cleanData);
+      const alert = await storage.updateSecurityAlert(cleanData);
       res.json({ success: true, alert });
     } catch (error) {
       console.error("Error updating security alert:", error);
