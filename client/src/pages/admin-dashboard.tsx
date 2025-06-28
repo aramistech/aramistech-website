@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator } from 'lucide-react';
 import AdminReviews from '@/components/admin-reviews';
 import MenuManager from '@/components/menu-manager';
 import AdminUserManager from '@/components/admin-user-manager';
@@ -16,6 +16,7 @@ import AnalyticsDashboard from '@/components/analytics-dashboard';
 import KnowledgeBaseManager from '@/components/knowledge-base-manager';
 import SecurityAlertsManager from '@/components/security-alerts-manager';
 import ColorPaletteManager from '@/components/color-palette-manager';
+import ServiceCalculatorManager from '@/components/service-calculator-manager';
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -139,6 +140,10 @@ export default function AdminDashboard() {
                   <ExternalLink className="w-4 h-4" />
                   Popup
                 </TabsTrigger>
+                <TabsTrigger value="calculator" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
+                  <Calculator className="w-4 h-4" />
+                  Pricing
+                </TabsTrigger>
                 <TabsTrigger value="analytics" className="flex items-center gap-1 px-3 py-2 text-xs whitespace-nowrap">
                   <BarChart3 className="w-4 h-4" />
                   Stats
@@ -148,7 +153,7 @@ export default function AdminDashboard() {
 
             {/* Desktop Tab Navigation */}
             <div className="hidden sm:block">
-              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-9">
+              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10">
                 <TabsTrigger value="reviews" className="flex items-center gap-2">
                   <Star className="w-4 h-4" />
                   Reviews
@@ -180,6 +185,10 @@ export default function AdminDashboard() {
                 <TabsTrigger value="popup" className="flex items-center gap-2">
                   <ExternalLink className="w-4 h-4" />
                   Exit Popup
+                </TabsTrigger>
+                <TabsTrigger value="calculator" className="flex items-center gap-2">
+                  <Calculator className="w-4 h-4" />
+                  Service Calculator
                 </TabsTrigger>
                 <TabsTrigger value="analytics" className="flex items-center gap-2">
                   <BarChart3 className="w-4 h-4" />
