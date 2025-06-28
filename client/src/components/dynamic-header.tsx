@@ -197,7 +197,7 @@ export default function DynamicHeader() {
                 <span 
                   className="critical-badge px-2 py-1 rounded-full text-xs font-bold flex items-center"
                   style={{ 
-                    backgroundColor: securityAlert?.backgroundColor ? '#ef4444' : '#ef4444',
+                    backgroundColor: securityAlert?.backgroundColor || '#dc2626',
                     color: securityAlert?.textColor || 'white'
                   }}
                 >
@@ -301,7 +301,7 @@ export default function DynamicHeader() {
                     <span 
                       className="critical-badge px-2 py-1 rounded-full text-xs font-bold"
                       style={{ 
-                        backgroundColor: '#ef4444',
+                        backgroundColor: securityAlert?.backgroundColor || '#dc2626',
                         color: securityAlert?.textColor || 'white' 
                       }}
                     >
