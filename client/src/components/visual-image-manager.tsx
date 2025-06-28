@@ -126,6 +126,15 @@ export default function VisualImageManager() {
       lineNumber: 17,
       category: "Section Images"
     },
+    {
+      id: "contact-skyline",
+      label: "South Florida Skyline",
+      description: "South Florida skyline image in Contact section",
+      currentUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+      filePath: "client/src/components/contact.tsx",
+      lineNumber: 217,
+      category: "Section Images"
+    },
     
     // Page Backgrounds
     {

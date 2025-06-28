@@ -419,6 +419,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           filePath: 'client/src/components/about.tsx',
           searchPattern: 'https://images.unsplash.com/photo-1497366216548-37526070297c'
         },
+        'contact-skyline': {
+          filePath: 'client/src/components/contact.tsx',
+          searchPattern: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4'
+        },
         // Page Background Images
         'windows10-hero': {
           filePath: 'client/src/pages/windows10-upgrade.tsx',
