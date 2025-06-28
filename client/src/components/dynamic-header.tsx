@@ -205,7 +205,7 @@ export default function DynamicHeader() {
                   }}
                 >
                   <span className="mr-2">►</span>
-                  Learn More & Get Protected
+                  Get Protected Now
                 </Link>
               </div>
               
