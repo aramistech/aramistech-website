@@ -5,7 +5,26 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator, ChevronLeft, ChevronRight, Book } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator, ChevronLeft, ChevronRight, Book, GripVertical } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import {
+  CSS,
+} from '@dnd-kit/utilities';
 import AdminReviews from '@/components/admin-reviews';
 import MenuManager from '@/components/menu-manager';
 import AdminUserManager from '@/components/admin-user-manager';
@@ -19,12 +38,112 @@ import SecurityAlertsManager from '@/components/security-alerts-manager';
 import ColorPaletteManager from '@/components/color-palette-manager';
 import ServiceCalculatorManager from '@/components/service-calculator-manager';
 
+// Sortable Menu Item Component
+interface SortableMenuItemProps {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  isActive: boolean;
+  isCollapsed: boolean;
+  onClick: () => void;
+}
+
+function SortableMenuItem({ id, label, icon: Icon, isActive, isCollapsed, onClick }: SortableMenuItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="relative">
+      <Button
+        variant={isActive ? "default" : "ghost"}
+        className={`w-full justify-start mb-1 ${
+          isCollapsed ? 'px-2' : 'px-3'
+        } ${isActive ? 'bg-aramis-orange hover:bg-orange-600 text-white' : ''} ${
+          isDragging ? 'cursor-grabbing' : 'cursor-pointer'
+        }`}
+        onClick={onClick}
+      >
+        <div className="flex items-center w-full">
+          <div
+            {...attributes}
+            {...listeners}
+            className="mr-2 cursor-grab hover:cursor-grabbing opacity-50 hover:opacity-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <GripVertical className="w-3 h-3" />
+          </div>
+          <Icon className="w-4 h-4" />
+          {!isCollapsed && <span className="ml-2">{label}</span>}
+        </div>
+      </Button>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState('reviews');
   const queryClient = useQueryClient();
+
+  // Menu items with order state
+  const [menuItems, setMenuItems] = useState([
+    { id: 'reviews', label: 'Reviews', icon: Star },
+    { id: 'menu', label: 'Menu', icon: Menu },
+    { id: 'users', label: 'Users', icon: Users },
+    { id: 'security', label: 'Security', icon: Shield },
+    { id: 'colors', label: 'Colors', icon: Palette },
+    { id: 'knowledge', label: 'Knowledge', icon: Book },
+    { id: 'media', label: 'Media Library', icon: ImageIcon },
+    { id: 'gallery', label: 'Gallery', icon: ImageIcon },
+    { id: 'demo', label: 'Image Demo', icon: Settings },
+    { id: 'popup', label: 'Exit Popup', icon: ExternalLink },
+    { id: 'calculator', label: 'Calculator', icon: Calculator },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+  ]);
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Handle drag end
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      setMenuItems((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over?.id);
+
+        const newOrder = arrayMove(items, oldIndex, newIndex);
+        
+        // Show success message
+        toast({
+          title: "Menu Reordered",
+          description: "Dashboard navigation menu order has been updated",
+        });
+
+        return newOrder;
+      });
+    }
+  };
 
   // Verify authentication
   const { data: user, isLoading: userLoading } = useQuery({
@@ -64,20 +183,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const menuItems = [
-    { id: 'reviews', label: 'Reviews', icon: Star },
-    { id: 'menu', label: 'Menu', icon: Menu },
-    { id: 'users', label: 'Users', icon: Users },
-    { id: 'security', label: 'Security', icon: Shield },
-    { id: 'colors', label: 'Colors', icon: Palette },
-    { id: 'knowledge', label: 'Knowledge', icon: Book },
-    { id: 'media', label: 'Media Library', icon: ImageIcon },
-    { id: 'gallery', label: 'Gallery', icon: ImageIcon },
-    { id: 'demo', label: 'Image Demo', icon: Settings },
-    { id: 'popup', label: 'Exit Popup', icon: ExternalLink },
-    { id: 'calculator', label: 'Calculator', icon: Calculator },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  ];
+
 
   const renderContent = () => {
     switch (activeTab) {
