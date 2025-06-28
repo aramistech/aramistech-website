@@ -61,6 +61,13 @@ export async function setupDefaultMenuItems() {
       orderIndex: 2, 
       isVisible: true 
     });
+    await storage.createMenuItem({ 
+      label: 'Service Calculator', 
+      href: '/service-calculator', 
+      parentId: supportItem.id, 
+      orderIndex: 3, 
+      isVisible: true 
+    });
 
     console.log('Complete menu structure created');
   } catch (error) {

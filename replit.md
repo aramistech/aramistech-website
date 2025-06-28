@@ -217,6 +217,7 @@ Changelog:
 - June 28, 2025. Implemented scroll-based header shrinking for mobile navigation - logo reduces from h-20 to h-12, padding decreases from py-4 to py-2, and menu icons shrink from h-6 to h-5 when scrolling past 100px for better content viewing
 - June 28, 2025. Completed comprehensive Security Alerts management system with database schema, admin interface for customizable content/icons/colors/visibility, custom color picker supporting any hex color, mobile and desktop warning systems with dismissal functionality, and database-driven alerts replacing hardcoded values
 - June 28, 2025. Built complete global color palette system with database schema, API endpoints, admin interface for managing brand colors by category, ColorPickerWithPalette component with visual previews and palette integration, and seamless integration with Security Alerts for consistent brand color usage across all website elements
+- June 28, 2025. Created comprehensive service calculator/pricing tool with 6 IT service categories (Network Setup, Cybersecurity, Cloud Migration, IT Support, Software Development, Remote Support), real-time pricing calculations, dynamic hourly rate adjustments, professional contact form integration, Amazon SES email delivery system, database storage for quote submissions, and added to Support dropdown menu for easy customer access
 ```
 
 ## User Preferences
