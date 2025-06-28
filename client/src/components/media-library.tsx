@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Upload, Trash2, Edit3, CloudDownload, Link, Plus } from "lucide-react";
+import { Upload, Trash2, Edit3, CloudDownload, Link, Plus, Search } from "lucide-react";
 
 interface MediaFile {
   id: number;
@@ -99,6 +99,29 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
       toast({
         title: "Error",
         description: "Failed to import image from URL",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const websiteScanMutation = useMutation({
+    mutationFn: async (url: string) => {
+      return await apiRequest('/api/admin/media/scan-website', 'POST', { url });
+    },
+    onSuccess: (data) => {
+      const count = data.importedCount || 0;
+      toast({
+        title: "Success",
+        description: `Scanned website and imported ${count} image(s)`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/media"] });
+      setImageUrl('');
+      setIsUploadDialogOpen(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to scan website for images",
         variant: "destructive",
       });
     },
@@ -310,32 +333,50 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
               <TabsContent value="url" className="space-y-4 mt-4">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="image-url">Image URL</Label>
+                    <Label htmlFor="image-url">Image URL or Website URL</Label>
                     <Input
                       id="image-url"
-                      placeholder="https://example.com/image.jpg"
+                      placeholder="https://example.com/image.jpg or https://example.com"
                       value={imageUrl}
                       onChange={(e) => setImageUrl(e.target.value)}
-                      disabled={urlImportMutation.isPending}
+                      disabled={urlImportMutation.isPending || websiteScanMutation.isPending}
                     />
                   </div>
                   
-                  <Button 
-                    onClick={() => {
-                      if (imageUrl.trim()) {
-                        urlImportMutation.mutate(imageUrl.trim());
-                      }
-                    }}
-                    disabled={!imageUrl.trim() || urlImportMutation.isPending}
-                    className="w-full bg-aramis-orange hover:bg-orange-600 disabled:opacity-50"
-                  >
-                    <CloudDownload className="w-4 h-4 mr-2" />
-                    {urlImportMutation.isPending ? "Importing image..." : "Import Image"}
-                  </Button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button 
+                      onClick={() => {
+                        if (imageUrl.trim()) {
+                          urlImportMutation.mutate(imageUrl.trim());
+                        }
+                      }}
+                      disabled={!imageUrl.trim() || urlImportMutation.isPending || websiteScanMutation.isPending}
+                      className="bg-aramis-orange hover:bg-orange-600 disabled:opacity-50"
+                    >
+                      <CloudDownload className="w-4 h-4 mr-2" />
+                      {urlImportMutation.isPending ? "Importing..." : "Import Image"}
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => {
+                        if (imageUrl.trim()) {
+                          websiteScanMutation.mutate(imageUrl.trim());
+                        }
+                      }}
+                      disabled={!imageUrl.trim() || urlImportMutation.isPending || websiteScanMutation.isPending}
+                      variant="outline"
+                      className="border-aramis-orange text-aramis-orange hover:bg-orange-50 disabled:opacity-50"
+                    >
+                      <Search className="w-4 h-4 mr-2" />
+                      {websiteScanMutation.isPending ? "Scanning..." : "Scan Website"}
+                    </Button>
+                  </div>
 
-                  {urlImportMutation.isPending && (
+                  {(urlImportMutation.isPending || websiteScanMutation.isPending) && (
                     <div className="text-center">
-                      <div className="text-sm text-aramis-orange font-medium">Downloading image from URL...</div>
+                      <div className="text-sm text-aramis-orange font-medium">
+                        {urlImportMutation.isPending ? "Downloading image from URL..." : "Scanning website for images..."}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -344,9 +385,10 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
                   <div className="flex items-start gap-2">
                     <Link className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div className="text-sm text-blue-800">
-                      <p className="font-medium mb-1">Import from URL</p>
-                      <p>Paste any public image URL (JPG, PNG, GIF, WebP) to download and store it in your media library.</p>
-                      <p className="mt-1 text-xs">Example: https://example.com/image.jpg</p>
+                      <p className="font-medium mb-1">Import Options</p>
+                      <p className="mb-2"><strong>Import Image:</strong> Direct image URL (JPG, PNG, GIF, WebP)</p>
+                      <p><strong>Scan Website:</strong> Find and import all images from any webpage</p>
+                      <p className="mt-1 text-xs">Examples: https://example.com/image.jpg or https://example.com</p>
                     </div>
                   </div>
                 </div>

@@ -640,6 +640,140 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Website scanning endpoint
+  app.post("/api/admin/media/scan-website", requireAdminAuth, async (req, res) => {
+    try {
+      const { url } = req.body;
+      
+      if (!url) {
+        return res.status(400).json({ error: "URL is required" });
+      }
+
+      // Validate URL format
+      let websiteUrl;
+      try {
+        websiteUrl = new URL(url);
+      } catch (error) {
+        return res.status(400).json({ error: "Invalid URL format" });
+      }
+
+      // Fetch the webpage
+      const response = await fetch(websiteUrl.toString());
+      if (!response.ok) {
+        return res.status(400).json({ error: "Failed to fetch webpage" });
+      }
+
+      const html = await response.text();
+      const baseUrl = websiteUrl.origin;
+      
+      // Extract image URLs from HTML using regex
+      const imageUrls = new Set<string>();
+      
+      // Find img tags
+      const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
+      let match;
+      while ((match = imgRegex.exec(html)) !== null) {
+        let imageUrl = match[1];
+        
+        // Convert relative URLs to absolute URLs
+        if (imageUrl.startsWith('/')) {
+          imageUrl = baseUrl + imageUrl;
+        } else if (!imageUrl.startsWith('http')) {
+          imageUrl = new URL(imageUrl, websiteUrl.toString()).href;
+        }
+        
+        // Filter for actual image URLs
+        if (imageUrl.match(/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i)) {
+          imageUrls.add(imageUrl);
+        }
+      }
+
+      // Find CSS background images
+      const cssImageRegex = /background(?:-image)?:\s*url\(['"]?([^'")\s]+)['"]?\)/gi;
+      while ((match = cssImageRegex.exec(html)) !== null) {
+        let imageUrl = match[1];
+        
+        if (imageUrl.startsWith('/')) {
+          imageUrl = baseUrl + imageUrl;
+        } else if (!imageUrl.startsWith('http')) {
+          imageUrl = new URL(imageUrl, websiteUrl.toString()).href;
+        }
+        
+        if (imageUrl.match(/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i)) {
+          imageUrls.add(imageUrl);
+        }
+      }
+
+      const importedFiles = [];
+      let importedCount = 0;
+
+      // Import each image (limit to 15 to prevent abuse)
+      const urlArray = Array.from(imageUrls).slice(0, 15);
+      
+      for (const imageUrl of urlArray) {
+        try {
+          const imageResponse = await fetch(imageUrl);
+          if (!imageResponse.ok) continue;
+
+          const contentType = imageResponse.headers.get('content-type');
+          if (!contentType || !contentType.startsWith('image/')) continue;
+
+          const buffer = await imageResponse.arrayBuffer();
+          const uint8Array = new Uint8Array(buffer);
+
+          // Skip very small images (likely icons/placeholders)
+          if (uint8Array.length < 2048) continue;
+
+          // Generate filename
+          const urlPath = new URL(imageUrl).pathname;
+          const originalName = path.basename(urlPath) || `scanned-image-${importedCount + 1}`;
+          const ext = path.extname(originalName) || '.jpg';
+          const baseName = path.basename(originalName, ext);
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+          const fileName = `scanned-${baseName}-${uniqueSuffix}${ext}`;
+          const filePath = path.join(uploadDir, fileName);
+
+          // Save the file
+          fs.writeFileSync(filePath, uint8Array);
+
+          // Get file stats
+          const stats = fs.statSync(filePath);
+          const fileUrl = `/uploads/${fileName}`;
+
+          const mediaData = {
+            fileName: fileName,
+            originalName: `${originalName} (from ${websiteUrl.hostname})`,
+            mimeType: contentType,
+            fileSize: stats.size,
+            filePath: filePath,
+            url: fileUrl,
+            altText: '',
+            caption: '',
+          };
+
+          const validatedData = insertMediaFileSchema.parse(mediaData);
+          const file = await storage.uploadMediaFile(validatedData);
+          
+          importedFiles.push(file);
+          importedCount++;
+        } catch (error) {
+          console.error('Error importing image:', imageUrl, error);
+          // Continue with next image
+        }
+      }
+
+      res.json({ 
+        success: true, 
+        importedCount,
+        files: importedFiles,
+        totalFound: imageUrls.size
+      });
+    } catch (error) {
+      console.error("Error scanning website:", error);
+      res.status(500).json({ error: "Failed to scan website for images" });
+    }
+  });
+
   // Admin user management routes
   app.get("/api/admin/users", requireAdminAuth, async (req, res) => {
     try {
