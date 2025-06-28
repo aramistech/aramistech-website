@@ -218,27 +218,22 @@ export default function VisualImageManager() {
             <Badge variant="secondary">{images.length}</Badge>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {images.map((image) => (
               <Card key={image.id} className="relative">
-                <CardHeader className="pb-3">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <CardTitle className="text-sm font-medium">{image.label}</CardTitle>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {image.description}
-                        <br />
-                        <span className="text-muted-foreground">
-                          {image.filePath.replace('client/src/', '')} (line {image.lineNumber})
-                        </span>
-                      </p>
-                    </div>
-                  </div>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium leading-tight">{image.label}</CardTitle>
+                  <p className="text-xs text-muted-foreground leading-tight">
+                    {image.description}
+                  </p>
+                  <p className="text-xs text-gray-500 leading-tight">
+                    {image.filePath.replace('client/src/', '')} (line {image.lineNumber})
+                  </p>
                 </CardHeader>
 
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-2">
                   {/* Current Image Preview */}
-                  <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                  <div className="aspect-[4/3] bg-gray-100 rounded overflow-hidden border">
                     <img
                       src={image.currentUrl}
                       alt={image.label}
@@ -246,25 +241,33 @@ export default function VisualImageManager() {
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';
+                        target.nextElementSibling?.classList.remove('hidden');
                       }}
                     />
+                    <div className="hidden flex items-center justify-center h-full text-gray-500 text-sm">
+                      Image not available
+                    </div>
                   </div>
 
-                  {/* Current URL */}
-                  <div className="text-xs text-muted-foreground break-all bg-gray-50 p-2 rounded">
-                    {image.currentUrl}
+                  {/* Current URL - truncated */}
+                  <div className="text-xs text-muted-foreground bg-gray-50 p-1.5 rounded font-mono">
+                    {image.currentUrl.length > 60 
+                      ? `${image.currentUrl.substring(0, 30)}...${image.currentUrl.substring(image.currentUrl.length - 30)}`
+                      : image.currentUrl
+                    }
                   </div>
 
                   {/* Media Library Selection */}
                   {selectedImage?.id === image.id ? (
                     <div className="space-y-3">
-                      <p className="text-sm font-medium">Select replacement image:</p>
-                      <div className="grid grid-cols-3 gap-2 max-h-40 overflow-y-auto">
+                      <p className="text-sm font-medium">Select replacement:</p>
+                      <div className="grid grid-cols-4 gap-1.5 max-h-32 overflow-y-auto bg-gray-50 p-2 rounded">
                         {mediaFiles.map((file) => (
                           <div
                             key={file.id}
-                            className="cursor-pointer group relative aspect-square bg-gray-100 rounded overflow-hidden hover:ring-2 hover:ring-blue-500"
+                            className="cursor-pointer group relative aspect-square bg-white rounded overflow-hidden hover:ring-2 hover:ring-blue-500 shadow-sm"
                             onClick={() => handleImageReplace(image.id, file.id)}
+                            title={`ID: ${file.id} - ${file.originalName}`}
                           >
                             <img
                               src={`/api/media/${file.id}/file`}
@@ -272,7 +275,10 @@ export default function VisualImageManager() {
                               className="w-full h-full object-cover"
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                              <Check className="h-4 w-4 text-white" />
+                              <Check className="h-3 w-3 text-white" />
+                            </div>
+                            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white text-xs px-1 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                              {file.id}
                             </div>
                           </div>
                         ))}
@@ -293,6 +299,7 @@ export default function VisualImageManager() {
                         size="sm"
                         onClick={() => setSelectedImage(image)}
                         disabled={updateImageMutation.isPending}
+                        className="bg-blue-600 hover:bg-blue-700"
                       >
                         Replace Image
                       </Button>
