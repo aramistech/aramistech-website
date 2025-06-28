@@ -61,9 +61,11 @@ export default function DynamicHeader() {
   const { data: alertData } = useQuery({
     queryKey: ['/api/security-alert'],
     queryFn: async () => {
-      const res = await fetch('/api/security-alert');
+      const res = await fetch('/api/security-alert?' + new Date().getTime());
       return res.json();
     },
+    staleTime: 0,
+    cacheTime: 0,
   });
 
   const menuItems: MenuItem[] = menuData?.menuItems || [];

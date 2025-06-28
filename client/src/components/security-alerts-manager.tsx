@@ -156,18 +156,30 @@ export default function SecurityAlertsManager() {
               {/* Desktop Preview */}
               <div className="mb-4">
                 <h4 className="font-semibold mb-2">Desktop Warning Banner</h4>
-                <div className={`${formData.backgroundColor} ${formData.textColor} py-1 relative overflow-hidden rounded`}>
+                <div 
+                  className="py-1 relative overflow-hidden rounded"
+                  style={{ backgroundColor: formData.backgroundColor, color: formData.textColor }}
+                >
                   <div className="max-w-4xl mx-auto px-4">
                     <div className="flex items-center justify-center text-center">
                       <div className="flex items-center space-x-3">
-                        <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
+                        <span 
+                          className="px-2 py-1 rounded-full text-xs font-bold flex items-center"
+                          style={{ backgroundColor: formData.backgroundColor, color: formData.textColor }}
+                        >
                           <IconComponent className="w-3 h-3 mr-1" />
                           {formData.title}
                         </span>
                         <span className="font-semibold text-sm">
                           {formData.message}
                         </span>
-                        <button className="inline-flex items-center bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold border-2 border-white">
+                        <button 
+                          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2 border-white"
+                          style={{ 
+                            backgroundColor: formData.buttonBackgroundColor, 
+                            color: formData.buttonTextColor 
+                          }}
+                        >
                           <span className="mr-1">►</span>
                           {formData.buttonText}
                         </button>
