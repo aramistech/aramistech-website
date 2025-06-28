@@ -295,7 +295,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put('/api/admin/security-alert', requireAdminAuth, async (req, res) => {
     try {
-      const alert = await storage.updateSecurityAlert(req.body);
+      // Filter out timestamp fields that should be handled by the database
+      const { id, createdAt, updatedAt, ...alertData } = req.body;
+      const alert = await storage.updateSecurityAlert(alertData);
       res.json({ success: true, alert });
     } catch (error) {
       console.error("Error updating security alert:", error);
