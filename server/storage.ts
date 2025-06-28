@@ -76,6 +76,18 @@ export interface IStorage {
   createColorPaletteItem(color: InsertColorPalette): Promise<ColorPalette>;
   updateColorPaletteItem(id: number, color: Partial<InsertColorPalette>): Promise<ColorPalette>;
   deleteColorPaletteItem(id: number): Promise<void>;
+  // Service calculator management
+  getServiceCategories(): Promise<ServiceCategory[]>;
+  createServiceCategory(category: InsertServiceCategory): Promise<ServiceCategory>;
+  updateServiceCategory(id: number, category: Partial<InsertServiceCategory>): Promise<ServiceCategory>;
+  deleteServiceCategory(id: number): Promise<void>;
+  getServiceOptions(categoryId?: number): Promise<ServiceOption[]>;
+  createServiceOption(option: InsertServiceOption): Promise<ServiceOption>;
+  updateServiceOption(id: number, option: Partial<InsertServiceOption>): Promise<ServiceOption>;
+  deleteServiceOption(id: number): Promise<void>;
+  createPricingCalculation(calculation: InsertPricingCalculation): Promise<PricingCalculation>;
+  getPricingCalculations(): Promise<PricingCalculation[]>;
+  updatePricingCalculation(id: number, calculation: Partial<InsertPricingCalculation>): Promise<PricingCalculation>;
 }
 
 export class DatabaseStorage implements IStorage {

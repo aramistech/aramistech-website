@@ -1,4 +1,4 @@
-import { pgTable, text, varchar, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, boolean, timestamp, jsonb, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -382,3 +382,76 @@ export type InsertSecurityAlert = z.infer<typeof insertSecurityAlertSchema>;
 // Color Palette types
 export type ColorPalette = typeof colorPalette.$inferSelect;
 export type InsertColorPalette = z.infer<typeof insertColorPaletteSchema>;
+
+// Service Calculator tables
+export const serviceCategories = pgTable("service_categories", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description"),
+  icon: varchar("icon", { length: 50 }),
+  basePrice: decimal("base_price", { precision: 10, scale: 2 }).default("0.00"),
+  hourlyRate: decimal("hourly_rate", { precision: 10, scale: 2 }),
+  isActive: boolean("is_active").default(true),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const serviceOptions = pgTable("service_options", {
+  id: serial("id").primaryKey(),
+  categoryId: integer("category_id").references(() => serviceCategories.id, { onDelete: "cascade" }),
+  name: varchar("name", { length: 150 }).notNull(),
+  description: text("description"),
+  priceModifier: decimal("price_modifier", { precision: 10, scale: 2 }).default("0.00"),
+  priceType: varchar("price_type", { length: 20 }).default("fixed"), // fixed, multiplier, hourly
+  isRequired: boolean("is_required").default(false),
+  isActive: boolean("is_active").default(true),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const pricingCalculations = pgTable("pricing_calculations", {
+  id: serial("id").primaryKey(),
+  sessionId: varchar("session_id", { length: 100 }),
+  customerName: varchar("customer_name", { length: 100 }),
+  customerEmail: varchar("customer_email", { length: 150 }),
+  customerPhone: varchar("customer_phone", { length: 20 }),
+  companyName: varchar("company_name", { length: 150 }),
+  selectedServices: jsonb("selected_services").notNull(), // Array of service selections
+  totalEstimate: decimal("total_estimate", { precision: 10, scale: 2 }).notNull(),
+  estimateBreakdown: jsonb("estimate_breakdown"), // Detailed cost breakdown
+  urgencyLevel: varchar("urgency_level", { length: 20 }).default("normal"),
+  projectDescription: text("project_description"),
+  preferredContactMethod: varchar("preferred_contact_method", { length: 20 }).default("email"),
+  isConverted: boolean("is_converted").default(false),
+  conversionDate: timestamp("conversion_date"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Service Calculator schemas
+export const insertServiceCategorySchema = createInsertSchema(serviceCategories).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertServiceOptionSchema = createInsertSchema(serviceOptions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertPricingCalculationSchema = createInsertSchema(pricingCalculations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Service Calculator types
+export type ServiceCategory = typeof serviceCategories.$inferSelect;
+export type InsertServiceCategory = z.infer<typeof insertServiceCategorySchema>;
+export type ServiceOption = typeof serviceOptions.$inferSelect;
+export type InsertServiceOption = z.infer<typeof insertServiceOptionSchema>;
+export type PricingCalculation = typeof pricingCalculations.$inferSelect;
+export type InsertPricingCalculation = z.infer<typeof insertPricingCalculationSchema>;
