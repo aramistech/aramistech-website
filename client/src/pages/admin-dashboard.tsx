@@ -32,6 +32,7 @@ import ExitIntentManager from '@/components/exit-intent-manager';
 import MediaLibrary from '@/components/media-library';
 
 import ImageReplacementDemo from '@/components/image-replacement-demo';
+import QuickImageReplacer from '@/components/quick-image-replacer';
 import AnalyticsDashboard from '@/components/analytics-dashboard';
 import KnowledgeBaseManager from '@/components/knowledge-base-manager';
 import SecurityAlertsManager from '@/components/security-alerts-manager';
@@ -316,20 +317,34 @@ export default function AdminDashboard() {
 
       case 'demo':
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="w-5 h-5" />
-                How to Replace Website Images
-              </CardTitle>
-              <CardDescription>
-                Learn how to use your media library images throughout your website
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ImageReplacementDemo />
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="w-5 h-5" />
+                  Quick Image Replacer
+                </CardTitle>
+                <CardDescription>
+                  Copy image URLs and replace them in your code files yourself
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <QuickImageReplacer />
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Advanced Guide</CardTitle>
+                <CardDescription>
+                  Detailed instructions for image replacement
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ImageReplacementDemo />
+              </CardContent>
+            </Card>
+          </div>
         );
 
       case 'popup':
