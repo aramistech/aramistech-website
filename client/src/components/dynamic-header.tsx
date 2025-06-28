@@ -124,8 +124,8 @@ export default function DynamicHeader() {
       {/* Critical Windows 10 Warning Banner */}
       <div className="critical-warning text-white py-1 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-center text-center space-y-2 sm:space-y-0">
-            <div className="flex items-center justify-center space-x-3">
+          <div className="flex items-center justify-center text-center">
+            <div className="flex items-center space-x-3">
               <span className="critical-badge bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
                 <AlertTriangle className="w-3 h-3 mr-1" />
                 CRITICAL
@@ -133,15 +133,15 @@ export default function DynamicHeader() {
               <span className="font-semibold text-sm sm:text-base professional-text">
                 Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats
               </span>
+              <Link 
+                href="/windows10-upgrade" 
+                className="hidden sm:inline-flex items-center bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105"
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                <span className="mr-1">►</span>
+                Learn More
+              </Link>
             </div>
-            <Link 
-              href="/windows10-upgrade" 
-              className="inline-flex items-center justify-center bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:bg-red-700 transition-all duration-300 transform hover:scale-105 sm:ml-3"
-              onClick={() => window.scrollTo(0, 0)}
-            >
-              <span className="mr-1">►</span>
-              Learn More
-            </Link>
           </div>
         </div>
         
