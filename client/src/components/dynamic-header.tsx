@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown, AlertTriangle } from "lucide-react";
+import { Menu, X, ChevronDown, AlertTriangle, Shield } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { trackClick } from "@/lib/analytics";
@@ -374,6 +374,22 @@ export default function DynamicHeader() {
               >
                 Free Consultation
               </button>
+              
+              {isWarningDismissed && (
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('criticalWarningDismissed');
+                    setIsWarningDismissed(false);
+                    setIsMenuOpen(false);
+                    window.location.reload();
+                  }}
+                  className="w-full mt-2 text-gray-500 hover:text-gray-700 text-sm flex items-center justify-center space-x-2 py-2 transition-colors"
+                  title="Re-enable security alerts"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span>Enable Security Alerts</span>
+                </button>
+              )}
             </div>
           </div>
         )}
