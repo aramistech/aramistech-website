@@ -554,7 +554,7 @@ export class DatabaseStorage implements IStorage {
     
     if (existing) {
       const [alert] = await db.update(securityAlerts)
-        .set({ ...alertData, updatedAt: new Date() })
+        .set(alertData)
         .where(eq(securityAlerts.id, existing.id))
         .returning();
       return alert;
