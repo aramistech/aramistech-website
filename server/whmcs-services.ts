@@ -99,20 +99,34 @@ function formatProductGroups(productsData: any): WHMCSProductGroup[] {
   const groups: WHMCSProductGroup[] = [];
   const productGroups = productsData?.product || [];
   
-  console.log('Formatting products, found:', productGroups.length, 'products');
-  
   if (!Array.isArray(productGroups)) {
     console.log('Products data is not an array:', typeof productGroups);
     return groups;
   }
 
+  // Filter out unwanted services - only keep desired maintenance services
+  const allowedServices = [
+    'Workstation PC/Mac Maintenance Service',
+    'File Server Maintenance Service', 
+    'Exchange 365 or Google Workspace Support',
+    'Active Directory Server Maintenance Service',
+    'Synology NAS Maintenance Service',
+    'Hourly Phone Support'
+  ];
+
+  const filteredProducts = productGroups.filter((product: any) => 
+    allowedServices.includes(product.name)
+  );
+
+  console.log('Filtered products from', productGroups.length, 'to', filteredProducts.length);
+
   // Group products by their group/category
   const groupMap = new Map<string, WHMCSProductGroup>();
-  
-  productGroups.forEach((product: any) => {
-    console.log('Processing product:', product.name, 'GID:', product.gid);
-    const groupName = product.group || 'Maintenance Services';
-    const groupId = parseInt(product.gid) || 1;
+
+  filteredProducts.forEach((product: any) => {
+    console.log('Processing filtered product:', product.name, 'GID:', product.gid);
+    const groupName = 'Maintenance Services';
+    const groupId = 9; // Use GID 9 for maintenance services
     
     if (!groupMap.has(groupName)) {
       groupMap.set(groupName, {
