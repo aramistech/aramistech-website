@@ -2791,5 +2791,179 @@ User message: ${message}`
     }
   });
 
+  // WHMCS API Proxy Routes for billing.aramistech.com integration
+  app.post('/api/whmcs/customer/:email', async (req, res) => {
+    try {
+      const { email } = req.params;
+      const { whmcsConfig } = require('./whmcs-config');
+      
+      if (!whmcsConfig.apiIdentifier || !whmcsConfig.apiSecret) {
+        return res.status(500).json({
+          success: false,
+          message: 'WHMCS API credentials not configured'
+        });
+      }
+
+      const postData = new URLSearchParams({
+        action: 'GetClientsDetails',
+        username: whmcsConfig.apiIdentifier,
+        password: whmcsConfig.apiSecret,
+        email: email,
+        responsetype: 'json'
+      });
+
+      const response = await fetch(`${whmcsConfig.baseUrl}/includes/api.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: postData
+      });
+
+      const data = await response.json();
+      
+      if (data.result === 'success') {
+        res.json({
+          success: true,
+          customer: {
+            id: data.client.id,
+            firstname: data.client.firstname,
+            lastname: data.client.lastname,
+            email: data.client.email,
+            phonenumber: data.client.phonenumber,
+            companyname: data.client.companyname,
+            address1: data.client.address1,
+            city: data.client.city,
+            state: data.client.state,
+            postcode: data.client.postcode,
+            country: data.client.country
+          }
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: 'Customer not found'
+        });
+      }
+    } catch (error) {
+      console.error('WHMCS API Error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve customer data'
+      });
+    }
+  });
+
+  app.get('/api/whmcs/customer/:clientId/services', async (req, res) => {
+    try {
+      const { clientId } = req.params;
+      const { whmcsConfig } = require('./whmcs-config');
+
+      const postData = new URLSearchParams({
+        action: 'GetClientsProducts',
+        username: whmcsConfig.apiIdentifier,
+        password: whmcsConfig.apiSecret,
+        clientid: clientId,
+        responsetype: 'json'
+      });
+
+      const response = await fetch(`${whmcsConfig.baseUrl}/includes/api.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: postData
+      });
+
+      const data = await response.json();
+      
+      if (data.result === 'success') {
+        const services = data.products?.product || [];
+        res.json({
+          success: true,
+          services: Array.isArray(services) ? services : [services]
+        });
+      } else {
+        res.json({
+          success: true,
+          services: []
+        });
+      }
+    } catch (error) {
+      console.error('WHMCS Services API Error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve services'
+      });
+    }
+  });
+
+  app.get('/api/whmcs/customer/:clientId/invoices', async (req, res) => {
+    try {
+      const { clientId } = req.params;
+      const { whmcsConfig } = require('./whmcs-config');
+
+      const postData = new URLSearchParams({
+        action: 'GetInvoices',
+        username: whmcsConfig.apiIdentifier,
+        password: whmcsConfig.apiSecret,
+        userid: clientId,
+        limitnum: 25,
+        responsetype: 'json'
+      });
+
+      const response = await fetch(`${whmcsConfig.baseUrl}/includes/api.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: postData
+      });
+
+      const data = await response.json();
+      
+      if (data.result === 'success') {
+        const invoices = data.invoices?.invoice || [];
+        res.json({
+          success: true,
+          invoices: Array.isArray(invoices) ? invoices : [invoices]
+        });
+      } else {
+        res.json({
+          success: true,
+          invoices: []
+        });
+      }
+    } catch (error) {
+      console.error('WHMCS Invoices API Error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve invoices'
+      });
+    }
+  });
+
+  // WHMCS webhook endpoint for real-time updates
+  app.post('/api/whmcs/webhook', async (req, res) => {
+    try {
+      const signature = req.headers['x-whmcs-signature'] as string;
+      const rawBody = JSON.stringify(req.body);
+      
+      const { validateWHMCSWebhook } = require('./whmcs-config');
+      
+      if (!validateWHMCSWebhook(signature, rawBody)) {
+        return res.status(401).json({ success: false, message: 'Invalid signature' });
+      }
+
+      // Process webhook events (invoice created, payment received, etc.)
+      console.log('WHMCS Webhook received:', req.body);
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('WHMCS Webhook Error:', error);
+      res.status(500).json({ success: false, message: 'Webhook processing failed' });
+    }
+  });
+
   return httpServer;
 }

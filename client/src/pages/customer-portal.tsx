@@ -35,15 +35,34 @@ export default function CustomerPortal() {
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
     try {
-      const whmcs = getWHMCS();
-      const customerData = await whmcs.getCustomer(data.email);
-      
-      if (customerData) {
-        setCustomer(customerData);
-        setIsLoggedIn(true);
+      const response = await fetch(`/api/whmcs/customer/${encodeURIComponent(data.email)}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success && result.customer) {
+          setCustomer(result.customer);
+          setIsLoggedIn(true);
+          toast({
+            title: "Welcome Back!",
+            description: `Hello ${result.customer.firstname}, your billing information is loading.`,
+          });
+        } else {
+          toast({
+            title: "Customer Not Found",
+            description: "No billing account found with this email address. Please contact support if you need assistance.",
+            variant: "destructive",
+          });
+        }
+      } else if (response.status === 500) {
         toast({
-          title: "Welcome Back!",
-          description: `Hello ${customerData.firstname}, your billing information is loading.`,
+          title: "Service Configuration",
+          description: "WHMCS billing system is being configured. Please contact support for assistance.",
+          variant: "destructive",
         });
       } else {
         toast({
