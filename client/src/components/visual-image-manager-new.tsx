@@ -303,62 +303,62 @@ export default function VisualImageManager() {
 
       {/* Large Image Selection Modal */}
       <Dialog open={isImageSelectorOpen} onOpenChange={setIsImageSelectorOpen}>
-        <DialogContent className="max-w-7xl w-[95vw] max-h-[95vh] overflow-hidden">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl">
-              <ImageIcon className="h-6 w-6" />
+            <DialogTitle className="flex items-center gap-2">
+              <ImageIcon className="h-5 w-5" />
               Replace: {selectedImage?.label}
             </DialogTitle>
-            <p className="text-base text-muted-foreground">
-              Select a replacement image from your media library - Click any image to use it
+            <p className="text-sm text-muted-foreground">
+              Click any image to use it as replacement
             </p>
           </DialogHeader>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-h-[80vh] overflow-y-auto p-6">
-            {mediaFiles.map((file) => (
-              <div
-                key={file.id}
-                className="cursor-pointer group relative bg-white rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:shadow-xl transition-all duration-300 overflow-hidden"
-                onClick={() => selectedImage && handleImageReplace(selectedImage.id, file.id)}
-              >
-                {/* Much Larger Image Preview with fixed height */}
-                <div className="h-96 bg-gray-100 overflow-hidden flex items-center justify-center">
-                  <img
-                    src={`/api/media/${file.id}/file`}
-                    alt={file.altText || file.originalName}
-                    className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                
-                {/* Image Info */}
-                <div className="p-6 space-y-3">
-                  <p className="text-lg font-semibold text-gray-900 truncate">{file.originalName}</p>
-                  <p className="text-base text-blue-600 font-medium">ID: {file.id}</p>
-                  {file.altText && (
-                    <p className="text-base text-gray-500">{file.altText}</p>
-                  )}
-                </div>
-                
-                {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
-                  <div className="text-white text-center px-4">
-                    <Check className="h-16 w-16 mx-auto mb-4 text-green-400" />
-                    <p className="text-2xl font-bold mb-2">Select This Image</p>
-                    <p className="text-lg opacity-90 break-words">{file.originalName}</p>
-                  </div>
-                </div>
-                
-                {/* Loading Overlay */}
-                {updateImageMutation.isPending && (
-                  <div className="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center">
-                    <div className="text-center">
-                      <RefreshCw className="h-12 w-12 animate-spin text-blue-500 mx-auto mb-4" />
-                      <p className="text-lg font-medium text-gray-700">Updating image...</p>
+          <div className="max-h-[70vh] overflow-y-auto p-4">
+            <div className="space-y-6">
+              {mediaFiles.map((file) => (
+                <div
+                  key={file.id}
+                  className="cursor-pointer group border-2 border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-lg transition-all bg-white"
+                  onClick={() => selectedImage && handleImageReplace(selectedImage.id, file.id)}
+                >
+                  <div className="flex gap-4">
+                    {/* Large Image Preview */}
+                    <div className="flex-shrink-0">
+                      <img
+                        src={`/api/media/${file.id}/file`}
+                        alt={file.altText || file.originalName}
+                        className="w-48 h-32 object-cover rounded border"
+                      />
+                    </div>
+                    
+                    {/* Image Details */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{file.originalName}</h3>
+                      <p className="text-sm text-blue-600 font-medium mb-2">ID: {file.id}</p>
+                      {file.altText && (
+                        <p className="text-sm text-gray-600 mb-2">{file.altText}</p>
+                      )}
+                      <div className="mt-4">
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                          Select This Image
+                        </button>
+                      </div>
                     </div>
                   </div>
-                )}
-              </div>
-            ))}
+                  
+                  {/* Loading Overlay */}
+                  {updateImageMutation.isPending && (
+                    <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center rounded-lg">
+                      <div className="text-center">
+                        <RefreshCw className="h-8 w-8 animate-spin text-blue-500 mx-auto mb-2" />
+                        <p className="text-sm text-gray-600">Updating image...</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
           
           <div className="flex justify-between items-center pt-4 border-t">
