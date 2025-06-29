@@ -2623,16 +2623,24 @@ User message: ${message}`
           fileContent = fileContent.replace(/src="[^"]*"/, `src="${newUrl}"`);
           break;
         case 'image':
-          // For team photos, replace the image: property by position
+          // For team photos, replace by specific team member based on current URLs
           if (imageId === 'aramis-photo') {
-            // First team member (Aramis Figueroa - Founder)
-            fileContent = fileContent.replace(/image: "\/api\/media\/21\/file",/, `image: "${newUrl}",`);
+            // Replace the first image (Aramis Figueroa - Founder)
+            fileContent = fileContent.replace(/image: "\/api\/media\/\d+\/file"/, `image: "${newUrl}"`);
           } else if (imageId === 'aramis-m-photo') {
-            // Second team member (Aramis M Figueroa - Developer)
-            fileContent = fileContent.replace(/image: "\/api\/media\/15\/file",/, `image: "${newUrl}",`);
+            // Replace second occurrence for Aramis M Figueroa
+            let count = 0;
+            fileContent = fileContent.replace(/image: "\/api\/media\/\d+\/file"/g, (match) => {
+              count++;
+              return count === 2 ? `image: "${newUrl}"` : match;
+            });
           } else if (imageId === 'gabriel-photo') {
-            // Third team member (Gabriel Figueroa)
-            fileContent = fileContent.replace(/image: "\/api\/media\/16\/file",/, `image: "${newUrl}",`);
+            // Replace third occurrence for Gabriel
+            let count = 0;
+            fileContent = fileContent.replace(/image: "\/api\/media\/\d+\/file"/g, (match) => {
+              count++;
+              return count === 3 ? `image: "${newUrl}"` : match;
+            });
           }
           break;
         case 'background':

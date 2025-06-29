@@ -88,7 +88,7 @@ export default function Hero() {
           
           <div className="relative">
             <img 
-              src="/api/media/25/file" 
+              src="/api/media/26/file" 
               alt="Professional IT team working with technology" 
               className="rounded-xl shadow-2xl w-full h-auto"
             />
