@@ -14,6 +14,7 @@ import { z } from "zod";
 import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
 import { sendQuickQuoteEmail, sendContactEmail, sendAIConsultationEmail, sendITConsultationEmail, sendTechnicianTransferNotification, sendServiceCalculatorEmail } from "./email-service";
 import { testAWSConnection } from "./test-aws";
+import { aramisTechMaintenanceServices } from "./whmcs-services";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), 'uploads');
@@ -2795,7 +2796,6 @@ User message: ${message}`
   app.post('/api/whmcs/customer/:email', async (req, res) => {
     try {
       const { email } = req.params;
-      const { whmcsConfig } = require('./whmcs-config');
       
       if (!whmcsConfig.apiIdentifier || !whmcsConfig.apiSecret) {
         return res.status(500).json({
@@ -2983,7 +2983,6 @@ User message: ${message}`
       });
     } catch (error) {
       console.error('WHMCS Services API Error:', error);
-      const { aramisTechMaintenanceServices } = require('./whmcs-services');
       res.json({
         success: true,
         services: aramisTechMaintenanceServices
