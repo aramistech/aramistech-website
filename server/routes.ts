@@ -2965,5 +2965,135 @@ User message: ${message}`
     }
   });
 
+  // WHMCS Services API endpoints
+  app.get('/api/whmcs/services', async (req, res) => {
+    try {
+      const { getWHMCSProducts, aramisTechMaintenanceServices } = require('./whmcs-services');
+      
+      // Try to fetch live services from WHMCS, fallback to predefined services
+      let services = await getWHMCSProducts();
+      
+      if (!services || services.length === 0) {
+        services = aramisTechMaintenanceServices;
+      }
+      
+      res.json({
+        success: true,
+        services: services
+      });
+    } catch (error) {
+      console.error('WHMCS Services API Error:', error);
+      const { aramisTechMaintenanceServices } = require('./whmcs-services');
+      res.json({
+        success: true,
+        services: aramisTechMaintenanceServices
+      });
+    }
+  });
+
+  app.get('/api/whmcs/services/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { getWHMCSProductDetails, aramisTechMaintenanceServices } = require('./whmcs-services');
+      
+      // Try to fetch live service details from WHMCS
+      let service = await getWHMCSProductDetails(parseInt(id));
+      
+      if (!service) {
+        // Fallback to predefined services
+        for (const group of aramisTechMaintenanceServices) {
+          const foundService = group.products.find(p => p.id === parseInt(id));
+          if (foundService) {
+            service = foundService;
+            break;
+          }
+        }
+      }
+      
+      if (service) {
+        res.json({
+          success: true,
+          service: service
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: 'Service not found'
+        });
+      }
+    } catch (error) {
+      console.error('WHMCS Service Details API Error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve service details'
+      });
+    }
+  });
+
+  // Order initiation endpoint
+  app.post('/api/whmcs/order', async (req, res) => {
+    try {
+      const { serviceId, billingCycle, customerInfo } = req.body;
+      
+      // Validate required fields
+      if (!serviceId || !billingCycle || !customerInfo) {
+        return res.status(400).json({
+          success: false,
+          message: 'Missing required order information'
+        });
+      }
+
+      // Get service details for pricing
+      const { getWHMCSProductDetails, aramisTechMaintenanceServices } = require('./whmcs-services');
+      let service = await getWHMCSProductDetails(parseInt(serviceId));
+      
+      if (!service) {
+        // Fallback to predefined services
+        for (const group of aramisTechMaintenanceServices) {
+          const foundService = group.products.find(p => p.id === parseInt(serviceId));
+          if (foundService) {
+            service = foundService;
+            break;
+          }
+        }
+      }
+
+      if (!service) {
+        return res.status(404).json({
+          success: false,
+          message: 'Service not found'
+        });
+      }
+
+      // Store order information in database for tracking
+      const orderData = {
+        service_id: serviceId,
+        service_name: service.name,
+        billing_cycle: billingCycle,
+        customer_info: customerInfo,
+        order_date: new Date(),
+        status: 'pending',
+        order_url: service.order_url
+      };
+
+      // In a real implementation, you would store this in the database
+      // For now, we'll return the order information with redirect URL
+      
+      res.json({
+        success: true,
+        message: 'Order prepared successfully',
+        order: orderData,
+        redirect_url: `${service.order_url}&billingcycle=${billingCycle}`,
+        billing_portal_url: 'https://billing.aramistech.com'
+      });
+    } catch (error) {
+      console.error('WHMCS Order API Error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to process order'
+      });
+    }
+  });
+
   return httpServer;
 }
