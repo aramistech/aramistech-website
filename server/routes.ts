@@ -481,7 +481,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "team-aramis-m",
           label: "Aramis M. Figueroa", 
           description: "IT/Software Developer photo in team section",
-          currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/Grayprofile-pic2-600x600-1.png",
+          currentUrl: readUrlFromFile("client/src/components/team.tsx", "https://aramistech.com/wp-content/uploads/2024/09/Grayprofile-pic2-600x600-1.png"),
           filePath: "client/src/components/team.tsx",
           lineNumber: 14,
           category: "Team Photos"
