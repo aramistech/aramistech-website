@@ -4,6 +4,8 @@ import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { trackClick } from "@/lib/analytics";
 
+import AramisTechFooterLogo from "@assets/AramisTechFooterLogo.png";
+
 interface MenuItem {
   id: number;
   label: string;
@@ -186,7 +188,6 @@ export default function DynamicHeader() {
           </div>
         </div>
       </div>
-
       {/* Security Alert Banner - Desktop */}
       {isAlertEnabled && (
         <div 
@@ -233,7 +234,6 @@ export default function DynamicHeader() {
           <div className="absolute right-0 top-0 w-2 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
         </div>
       )}
-
       {/* Security Alert Button - Mobile */}
       {isAlertEnabled && (
         <div className="sm:hidden fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
@@ -275,7 +275,6 @@ export default function DynamicHeader() {
           </div>
         </div>
       )}
-
       {/* Mobile Slide-in Panel */}
       {showMobilePopup && (
         <>
@@ -349,13 +348,12 @@ export default function DynamicHeader() {
           </div>
         </>
       )}
-
       {/* Main Navigation */}
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex justify-between items-center transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
           <div className="flex items-center">
             <img 
-              src="/api/media/15/file" 
+              src={AramisTechFooterLogo} 
               alt="AramisTech Logo" 
               className={`w-auto transition-all duration-300 ${isScrolled ? 'h-12' : 'h-20'}`}
             />
