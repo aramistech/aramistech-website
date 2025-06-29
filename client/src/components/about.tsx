@@ -14,7 +14,7 @@ export default function About() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <img 
-              src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+              src="/api/media/26/file" 
               alt="Modern office technology setup" 
               className="rounded-xl shadow-lg w-full h-auto"
             />
