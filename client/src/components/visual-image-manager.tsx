@@ -199,9 +199,9 @@ export default function VisualImageManager() {
   const updateImageMutation = useMutation({
     mutationFn: async ({ imageId, newMediaId }: { imageId: string; newMediaId: number }) => {
       console.log(`Attempting to update image ${imageId} with media ${newMediaId}`);
-      const response = await apiRequest("/api/admin/update-website-image", "POST", { imageId, newMediaId });
+      const response = await apiRequest("POST", "/api/admin/update-website-image", { imageId, newMediaId });
       console.log("Update response:", response);
-      return response;
+      return response.json();
     },
     onSuccess: () => {
       toast({
