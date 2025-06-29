@@ -322,7 +322,7 @@ export default function VisualImageManager() {
                 onClick={() => selectedImage && handleImageReplace(selectedImage.id, file.id)}
               >
                 {/* Extra Large Image Preview */}
-                <div className="h-64 bg-gray-100 overflow-hidden">
+                <div className="h-80 bg-gray-100 overflow-hidden">
                   <img
                     src={`/api/media/${file.id}/file`}
                     alt={file.altText || file.originalName}
