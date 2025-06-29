@@ -380,28 +380,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const fullPath = path.join(process.cwd(), filePath);
           const content = fs.readFileSync(fullPath, 'utf-8');
           
-          // Extract the current image URL from the file
-          const lines = content.split('\n');
-          for (const line of lines) {
-            if (line.includes('src=') && (line.includes('/api/media/') || line.includes('images.unsplash.com') || line.includes('aramistech.com') || line.includes('.png') || line.includes('.jpg') || line.includes('.svg'))) {
-              const srcMatch = line.match(/src=["']([^"']+)["']/);
-              if (srcMatch) {
-                return srcMatch[1];
+          // Look for src= attributes first (prioritize /api/media/ URLs)
+          const srcMatches = content.match(/src=["']([^"']+)["']/g);
+          if (srcMatches) {
+            for (const match of srcMatches) {
+              const urlMatch = match.match(/src=["']([^"']+)["']/);
+              if (urlMatch && urlMatch[1]) {
+                const url = urlMatch[1];
+                // Prioritize media library URLs
+                if (url.includes('/api/media/')) {
+                  return url;
+                }
+                // Also accept other image URLs
+                if (url.includes('images.unsplash.com') || url.includes('aramistech.com') || url.includes('.png') || url.includes('.jpg') || url.includes('.svg')) {
+                  return url;
+                }
               }
             }
           }
           
-          // If no src found, look for backgroundImage style
-          for (const line of lines) {
-            if (line.includes('backgroundImage') && (line.includes('/api/media/') || line.includes('images.unsplash.com') || line.includes('.png') || line.includes('.jpg'))) {
-              const urlMatch = line.match(/url\(["']([^"']+)["']\)/);
-              if (urlMatch) {
+          // Look for backgroundImage styles
+          const bgMatches = content.match(/backgroundImage:\s*["']?url\(["']?([^"')]+)["']?\)["']?/g);
+          if (bgMatches) {
+            for (const match of bgMatches) {
+              const urlMatch = match.match(/url\(["']?([^"')]+)["']?\)/);
+              if (urlMatch && urlMatch[1]) {
                 return urlMatch[1];
               }
             }
           }
           
-          // Fallback to provided URL if not found
+          // Debug logging
+          console.log(`File scan for ${filePath}: No matching URL found, using fallback: ${fallbackUrl}`);
           return fallbackUrl;
         } catch (error) {
           console.error(`Error reading file ${filePath}:`, error);
@@ -526,10 +536,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       ];
       
+      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.set('Pragma', 'no-cache');
+      res.set('Expires', '0');
       res.json({ 
         success: true, 
         images: knownImages,
-        totalFound: knownImages.length
+        totalFound: knownImages.length,
+        timestamp: Date.now()
       });
       
     } catch (error: any) {

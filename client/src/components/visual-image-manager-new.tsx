@@ -33,12 +33,14 @@ export default function VisualImageManager() {
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const { toast } = useToast();
 
-  // Fetch auto-detected images with auto-refresh
+  // Fetch auto-detected images with auto-refresh and force fresh data
   const { data: autoDetectResponse, isLoading: isLoadingAutoDetect, refetch: refetchAutoDetect } = useQuery({
-    queryKey: ["/api/admin/auto-detect-images"],
+    queryKey: ["/api/admin/auto-detect-images", Date.now()], // Add timestamp to force fresh requests
     retry: false,
     refetchInterval: autoRefreshEnabled ? 30000 : false, // Auto-refresh every 30 seconds
     refetchIntervalInBackground: false,
+    staleTime: 0, // Always treat data as stale
+    cacheTime: 0, // Don't cache responses
   });
 
   // Update last refresh time when data changes
