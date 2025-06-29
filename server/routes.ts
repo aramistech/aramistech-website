@@ -552,146 +552,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Visual Image Manager API
-  app.post('/api/admin/update-website-image', requireAdminAuth, async (req, res) => {
-    try {
-      const { imageId, newMediaId } = req.body;
-      console.log(`Visual Image Manager: Updating ${imageId} with media ID ${newMediaId}`);
-      
-      // Define image mappings
-      const imageMap: Record<string, {filePath: string, targetIndex?: number, searchPattern?: string}> = {
-        // Company Logo Images
-        'company-logo-header': {
-          filePath: 'client/src/components/header.tsx',
-          searchPattern: 'https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png'
-        },
-        'company-logo-footer': {
-          filePath: 'client/src/components/footer.tsx',
-          searchPattern: 'https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png'
-        },
-        'company-logo-dynamic-header': {
-          filePath: 'client/src/components/dynamic-header.tsx',
-          searchPattern: 'https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png'
-        },
-        'company-logo-exit-popup': {
-          filePath: 'client/src/components/exit-intent-popup.tsx',
-          searchPattern: 'https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png'
-        },
-        // Team Photos
-        'team-aramis': {
-          filePath: 'client/src/components/team.tsx',
-          targetIndex: 0
-        },
-        'team-gabriel': {
-          filePath: 'client/src/components/team.tsx',
-          targetIndex: 1
-        },
-        'team-aramis-m': {
-          filePath: 'client/src/components/team.tsx',
-          targetIndex: 2
-        },
-        // Section Images
-        'hero-it-team': {
-          filePath: 'client/src/components/hero.tsx',
-          searchPattern: 'https://images.unsplash.com/photo-1551434678-e076c223a692'
-        },
-        'about-office': {
-          filePath: 'client/src/components/about.tsx',
-          searchPattern: 'https://images.unsplash.com/photo-1497366216548-37526070297c'
-        },
-        'contact-skyline': {
-          filePath: 'client/src/components/contact.tsx',
-          searchPattern: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4'
-        },
-        // Page Background Images
-        'windows10-background': {
-          filePath: 'client/src/pages/windows10-upgrade.tsx',
-          searchPattern: '/windows10-bg.png'
-        },
-        // Video & Media
-        'testimonial-video-poster': {
-          filePath: 'client/src/pages/windows10-upgrade.tsx',
-          searchPattern: 'poster="/video-poster.svg"'
-        }
-      };
-
-      const imageConfig = imageMap[imageId];
-      if (!imageConfig) {
-        return res.status(404).json({ 
-          success: false, 
-          error: `Unknown image ID: ${imageId}` 
-        });
-      }
-
-      const filePath = path.join(process.cwd(), imageConfig.filePath);
-      
-      if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ 
-          success: false, 
-          error: `File not found: ${imageConfig.filePath}` 
-        });
-      }
-
-      let fileContent = fs.readFileSync(filePath, 'utf8');
-
-      if (imageConfig.searchPattern) {
-        if (imageConfig.searchPattern.includes('poster=')) {
-          // Handle video poster replacement
-          fileContent = fileContent.replace(
-            imageConfig.searchPattern,
-            `poster="/api/media/${newMediaId}/file"`
-          );
-        } else {
-          // Handle different image contexts
-          if (imageConfig.searchPattern.includes('unsplash.com')) {
-            // Replace Unsplash URLs in src attributes
-            const regex = new RegExp(`src="[^"]*${imageConfig.searchPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^"]*"`, 'g');
-            fileContent = fileContent.replace(regex, `src="/api/media/${newMediaId}/file"`);
-          } else if (imageConfig.searchPattern.startsWith('/')) {
-            // Replace background images in CSS style attributes
-            const regex = new RegExp(`url\\([^)]*${imageConfig.searchPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^)]*\\)`, 'g');
-            fileContent = fileContent.replace(regex, `url(/api/media/${newMediaId}/file)`);
-            
-            // Also handle src attributes for the same image
-            const srcRegex = new RegExp(`src="[^"]*${imageConfig.searchPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^"]*"`, 'g');
-            fileContent = fileContent.replace(srcRegex, `src="/api/media/${newMediaId}/file"`);
-          }
-        }
-      } else if (imageConfig.targetIndex !== undefined) {
-        // Handle team member images with target index
-        const lines = fileContent.split('\n');
-        let foundImages = 0;
-        
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
-          
-          // Look for image lines
-          if (line.includes('image:') && (line.includes('"/api/media/') || line.includes('"https://aramistech.com'))) {
-            // Update the correct occurrence based on target index
-            if (foundImages === imageConfig.targetIndex) {
-              lines[i] = line.replace(/image: "[^"]*"/, `image: "/api/media/${newMediaId}/file"`);
-              break;
-            }
-            foundImages++;
-          }
-        }
-        fileContent = lines.join('\n');
-      }
-
-      // Write the updated content back
-      fs.writeFileSync(filePath, fileContent, 'utf8');
-      console.log(`Visual Image Manager: Successfully updated ${imageId} in ${imageConfig.filePath}`);
-
-      res.json({ success: true, message: 'Image updated successfully' });
-    } catch (error: any) {
-      console.error('Visual Image Manager Error:', error);
-      res.status(500).json({ 
-        error: 'Failed to update image', 
-        details: error?.message || 'Unknown error'
-      });
-    }
-  });
-
   // Service Calculator API endpoints
   app.post('/api/service-calculator/submit', async (req, res) => {
     try {
@@ -2567,9 +2427,9 @@ User message: ${message}`
               });
               
               // Send bot message to customer
-              wss.clients.forEach((client) => {
+              wss.clients.forEach((client: any) => {
                 if (client.readyState === WebSocket.OPEN && 
-                    (client as any).sessionId === data.sessionId) {
+                    client.sessionId === data.sessionId) {
                   client.send(JSON.stringify({
                     type: 'new_message',
                     message: botMessage
