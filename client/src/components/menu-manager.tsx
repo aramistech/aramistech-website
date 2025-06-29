@@ -51,13 +51,12 @@ interface MenuItem {
   updatedAt: string;
 }
 
-// Sortable Menu Item Component
-function SortableMenuItem({ item, onEdit, onDelete, onToggleVisibility, children }: {
+// Sortable Submenu Item Component
+function SortableSubmenuItem({ item, onEdit, onDelete, onToggleVisibility }: {
   item: MenuItem;
   onEdit: (item: MenuItem) => void;
   onDelete: (id: number) => void;
   onToggleVisibility: (id: number, isVisible: boolean) => void;
-  children?: React.ReactNode;
 }) {
   const {
     attributes,
@@ -72,6 +71,88 @@ function SortableMenuItem({ item, onEdit, onDelete, onToggleVisibility, children
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="ml-8 mt-2">
+      <div className={`flex items-center gap-3 p-2 bg-gray-50 border rounded text-sm ${isDragging ? 'shadow-lg bg-white' : 'hover:bg-gray-100'}`}>
+        <div
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+        >
+          <GripVertical className="w-3 h-3" />
+        </div>
+        <ChevronRight className="w-3 h-3 text-gray-400" />
+        <span className="flex-1 font-medium">{item.label}</span>
+        {item.href && (
+          <span className="text-gray-500">→ {item.href}</span>
+        )}
+        <div className="flex items-center gap-1">
+          <Switch
+            checked={item.isVisible}
+            onCheckedChange={(checked) => onToggleVisibility(item.id, checked)}
+          />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onEdit(item)}
+            className="h-6 w-6 p-0"
+          >
+            <Edit className="w-3 h-3" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onDelete(item.id)}
+            className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+          >
+            <Trash2 className="w-3 h-3" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Sortable Menu Item Component
+function SortableMenuItem({ item, onEdit, onDelete, onToggleVisibility, menuItems, onSubmenuReorder }: {
+  item: MenuItem;
+  onEdit: (item: MenuItem) => void;
+  onDelete: (id: number) => void;
+  onToggleVisibility: (id: number, isVisible: boolean) => void;
+  menuItems: MenuItem[];
+  onSubmenuReorder: (parentId: number, reorderedItems: MenuItem[]) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const subItems = menuItems
+    .filter(subItem => subItem.parentId === item.id)
+    .sort((a, b) => a.orderIndex - b.orderIndex);
+
+  const handleSubmenuDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = subItems.findIndex((subItem) => subItem.id === active.id);
+      const newIndex = subItems.findIndex((subItem) => subItem.id === over?.id);
+      
+      const reorderedItems = arrayMove(subItems, oldIndex, newIndex);
+      onSubmenuReorder(item.id, reorderedItems);
+    }
   };
 
   return (
@@ -100,22 +181,53 @@ function SortableMenuItem({ item, onEdit, onDelete, onToggleVisibility, children
             onCheckedChange={(checked) => onToggleVisibility(item.id, checked)}
           />
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={() => onEdit(item)}
           >
             <Edit className="w-4 h-4" />
           </Button>
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={() => onDelete(item.id)}
+            className="text-red-500 hover:text-red-700"
           >
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>
       </div>
-      {children}
+      
+      {/* Render submenu items with drag-and-drop */}
+      {subItems.length > 0 && (
+        <div className="mt-2">
+          <DndContext
+            sensors={useSensors(
+              useSensor(PointerSensor),
+              useSensor(KeyboardSensor, {
+                coordinateGetter: sortableKeyboardCoordinates,
+              })
+            )}
+            collisionDetection={closestCenter}
+            onDragEnd={handleSubmenuDragEnd}
+          >
+            <SortableContext
+              items={subItems.map(subItem => subItem.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {subItems.map(subItem => (
+                <SortableSubmenuItem
+                  key={subItem.id}
+                  item={subItem}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  onToggleVisibility={onToggleVisibility}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
+        </div>
+      )}
     </div>
   );
 }
