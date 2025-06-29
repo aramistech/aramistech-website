@@ -198,7 +198,10 @@ export default function VisualImageManager() {
 
   const updateImageMutation = useMutation({
     mutationFn: async ({ imageId, newMediaId }: { imageId: string; newMediaId: number }) => {
-      return apiRequest("/api/admin/update-website-image", "POST", { imageId, newMediaId });
+      console.log(`Attempting to update image ${imageId} with media ${newMediaId}`);
+      const response = await apiRequest("/api/admin/update-website-image", "POST", { imageId, newMediaId });
+      console.log("Update response:", response);
+      return response;
     },
     onSuccess: () => {
       toast({
@@ -210,9 +213,11 @@ export default function VisualImageManager() {
       refetchAutoDetect();
     },
     onError: (error: any) => {
+      console.error("Image update error:", error);
+      const errorMessage = error?.message || error?.details || "Failed to update website image";
       toast({
         title: "Update Failed",
-        description: error?.message || "Failed to update website image",
+        description: errorMessage,
         variant: "destructive",
       });
     },

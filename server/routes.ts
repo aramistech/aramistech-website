@@ -510,6 +510,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/update-website-image', requireAdminAuth, async (req, res) => {
     try {
       const { imageId, newMediaId } = req.body;
+      console.log(`Visual Image Manager: Updating ${imageId} with media ID ${newMediaId}`);
+      
       const fs = require('fs');
       const path = require('path');
       
@@ -572,8 +574,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const imageConfig = imageMap[imageId];
       if (!imageConfig) {
+        console.log(`Visual Image Manager: Invalid image ID ${imageId}. Available IDs:`, Object.keys(imageMap));
         return res.status(400).json({ error: 'Invalid image ID' });
       }
+      
+      console.log(`Visual Image Manager: Found config for ${imageId}:`, imageConfig);
 
       // Read the file
       const filePath = path.join(process.cwd(), imageConfig.filePath);
@@ -626,11 +631,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Write the updated content back
       fs.writeFileSync(filePath, fileContent, 'utf8');
+      console.log(`Visual Image Manager: Successfully updated ${imageId} in ${imageConfig.filePath}`);
 
       res.json({ success: true, message: 'Image updated successfully' });
-    } catch (error) {
-      console.error('Error updating website image:', error);
-      res.status(500).json({ error: 'Failed to update image' });
+    } catch (error: any) {
+      console.error('Visual Image Manager Error:', error);
+      res.status(500).json({ 
+        error: 'Failed to update image', 
+        details: error?.message || 'Unknown error'
+      });
     }
   });
 
