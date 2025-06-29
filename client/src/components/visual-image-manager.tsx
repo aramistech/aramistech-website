@@ -239,36 +239,35 @@ export default function VisualImageManager() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header with scan controls */}
-      <div className="flex justify-between items-center">
+    <div className="space-y-4">
+      {/* Compact Header */}
+      <div className="flex justify-between items-center py-2 border-b">
         <div>
-          <h3 className="text-lg font-semibold">Visual Image Manager</h3>
-          <p className="text-sm text-muted-foreground">
-            {autoDetectedImages.length > 0 
-              ? `Auto-detected ${autoDetectedImages.length} images` 
-              : "Click to replace any image across your website"}
+          <h3 className="text-base font-medium">Website Images</h3>
+          <p className="text-xs text-muted-foreground">
+            {autoDetectedImages.length} images detected • Click to replace
           </p>
         </div>
         <Button
           onClick={handleManualScan}
           disabled={isScanning || isLoadingAutoDetect}
-          className="flex items-center gap-2"
+          size="sm"
           variant="outline"
+          className="h-8 px-3"
         >
           {isScanning || isLoadingAutoDetect ? (
-            <RefreshCw className="h-4 w-4 animate-spin" />
+            <RefreshCw className="h-3 w-3 animate-spin mr-1" />
           ) : (
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="h-3 w-3 mr-1" />
           )}
-          {isScanning ? "Scanning..." : "Scan for Images"}
+          <span className="text-xs">{isScanning ? "Scanning..." : "Refresh"}</span>
         </Button>
       </div>
 
       {isLoadingAutoDetect && (
-        <div className="flex items-center justify-center py-8">
-          <RefreshCw className="h-6 w-6 animate-spin mr-2" />
-          <span>Scanning codebase for images...</span>
+        <div className="flex items-center justify-center py-4 text-sm text-muted-foreground">
+          <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+          <span>Scanning images...</span>
         </div>
       )}
 
