@@ -27,13 +27,24 @@ interface MediaFile {
 export default function VisualImageManager() {
   const [selectedImage, setSelectedImage] = useState<WebsiteImage | null>(null);
   const [isScanning, setIsScanning] = useState(false);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const { toast } = useToast();
 
-  // Fetch auto-detected images
+  // Fetch auto-detected images with auto-refresh
   const { data: autoDetectResponse, isLoading: isLoadingAutoDetect, refetch: refetchAutoDetect } = useQuery({
     queryKey: ["/api/admin/auto-detect-images"],
     retry: false,
+    refetchInterval: autoRefreshEnabled ? 30000 : false, // Auto-refresh every 30 seconds
+    refetchIntervalInBackground: false,
   });
+
+  // Update last refresh time when data changes
+  useEffect(() => {
+    if (autoDetectResponse) {
+      setLastRefresh(new Date());
+    }
+  }, [autoDetectResponse]);
 
   // Fetch media library files
   const { data: mediaResponse } = useQuery({
@@ -41,8 +52,26 @@ export default function VisualImageManager() {
     retry: false,
   });
 
-  const autoDetectedImages: WebsiteImage[] = autoDetectResponse?.images || [];
-  const mediaFiles: MediaFile[] = mediaResponse?.files || [];
+  const autoDetectedImages: WebsiteImage[] = (autoDetectResponse as any)?.images || [];
+  const mediaFiles: MediaFile[] = (mediaResponse as any)?.files || [];
+
+  // Auto-refresh countdown timer
+  const [refreshCountdown, setRefreshCountdown] = useState(30);
+
+  useEffect(() => {
+    if (!autoRefreshEnabled) return;
+
+    const interval = setInterval(() => {
+      setRefreshCountdown((prev) => {
+        if (prev <= 1) {
+          return 30; // Reset countdown
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [autoRefreshEnabled]);
 
   // Group images by category
   const groupedImages = autoDetectedImages.reduce((groups, image) => {
@@ -61,7 +90,7 @@ export default function VisualImageManager() {
       await refetchAutoDetect();
       toast({
         title: "Scan Complete",
-        description: `Found ${autoDetectResponse?.totalFound || 0} images across your website`,
+        description: `Found ${(autoDetectResponse as any)?.totalFound || autoDetectedImages.length} images across your website`,
       });
     } catch (error) {
       toast({
@@ -71,6 +100,14 @@ export default function VisualImageManager() {
       });
     } finally {
       setIsScanning(false);
+    }
+  };
+
+  // Toggle auto-refresh
+  const toggleAutoRefresh = () => {
+    setAutoRefreshEnabled(!autoRefreshEnabled);
+    if (!autoRefreshEnabled) {
+      setRefreshCountdown(30);
     }
   };
 
@@ -117,28 +154,50 @@ export default function VisualImageManager() {
 
   return (
     <div className="space-y-4">
-      {/* Compact Header */}
+      {/* Enhanced Header with Auto-Refresh */}
       <div className="flex justify-between items-center py-2 border-b">
         <div>
           <h3 className="text-base font-medium">Website Images</h3>
-          <p className="text-xs text-muted-foreground">
-            {autoDetectedImages.length} images detected • Click to replace
-          </p>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span>{autoDetectedImages.length} images detected</span>
+            <span>•</span>
+            <span>Click to replace</span>
+            {autoRefreshEnabled && (
+              <>
+                <span>•</span>
+                <div className="flex items-center gap-1">
+                  <Timer className="h-3 w-3" />
+                  <span>Auto-refresh in {refreshCountdown}s</span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
-        <Button
-          onClick={handleManualScan}
-          disabled={isScanning || isLoadingAutoDetect}
-          size="sm"
-          variant="outline"
-          className="h-8 px-3"
-        >
-          {isScanning || isLoadingAutoDetect ? (
-            <RefreshCw className="h-3 w-3 animate-spin mr-1" />
-          ) : (
-            <RefreshCw className="h-3 w-3 mr-1" />
-          )}
-          <span className="text-xs">{isScanning ? "Scanning..." : "Refresh"}</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={toggleAutoRefresh}
+            size="sm"
+            variant={autoRefreshEnabled ? "default" : "outline"}
+            className="h-8 px-3"
+          >
+            <Timer className="h-3 w-3 mr-1" />
+            <span className="text-xs">{autoRefreshEnabled ? "Auto On" : "Auto Off"}</span>
+          </Button>
+          <Button
+            onClick={handleManualScan}
+            disabled={isScanning || isLoadingAutoDetect}
+            size="sm"
+            variant="outline"
+            className="h-8 px-3"
+          >
+            {isScanning || isLoadingAutoDetect ? (
+              <RefreshCw className="h-3 w-3 animate-spin mr-1" />
+            ) : (
+              <RefreshCw className="h-3 w-3 mr-1" />
+            )}
+            <span className="text-xs">{isScanning ? "Scanning..." : "Refresh"}</span>
+          </Button>
+        </div>
       </div>
 
       {isLoadingAutoDetect && (
