@@ -137,7 +137,7 @@ export default function Header() {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
             <img 
-              src="/api/media/15/file" 
+              src="/api/media/4/file" 
               alt="AramisTech Logo" 
               className="h-20 w-auto"
             />
