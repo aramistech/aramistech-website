@@ -109,7 +109,7 @@ const websiteImages: ImageMapping[] = [
     id: "windows10-bg",
     label: "Windows 10 Background",
     category: "Page Backgrounds",
-    currentUrl: "/windows10-bg.png",
+    currentUrl: "/api/media/33/file",
     filePath: "client/src/pages/windows10-upgrade.tsx",
     lineNumber: 151
   },

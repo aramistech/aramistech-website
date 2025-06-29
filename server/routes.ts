@@ -2609,6 +2609,48 @@ User message: ${message}`
     });
   }
   
+  // Image scanning endpoint to get current URLs
+  app.get('/api/admin/scan-images', requireAdminAuth, async (req, res) => {
+    try {
+      const images = [];
+      
+      // Windows 10 background detection
+      const windows10Path = path.resolve('client/src/pages/windows10-upgrade.tsx');
+      if (fs.existsSync(windows10Path)) {
+        const content = fs.readFileSync(windows10Path, 'utf8');
+        const bgMatch = content.match(/backgroundImage: `[^`]*url\(([^)]+)\)`/);
+        if (bgMatch) {
+          images.push({
+            id: 'windows10-bg',
+            currentUrl: bgMatch[1],
+            filePath: 'client/src/pages/windows10-upgrade.tsx'
+          });
+        }
+      }
+      
+      // Testimonial poster detection
+      if (fs.existsSync(windows10Path)) {
+        const content = fs.readFileSync(windows10Path, 'utf8');
+        const posterMatch = content.match(/poster="([^"]+)"/);
+        if (posterMatch) {
+          images.push({
+            id: 'testimonial-poster',
+            currentUrl: posterMatch[1],
+            filePath: 'client/src/pages/windows10-upgrade.tsx'
+          });
+        }
+      }
+      
+      res.json({ success: true, images });
+    } catch (error) {
+      console.error('Image scanning error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to scan images" 
+      });
+    }
+  });
+
   // Image replacement API endpoint
   app.put('/api/admin/replace-image', requireAdminAuth, async (req, res) => {
     try {

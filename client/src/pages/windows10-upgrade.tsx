@@ -148,7 +148,7 @@ export default function Windows10Upgrade() {
       <div 
         className="relative text-white py-20 min-h-[600px] flex items-center"
         style={{ 
-          backgroundImage: `linear-gradient(rgba(37, 99, 235, 0.75), rgba(67, 56, 202, 0.75)), url(/windows10-bg.png)`,
+          backgroundImage: `linear-gradient(rgba(37, 99, 235, 0.75), rgba(67, 56, 202, 0.75)), url(/api/media/33/file)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
