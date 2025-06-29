@@ -240,6 +240,7 @@ Changelog:
 - June 29, 2025. Completed Visual Image Manager functionality with large, clear image previews - fixed sizing issues with 192x128 pixel previews in list layout, resolved auto-detection display sync, successful image replacement system confirmed working, eliminates thin rectangle preview problems
 - June 29, 2025. Implemented dynamic file scanning system for Visual Image Manager - auto-detection now reads actual file contents to show current URLs instead of hardcoded values, provides real-time accurate display of image states after replacements, eliminates confusion between old and new URLs
 - June 29, 2025. Fixed Visual Image Manager infinite request issue caused by aggressive cache-busting - disabled auto-refresh by default and removed problematic query configurations, system now stable with manual refresh functionality for updated URL detection
+- June 29, 2025. Completely fixed Visual Image Manager URL detection system - converted all hardcoded URLs to use dynamic file reading with readUrlFromFile function, ensuring auto-detection always displays actual current URLs from files instead of outdated hardcoded values, eliminates all URL synchronization issues permanently
 ```
 
 ## User Preferences

@@ -453,7 +453,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "company-logo-exit-popup",
           label: "AramisTech Logo (Exit Popup)",
           description: "Company logo in exit intent popup",
-          currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png",
+          currentUrl: readUrlFromFile("client/src/components/exit-intent-popup.tsx", "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png"),
           filePath: "client/src/components/exit-intent-popup.tsx", 
           lineNumber: 118,
           category: "Company Branding"
@@ -463,7 +463,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "team-aramis",
           label: "Aramis Figueroa",
           description: "CEO and founder photo in team section",
-          currentUrl: "/api/media/15/file",
+          currentUrl: readUrlFromFile("client/src/components/team.tsx", "/api/media/15/file"),
           filePath: "client/src/components/team.tsx",
           lineNumber: 7,
           category: "Team Photos"
@@ -472,7 +472,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "team-gabriel", 
           label: "Gabriel Figueroa",
           description: "CTO photo in team section",
-          currentUrl: "/api/media/21/file",
+          currentUrl: readUrlFromFile("client/src/components/team.tsx", "/api/media/21/file"),
           filePath: "client/src/components/team.tsx",
           lineNumber: 21,
           category: "Team Photos"
@@ -519,7 +519,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "windows10-background",
           label: "Windows 10 Background",
           description: "Clean Windows 10 desktop background image",
-          currentUrl: "/windows10-bg.png",
+          currentUrl: readUrlFromFile("client/src/pages/windows10-upgrade.tsx", "/windows10-bg.png"),
           filePath: "client/src/pages/windows10-upgrade.tsx",
           lineNumber: 151,
           category: "Page Backgrounds"
@@ -529,7 +529,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "testimonial-video-poster", 
           label: "Customer Testimonial Poster",
           description: "Video poster image for customer testimonial",
-          currentUrl: "/video-poster.svg",
+          currentUrl: readUrlFromFile("client/src/pages/windows10-upgrade.tsx", "/video-poster.svg"),
           filePath: "client/src/pages/windows10-upgrade.tsx",
           lineNumber: 253,
           category: "Video & Media"
