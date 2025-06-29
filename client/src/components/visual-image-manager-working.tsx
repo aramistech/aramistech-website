@@ -75,7 +75,7 @@ const websiteImages: ImageMapping[] = [
   },
   {
     id: "gabriel-photo",
-    label: "Gabriel Figueroa",
+    label: "Gabriel Figueroa (IT TECHNICIAN)",
     category: "Team Photos",
     currentUrl: "/api/media/21/file",
     filePath: "client/src/components/team.tsx",
