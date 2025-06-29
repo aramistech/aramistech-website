@@ -374,6 +374,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auto-detect images endpoint
   app.get("/api/admin/auto-detect-images", requireAdminAuth, (req, res) => {
     try {
+      // Helper function to read actual URL from file
+      const readUrlFromFile = (filePath: string, fallbackUrl: string): string => {
+        try {
+          const fullPath = path.join(process.cwd(), filePath);
+          const content = fs.readFileSync(fullPath, 'utf-8');
+          
+          // Extract the current image URL from the file
+          const lines = content.split('\n');
+          for (const line of lines) {
+            if (line.includes('src=') && (line.includes('/api/media/') || line.includes('images.unsplash.com') || line.includes('aramistech.com') || line.includes('.png') || line.includes('.jpg') || line.includes('.svg'))) {
+              const srcMatch = line.match(/src=["']([^"']+)["']/);
+              if (srcMatch) {
+                return srcMatch[1];
+              }
+            }
+          }
+          
+          // If no src found, look for backgroundImage style
+          for (const line of lines) {
+            if (line.includes('backgroundImage') && (line.includes('/api/media/') || line.includes('images.unsplash.com') || line.includes('.png') || line.includes('.jpg'))) {
+              const urlMatch = line.match(/url\(["']([^"']+)["']\)/);
+              if (urlMatch) {
+                return urlMatch[1];
+              }
+            }
+          }
+          
+          // Fallback to provided URL if not found
+          return fallbackUrl;
+        } catch (error) {
+          console.error(`Error reading file ${filePath}:`, error);
+          return fallbackUrl;
+        }
+      };
+
       // Complete list of all website images
       const knownImages = [
         // Company Logos
@@ -381,7 +416,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "company-logo-header",
           label: "AramisTech Logo (Header)", 
           description: "Main company logo in website header navigation",
-          currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png",
+          currentUrl: readUrlFromFile("client/src/components/header.tsx", "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png"),
           filePath: "client/src/components/header.tsx",
           lineNumber: 140,
           category: "Company Branding"
@@ -390,7 +425,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "company-logo-footer",
           label: "AramisTech Logo (Footer)",
           description: "Company logo in website footer", 
-          currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png",
+          currentUrl: readUrlFromFile("client/src/components/footer.tsx", "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png"),
           filePath: "client/src/components/footer.tsx",
           lineNumber: 42,
           category: "Company Branding"
@@ -399,7 +434,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "company-logo-dynamic-header",
           label: "AramisTech Logo (Dynamic Header)",
           description: "Company logo in dynamic header component",
-          currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png", 
+          currentUrl: readUrlFromFile("client/src/components/dynamic-header.tsx", "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png"), 
           filePath: "client/src/components/dynamic-header.tsx",
           lineNumber: 42,
           category: "Company Branding"
@@ -446,7 +481,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "hero-it-team",
           label: "IT Team Collaboration",
           description: "Professional IT team image in hero section",
-          currentUrl: "/api/media/25/file",
+          currentUrl: readUrlFromFile("client/src/components/hero.tsx", "https://images.unsplash.com/photo-1551434678-e076c223a692"),
           filePath: "client/src/components/hero.tsx",
           lineNumber: 91,
           category: "Section Images"
@@ -455,7 +490,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "about-office",
           label: "Office Technology Setup", 
           description: "Modern office technology setup image in About section",
-          currentUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          currentUrl: readUrlFromFile("client/src/components/about.tsx", "https://images.unsplash.com/photo-1497366216548-37526070297c"),
           filePath: "client/src/components/about.tsx",
           lineNumber: 17,
           category: "Section Images"
@@ -464,7 +499,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "contact-skyline",
           label: "South Florida Skyline",
           description: "South Florida skyline image in Contact section", 
-          currentUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+          currentUrl: readUrlFromFile("client/src/components/contact.tsx", "https://images.unsplash.com/photo-1506905925346-21bda4d32df4"),
           filePath: "client/src/components/contact.tsx",
           lineNumber: 217,
           category: "Section Images"

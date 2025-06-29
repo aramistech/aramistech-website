@@ -238,6 +238,7 @@ Changelog:
 - June 29, 2025. Redesigned Visual Image Manager with professional table layout for better organization and compact display - replaced bulky card layout with streamlined table design featuring 12x8 pixel previews, truncated URLs, and organized category headers for improved space utilization
 - June 29, 2025. Enhanced Visual Image Manager with intelligent auto-refresh system - automatic image detection every 30 seconds, manual refresh toggle controls, real-time countdown timer, and immediate detection of new images added to website codebase
 - June 29, 2025. Completed Visual Image Manager functionality with large, clear image previews - fixed sizing issues with 192x128 pixel previews in list layout, resolved auto-detection display sync, successful image replacement system confirmed working, eliminates thin rectangle preview problems
+- June 29, 2025. Implemented dynamic file scanning system for Visual Image Manager - auto-detection now reads actual file contents to show current URLs instead of hardcoded values, provides real-time accurate display of image states after replacements, eliminates confusion between old and new URLs
 ```
 
 ## User Preferences
