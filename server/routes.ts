@@ -2533,5 +2533,123 @@ User message: ${message}`
     });
   }
   
+  // Image replacement API endpoint
+  app.put('/api/admin/replace-image', requireAdminAuth, async (req, res) => {
+    try {
+      const { imageId, newUrl } = req.body;
+      
+      if (!imageId || !newUrl) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "imageId and newUrl are required" 
+        });
+      }
+
+      // Define image mappings
+      const imageMap: Record<string, { filePath: string; searchPattern: string; }> = {
+        'header-logo': {
+          filePath: 'client/src/components/header.tsx',
+          searchPattern: /src="[^"]*"/
+        },
+        'footer-logo': {
+          filePath: 'client/src/components/footer.tsx', 
+          searchPattern: /src="[^"]*"/
+        },
+        'dynamic-header-logo': {
+          filePath: 'client/src/components/dynamic-header.tsx',
+          searchPattern: /src="[^"]*"/
+        },
+        'exit-popup-logo': {
+          filePath: 'client/src/components/exit-intent-popup.tsx',
+          searchPattern: /src="[^"]*"/
+        },
+        'gabriel-photo': {
+          filePath: 'client/src/components/team.tsx',
+          searchPattern: /image: "[^"]*"/
+        },
+        'aramis-photo': {
+          filePath: 'client/src/components/team.tsx',
+          searchPattern: /image: "[^"]*"/
+        },
+        'carla-photo': {
+          filePath: 'client/src/components/team.tsx',
+          searchPattern: /image: "[^"]*"/
+        },
+        'hero-image': {
+          filePath: 'client/src/components/hero.tsx',
+          searchPattern: /src="[^"]*"/
+        },
+        'about-image': {
+          filePath: 'client/src/components/about.tsx',
+          searchPattern: /src="[^"]*"/
+        },
+        'contact-image': {
+          filePath: 'client/src/components/contact.tsx',
+          searchPattern: /src="[^"]*"/
+        },
+        'windows10-bg': {
+          filePath: 'client/src/pages/windows10-upgrade.tsx',
+          searchPattern: /backgroundImage: 'url\([^)]*\)'/
+        },
+        'testimonial-poster': {
+          filePath: 'client/src/pages/windows10-upgrade.tsx',
+          searchPattern: /poster="[^"]*"/
+        }
+      };
+
+      const imageInfo = imageMap[imageId];
+      if (!imageInfo) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid image ID" 
+        });
+      }
+
+      const fs = require('fs');
+      const path = require('path');
+      
+      const fullPath = path.resolve(imageInfo.filePath);
+      
+      if (!fs.existsSync(fullPath)) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "File not found" 
+        });
+      }
+
+      let fileContent = fs.readFileSync(fullPath, 'utf8');
+      
+      // Replace based on image type
+      if (imageId.includes('logo') || imageId.includes('image') || imageId.includes('photo')) {
+        if (imageId.includes('photo')) {
+          // For team photos, replace the image: property
+          fileContent = fileContent.replace(/image: "[^"]*"/, `image: "${newUrl}"`);
+        } else {
+          // For other images, replace src attribute
+          fileContent = fileContent.replace(/src="[^"]*"/, `src="${newUrl}"`);
+        }
+      } else if (imageId === 'windows10-bg') {
+        // For background image
+        fileContent = fileContent.replace(/backgroundImage: 'url\([^)]*\)'/, `backgroundImage: 'url(${newUrl})'`);
+      } else if (imageId === 'testimonial-poster') {
+        // For video poster
+        fileContent = fileContent.replace(/poster="[^"]*"/, `poster="${newUrl}"`);
+      }
+
+      fs.writeFileSync(fullPath, fileContent, 'utf8');
+
+      res.json({ 
+        success: true, 
+        message: "Image updated successfully" 
+      });
+    } catch (error) {
+      console.error('Image replacement error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to update image" 
+      });
+    }
+  });
+
   return httpServer;
 }

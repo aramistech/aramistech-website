@@ -32,7 +32,7 @@ import ExitIntentManager from '@/components/exit-intent-manager';
 import MediaLibrary from '@/components/media-library';
 
 
-import VisualImageManager from '@/components/visual-image-manager-new';
+import VisualImageManager from '@/components/visual-image-manager-fixed';
 import AnalyticsDashboard from '@/components/analytics-dashboard';
 import KnowledgeBaseManager from '@/components/knowledge-base-manager';
 import SecurityAlertsManager from '@/components/security-alerts-manager';
