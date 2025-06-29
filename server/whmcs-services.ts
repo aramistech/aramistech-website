@@ -5,6 +5,7 @@ export interface WHMCSProduct {
   id: number;
   name: string;
   description: string;
+  product_url: string;
   pricing: {
     monthly?: number;
     quarterly?: number;
@@ -13,6 +14,11 @@ export interface WHMCSProduct {
     biennially?: number;
     triennially?: number;
   };
+  billing_cycles: string[];
+  custom_fields: Array<{
+    name: string;
+    description: string;
+  }>;
   features: string[];
   category: string;
   order_url: string;

@@ -161,7 +161,7 @@ export default function ServicesOrderPage() {
 
                   {/* Card Body */}
                   <div className="p-6">
-                    <div className="text-gray-600 mb-6 leading-relaxed line-clamp-4" 
+                    <div className="text-gray-600 mb-6 leading-relaxed" 
                          dangerouslySetInnerHTML={{ __html: service.description }} />
                     
                     {/* Custom Fields */}
