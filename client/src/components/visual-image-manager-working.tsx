@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { ImageIcon, Check, RefreshCw } from "lucide-react";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 
 interface MediaFile {
   id: number;
@@ -24,9 +24,7 @@ interface ImageMapping {
   lineNumber: number;
 }
 
-// Complete list of all website images with current URLs
 const websiteImages: ImageMapping[] = [
-  // Company Branding
   {
     id: "header-logo",
     label: "Header Logo",
@@ -59,7 +57,6 @@ const websiteImages: ImageMapping[] = [
     filePath: "client/src/components/exit-intent-popup.tsx",
     lineNumber: 235
   },
-  // Team Photos
   {
     id: "gabriel-photo",
     label: "Gabriel Figueroa",
@@ -84,7 +81,6 @@ const websiteImages: ImageMapping[] = [
     filePath: "client/src/components/team.tsx",
     lineNumber: 22
   },
-  // Section Images
   {
     id: "hero-image",
     label: "Hero IT Team",
@@ -109,7 +105,6 @@ const websiteImages: ImageMapping[] = [
     filePath: "client/src/components/contact.tsx",
     lineNumber: 157
   },
-  // Page Backgrounds
   {
     id: "windows10-bg",
     label: "Windows 10 Background",
@@ -118,7 +113,6 @@ const websiteImages: ImageMapping[] = [
     filePath: "client/src/pages/windows10-upgrade.tsx",
     lineNumber: 45
   },
-  // Video & Media
   {
     id: "testimonial-poster",
     label: "Testimonial Video Poster",
@@ -134,7 +128,6 @@ export default function VisualImageManager() {
   const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
   const { toast } = useToast();
 
-  // Fetch media library files
   const { data: mediaResponse, isLoading: isLoadingMedia } = useQuery({
     queryKey: ["/api/admin/media"],
     retry: false,
@@ -142,7 +135,6 @@ export default function VisualImageManager() {
 
   const mediaFiles: MediaFile[] = (mediaResponse as any)?.files || [];
 
-  // Group images by category
   const groupedImages = websiteImages.reduce((groups, image) => {
     const category = image.category;
     if (!groups[category]) {
@@ -152,7 +144,6 @@ export default function VisualImageManager() {
     return groups;
   }, {} as Record<string, ImageMapping[]>);
 
-  // Replace image mutation
   const replaceImageMutation = useMutation({
     mutationFn: async ({ imageId, newUrl }: { imageId: string; newUrl: string }) => {
       const response = await fetch("/api/admin/replace-image", {
@@ -182,7 +173,6 @@ export default function VisualImageManager() {
       setIsImageSelectorOpen(false);
       setSelectedImage(null);
       
-      // Update the local state to reflect the change
       const imageIndex = websiteImages.findIndex(img => img.id === variables.imageId);
       if (imageIndex !== -1) {
         websiteImages[imageIndex].currentUrl = variables.newUrl;
@@ -230,7 +220,6 @@ export default function VisualImageManager() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Visual Image Manager</h2>
@@ -243,7 +232,6 @@ export default function VisualImageManager() {
         </Badge>
       </div>
 
-      {/* Images Table */}
       <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-50 border-b">
@@ -263,71 +251,66 @@ export default function VisualImageManager() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {Object.entries(groupedImages).map(([category, images]) => (
-              <React.Fragment key={category}>
-                {/* Category Header */}
-                <tr className="bg-gray-50">
-                  <td colSpan={4} className="px-3 py-1.5">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${getCategoryColor(category)}`}></div>
-                      <span className="text-sm font-medium text-gray-700">{category}</span>
-                      <Badge variant="secondary" className="text-xs h-4 px-1.5">{images.length}</Badge>
+            {Object.entries(groupedImages).map(([category, images]) => [
+              <tr key={`category-${category}`} className="bg-gray-50">
+                <td colSpan={4} className="px-3 py-1.5">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${getCategoryColor(category)}`}></div>
+                    <span className="text-sm font-medium text-gray-700">{category}</span>
+                    <Badge variant="secondary" className="text-xs h-4 px-1.5">{images.length}</Badge>
+                  </div>
+                </td>
+              </tr>,
+              ...images.map((image) => (
+                <tr key={image.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-3 py-2">
+                    <div className="w-24 h-16 bg-gray-100 rounded border overflow-hidden">
+                      <img
+                        src={image.currentUrl}
+                        alt={image.label}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center text-xs text-gray-400"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path></svg></div>';
+                        }}
+                      />
                     </div>
                   </td>
+                  <td className="px-3 py-2">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{image.label}</div>
+                      <div className="text-xs text-gray-500 mt-1 truncate max-w-xs">
+                        {image.currentUrl}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-3 py-2">
+                    <div className="text-xs text-gray-600">
+                      <div>{image.filePath}</div>
+                      <div className="text-gray-400">Line {image.lineNumber}</div>
+                    </div>
+                  </td>
+                  <td className="px-3 py-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedImage(image);
+                        setIsImageSelectorOpen(true);
+                      }}
+                      className="text-xs"
+                    >
+                      Replace
+                    </Button>
+                  </td>
                 </tr>
-                {/* Images */}
-                {images.map((image) => (
-                  <tr key={image.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-3 py-2">
-                      <div className="w-24 h-16 bg-gray-100 rounded border overflow-hidden">
-                        <img
-                          src={image.currentUrl}
-                          alt={image.label}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                            target.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center text-xs text-gray-400"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path></svg></div>';
-                          }}
-                        />
-                      </div>
-                    </td>
-                    <td className="px-3 py-2">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{image.label}</div>
-                        <div className="text-xs text-gray-500 mt-1 truncate max-w-xs">
-                          {image.currentUrl}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-3 py-2">
-                      <div className="text-xs text-gray-600">
-                        <div>{image.filePath}</div>
-                        <div className="text-gray-400">Line {image.lineNumber}</div>
-                      </div>
-                    </td>
-                    <td className="px-3 py-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedImage(image);
-                          setIsImageSelectorOpen(true);
-                        }}
-                        className="text-xs"
-                      >
-                        Replace
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </React.Fragment>
-            ))}
+              ))
+            ]).flat()}
           </tbody>
         </table>
       </div>
 
-      {/* Media Selection Dialog */}
       <Dialog open={isImageSelectorOpen} onOpenChange={setIsImageSelectorOpen}>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
