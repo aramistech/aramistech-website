@@ -2563,15 +2563,15 @@ User message: ${message}`
           filePath: 'client/src/components/exit-intent-popup.tsx',
           replaceType: 'src'
         },
-        'gabriel-photo': {
-          filePath: 'client/src/components/team.tsx',
-          replaceType: 'image'
-        },
         'aramis-photo': {
           filePath: 'client/src/components/team.tsx',
           replaceType: 'image'
         },
-        'carla-photo': {
+        'aramis-m-photo': {
+          filePath: 'client/src/components/team.tsx',
+          replaceType: 'image'
+        },
+        'gabriel-photo': {
           filePath: 'client/src/components/team.tsx',
           replaceType: 'image'
         },
@@ -2623,12 +2623,15 @@ User message: ${message}`
           fileContent = fileContent.replace(/src="[^"]*"/, `src="${newUrl}"`);
           break;
         case 'image':
-          // For team photos, replace the image: property
-          if (imageId === 'gabriel-photo') {
-            fileContent = fileContent.replace(/image: "[^"]*",/, `image: "${newUrl}",`);
-          } else if (imageId === 'aramis-photo') {
+          // For team photos, replace the image: property by position
+          if (imageId === 'aramis-photo') {
+            // First team member (Aramis Figueroa - Founder)
             fileContent = fileContent.replace(/image: "\/api\/media\/21\/file",/, `image: "${newUrl}",`);
-          } else if (imageId === 'carla-photo') {
+          } else if (imageId === 'aramis-m-photo') {
+            // Second team member (Aramis M Figueroa - Developer)
+            fileContent = fileContent.replace(/image: "\/api\/media\/15\/file",/, `image: "${newUrl}",`);
+          } else if (imageId === 'gabriel-photo') {
+            // Third team member (Gabriel Figueroa)
             fileContent = fileContent.replace(/image: "\/api\/media\/16\/file",/, `image: "${newUrl}",`);
           }
           break;

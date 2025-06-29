@@ -29,7 +29,7 @@ const websiteImages: ImageMapping[] = [
     id: "header-logo",
     label: "Header Logo",
     category: "Company Branding",
-    currentUrl: "/api/media/15/file",
+    currentUrl: "/api/media/27/file",
     filePath: "client/src/components/header.tsx",
     lineNumber: 140
   },
@@ -58,28 +58,28 @@ const websiteImages: ImageMapping[] = [
     lineNumber: 235
   },
   {
-    id: "gabriel-photo",
-    label: "Gabriel Figueroa",
-    category: "Team Photos",
-    currentUrl: "/api/media/15/file",
-    filePath: "client/src/components/team.tsx",
-    lineNumber: 6
-  },
-  {
     id: "aramis-photo",
-    label: "Aramis M Figueroa", 
+    label: "Aramis Figueroa (Founder)",
     category: "Team Photos",
     currentUrl: "/api/media/21/file",
+    filePath: "client/src/components/team.tsx",
+    lineNumber: 7
+  },
+  {
+    id: "aramis-m-photo",
+    label: "Aramis M Figueroa (Developer)", 
+    category: "Team Photos",
+    currentUrl: "/api/media/15/file",
     filePath: "client/src/components/team.tsx", 
     lineNumber: 14
   },
   {
-    id: "carla-photo",
-    label: "Carla Figueroa",
+    id: "gabriel-photo",
+    label: "Gabriel Figueroa",
     category: "Team Photos",
     currentUrl: "/api/media/16/file",
     filePath: "client/src/components/team.tsx",
-    lineNumber: 22
+    lineNumber: 21
   },
   {
     id: "hero-image",
@@ -87,7 +87,7 @@ const websiteImages: ImageMapping[] = [
     category: "Section Images",
     currentUrl: "/api/media/25/file",
     filePath: "client/src/components/hero.tsx",
-    lineNumber: 143
+    lineNumber: 91
   },
   {
     id: "about-image",
@@ -95,7 +95,7 @@ const websiteImages: ImageMapping[] = [
     category: "Section Images", 
     currentUrl: "/api/media/26/file",
     filePath: "client/src/components/about.tsx",
-    lineNumber: 28
+    lineNumber: 17
   },
   {
     id: "contact-image",
@@ -103,7 +103,7 @@ const websiteImages: ImageMapping[] = [
     category: "Section Images",
     currentUrl: "/api/media/27/file",
     filePath: "client/src/components/contact.tsx",
-    lineNumber: 157
+    lineNumber: 217
   },
   {
     id: "windows10-bg",
