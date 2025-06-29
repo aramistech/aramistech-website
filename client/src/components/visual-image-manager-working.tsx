@@ -29,7 +29,7 @@ const websiteImages: ImageMapping[] = [
     id: "header-logo",
     label: "Header Logo",
     category: "Company Branding",
-    currentUrl: "/api/media/27/file",
+    currentUrl: "/api/media/15/file",
     filePath: "client/src/components/header.tsx",
     lineNumber: 140
   },
@@ -61,7 +61,7 @@ const websiteImages: ImageMapping[] = [
     id: "aramis-photo",
     label: "Aramis Figueroa (Founder)",
     category: "Team Photos",
-    currentUrl: "/api/media/21/file",
+    currentUrl: "/api/media/15/file",
     filePath: "client/src/components/team.tsx",
     lineNumber: 7
   },
@@ -69,7 +69,7 @@ const websiteImages: ImageMapping[] = [
     id: "aramis-m-photo",
     label: "Aramis M Figueroa (Developer)", 
     category: "Team Photos",
-    currentUrl: "/api/media/15/file",
+    currentUrl: "/api/media/16/file",
     filePath: "client/src/components/team.tsx", 
     lineNumber: 14
   },
@@ -77,7 +77,7 @@ const websiteImages: ImageMapping[] = [
     id: "gabriel-photo",
     label: "Gabriel Figueroa",
     category: "Team Photos",
-    currentUrl: "/api/media/16/file",
+    currentUrl: "/api/media/21/file",
     filePath: "client/src/components/team.tsx",
     lineNumber: 21
   },
@@ -85,7 +85,7 @@ const websiteImages: ImageMapping[] = [
     id: "hero-image",
     label: "Hero IT Team",
     category: "Section Images",
-    currentUrl: "/api/media/25/file",
+    currentUrl: "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
     filePath: "client/src/components/hero.tsx",
     lineNumber: 91
   },
