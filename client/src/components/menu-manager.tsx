@@ -386,6 +386,11 @@ export default function MenuManager() {
     },
   });
 
+  // Submenu reorder handler
+  const handleSubmenuReorder = (parentId: number, reorderedItems: MenuItem[]) => {
+    reorderMutation.mutate(reorderedItems);
+  };
+
   // Toggle visibility mutation
   const toggleVisibilityMutation = useMutation({
     mutationFn: async ({ id, isVisible }: { id: number; isVisible: boolean }) => {
@@ -719,45 +724,9 @@ export default function MenuManager() {
                       onToggleVisibility={(id, isVisible) => 
                         toggleVisibilityMutation.mutate({ id, isVisible })
                       }
-                    >
-                      {/* Render sub-items */}
-                      {menuItems
-                        .filter(subItem => subItem.parentId === item.id)
-                        .sort((a, b) => a.orderIndex - b.orderIndex)
-                        .map(subItem => (
-                          <div key={subItem.id} className="ml-8 mt-2">
-                            <div className="flex items-center gap-3 p-2 bg-gray-50 border rounded text-sm">
-                              <ChevronRight className="w-3 h-3 text-gray-400" />
-                              <span className="flex-1 font-medium">{subItem.label}</span>
-                              {subItem.href && (
-                                <span className="text-gray-500">→ {subItem.href}</span>
-                              )}
-                              <div className="flex items-center gap-1">
-                                <Switch
-                                  checked={subItem.isVisible}
-                                  onCheckedChange={(checked) => 
-                                    toggleVisibilityMutation.mutate({ id: subItem.id, isVisible: checked })
-                                  }
-                                />
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleEdit(subItem)}
-                                >
-                                  <Edit className="w-3 h-3" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDelete(subItem.id)}
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                    </SortableMenuItem>
+                      menuItems={menuItems}
+                      onSubmenuReorder={handleSubmenuReorder}
+                    />
                   ))}
               </div>
             </SortableContext>
