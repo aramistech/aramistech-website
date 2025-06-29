@@ -512,9 +512,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { imageId, newMediaId } = req.body;
       console.log(`Visual Image Manager: Updating ${imageId} with media ID ${newMediaId}`);
       
-      const fs = require('fs');
-      const path = require('path');
-      
       // Define image mappings
       const imageMap: Record<string, {filePath: string, targetIndex?: number, searchPattern?: string}> = {
         // Company Logo Images
