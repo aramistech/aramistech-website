@@ -244,6 +244,7 @@ Changelog:
 - June 29, 2025. Built fully automated Visual Image Manager system with complete file scanning - eliminated all hardcoded image lists, system now automatically detects any images in all .tsx files across components/pages/src directories, intelligently categorizes by type, works for all future pages and images without manual configuration, provides real-time URL detection for permanent automated image management
 - June 29, 2025. Fixed Visual Image Manager server errors and restored website functionality - removed broken auto-detection code causing syntax errors, restored reliable hardcoded mapping system, server now running successfully with all website features operational
 - June 29, 2025. Resolved missing website images issue - updated all AramisTech logos across header/footer/dynamic-header/exit-popup components from external URLs to media library system (/api/media/15/file), fixed team member photos to use internal media management, eliminated broken external image dependencies for consistent image loading
+- June 29, 2025. Completely fixed Visual Image Manager with working image replacement functionality - resolved API parameter order issues, fixed ES module import errors, created proper fetch-based API calls, built reliable table layout showing all 12 website images organized by category, functional media selection dialog for choosing replacement images, confirmed working image replacement that updates actual code files in real-time
 ```
 
 ## User Preferences

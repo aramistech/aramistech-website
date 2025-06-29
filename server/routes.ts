@@ -2605,9 +2605,6 @@ User message: ${message}`
         });
       }
 
-      const fs = require('fs');
-      const path = require('path');
-      
       const fullPath = path.resolve(imageInfo.filePath);
       
       if (!fs.existsSync(fullPath)) {
