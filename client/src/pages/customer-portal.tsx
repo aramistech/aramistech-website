@@ -9,7 +9,7 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import BillingPortal from "@/components/billing-portal";
 import { getWHMCS, type WHMCSCustomer } from "@/lib/whmcs-integration";
-import { Loader2, User, Mail, Lock } from "lucide-react";
+import { Loader2, User, Mail, Lock, ExternalLink, FileText } from "lucide-react";
 import DynamicHeader from "@/components/dynamic-header";
 import Footer from "@/components/footer";
 
@@ -139,6 +139,42 @@ export default function CustomerPortal() {
                   <p className="text-sm text-gray-700">{customer.country}</p>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Access to Full Billing Portal */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ExternalLink className="h-5 w-5 text-aramis-orange" />
+                Full Billing Portal Access
+              </CardTitle>
+              <CardDescription>
+                Access your complete billing dashboard with advanced features
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  onClick={() => window.open('https://billing.aramistech.com', '_blank')}
+                  className="flex-1 bg-aramis-orange hover:bg-aramis-orange/90"
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Open Full Billing Portal
+                </Button>
+                <Button 
+                  onClick={() => window.open('https://billing.aramistech.com/submitticket.php', '_blank')}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Submit Support Ticket
+                </Button>
+              </div>
+              <p className="text-sm text-gray-600 mt-3">
+                The full billing portal provides complete account management, payment history, 
+                service management, and direct support ticket submission.
+              </p>
             </CardContent>
           </Card>
 

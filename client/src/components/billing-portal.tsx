@@ -26,18 +26,28 @@ export default function BillingPortal({ customerEmail, customerId }: BillingPort
     if (!customerId) return;
     
     try {
-      const whmcs = getWHMCS();
-      const [servicesData, invoicesData] = await Promise.all([
-        whmcs.getCustomerServices(customerId),
-        whmcs.getCustomerInvoices(customerId)
+      const [servicesResponse, invoicesResponse] = await Promise.all([
+        fetch(`/api/whmcs/customer/${customerId}/services`),
+        fetch(`/api/whmcs/customer/${customerId}/invoices`)
       ]);
       
-      setServices(servicesData);
-      setInvoices(invoicesData.slice(0, 5)); // Show last 5 invoices
+      if (servicesResponse.ok && invoicesResponse.ok) {
+        const servicesData = await servicesResponse.json();
+        const invoicesData = await invoicesResponse.json();
+        
+        setServices(servicesData.success ? servicesData.services : []);
+        setInvoices(invoicesData.success ? invoicesData.invoices.slice(0, 5) : []); // Show last 5 invoices
+      } else {
+        toast({
+          title: "Billing System Configuration",
+          description: "WHMCS billing system is being configured. Please contact support for assistance accessing your billing information.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       toast({
         title: "Error Loading Billing Data",
-        description: "Unable to load your billing information. Please try again.",
+        description: "Unable to load your billing information. Please try again or contact support.",
         variant: "destructive",
       });
     } finally {

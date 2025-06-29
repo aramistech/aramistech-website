@@ -2908,7 +2908,7 @@ User message: ${message}`
         username: whmcsConfig.apiIdentifier,
         password: whmcsConfig.apiSecret,
         userid: clientId,
-        limitnum: 25,
+        limitnum: '25',
         responsetype: 'json'
       });
 
