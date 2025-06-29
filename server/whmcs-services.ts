@@ -28,6 +28,10 @@ export interface WHMCSProductGroup {
 
 export async function getWHMCSProducts(): Promise<WHMCSProductGroup[]> {
   try {
+    console.log('Attempting to fetch WHMCS products from:', whmcsConfig.baseUrl);
+    console.log('Using API identifier:', whmcsConfig.apiIdentifier ? 'SET' : 'NOT SET');
+    console.log('Using API secret:', whmcsConfig.apiSecret ? 'SET' : 'NOT SET');
+    
     const postData = new URLSearchParams({
       action: 'GetProducts',
       username: whmcsConfig.apiIdentifier,
@@ -43,12 +47,15 @@ export async function getWHMCSProducts(): Promise<WHMCSProductGroup[]> {
       body: postData
     });
 
+    console.log('WHMCS Response status:', response.status);
     const data = await response.json();
+    console.log('WHMCS Response data:', JSON.stringify(data, null, 2));
     
     if (data.result === 'success') {
+      console.log('WHMCS API Success - found products:', data.products?.products?.length || 0);
       return formatProductGroups(data.products);
     } else {
-      console.error('WHMCS API Error:', data.message);
+      console.error('WHMCS API Error:', data.message || 'Unknown error');
       return [];
     }
   } catch (error) {
@@ -90,9 +97,12 @@ export async function getWHMCSProductDetails(productId: number): Promise<WHMCSPr
 
 function formatProductGroups(productsData: any): WHMCSProductGroup[] {
   const groups: WHMCSProductGroup[] = [];
-  const productGroups = productsData?.products?.product || [];
+  const productGroups = productsData?.product || [];
+  
+  console.log('Formatting products, found:', productGroups.length, 'products');
   
   if (!Array.isArray(productGroups)) {
+    console.log('Products data is not an array:', typeof productGroups);
     return groups;
   }
 
@@ -100,8 +110,9 @@ function formatProductGroups(productsData: any): WHMCSProductGroup[] {
   const groupMap = new Map<string, WHMCSProductGroup>();
   
   productGroups.forEach((product: any) => {
-    const groupName = product.group || 'General Services';
-    const groupId = product.gid || 1;
+    console.log('Processing product:', product.name, 'GID:', product.gid);
+    const groupName = product.group || 'Maintenance Services';
+    const groupId = parseInt(product.gid) || 1;
     
     if (!groupMap.has(groupName)) {
       groupMap.set(groupName, {
@@ -120,22 +131,24 @@ function formatProductGroups(productsData: any): WHMCSProductGroup[] {
 }
 
 function formatProduct(product: any): WHMCSProduct {
+  const pricing = product.pricing?.USD || {};
+  
   return {
     id: parseInt(product.pid || product.id),
     name: product.name || 'Service',
     description: stripHtml(product.description || ''),
     pricing: {
-      monthly: parseFloat(product.pricing?.monthly || product.monthly || 0),
-      quarterly: parseFloat(product.pricing?.quarterly || product.quarterly || 0),
-      semiannually: parseFloat(product.pricing?.semiannually || product.semiannually || 0),
-      annually: parseFloat(product.pricing?.annually || product.annually || 0),
-      biennially: parseFloat(product.pricing?.biennially || product.biennially || 0),
-      triennially: parseFloat(product.pricing?.triennially || product.triennially || 0)
+      monthly: parseFloat(pricing.monthly && pricing.monthly !== '-1.00' ? pricing.monthly : 0),
+      quarterly: parseFloat(pricing.quarterly && pricing.quarterly !== '-1.00' ? pricing.quarterly : 0),
+      semiannually: parseFloat(pricing.semiannually && pricing.semiannually !== '-1.00' ? pricing.semiannually : 0),
+      annually: parseFloat(pricing.annually && pricing.annually !== '-1.00' ? pricing.annually : 0),
+      biennially: parseFloat(pricing.biennially && pricing.biennially !== '-1.00' ? pricing.biennially : 0),
+      triennially: parseFloat(pricing.triennially && pricing.triennially !== '-1.00' ? pricing.triennially : 0)
     },
     features: extractFeatures(product.description || ''),
-    category: product.group || 'General Services',
-    order_url: `${whmcsConfig.baseUrl}/cart.php?a=add&pid=${product.pid || product.id}`,
-    is_featured: product.featured === '1' || product.featured === true
+    category: 'Maintenance Services',
+    order_url: product.product_url || `${whmcsConfig.baseUrl}/cart.php?a=add&pid=${product.pid}`,
+    is_featured: product.pid === 35 || product.pid === 37 // Highlight main maintenance services
   };
 }
 
