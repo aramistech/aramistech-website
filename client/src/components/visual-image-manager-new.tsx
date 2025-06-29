@@ -314,15 +314,15 @@ export default function VisualImageManager() {
             </p>
           </DialogHeader>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-h-[70vh] overflow-y-auto p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-h-[70vh] overflow-y-auto p-4">
             {mediaFiles.map((file) => (
               <div
                 key={file.id}
                 className="cursor-pointer group relative bg-white rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all duration-200 overflow-hidden"
                 onClick={() => selectedImage && handleImageReplace(selectedImage.id, file.id)}
               >
-                {/* Much Larger Image Preview */}
-                <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
+                {/* Extra Large Image Preview */}
+                <div className="h-64 bg-gray-100 overflow-hidden">
                   <img
                     src={`/api/media/${file.id}/file`}
                     alt={file.altText || file.originalName}
