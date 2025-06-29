@@ -303,26 +303,26 @@ export default function VisualImageManager() {
 
       {/* Large Image Selection Modal */}
       <Dialog open={isImageSelectorOpen} onOpenChange={setIsImageSelectorOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ImageIcon className="h-5 w-5" />
               Replace: {selectedImage?.label}
             </DialogTitle>
             <p className="text-sm text-muted-foreground">
-              Select a replacement image from your media library
+              Select a replacement image from your media library - Click any image to use it
             </p>
           </DialogHeader>
           
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[60vh] overflow-y-auto p-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-h-[70vh] overflow-y-auto p-4">
             {mediaFiles.map((file) => (
               <div
                 key={file.id}
-                className="cursor-pointer group relative bg-white rounded-lg border-2 border-gray-200 hover:border-blue-500 transition-all duration-200 overflow-hidden"
+                className="cursor-pointer group relative bg-white rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all duration-200 overflow-hidden"
                 onClick={() => selectedImage && handleImageReplace(selectedImage.id, file.id)}
               >
-                {/* Large Image Preview */}
-                <div className="aspect-square bg-gray-100 overflow-hidden">
+                {/* Much Larger Image Preview */}
+                <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
                   <img
                     src={`/api/media/${file.id}/file`}
                     alt={file.altText || file.originalName}
@@ -331,26 +331,30 @@ export default function VisualImageManager() {
                 </div>
                 
                 {/* Image Info */}
-                <div className="p-3 space-y-1">
-                  <p className="text-sm font-medium text-gray-900 truncate">{file.originalName}</p>
-                  <p className="text-xs text-gray-500">ID: {file.id}</p>
+                <div className="p-4 space-y-2">
+                  <p className="text-base font-medium text-gray-900 truncate">{file.originalName}</p>
+                  <p className="text-sm text-gray-500">ID: {file.id}</p>
                   {file.altText && (
-                    <p className="text-xs text-gray-400 truncate">{file.altText}</p>
+                    <p className="text-sm text-gray-400">{file.altText}</p>
                   )}
                 </div>
                 
                 {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-200">
+                <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-200">
                   <div className="text-white text-center">
-                    <Check className="h-8 w-8 mx-auto mb-2" />
-                    <p className="text-sm font-medium">Select This Image</p>
+                    <Check className="h-12 w-12 mx-auto mb-3" />
+                    <p className="text-lg font-medium">Select This Image</p>
+                    <p className="text-sm opacity-90 mt-1">{file.originalName}</p>
                   </div>
                 </div>
                 
                 {/* Loading Overlay */}
                 {updateImageMutation.isPending && (
-                  <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
-                    <RefreshCw className="h-6 w-6 animate-spin text-blue-500" />
+                  <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center">
+                    <div className="text-center">
+                      <RefreshCw className="h-8 w-8 animate-spin text-blue-500 mx-auto mb-2" />
+                      <p className="text-sm text-gray-600">Updating image...</p>
+                    </div>
                   </div>
                 )}
               </div>
