@@ -8,6 +8,7 @@ import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { glob } from "glob";
 import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
 import { z } from "zod";
 import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
@@ -374,175 +375,144 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auto-detect images endpoint
   app.get("/api/admin/auto-detect-images", requireAdminAuth, (req, res) => {
     try {
-      // Helper function to read actual URL from file
-      const readUrlFromFile = (filePath: string, fallbackUrl: string): string => {
-        try {
-          const fullPath = path.join(process.cwd(), filePath);
-          const content = fs.readFileSync(fullPath, 'utf-8');
+      // Function to automatically scan all files for images
+      const scanForImages = () => {
+        const detectedImages: any[] = [];
+        const searchPatterns = [
+          'client/src/components/*.tsx',
+          'client/src/pages/*.tsx',
+          'client/src/*.tsx'
+        ];
+
+        searchPatterns.forEach(pattern => {
+          const files = glob.sync(pattern);
           
-          // Look for src= attributes first (prioritize /api/media/ URLs)
-          const srcMatches = content.match(/src=["']([^"']+)["']/g);
-          if (srcMatches) {
-            for (const match of srcMatches) {
-              const urlMatch = match.match(/src=["']([^"']+)["']/);
-              if (urlMatch && urlMatch[1]) {
-                const url = urlMatch[1];
-                // Prioritize media library URLs
-                if (url.includes('/api/media/')) {
-                  return url;
+          files.forEach(filePath => {
+            try {
+              const content = fs.readFileSync(filePath, 'utf-8');
+              const lines = content.split('\n');
+              
+              lines.forEach((line, index) => {
+                // Look for src= attributes
+                const srcMatches = line.match(/src=["']([^"']+)["']/g);
+                if (srcMatches) {
+                  srcMatches.forEach(match => {
+                    const urlMatch = match.match(/src=["']([^"']+)["']/);
+                    if (urlMatch && urlMatch[1]) {
+                      const url = urlMatch[1];
+                      if (url.includes('/api/media/') || url.includes('images.unsplash.com') || 
+                          url.includes('aramistech.com') || url.includes('.png') || 
+                          url.includes('.jpg') || url.includes('.svg') || url.includes('.jpeg')) {
+                        
+                        // Generate ID from file path and line number
+                        const fileName = path.basename(filePath, '.tsx');
+                        const id = `${fileName}-line-${index + 1}`;
+                        
+                        // Categorize images intelligently
+                        let category = "Other Images";
+                        if (url.includes('/api/media/')) category = "Media Library";
+                        else if (filePath.includes('team') || url.includes('profile') || url.includes('Figueroa')) category = "Team Photos";
+                        else if (filePath.includes('header') || filePath.includes('footer') || filePath.includes('logo') || url.includes('Logo')) category = "Company Branding";
+                        else if (filePath.includes('hero') || filePath.includes('about') || filePath.includes('contact')) category = "Section Images";
+                        else if (filePath.includes('pages/')) category = "Page Backgrounds";
+                        
+                        // Generate smart description
+                        let description = `Image in ${fileName} component`;
+                        if (url.includes('Logo')) description = `Logo in ${fileName} component`;
+                        else if (url.includes('profile')) description = `Profile photo in ${fileName} component`;
+                        else if (filePath.includes('windows10')) description = `Windows 10 related image in ${fileName} page`;
+                        
+                        detectedImages.push({
+                          id,
+                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Image`,
+                          description,
+                          currentUrl: url,
+                          filePath,
+                          lineNumber: index + 1,
+                          category
+                        });
+                      }
+                    }
+                  });
                 }
-                // Also accept other image URLs
-                if (url.includes('images.unsplash.com') || url.includes('aramistech.com') || url.includes('.png') || url.includes('.jpg') || url.includes('.svg')) {
-                  return url;
+                
+                // Look for backgroundImage styles
+                const bgMatches = line.match(/backgroundImage:\s*["']?url\(["']?([^"')]+)["']?\)["']?/g);
+                if (bgMatches) {
+                  bgMatches.forEach(match => {
+                    const urlMatch = match.match(/url\(["']?([^"')]+)["']?\)/);
+                    if (urlMatch && urlMatch[1]) {
+                      const url = urlMatch[1];
+                      
+                      const fileName = path.basename(filePath, '.tsx');
+                      const id = `${fileName}-bg-line-${index + 1}`;
+                      
+                      detectedImages.push({
+                        id,
+                        label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Background`,
+                        description: `Background image in ${fileName} component`,
+                        currentUrl: url,
+                        filePath,
+                        lineNumber: index + 1,
+                        category: "Page Backgrounds"
+                      });
+                    }
+                  });
                 }
-              }
+                
+                // Look for poster= attributes (video posters)
+                const posterMatches = line.match(/poster=["']([^"']+)["']/g);
+                if (posterMatches) {
+                  posterMatches.forEach(match => {
+                    const urlMatch = match.match(/poster=["']([^"']+)["']/);
+                    if (urlMatch && urlMatch[1]) {
+                      const url = urlMatch[1];
+                      
+                      const fileName = path.basename(filePath, '.tsx');
+                      const id = `${fileName}-poster-line-${index + 1}`;
+                      
+                      detectedImages.push({
+                        id,
+                        label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Video Poster`,
+                        description: `Video poster image in ${fileName} component`,
+                        currentUrl: url,
+                        filePath,
+                        lineNumber: index + 1,
+                        category: "Video & Media"
+                      });
+                    }
+                  });
+                }
+              });
+            } catch (error) {
+              console.error(`Error scanning file ${filePath}:`, error);
             }
+          });
+        });
+
+        // Remove duplicates and sort by category
+        const uniqueImages = detectedImages.filter((image, index, self) => 
+          index === self.findIndex(t => t.currentUrl === image.currentUrl && t.filePath === image.filePath)
+        );
+
+        return uniqueImages.sort((a, b) => {
+          if (a.category !== b.category) {
+            return a.category.localeCompare(b.category);
           }
-          
-          // Look for backgroundImage styles
-          const bgMatches = content.match(/backgroundImage:\s*["']?url\(["']?([^"')]+)["']?\)["']?/g);
-          if (bgMatches) {
-            for (const match of bgMatches) {
-              const urlMatch = match.match(/url\(["']?([^"')]+)["']?\)/);
-              if (urlMatch && urlMatch[1]) {
-                return urlMatch[1];
-              }
-            }
-          }
-          
-          // Debug logging
-          console.log(`File scan for ${filePath}: No matching URL found, using fallback: ${fallbackUrl}`);
-          return fallbackUrl;
-        } catch (error) {
-          console.error(`Error reading file ${filePath}:`, error);
-          return fallbackUrl;
-        }
+          return a.label.localeCompare(b.label);
+        });
       };
 
-      // Complete list of all website images
-      const knownImages = [
-        // Company Logos
-        {
-          id: "company-logo-header",
-          label: "AramisTech Logo (Header)", 
-          description: "Main company logo in website header navigation",
-          currentUrl: readUrlFromFile("client/src/components/header.tsx", "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png"),
-          filePath: "client/src/components/header.tsx",
-          lineNumber: 140,
-          category: "Company Branding"
-        },
-        {
-          id: "company-logo-footer",
-          label: "AramisTech Logo (Footer)",
-          description: "Company logo in website footer", 
-          currentUrl: readUrlFromFile("client/src/components/footer.tsx", "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png"),
-          filePath: "client/src/components/footer.tsx",
-          lineNumber: 42,
-          category: "Company Branding"
-        },
-        {
-          id: "company-logo-dynamic-header",
-          label: "AramisTech Logo (Dynamic Header)",
-          description: "Company logo in dynamic header component",
-          currentUrl: readUrlFromFile("client/src/components/dynamic-header.tsx", "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png"), 
-          filePath: "client/src/components/dynamic-header.tsx",
-          lineNumber: 42,
-          category: "Company Branding"
-        },
-        {
-          id: "company-logo-exit-popup",
-          label: "AramisTech Logo (Exit Popup)",
-          description: "Company logo in exit intent popup",
-          currentUrl: readUrlFromFile("client/src/components/exit-intent-popup.tsx", "https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png"),
-          filePath: "client/src/components/exit-intent-popup.tsx", 
-          lineNumber: 118,
-          category: "Company Branding"
-        },
-        // Team Photos
-        {
-          id: "team-aramis",
-          label: "Aramis Figueroa",
-          description: "CEO and founder photo in team section",
-          currentUrl: readUrlFromFile("client/src/components/team.tsx", "/api/media/15/file"),
-          filePath: "client/src/components/team.tsx",
-          lineNumber: 7,
-          category: "Team Photos"
-        },
-        {
-          id: "team-gabriel", 
-          label: "Gabriel Figueroa",
-          description: "CTO photo in team section",
-          currentUrl: readUrlFromFile("client/src/components/team.tsx", "/api/media/21/file"),
-          filePath: "client/src/components/team.tsx",
-          lineNumber: 21,
-          category: "Team Photos"
-        },
-        {
-          id: "team-aramis-m",
-          label: "Aramis M. Figueroa", 
-          description: "IT/Software Developer photo in team section",
-          currentUrl: readUrlFromFile("client/src/components/team.tsx", "https://aramistech.com/wp-content/uploads/2024/09/Grayprofile-pic2-600x600-1.png"),
-          filePath: "client/src/components/team.tsx",
-          lineNumber: 14,
-          category: "Team Photos"
-        },
-        // Section Images
-        {
-          id: "hero-it-team",
-          label: "IT Team Collaboration",
-          description: "Professional IT team image in hero section",
-          currentUrl: readUrlFromFile("client/src/components/hero.tsx", "https://images.unsplash.com/photo-1551434678-e076c223a692"),
-          filePath: "client/src/components/hero.tsx",
-          lineNumber: 91,
-          category: "Section Images"
-        },
-        {
-          id: "about-office",
-          label: "Office Technology Setup", 
-          description: "Modern office technology setup image in About section",
-          currentUrl: readUrlFromFile("client/src/components/about.tsx", "https://images.unsplash.com/photo-1497366216548-37526070297c"),
-          filePath: "client/src/components/about.tsx",
-          lineNumber: 17,
-          category: "Section Images"
-        },
-        {
-          id: "contact-skyline",
-          label: "South Florida Skyline",
-          description: "South Florida skyline image in Contact section", 
-          currentUrl: readUrlFromFile("client/src/components/contact.tsx", "https://images.unsplash.com/photo-1506905925346-21bda4d32df4"),
-          filePath: "client/src/components/contact.tsx",
-          lineNumber: 217,
-          category: "Section Images"
-        },
-        // Page Backgrounds
-        {
-          id: "windows10-background",
-          label: "Windows 10 Background",
-          description: "Clean Windows 10 desktop background image",
-          currentUrl: readUrlFromFile("client/src/pages/windows10-upgrade.tsx", "/windows10-bg.png"),
-          filePath: "client/src/pages/windows10-upgrade.tsx",
-          lineNumber: 151,
-          category: "Page Backgrounds"
-        },
-        // Video & Media
-        {
-          id: "testimonial-video-poster", 
-          label: "Customer Testimonial Poster",
-          description: "Video poster image for customer testimonial",
-          currentUrl: readUrlFromFile("client/src/pages/windows10-upgrade.tsx", "/video-poster.svg"),
-          filePath: "client/src/pages/windows10-upgrade.tsx",
-          lineNumber: 253,
-          category: "Video & Media"
-        }
-      ];
+      // Use dynamic image scanning instead of hardcoded list
+      const detectedImages = scanForImages();
       
       res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.set('Pragma', 'no-cache');
       res.set('Expires', '0');
       res.json({ 
         success: true, 
-        images: knownImages,
-        totalFound: knownImages.length,
+        images: detectedImages,
+        totalFound: detectedImages.length,
         timestamp: Date.now()
       });
       
