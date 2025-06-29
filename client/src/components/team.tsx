@@ -4,21 +4,21 @@ const teamMembers = [
   {
     name: "Aramis Figueroa",
     role: "IT NETWORK SPECIALIST",
-    image: "/api/media/21/file",
+    image: "/api/media/15/file",
     description: "With over 27 years of experience in the technology industry, Aramis specializes in network solutions, cloud services, and custom server setups. As the founder of AramisTech Corp, he's dedicated to helping businesses thrive in the digital landscape.",
     email: "aramis@aramistech.com"
   },
   {
     name: "Aramis M Figueroa",
     role: "IT / SOFTWARE DEVELOPER",
-    image: "/api/media/15/file",
+    image: "/api/media/16/file",
     description: "With 4 years of hands-on experience creating innovative solutions for businesses. Specializing in custom software development, web applications, and automation tools with a passion for coding and problem-solving.",
     email: "aramism@aramistech.com"
   },
   {
     name: "Gabriel Figueroa",
     role: "IT TECHNICIAN",
-    image: "/api/media/27/file",
+    image: "/api/media/21/file",
     description: "With over 2 years of experience in troubleshooting, maintaining, and optimizing IT systems. Known for his dedication to resolving technical issues quickly and efficiently with expertise in network maintenance and diagnostics.",
     email: "gabriel@aramistech.com"
   }
