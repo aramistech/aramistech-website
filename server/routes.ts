@@ -3095,5 +3095,66 @@ User message: ${message}`
     }
   });
 
+  // Authorize.Net Payment Processing
+  app.post('/api/authorize-net/process-payment', async (req, res) => {
+    try {
+      const { processAuthorizeNetPayment, validateCreditCard } = require('./authorize-net');
+      
+      // Validate card number
+      if (!validateCreditCard(req.body.cardNumber)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid credit card number'
+        });
+      }
+
+      // Process payment
+      const result = await processAuthorizeNetPayment(req.body);
+      
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(400).json(result);
+      }
+    } catch (error) {
+      console.error('Payment processing error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Payment processing failed. Please try again.'
+      });
+    }
+  });
+
+  // Order status lookup
+  app.get('/api/orders/:orderId', async (req, res) => {
+    try {
+      const { orderId } = req.params;
+      
+      // In a real implementation, you would look up the order in your database
+      // For now, return a success message for valid order IDs
+      if (orderId.startsWith('ORD_')) {
+        res.json({
+          success: true,
+          order: {
+            id: orderId,
+            status: 'completed',
+            message: 'Your service order has been processed successfully.'
+          }
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: 'Order not found'
+        });
+      }
+    } catch (error) {
+      console.error('Order lookup error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve order information'
+      });
+    }
+  });
+
   return httpServer;
 }
