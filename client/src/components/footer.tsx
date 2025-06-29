@@ -1,6 +1,8 @@
 import { Facebook, Linkedin, Twitter, Phone, Mail, MapPin, Clock, Shield } from "lucide-react";
 import { useState, useEffect } from "react";
 
+import AramisTechFooterLogo from "@assets/AramisTechFooterLogo.png";
+
 export default function Footer() {
   const [isWarningDismissed, setIsWarningDismissed] = useState(false);
 
@@ -24,7 +26,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-2">
             <img 
-              src="/api/media/15/file" 
+              src={AramisTechFooterLogo} 
               alt="AramisTech Logo" 
               className="h-20 w-auto mb-6 brightness-0 invert"
             />
