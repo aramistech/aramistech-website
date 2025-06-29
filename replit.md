@@ -246,6 +246,7 @@ Changelog:
 - June 29, 2025. Fixed Visual Image Manager display accuracy - corrected hardcoded image URLs to match actual website file contents, eliminated confusion where wrong images were shown for logos and team photos, ensured all 12 website images display authentic previews matching current website state
 - June 29, 2025. Corrected company logo implementation across all website components - replaced personal photos with authentic AramisTech logo (media ID 4) in header, footer, dynamic header, and exit popup, updated Visual Image Manager to display correct company branding previews instead of showing personal photos for business logos
 - June 29, 2025. Downloaded Windows 10 upgrade page background image from static file `/windows10-bg.png` and uploaded to media library as ID 31 for centralized media management and Visual Image Manager compatibility
+- June 29, 2025. Fixed Visual Image Manager Windows 10 background replacement issue - updated backend replacement logic to properly handle template literal format with backticks, ensuring background image changes persist instead of reverting to static file
 ```
 
 ## User Preferences

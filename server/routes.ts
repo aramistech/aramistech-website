@@ -2720,8 +2720,11 @@ User message: ${message}`
           }
           break;
         case 'background':
-          // For background image
-          fileContent = fileContent.replace(/backgroundImage: 'url\([^)]*\)'/, `backgroundImage: 'url(${newUrl})'`);
+          // For background image - handle template literal format
+          fileContent = fileContent.replace(
+            /backgroundImage: `linear-gradient\([^)]+\), url\([^)]+\)`/,
+            `backgroundImage: \`linear-gradient(rgba(37, 99, 235, 0.75), rgba(67, 56, 202, 0.75)), url(${newUrl})\``
+          );
           break;
         case 'poster':
           // For video poster
