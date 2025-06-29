@@ -400,9 +400,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
                     const urlMatch = match.match(/src=["']([^"']+)["']/);
                     if (urlMatch && urlMatch[1]) {
                       const url = urlMatch[1];
-                      if (url.includes('/api/media/') || url.includes('images.unsplash.com') || 
-                          url.includes('aramistech.com') || url.includes('.png') || 
-                          url.includes('.jpg') || url.includes('.svg') || url.includes('.jpeg')) {
+                      // Filter out placeholder URLs and only include valid image URLs
+                      if (url && 
+                          !url.includes('YOUR_IMAGE_ID') && 
+                          !url.includes('placeholder') && 
+                          !url.includes('example') &&
+                          !url.includes('REPLACE_WITH') &&
+                          (url.includes('/api/media/') || 
+                           url.includes('images.unsplash.com') || 
+                           url.includes('aramistech.com') || 
+                           url.includes('.png') || 
+                           url.includes('.jpg') || 
+                           url.includes('.svg') || 
+                           url.includes('.jpeg') ||
+                           url.startsWith('/') && (url.includes('.png') || url.includes('.jpg') || url.includes('.svg')))) {
                         
                         // Generate ID from file path and line number
                         const fileName = path.basename(filePath, '.tsx');
@@ -444,18 +455,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
                     if (urlMatch && urlMatch[1]) {
                       const url = urlMatch[1];
                       
-                      const fileName = path.basename(filePath, '.tsx');
-                      const id = `${fileName}-bg-line-${index + 1}`;
-                      
-                      detectedImages.push({
-                        id,
-                        label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Background`,
-                        description: `Background image in ${fileName} component`,
-                        currentUrl: url,
-                        filePath,
-                        lineNumber: index + 1,
-                        category: "Page Backgrounds"
-                      });
+                      // Filter out placeholder URLs for background images too
+                      if (url && 
+                          !url.includes('YOUR_IMAGE_ID') && 
+                          !url.includes('placeholder') && 
+                          !url.includes('example') &&
+                          !url.includes('REPLACE_WITH')) {
+                        
+                        const fileName = path.basename(filePath, '.tsx');
+                        const id = `${fileName}-bg-line-${index + 1}`;
+                        
+                        detectedImages.push({
+                          id,
+                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Background`,
+                          description: `Background image in ${fileName} component`,
+                          currentUrl: url,
+                          filePath,
+                          lineNumber: index + 1,
+                          category: "Page Backgrounds"
+                        });
+                      }
                     }
                   });
                 }
@@ -468,18 +487,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
                     if (urlMatch && urlMatch[1]) {
                       const url = urlMatch[1];
                       
-                      const fileName = path.basename(filePath, '.tsx');
-                      const id = `${fileName}-poster-line-${index + 1}`;
-                      
-                      detectedImages.push({
-                        id,
-                        label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Video Poster`,
-                        description: `Video poster image in ${fileName} component`,
-                        currentUrl: url,
-                        filePath,
-                        lineNumber: index + 1,
-                        category: "Video & Media"
-                      });
+                      // Filter out placeholder URLs for poster images too
+                      if (url && 
+                          !url.includes('YOUR_IMAGE_ID') && 
+                          !url.includes('placeholder') && 
+                          !url.includes('example') &&
+                          !url.includes('REPLACE_WITH')) {
+                        
+                        const fileName = path.basename(filePath, '.tsx');
+                        const id = `${fileName}-poster-line-${index + 1}`;
+                        
+                        detectedImages.push({
+                          id,
+                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Video Poster`,
+                          description: `Video poster image in ${fileName} component`,
+                          currentUrl: url,
+                          filePath,
+                          lineNumber: index + 1,
+                          category: "Video & Media"
+                        });
+                      }
                     }
                   });
                 }
@@ -590,22 +617,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const imageConfig = imageMap[imageId];
       if (!imageConfig) {
-        console.log(`Visual Image Manager: Invalid image ID ${imageId}. Available IDs:`, Object.keys(imageMap));
-        return res.status(400).json({ error: 'Invalid image ID' });
+        return res.status(404).json({ 
+          success: false, 
+          error: `Unknown image ID: ${imageId}` 
+        });
       }
-      
-      console.log(`Visual Image Manager: Found config for ${imageId}:`, imageConfig);
 
-      // Read the file
       const filePath = path.join(process.cwd(), imageConfig.filePath);
-      let fileContent = fs.readFileSync(filePath, 'utf8');
       
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ 
+          success: false, 
+          error: `File not found: ${imageConfig.filePath}` 
+        });
+      }
+
+      let fileContent = fs.readFileSync(filePath, 'utf8');
+
       if (imageConfig.searchPattern) {
-        // Handle specific pattern replacement (for non-team images)
         if (imageConfig.searchPattern.includes('poster=')) {
-          // Special case for video poster
+          // Handle video poster replacement
           fileContent = fileContent.replace(
-            /poster="[^"]*"/g,
+            imageConfig.searchPattern,
             `poster="/api/media/${newMediaId}/file"`
           );
         } else {
