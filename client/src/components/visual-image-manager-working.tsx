@@ -206,6 +206,9 @@ export default function VisualImageManager() {
       if (imageIndex !== -1) {
         websiteImages[imageIndex].currentUrl = variables.newUrl;
       }
+      
+      // Refresh current URLs to show updated values
+      fetchCurrentUrls();
     },
     onError: (error: any) => {
       console.error("Image replacement error:", error);
@@ -256,9 +259,20 @@ export default function VisualImageManager() {
             Manage and replace images across your website with visual previews
           </p>
         </div>
-        <Badge variant="outline" className="px-3 py-1">
-          {websiteImages.length} Images
-        </Badge>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={fetchCurrentUrls}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Refresh URLs
+          </Button>
+          <Badge variant="outline" className="px-3 py-1">
+            {websiteImages.length} Images
+          </Badge>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
