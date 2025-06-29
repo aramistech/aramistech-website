@@ -35,7 +35,7 @@ export default function Team() {
             Experienced tech professionals with a passion for problem-solving, dedicated to providing exceptional service and innovative solutions.
           </p>
         </div>
-        
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {teamMembers.map((member, index) => (
             <div key={index} className="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
