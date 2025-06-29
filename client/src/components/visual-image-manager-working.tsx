@@ -29,7 +29,7 @@ const websiteImages: ImageMapping[] = [
     id: "header-logo",
     label: "Header Logo",
     category: "Company Branding",
-    currentUrl: "/api/media/15/file",
+    currentUrl: "/api/media/4/file",
     filePath: "client/src/components/header.tsx",
     lineNumber: 140
   },
@@ -37,23 +37,23 @@ const websiteImages: ImageMapping[] = [
     id: "footer-logo", 
     label: "Footer Logo",
     category: "Company Branding",
-    currentUrl: "/api/media/15/file",
+    currentUrl: "/api/media/4/file",
     filePath: "client/src/components/footer.tsx",
-    lineNumber: 27
+    lineNumber: 29
   },
   {
     id: "dynamic-header-logo",
     label: "Mobile Header Logo",
     category: "Company Branding", 
-    currentUrl: "/api/media/15/file",
+    currentUrl: "/api/media/4/file",
     filePath: "client/src/components/dynamic-header.tsx",
-    lineNumber: 358
+    lineNumber: 356
   },
   {
     id: "exit-popup-logo",
     label: "Exit Popup Logo",
     category: "Company Branding",
-    currentUrl: "/api/media/15/file", 
+    currentUrl: "/api/media/4/file", 
     filePath: "client/src/components/exit-intent-popup.tsx",
     lineNumber: 235
   },

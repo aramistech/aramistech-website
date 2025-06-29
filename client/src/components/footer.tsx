@@ -26,7 +26,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-2">
             <img 
-              src={AramisTechFooterLogo} 
+              src="/api/media/4/file" 
               alt="AramisTech Logo" 
               className="h-20 w-auto mb-6 brightness-0 invert"
             />

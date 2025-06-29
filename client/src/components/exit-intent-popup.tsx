@@ -232,7 +232,7 @@ export default function ExitIntentPopup() {
           {/* AramisTech Logo */}
           <div className="flex items-center mb-6">
             <img 
-              src="/api/media/15/file" 
+              src="/api/media/4/file" 
               alt="AramisTech Logo" 
               className="h-16 w-auto mr-4"
             />

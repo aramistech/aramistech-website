@@ -353,7 +353,7 @@ export default function DynamicHeader() {
         <div className={`flex justify-between items-center transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
           <div className="flex items-center">
             <img 
-              src={AramisTechFooterLogo} 
+              src="/api/media/4/file" 
               alt="AramisTech Logo" 
               className={`w-auto transition-all duration-300 ${isScrolled ? 'h-12' : 'h-20'}`}
             />
