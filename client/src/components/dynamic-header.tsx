@@ -355,7 +355,7 @@ export default function DynamicHeader() {
         <div className={`flex justify-between items-center transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
           <div className="flex items-center">
             <img 
-              src="https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png" 
+              src="/api/media/15/file" 
               alt="AramisTech Logo" 
               className={`w-auto transition-all duration-300 ${isScrolled ? 'h-12' : 'h-20'}`}
             />
