@@ -446,7 +446,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: "hero-it-team",
           label: "IT Team Collaboration",
           description: "Professional IT team image in hero section",
-          currentUrl: "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+          currentUrl: "/api/media/25/file",
           filePath: "client/src/components/hero.tsx",
           lineNumber: 91,
           category: "Section Images"
