@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -109,24 +109,53 @@ const websiteImages: ImageMapping[] = [
     id: "windows10-bg",
     label: "Windows 10 Background",
     category: "Page Backgrounds",
-    currentUrl: "https://images.unsplash.com/photo-1633265486064-086b219458ec?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+    currentUrl: "/windows10-bg.png",
     filePath: "client/src/pages/windows10-upgrade.tsx",
-    lineNumber: 45
+    lineNumber: 151
   },
   {
     id: "testimonial-poster",
     label: "Testimonial Video Poster",
     category: "Video & Media",
-    currentUrl: "/api/media/15/file",
+    currentUrl: "/api/media/34/file",
     filePath: "client/src/pages/windows10-upgrade.tsx", 
-    lineNumber: 323
+    lineNumber: 253
   }
 ];
 
 export default function VisualImageManager() {
   const [selectedImage, setSelectedImage] = useState<ImageMapping | null>(null);
   const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
+  const [currentUrls, setCurrentUrls] = useState<Record<string, string>>({});
   const { toast } = useToast();
+
+  // Fetch current URLs from actual files
+  const fetchCurrentUrls = async () => {
+    try {
+      const response = await fetch('/api/admin/scan-images');
+      if (response.ok) {
+        const data = await response.json();
+        const urlMap: Record<string, string> = {};
+        
+        data.images?.forEach((img: any) => {
+          if (img.id === 'windows10-bg') {
+            urlMap['windows10-bg'] = img.currentUrl;
+          }
+          if (img.id === 'testimonial-poster') {
+            urlMap['testimonial-poster'] = img.currentUrl;
+          }
+        });
+        
+        setCurrentUrls(urlMap);
+      }
+    } catch (error) {
+      console.error('Failed to fetch current URLs:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentUrls();
+  }, []);
 
   const { data: mediaResponse, isLoading: isLoadingMedia } = useQuery({
     queryKey: ["/api/admin/media"],
@@ -266,7 +295,7 @@ export default function VisualImageManager() {
                   <td className="px-3 py-2">
                     <div className="w-24 h-16 bg-gray-100 rounded border overflow-hidden">
                       <img
-                        src={image.currentUrl}
+                        src={currentUrls[image.id] || image.currentUrl}
                         alt={image.label}
                         className="w-full h-full object-cover"
                         onError={(e) => {
@@ -281,7 +310,7 @@ export default function VisualImageManager() {
                     <div>
                       <div className="text-sm font-medium text-gray-900">{image.label}</div>
                       <div className="text-xs text-gray-500 mt-1 truncate max-w-xs">
-                        {image.currentUrl}
+                        {currentUrls[image.id] || image.currentUrl}
                       </div>
                     </div>
                   </td>
