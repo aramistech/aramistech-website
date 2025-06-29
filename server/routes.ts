@@ -535,15 +535,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           searchPattern: 'https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png'
         },
         // Team Photos
-        'aramis-team': {
+        'team-aramis': {
           filePath: 'client/src/components/team.tsx',
           targetIndex: 0
         },
-        'gabriel-team': {
+        'team-gabriel': {
           filePath: 'client/src/components/team.tsx',
           targetIndex: 1
         },
-        'aramism-team': {
+        'team-aramis-m': {
           filePath: 'client/src/components/team.tsx',
           targetIndex: 2
         },
@@ -561,12 +561,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           searchPattern: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4'
         },
         // Page Background Images
-        'windows10-hero': {
+        'windows10-background': {
           filePath: 'client/src/pages/windows10-upgrade.tsx',
           searchPattern: '/windows10-bg.png'
         },
         // Video & Media
-        'windows10-video-poster': {
+        'testimonial-video-poster': {
           filePath: 'client/src/pages/windows10-upgrade.tsx',
           searchPattern: 'poster="/video-poster.svg"'
         }
