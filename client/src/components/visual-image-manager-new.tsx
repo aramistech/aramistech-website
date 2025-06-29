@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { RefreshCw, ImageIcon, Check, Timer } from "lucide-react";
+import { RefreshCw, ImageIcon, Check, Timer, X } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
 interface WebsiteImage {
@@ -26,6 +27,7 @@ interface MediaFile {
 
 export default function VisualImageManager() {
   const [selectedImage, setSelectedImage] = useState<WebsiteImage | null>(null);
+  const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
@@ -123,6 +125,7 @@ export default function VisualImageManager() {
         description: "Website image has been updated successfully",
       });
       setSelectedImage(null);
+      setIsImageSelectorOpen(false);
       refetchAutoDetect();
     },
     onError: (error: any) => {
@@ -137,6 +140,11 @@ export default function VisualImageManager() {
 
   const handleImageReplace = (imageId: string, newMediaId: number) => {
     updateImageMutation.mutate({ imageId, newMediaId });
+  };
+
+  const openImageSelector = (image: WebsiteImage) => {
+    setSelectedImage(image);
+    setIsImageSelectorOpen(true);
   };
 
   // Category colors
@@ -274,49 +282,16 @@ export default function VisualImageManager() {
                     
                     {/* Action */}
                     <td className="px-3 py-2">
-                      {selectedImage?.id === image.id ? (
-                        <div className="space-y-2">
-                          <div className="text-xs text-gray-600 mb-1">Select replacement:</div>
-                          <div className="grid grid-cols-5 gap-1 max-h-16 overflow-y-auto p-1 bg-gray-50 rounded border">
-                            {mediaFiles.map((file) => (
-                              <div
-                                key={file.id}
-                                className="cursor-pointer group relative aspect-square bg-white rounded overflow-hidden hover:ring-1 hover:ring-blue-500 border transition-all"
-                                onClick={() => handleImageReplace(image.id, file.id)}
-                                title={`ID: ${file.id} - ${file.originalName}`}
-                              >
-                                <img
-                                  src={`/api/media/${file.id}/file`}
-                                  alt={file.altText || file.originalName}
-                                  className="w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                  <Check className="h-2 w-2 text-white" />
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => setSelectedImage(null)}
-                            className="h-6 px-2 text-xs"
-                          >
-                            Cancel
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setSelectedImage(image)}
-                          className="h-7 px-2 text-xs"
-                          disabled={updateImageMutation.isPending}
-                        >
-                          <ImageIcon className="h-3 w-3 mr-1" />
-                          Replace
-                        </Button>
-                      )}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openImageSelector(image)}
+                        className="h-7 px-2 text-xs"
+                        disabled={updateImageMutation.isPending}
+                      >
+                        <ImageIcon className="h-3 w-3 mr-1" />
+                        Replace
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -325,6 +300,77 @@ export default function VisualImageManager() {
           </tbody>
         </table>
       </div>
+
+      {/* Large Image Selection Modal */}
+      <Dialog open={isImageSelectorOpen} onOpenChange={setIsImageSelectorOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ImageIcon className="h-5 w-5" />
+              Replace: {selectedImage?.label}
+            </DialogTitle>
+            <p className="text-sm text-muted-foreground">
+              Select a replacement image from your media library
+            </p>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[60vh] overflow-y-auto p-2">
+            {mediaFiles.map((file) => (
+              <div
+                key={file.id}
+                className="cursor-pointer group relative bg-white rounded-lg border-2 border-gray-200 hover:border-blue-500 transition-all duration-200 overflow-hidden"
+                onClick={() => selectedImage && handleImageReplace(selectedImage.id, file.id)}
+              >
+                {/* Large Image Preview */}
+                <div className="aspect-square bg-gray-100 overflow-hidden">
+                  <img
+                    src={`/api/media/${file.id}/file`}
+                    alt={file.altText || file.originalName}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                  />
+                </div>
+                
+                {/* Image Info */}
+                <div className="p-3 space-y-1">
+                  <p className="text-sm font-medium text-gray-900 truncate">{file.originalName}</p>
+                  <p className="text-xs text-gray-500">ID: {file.id}</p>
+                  {file.altText && (
+                    <p className="text-xs text-gray-400 truncate">{file.altText}</p>
+                  )}
+                </div>
+                
+                {/* Hover Overlay */}
+                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-200">
+                  <div className="text-white text-center">
+                    <Check className="h-8 w-8 mx-auto mb-2" />
+                    <p className="text-sm font-medium">Select This Image</p>
+                  </div>
+                </div>
+                
+                {/* Loading Overlay */}
+                {updateImageMutation.isPending && (
+                  <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
+                    <RefreshCw className="h-6 w-6 animate-spin text-blue-500" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex justify-between items-center pt-4 border-t">
+            <p className="text-sm text-muted-foreground">
+              {mediaFiles.length} images available in media library
+            </p>
+            <Button
+              onClick={() => setIsImageSelectorOpen(false)}
+              variant="outline"
+              disabled={updateImageMutation.isPending}
+            >
+              Cancel
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
