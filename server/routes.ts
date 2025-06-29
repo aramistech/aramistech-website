@@ -2858,7 +2858,6 @@ User message: ${message}`
   app.get('/api/whmcs/customer/:clientId/services', async (req, res) => {
     try {
       const { clientId } = req.params;
-      const { whmcsConfig } = require('./whmcs-config');
 
       const postData = new URLSearchParams({
         action: 'GetClientsProducts',
@@ -2902,7 +2901,6 @@ User message: ${message}`
   app.get('/api/whmcs/customer/:clientId/invoices', async (req, res) => {
     try {
       const { clientId } = req.params;
-      const { whmcsConfig } = require('./whmcs-config');
 
       const postData = new URLSearchParams({
         action: 'GetInvoices',
@@ -2950,7 +2948,7 @@ User message: ${message}`
       const signature = req.headers['x-whmcs-signature'] as string;
       const rawBody = JSON.stringify(req.body);
       
-      const { validateWHMCSWebhook } = require('./whmcs-config');
+      // validateWHMCSWebhook already imported
       
       if (!validateWHMCSWebhook(signature, rawBody)) {
         return res.status(401).json({ success: false, message: 'Invalid signature' });
@@ -3043,7 +3041,6 @@ User message: ${message}`
       }
 
       // Get service details for pricing
-      const { getWHMCSProductDetails, aramisTechMaintenanceServices } = require('./whmcs-services');
       let service = await getWHMCSProductDetails(parseInt(serviceId));
       
       if (!service) {
@@ -3097,7 +3094,7 @@ User message: ${message}`
   // Authorize.Net Payment Processing
   app.post('/api/authorize-net/process-payment', async (req, res) => {
     try {
-      const { processAuthorizeNetPayment, validateCreditCard } = require('./authorize-net');
+      // processAuthorizeNetPayment and validateCreditCard already imported
       
       // Validate card number
       if (!validateCreditCard(req.body.cardNumber)) {
