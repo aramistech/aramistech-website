@@ -24,7 +24,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-2">
             <img 
-              src="https://aramistech.com/wp-content/uploads/2024/09/AramistechLogoNoLine.png" 
+              src="/api/media/15/file" 
               alt="AramisTech Logo" 
               className="h-20 w-auto mb-6 brightness-0 invert"
             />
