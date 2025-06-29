@@ -67,7 +67,7 @@ const websiteImages: ImageMapping[] = [
   },
   {
     id: "aramis-m-photo",
-    label: "Aramis M Figueroa (Developer)", 
+    label: "Aramis M Figueroa (IT / SOFTWARE DEVELOPER)", 
     category: "Team Photos",
     currentUrl: "/api/media/16/file",
     filePath: "client/src/components/team.tsx", 
