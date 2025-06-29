@@ -23,12 +23,12 @@ export const initGA = () => {
 
   // Initialize gtag
   const script2 = document.createElement('script');
-  script2.innerHTML = `
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${measurementId}');
-  `;
+  const scriptContent = 
+    'window.dataLayer = window.dataLayer || [];' +
+    'function gtag(){dataLayer.push(arguments);}' +
+    'gtag("js", new Date());' +
+    'gtag("config", "' + measurementId + '");';
+  script2.text = scriptContent;
   document.head.appendChild(script2);
 };
 
