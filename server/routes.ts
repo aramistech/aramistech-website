@@ -14,7 +14,8 @@ import { z } from "zod";
 import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
 import { sendQuickQuoteEmail, sendContactEmail, sendAIConsultationEmail, sendITConsultationEmail, sendTechnicianTransferNotification, sendServiceCalculatorEmail } from "./email-service";
 import { testAWSConnection } from "./test-aws";
-import { aramisTechMaintenanceServices } from "./whmcs-services";
+import { aramisTechMaintenanceServices, getWHMCSProducts, getWHMCSProductDetails } from "./whmcs-services";
+import { processAuthorizeNetPayment, validateCreditCard } from "./authorize-net";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), 'uploads');
@@ -2968,7 +2969,7 @@ User message: ${message}`
   // WHMCS Services API endpoints
   app.get('/api/whmcs/services', async (req, res) => {
     try {
-      const { getWHMCSProducts, aramisTechMaintenanceServices } = require('./whmcs-services');
+      // getWHMCSProducts and aramisTechMaintenanceServices already imported
       
       // Try to fetch live services from WHMCS, fallback to predefined services
       let services = await getWHMCSProducts();
@@ -2993,7 +2994,6 @@ User message: ${message}`
   app.get('/api/whmcs/services/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      const { getWHMCSProductDetails, aramisTechMaintenanceServices } = require('./whmcs-services');
       
       // Try to fetch live service details from WHMCS
       let service = await getWHMCSProductDetails(parseInt(id));
