@@ -321,12 +321,12 @@ export default function VisualImageManager() {
                 className="cursor-pointer group relative bg-white rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:shadow-xl transition-all duration-300 overflow-hidden"
                 onClick={() => selectedImage && handleImageReplace(selectedImage.id, file.id)}
               >
-                {/* Much Larger Image Preview with proper aspect ratio */}
-                <div className="aspect-[16/10] bg-gray-100 overflow-hidden min-h-[300px]">
+                {/* Much Larger Image Preview with fixed height */}
+                <div className="h-96 bg-gray-100 overflow-hidden flex items-center justify-center">
                   <img
                     src={`/api/media/${file.id}/file`}
                     alt={file.altText || file.originalName}
-                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                    className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 
