@@ -147,10 +147,37 @@ function formatProductGroups(productsData: any): WHMCSProductGroup[] {
 function formatProduct(product: any): WHMCSProduct {
   const pricing = product.pricing?.USD || {};
   
+  // Generate billing cycles array based on available pricing
+  const availableCycles: string[] = [];
+  if (pricing.monthly && pricing.monthly !== '-1.00' && parseFloat(pricing.monthly) > 0) {
+    availableCycles.push('monthly');
+  }
+  if (pricing.quarterly && pricing.quarterly !== '-1.00' && parseFloat(pricing.quarterly) > 0) {
+    availableCycles.push('quarterly');
+  }
+  if (pricing.semiannually && pricing.semiannually !== '-1.00' && parseFloat(pricing.semiannually) > 0) {
+    availableCycles.push('semiannually');
+  }
+  if (pricing.annually && pricing.annually !== '-1.00' && parseFloat(pricing.annually) > 0) {
+    availableCycles.push('annually');
+  }
+  if (pricing.biennially && pricing.biennially !== '-1.00' && parseFloat(pricing.biennially) > 0) {
+    availableCycles.push('biennially');
+  }
+  if (pricing.triennially && pricing.triennially !== '-1.00' && parseFloat(pricing.triennially) > 0) {
+    availableCycles.push('triennially');
+  }
+  
+  // If no recurring cycles, check if it's a one-time service
+  if (availableCycles.length === 0 && product.paytype === 'onetime') {
+    availableCycles.push('onetime');
+  }
+  
   return {
     id: parseInt(product.pid || product.id),
     name: product.name || 'Service',
     description: stripHtml(product.description || ''),
+    product_url: product.product_url || `${whmcsConfig.baseUrl}/cart.php?a=add&pid=${product.pid}`,
     pricing: {
       monthly: parseFloat(pricing.monthly && pricing.monthly !== '-1.00' ? pricing.monthly : 0),
       quarterly: parseFloat(pricing.quarterly && pricing.quarterly !== '-1.00' ? pricing.quarterly : 0),
@@ -159,6 +186,11 @@ function formatProduct(product: any): WHMCSProduct {
       biennially: parseFloat(pricing.biennially && pricing.biennially !== '-1.00' ? pricing.biennially : 0),
       triennially: parseFloat(pricing.triennially && pricing.triennially !== '-1.00' ? pricing.triennially : 0)
     },
+    billing_cycles: availableCycles,
+    custom_fields: (product.customfields?.customfield || []).map((field: any) => ({
+      name: field.name,
+      description: field.description
+    })),
     features: extractFeatures(product.description || ''),
     category: 'Maintenance Services',
     order_url: product.product_url || `${whmcsConfig.baseUrl}/cart.php?a=add&pid=${product.pid}`,
