@@ -250,7 +250,7 @@ export default function Windows10Upgrade() {
                   className="w-full h-auto transition-opacity duration-500"
                   preload="metadata"
                   controlsList="nodownload"
-                  poster="/video-poster.svg"
+                  poster="/api/media/34/file"
                   style={{ maxHeight: '500px' }}
                   playsInline
                 >
