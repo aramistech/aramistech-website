@@ -157,12 +157,12 @@ export default function VisualImageManager() {
           newUrl,
         }),
       });
-      
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`${response.status}: ${errorText}`);
       }
-      
+
       return response.json();
     },
     onSuccess: (data, variables) => {
@@ -172,7 +172,7 @@ export default function VisualImageManager() {
       });
       setIsImageSelectorOpen(false);
       setSelectedImage(null);
-      
+
       const imageIndex = websiteImages.findIndex(img => img.id === variables.imageId);
       if (imageIndex !== -1) {
         websiteImages[imageIndex].currentUrl = variables.newUrl;
@@ -190,7 +190,7 @@ export default function VisualImageManager() {
 
   const handleImageSelect = (mediaFile: MediaFile) => {
     if (!selectedImage) return;
-    
+
     const newUrl = `/api/media/${mediaFile.id}/file`;
     replaceImageMutation.mutate({
       imageId: selectedImage.id,
@@ -318,7 +318,7 @@ export default function VisualImageManager() {
               Replace: {selectedImage?.label}
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
             {mediaFiles.map((file) => (
               <div
@@ -343,7 +343,7 @@ export default function VisualImageManager() {
               </div>
             ))}
           </div>
-          
+
           {mediaFiles.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <ImageIcon className="w-12 h-12 mx-auto mb-2 text-gray-300" />
