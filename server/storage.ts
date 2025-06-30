@@ -330,6 +330,47 @@ export class DatabaseStorage implements IStorage {
     await db.delete(users).where(eq(users.id, id));
   }
 
+  // 2FA Management
+  async enable2FA(userId: number, secret: string, backupCodes: string[]): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        twoFactorSecret: secret,
+        twoFactorEnabled: true,
+        backupCodes: backupCodes,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async disable2FA(userId: number): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        twoFactorSecret: null,
+        twoFactorEnabled: false,
+        backupCodes: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async updateBackupCodes(userId: number, backupCodes: string[]): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        backupCodes: backupCodes,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
   async getExitIntentPopup(): Promise<ExitIntentPopup | undefined> {
     const [popup] = await db.select().from(exitIntentPopup).limit(1);
     return popup;

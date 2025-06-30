@@ -9,6 +9,9 @@ export const users = pgTable("users", {
   email: text("email"),
   isActive: boolean("is_active").default(true),
   lastLogin: timestamp("last_login"),
+  twoFactorSecret: text("two_factor_secret"),
+  twoFactorEnabled: boolean("two_factor_enabled").default(false),
+  backupCodes: text("backup_codes").array(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
