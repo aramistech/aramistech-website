@@ -72,44 +72,46 @@ export default function AdminUserManager() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const adminUsers: AdminUser[] = Array.isArray(usersData?.users) ? usersData.users : [];
+  const adminUsers: AdminUser[] = usersData && usersData.users && Array.isArray(usersData.users) ? usersData.users : [];
 
   // 2FA toggle mutations
   const enable2FAMutation = useMutation({
-    mutationFn: (userId: number) => apiRequest(`/api/admin/users/${userId}/2fa/force-enable`, {
-      method: 'POST',
-    }),
-    onSuccess: (data) => {
+    mutationFn: async (userId: number) => {
+      const response = await apiRequest(`/api/admin/users/${userId}/2fa/force-enable`, 'POST');
+      return await response.json();
+    },
+    onSuccess: (data: any) => {
       toast({
         title: "2FA Enabled",
-        description: data.message,
+        description: data.message || "Two-factor authentication enabled successfully",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
     },
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.response?.data?.error || "Failed to enable 2FA",
+        description: error.message || "Failed to enable 2FA",
         variant: "destructive",
       });
     },
   });
 
   const disable2FAMutation = useMutation({
-    mutationFn: (userId: number) => apiRequest(`/api/admin/users/${userId}/2fa/force-disable`, {
-      method: 'POST',
-    }),
-    onSuccess: (data) => {
+    mutationFn: async (userId: number) => {
+      const response = await apiRequest(`/api/admin/users/${userId}/2fa/force-disable`, 'POST');
+      return await response.json();
+    },
+    onSuccess: (data: any) => {
       toast({
         title: "2FA Disabled", 
-        description: data.message,
+        description: data.message || "Two-factor authentication disabled successfully",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
     },
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.response?.data?.error || "Failed to disable 2FA",
+        description: error.message || "Failed to disable 2FA",
         variant: "destructive",
       });
     },
@@ -463,6 +465,17 @@ export default function AdminUserManager() {
                               Inactive
                             </span>
                           )}
+                          {user.twoFactorEnabled ? (
+                            <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded flex items-center gap-1">
+                              <Shield className="w-3 h-3" />
+                              2FA Active
+                            </span>
+                          ) : (
+                            <span className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded flex items-center gap-1">
+                              <ShieldOff className="w-3 h-3" />
+                              2FA Off
+                            </span>
+                          )}
                         </h5>
                         <div className="text-sm text-gray-500 space-y-1">
                           {user.email && (
@@ -486,6 +499,29 @@ export default function AdminUserManager() {
                     </div>
 
                     <div className="flex items-center gap-2">
+                      {user.twoFactorEnabled ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => disable2FAMutation.mutate(user.id)}
+                          disabled={disable2FAMutation.isPending}
+                          className="text-red-600 border-red-200 hover:bg-red-50"
+                        >
+                          <ShieldOff className="w-4 h-4 mr-1" />
+                          Disable 2FA
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => enable2FAMutation.mutate(user.id)}
+                          disabled={enable2FAMutation.isPending}
+                          className="text-green-600 border-green-200 hover:bg-green-50"
+                        >
+                          <Shield className="w-4 h-4 mr-1" />
+                          Enable 2FA
+                        </Button>
+                      )}
                       <Button
                         variant="ghost"
                         size="sm"
