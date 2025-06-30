@@ -479,3 +479,30 @@ export const insertPageContentSchema = createInsertSchema(pageContent).omit({
 
 export type PageContent = typeof pageContent.$inferSelect;
 export type InsertPageContent = z.infer<typeof insertPageContentSchema>;
+
+// Static Services Management
+export const staticServices = pgTable('static_services', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  price: varchar('price', { length: 100 }).notNull(),
+  setupFee: varchar('setup_fee', { length: 100 }),
+  icon: varchar('icon', { length: 50 }).default('default'),
+  buttonText: varchar('button_text', { length: 100 }).default('Order Service'),
+  buttonUrl: varchar('button_url', { length: 500 }).notNull(),
+  isActive: boolean('is_active').default(true),
+  orderIndex: integer('order_index').default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const insertStaticServiceSchema = createInsertSchema(staticServices).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Relations can be added later if needed
+
+export type StaticService = typeof staticServices.$inferSelect;
+export type InsertStaticService = z.infer<typeof insertStaticServiceSchema>;

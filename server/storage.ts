@@ -1,4 +1,4 @@
-import { users, contacts, quickQuotes, aiConsultations, itConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, securityAlerts, colorPalette, serviceCategories, serviceOptions, pricingCalculations, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type ITConsultation, type InsertITConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings, type SecurityAlert, type InsertSecurityAlert, type ColorPalette, type InsertColorPalette, type ServiceCategory, type InsertServiceCategory, type ServiceOption, type InsertServiceOption, type PricingCalculation, type InsertPricingCalculation } from "@shared/schema";
+import { users, contacts, quickQuotes, aiConsultations, itConsultations, reviews, menuItems, adminSessions, exitIntentPopup, mediaFiles, knowledgeBaseCategories, knowledgeBaseArticles, chatSessions, chatMessages, adminChatSettings, securityAlerts, colorPalette, serviceCategories, serviceOptions, pricingCalculations, staticServices, type User, type InsertUser, type UpdateUser, type Contact, type InsertContact, type QuickQuote, type InsertQuickQuote, type AIConsultation, type InsertAIConsultation, type ITConsultation, type InsertITConsultation, type Review, type InsertReview, type MenuItem, type InsertMenuItem, type AdminSession, type ExitIntentPopup, type InsertExitIntentPopup, type MediaFile, type InsertMediaFile, type KnowledgeBaseCategory, type InsertKnowledgeBaseCategory, type KnowledgeBaseArticle, type InsertKnowledgeBaseArticle, type ChatSession, type InsertChatSession, type ChatMessage, type InsertChatMessage, type AdminChatSettings, type InsertAdminChatSettings, type SecurityAlert, type InsertSecurityAlert, type ColorPalette, type InsertColorPalette, type ServiceCategory, type InsertServiceCategory, type ServiceOption, type InsertServiceOption, type PricingCalculation, type InsertPricingCalculation, type StaticService, type InsertStaticService } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, isNull, gt, sql, asc, ne } from "drizzle-orm";
 import bcrypt from "bcryptjs";
@@ -88,6 +88,13 @@ export interface IStorage {
   createPricingCalculation(calculation: InsertPricingCalculation): Promise<PricingCalculation>;
   getPricingCalculations(): Promise<PricingCalculation[]>;
   updatePricingCalculation(id: number, calculation: Partial<InsertPricingCalculation>): Promise<PricingCalculation>;
+  // Static services management
+  getStaticServices(): Promise<StaticService[]>;
+  getStaticServiceById(id: number): Promise<StaticService | undefined>;
+  createStaticService(service: InsertStaticService): Promise<StaticService>;
+  updateStaticService(id: number, service: Partial<InsertStaticService>): Promise<StaticService>;
+  deleteStaticService(id: number): Promise<void>;
+  reorderStaticServices(serviceIds: number[]): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -672,6 +679,46 @@ export class DatabaseStorage implements IStorage {
       .where(eq(pricingCalculations.id, id))
       .returning();
     return updatedCalculation;
+  }
+
+  // Static services management
+  async getStaticServices(): Promise<StaticService[]> {
+    return db.select().from(staticServices)
+      .where(eq(staticServices.isActive, true))
+      .orderBy(asc(staticServices.orderIndex));
+  }
+
+  async getStaticServiceById(id: number): Promise<StaticService | undefined> {
+    const [service] = await db.select().from(staticServices)
+      .where(eq(staticServices.id, id));
+    return service;
+  }
+
+  async createStaticService(service: InsertStaticService): Promise<StaticService> {
+    const [newService] = await db.insert(staticServices)
+      .values(service)
+      .returning();
+    return newService;
+  }
+
+  async updateStaticService(id: number, service: Partial<InsertStaticService>): Promise<StaticService> {
+    const [updatedService] = await db.update(staticServices)
+      .set(service)
+      .where(eq(staticServices.id, id))
+      .returning();
+    return updatedService;
+  }
+
+  async deleteStaticService(id: number): Promise<void> {
+    await db.delete(staticServices).where(eq(staticServices.id, id));
+  }
+
+  async reorderStaticServices(serviceIds: number[]): Promise<void> {
+    for (let i = 0; i < serviceIds.length; i++) {
+      await db.update(staticServices)
+        .set({ orderIndex: i })
+        .where(eq(staticServices.id, serviceIds[i]));
+    }
   }
 }
 
