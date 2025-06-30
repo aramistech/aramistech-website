@@ -46,72 +46,87 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-professional-gray text-white py-16">
+    <footer className="bg-professional-gray text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-2">
+          <div>
             <img 
               src="/api/media/4/file" 
               alt="AramisTech Logo" 
-              className="h-20 w-auto mb-6 brightness-0 invert"
+              className="h-16 w-auto mb-4 brightness-0 invert"
             />
-            <p className="text-gray-300 mb-6 max-w-md">
-              Family-owned IT company with 27+ years of experience serving South Florida businesses. We provide reliable computer repairs, network maintenance, cloud solutions, and custom servers.
+            <p className="text-gray-300 mb-4 text-sm">
+              Family-owned IT company with 27+ years of experience serving South Florida businesses.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="bg-primary-blue p-3 rounded-lg hover:bg-secondary-blue transition-colors">
-                <Facebook className="w-5 h-5" />
+            <div className="flex space-x-3">
+              <a href="#" className="bg-primary-blue p-2 rounded-lg hover:bg-secondary-blue transition-colors">
+                <Facebook className="w-4 h-4" />
               </a>
-              <a href="#" className="bg-primary-blue p-3 rounded-lg hover:bg-secondary-blue transition-colors">
-                <Linkedin className="w-5 h-5" />
+              <a href="#" className="bg-primary-blue p-2 rounded-lg hover:bg-secondary-blue transition-colors">
+                <Linkedin className="w-4 h-4" />
               </a>
-              <a href="#" className="bg-primary-blue p-3 rounded-lg hover:bg-secondary-blue transition-colors">
-                <Twitter className="w-5 h-5" />
+              <a href="#" className="bg-primary-blue p-2 rounded-lg hover:bg-secondary-blue transition-colors">
+                <Twitter className="w-4 h-4" />
               </a>
             </div>
           </div>
           
-          {/* Dynamic Footer Sections */}
-          {Object.entries(groupedLinks).map(([section, sectionLinks]) => (
-            <div key={section}>
-              <h4 className="text-lg font-semibold mb-6">{section}</h4>
-              <ul className="space-y-3 text-gray-300">
-                {sectionLinks
-                  .sort((a: FooterLink, b: FooterLink) => a.orderIndex - b.orderIndex)
-                  .map((link: FooterLink) => (
-                    <li key={link.id}>
-                      <a 
-                        href={link.url} 
-                        target={link.target}
-                        className="hover:text-white transition-colors"
-                      >
-                        {link.label}
-                      </a>
-                    </li>
-                  ))
-                }
-              </ul>
-            </div>
-          ))}
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Services</h4>
+            <ul className="space-y-2 text-gray-300 text-sm">
+              {groupedLinks['Services']
+                ?.sort((a: FooterLink, b: FooterLink) => a.orderIndex - b.orderIndex)
+                .map((link: FooterLink) => (
+                  <li key={link.id}>
+                    <a 
+                      href={link.url} 
+                      target={link.target}
+                      className="hover:text-white transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                )) || []}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Support</h4>
+            <ul className="space-y-2 text-gray-300 text-sm">
+              {groupedLinks['Support']
+                ?.sort((a: FooterLink, b: FooterLink) => a.orderIndex - b.orderIndex)
+                .map((link: FooterLink) => (
+                  <li key={link.id}>
+                    <a 
+                      href={link.url} 
+                      target={link.target}
+                      className="hover:text-white transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                )) || []}
+            </ul>
+          </div>
           
           <div>
-            <h4 className="text-lg font-semibold mb-6">Contact Info</h4>
-            <ul className="space-y-3 text-gray-300">
+            <h4 className="text-lg font-semibold mb-4">Contact Info</h4>
+            <ul className="space-y-2 text-gray-300 text-sm">
               <li className="flex items-center">
-                <Phone className="w-4 h-4 mr-3" />
+                <Phone className="w-3 h-3 mr-2" />
                 <a href="tel:(305) 814-4461" className="hover:text-white transition-colors">(305) 814-4461</a>
               </li>
               <li className="flex items-center">
-                <Mail className="w-4 h-4 mr-3" />
+                <Mail className="w-3 h-3 mr-2" />
                 <a href="mailto:sales@aramistech.com" className="hover:text-white transition-colors">sales@aramistech.com</a>
               </li>
               <li className="flex items-start">
-                <MapPin className="w-4 h-4 mr-3 mt-1" />
-                <span>Serving Miami & Broward Counties, Florida</span>
+                <MapPin className="w-3 h-3 mr-2 mt-0.5" />
+                <span>Miami & Broward Counties, FL</span>
               </li>
               <li className="flex items-start">
-                <Clock className="w-4 h-4 mr-3 mt-1" />
-                <span>Mon-Fri: 9am-6pm<br />Weekend: Closed</span>
+                <Clock className="w-3 h-3 mr-2 mt-0.5" />
+                <span>Mon-Fri: 9am-6pm</span>
               </li>
             </ul>
           </div>
