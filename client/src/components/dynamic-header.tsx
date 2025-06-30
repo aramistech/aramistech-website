@@ -246,14 +246,14 @@ export default function DynamicHeader() {
             >
               <div className="flex flex-col items-center space-y-1">
                 {(() => {
-                  const IconComponent = getMobileIconComponent(securityAlert?.iconType || 'AlertTriangle');
-                  return <IconComponent className="w-6 h-6 animate-pulse" style={{ color: securityAlert?.textColor || 'white' }} />;
+                  const IconComponent = getMobileIconComponent(securityAlert?.mobileIconType || 'AlertTriangle');
+                  return <IconComponent className="w-6 h-6 animate-pulse" style={{ color: securityAlert?.mobileTextColor || 'white' }} />;
                 })()}
                 <span 
                   className="font-bold text-xs"
-                  style={{ color: securityAlert?.textColor || 'white' }}
+                  style={{ color: securityAlert?.mobileTextColor || 'white' }}
                 >
-                  CRITICAL
+                  {securityAlert?.mobileTitle || 'CRITICAL'}
                 </span>
               </div>
               
@@ -283,35 +283,35 @@ export default function DynamicHeader() {
           <div className={`sm:hidden fixed right-0 top-0 h-full w-80 z-[70] transform transition-transform duration-300 ease-in-out ${showMobilePopup ? 'translate-x-0' : 'translate-x-full'}`}>
             <div 
               className="critical-warning text-white h-full w-full relative overflow-hidden flex flex-col"
-              style={{ backgroundColor: securityAlert?.backgroundColor || '#dc2626' }}
+              style={{ backgroundColor: securityAlert?.mobileBackgroundColor || '#dc2626' }}
             >
               <div className="p-6">
                 <button 
                   onClick={() => setShowMobilePopup(false)}
                   className="absolute top-4 right-4 hover:opacity-75"
-                  style={{ color: securityAlert?.textColor || 'white' }}
+                  style={{ color: securityAlert?.mobileTextColor || 'white' }}
                 >
                   <X className="w-6 h-6" />
                 </button>
                 
                 <div className="flex items-center mb-6">
                   {(() => {
-                    const IconComponent = getMobileIconComponent(securityAlert?.iconType || 'AlertTriangle');
-                    return <IconComponent className="w-8 h-8 mr-3 text-yellow-400" />;
+                    const IconComponent = getMobileIconComponent(securityAlert?.mobileIconType || 'AlertTriangle');
+                    return <IconComponent className="w-8 h-8 mr-3" style={{ color: securityAlert?.mobileTextColor || '#fbbf24' }} />;
                   })()}
                   <div>
                     <span 
                       className="critical-badge px-2 py-1 rounded-full text-xs font-bold"
                       style={{ 
-                        backgroundColor: securityAlert?.backgroundColor || '#dc2626',
-                        color: securityAlert?.textColor || 'white' 
+                        backgroundColor: securityAlert?.mobileBackgroundColor || '#dc2626',
+                        color: securityAlert?.mobileTextColor || 'white' 
                       }}
                     >
-                      CRITICAL SECURITY ALERT
+                      {securityAlert?.mobileSubtitle || 'CRITICAL SECURITY ALERT'}
                     </span>
                     <h3 
                       className="font-bold text-lg mt-2"
-                      style={{ color: securityAlert?.textColor || 'white' }}
+                      style={{ color: securityAlert?.mobileTextColor || 'white' }}
                     >
                       {securityAlert?.mobileTitle || 'Windows 10 Support Ending'}
                     </h3>
@@ -320,17 +320,17 @@ export default function DynamicHeader() {
                 
                 <p 
                   className="text-base mb-6 leading-relaxed"
-                  style={{ color: securityAlert?.textColor || 'white' }}
+                  style={{ color: securityAlert?.mobileTextColor || 'white' }}
                 >
                   {securityAlert?.mobileDescription || 'Your Systems Will Become Vulnerable to New Threats. Microsoft is ending Windows 10 support on October 14, 2025. After this date, your systems will no longer receive security updates, leaving them exposed to new cyber threats.'}
                 </p>
                 
                 <Link 
-                  href={securityAlert?.buttonLink || '/windows10-upgrade'}
+                  href={securityAlert?.mobileButtonLink || '/windows10-upgrade'}
                   className="inline-flex items-center px-6 py-3 rounded-full text-base font-bold border-2 border-white hover:opacity-90 transition-all duration-300 transform hover:scale-105 w-full justify-center"
                   style={{ 
-                    backgroundColor: securityAlert?.buttonBackgroundColor || '#ffffff',
-                    color: securityAlert?.buttonTextColor || '#000000'
+                    backgroundColor: securityAlert?.mobileButtonBackgroundColor || '#ffffff',
+                    color: securityAlert?.mobileButtonTextColor || '#000000'
                   }}
                   onClick={() => {
                     setShowMobilePopup(false);
