@@ -12,13 +12,83 @@ import { apiRequest } from '@/lib/queryClient';
 import { Trash2, Plus, Globe, Shield, Settings, Eye } from 'lucide-react';
 import ColorPickerWithPalette from '@/components/color-picker-with-palette';
 
-// Common countries list for the dropdown
+// Comprehensive countries list for blocking management
 const COMMON_COUNTRIES = [
-  { code: 'CN', name: 'China' },
+  // North America
+  { code: 'US', name: 'United States' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'MX', name: 'Mexico' },
+  
+  // Europe
+  { code: 'GB', name: 'United Kingdom' },
+  { code: 'DE', name: 'Germany' },
+  { code: 'FR', name: 'France' },
+  { code: 'IT', name: 'Italy' },
+  { code: 'ES', name: 'Spain' },
+  { code: 'NL', name: 'Netherlands' },
+  { code: 'BE', name: 'Belgium' },
+  { code: 'CH', name: 'Switzerland' },
+  { code: 'AT', name: 'Austria' },
+  { code: 'SE', name: 'Sweden' },
+  { code: 'NO', name: 'Norway' },
+  { code: 'DK', name: 'Denmark' },
+  { code: 'FI', name: 'Finland' },
+  { code: 'PL', name: 'Poland' },
+  { code: 'CZ', name: 'Czech Republic' },
+  { code: 'HU', name: 'Hungary' },
+  { code: 'GR', name: 'Greece' },
+  { code: 'PT', name: 'Portugal' },
+  { code: 'IE', name: 'Ireland' },
   { code: 'RU', name: 'Russia' },
+  { code: 'UA', name: 'Ukraine' },
+  
+  // Asia-Pacific
+  { code: 'CN', name: 'China' },
+  { code: 'JP', name: 'Japan' },
+  { code: 'KR', name: 'South Korea' },
+  { code: 'IN', name: 'India' },
+  { code: 'AU', name: 'Australia' },
+  { code: 'NZ', name: 'New Zealand' },
+  { code: 'SG', name: 'Singapore' },
+  { code: 'HK', name: 'Hong Kong' },
+  { code: 'TW', name: 'Taiwan' },
+  { code: 'TH', name: 'Thailand' },
+  { code: 'VN', name: 'Vietnam' },
+  { code: 'ID', name: 'Indonesia' },
+  { code: 'PH', name: 'Philippines' },
+  { code: 'MY', name: 'Malaysia' },
+  { code: 'BD', name: 'Bangladesh' },
+  { code: 'PK', name: 'Pakistan' },
+  { code: 'LK', name: 'Sri Lanka' },
+  
+  // Middle East & Africa
+  { code: 'IL', name: 'Israel' },
+  { code: 'AE', name: 'UAE' },
+  { code: 'SA', name: 'Saudi Arabia' },
+  { code: 'TR', name: 'Turkey' },
+  { code: 'EG', name: 'Egypt' },
+  { code: 'ZA', name: 'South Africa' },
+  { code: 'NG', name: 'Nigeria' },
+  { code: 'KE', name: 'Kenya' },
+  { code: 'GH', name: 'Ghana' },
+  { code: 'MA', name: 'Morocco' },
+  { code: 'TN', name: 'Tunisia' },
+  { code: 'JO', name: 'Jordan' },
+  { code: 'LB', name: 'Lebanon' },
+  
+  // South America
+  { code: 'BR', name: 'Brazil' },
+  { code: 'AR', name: 'Argentina' },
+  { code: 'CL', name: 'Chile' },
+  { code: 'PE', name: 'Peru' },
+  { code: 'CO', name: 'Colombia' },
+  { code: 'UY', name: 'Uruguay' },
+  { code: 'EC', name: 'Ecuador' },
+  { code: 'BO', name: 'Bolivia' },
+  
+  // High-Risk Countries (often blocked)
   { code: 'IR', name: 'Iran' },
   { code: 'KP', name: 'North Korea' },
-  { code: 'PK', name: 'Pakistan' },
   { code: 'AF', name: 'Afghanistan' },
   { code: 'IQ', name: 'Iraq' },
   { code: 'SY', name: 'Syria' },
@@ -29,20 +99,8 @@ const COMMON_COUNTRIES = [
   { code: 'MM', name: 'Myanmar' },
   { code: 'VE', name: 'Venezuela' },
   { code: 'CU', name: 'Cuba' },
-  { code: 'BR', name: 'Brazil' },
-  { code: 'IN', name: 'India' },
-  { code: 'BD', name: 'Bangladesh' },
-  { code: 'NG', name: 'Nigeria' },
-  { code: 'GH', name: 'Ghana' },
-  { code: 'KE', name: 'Kenya' },
-  { code: 'ZA', name: 'South Africa' },
-  { code: 'EG', name: 'Egypt' },
-  { code: 'TH', name: 'Thailand' },
-  { code: 'VN', name: 'Vietnam' },
-  { code: 'ID', name: 'Indonesia' },
-  { code: 'PH', name: 'Philippines' },
-  { code: 'MY', name: 'Malaysia' }
-];
+  { code: 'BY', name: 'Belarus' }
+].sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically by name
 
 // Font size options
 const FONT_SIZES = [
