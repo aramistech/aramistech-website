@@ -324,6 +324,24 @@ export default function AdminDashboard() {
           </Card>
         );
 
+      case 'country-blocking':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Globe className="w-5 h-5" />
+                Country Blocking Management
+              </CardTitle>
+              <CardDescription>
+                Control website access by country with free IP geolocation and customizable block messages
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <CountryBlockingManager />
+            </CardContent>
+          </Card>
+        );
+
       case 'colors':
         return (
           <Card>

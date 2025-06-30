@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { createDefaultAdmin, setupDefaultMenuItems, createDefaultSecurityAlert } from "./setup-admin";
 import { createDefaultFooterLinks } from "./setup-footer";
+import { countryBlockingMiddleware } from "./country-blocking";
 import path from "path";
 
 const app = express();
@@ -58,6 +59,9 @@ app.use((req, res, next) => {
   await setupDefaultMenuItems();
   await createDefaultSecurityAlert();
   await createDefaultFooterLinks();
+  
+  // Apply country blocking middleware to all routes
+  app.use(countryBlockingMiddleware);
   
   const server = await registerRoutes(app);
 

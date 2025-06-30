@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { Trash2, Plus, Globe, Shield, Settings, Eye } from 'lucide-react';
-import { ColorPickerWithPalette } from '@/components/color-picker-with-palette';
+import ColorPickerWithPalette from '@/components/color-picker-with-palette';
 
 // Common countries list for the dropdown
 const COMMON_COUNTRIES = [
