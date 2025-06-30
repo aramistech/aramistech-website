@@ -39,15 +39,73 @@ interface StaticService {
   icon: string;
   buttonText: string;
   buttonUrl: string;
+  buttonColor: string;
   isActive: boolean;
   orderIndex: number;
 }
 
 const iconOptions = [
+  // Infrastructure & Servers
   { value: 'server', label: '🖥️ Server' },
+  { value: 'database', label: '🗄️ Database' },
+  { value: 'hardDrive', label: '💾 Hard Drive' },
+  { value: 'cpu', label: '🧠 CPU/Processor' },
+  
+  // Security & Protection
   { value: 'shield', label: '🛡️ Security' },
+  { value: 'lock', label: '🔒 Lock/Privacy' },
+  
+  // Networking & Connectivity  
+  { value: 'network', label: '🌐 Network' },
+  { value: 'globe', label: '🌍 Global/Internet' },
+  { value: 'wifi', label: '📶 WiFi' },
+  { value: 'router', label: '📡 Router' },
+  
+  // Cloud Services
   { value: 'cloud', label: '☁️ Cloud' },
+  { value: 'cloudDownload', label: '☁️⬇️ Cloud Download' },
+  { value: 'cloudUpload', label: '☁️⬆️ Cloud Upload' },
+  
+  // Support & Maintenance
   { value: 'support', label: '🎧 Support' },
+  { value: 'maintenance', label: '🔧 Maintenance' },
+  { value: 'settings', label: '⚙️ Settings' },
+  
+  // Business & Analytics
+  { value: 'consulting', label: '👥 Consulting' },
+  { value: 'analytics', label: '📊 Analytics' },
+  { value: 'activity', label: '📈 Activity' },
+  { value: 'gauge', label: '⏱️ Performance' },
+  { value: 'trendingUp', label: '📈 Growth' },
+  { value: 'building', label: '🏢 Business' },
+  
+  // Development & Code
+  { value: 'code', label: '💻 Development' },
+  
+  // Devices & Hardware
+  { value: 'laptop', label: '💻 Laptop' },
+  { value: 'monitor', label: '🖥️ Monitor' },
+  { value: 'smartphone', label: '📱 Mobile' },
+  { value: 'printer', label: '🖨️ Printer' },
+  
+  // Data & Files
+  { value: 'backup', label: '💾 Backup' },
+  { value: 'folder', label: '📁 Files' },
+  { value: 'fileText', label: '📄 Documents' },
+  { value: 'scan', label: '🔍 Scan' },
+  
+  // Monitoring & Alerts
+  { value: 'bell', label: '🔔 Notifications' },
+  { value: 'alertTriangle', label: '⚠️ Alerts' },
+  { value: 'checkCircle', label: '✅ Success' },
+  { value: 'search', label: '🔍 Search' },
+  
+  // Power & Performance
+  { value: 'zap', label: '⚡ Power/Speed' },
+  
+  // Location & Office
+  { value: 'home', label: '🏠 Home Office' },
+  { value: 'mapPin', label: '📍 Location' },
   { value: 'code', label: '💻 Development' },
   { value: 'network', label: '🌐 Network' },
   { value: 'backup', label: '💾 Backup' },
@@ -144,6 +202,7 @@ function ServiceForm({ service, onSave, onCancel }: {
     icon: service?.icon || 'server',
     buttonText: service?.buttonText || 'Order Service',
     buttonUrl: service?.buttonUrl || '',
+    buttonColor: service?.buttonColor || '#2563eb',
     isActive: service?.isActive ?? true,
   });
 
@@ -235,6 +294,30 @@ function ServiceForm({ service, onSave, onCancel }: {
             onChange={(e) => setFormData({ ...formData, buttonUrl: e.target.value })}
             placeholder="https://billing.aramistech.com/cart.php?a=add&pid=1"
             required
+          />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="buttonColor">Button Color</Label>
+        <div className="flex items-center gap-2">
+          <Input
+            id="buttonColor"
+            type="color"
+            value={formData.buttonColor}
+            onChange={(e) => setFormData({ ...formData, buttonColor: e.target.value })}
+            className="w-16 h-10 p-1 border rounded cursor-pointer"
+          />
+          <Input
+            value={formData.buttonColor}
+            onChange={(e) => setFormData({ ...formData, buttonColor: e.target.value })}
+            placeholder="#2563eb"
+            className="flex-1"
+          />
+          <div 
+            className="w-10 h-10 rounded border"
+            style={{ backgroundColor: formData.buttonColor }}
+            title="Color Preview"
           />
         </div>
       </div>

@@ -116,7 +116,11 @@ function ServiceCard({ service }: { service: StaticService }) {
           <div className="mt-auto">
             <Button 
               asChild 
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors"
+              className="w-full text-white font-semibold py-3 rounded-lg transition-colors"
+              style={{ 
+                backgroundColor: service.buttonColor || '#2563eb',
+                ':hover': { backgroundColor: service.buttonColor ? `${service.buttonColor}dd` : '#1d4ed8' }
+              }}
             >
               <a href={service.buttonUrl} target="_blank" rel="noopener noreferrer">
                 {service.buttonText}
