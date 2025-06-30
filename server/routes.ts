@@ -1212,8 +1212,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate 2FA setup (QR code and backup codes)
   app.post("/api/admin/2fa/setup", requireAdminAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.id;
-      const user = await storage.getUser(userId);
+      const user = (req as any).adminUser;
+      const userId = user.id;
       
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -1241,7 +1241,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/2fa/enable", requireAdminAuth, async (req, res) => {
     try {
       const { token, secret, backupCodes } = req.body;
-      const userId = (req as any).user.id;
+      const user = (req as any).adminUser;
+      const userId = user.id;
 
       if (!token || !secret || !backupCodes) {
         return res.status(400).json({ error: "Token, secret, and backup codes are required" });
@@ -1255,15 +1256,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Enable 2FA for the user
-      const user = await storage.enable2FA(userId, secret, backupCodes);
+      const updatedUser = await storage.enable2FA(userId, secret, backupCodes);
       
       res.json({
         success: true,
         message: "2FA enabled successfully",
         user: {
-          id: user.id,
-          username: user.username,
-          twoFactorEnabled: user.twoFactorEnabled
+          id: updatedUser.id,
+          username: updatedUser.username,
+          twoFactorEnabled: updatedUser.twoFactorEnabled
         }
       });
     } catch (error) {
@@ -1276,8 +1277,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/2fa/disable", requireAdminAuth, async (req, res) => {
     try {
       const { password } = req.body;
-      const userId = (req as any).user.id;
-      const user = await storage.getUser(userId);
+      const user = (req as any).adminUser;
+      const userId = user.id;
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -1314,8 +1315,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate new backup codes
   app.post("/api/admin/2fa/backup-codes", requireAdminAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.id;
-      const user = await storage.getUser(userId);
+      const user = (req as any).adminUser;
+      const userId = user.id;
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });
