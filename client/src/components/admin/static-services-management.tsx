@@ -280,7 +280,7 @@ export default function StaticServicesManagement() {
     queryKey: ['/api/admin/static-services'],
   });
 
-  const services = servicesData?.services || [];
+  const services = (servicesData as any)?.services || [];
 
   // Create service mutation
   const createServiceMutation = useMutation({
@@ -338,11 +338,11 @@ export default function StaticServicesManagement() {
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      const oldIndex = services.findIndex((service: StaticService) => service.id === active.id);
-      const newIndex = services.findIndex((service: StaticService) => service.id === over.id);
+      const oldIndex = services.findIndex((service: any) => service.id === active.id);
+      const newIndex = services.findIndex((service: any) => service.id === over.id);
       
       const newOrder = arrayMove(services, oldIndex, newIndex);
-      const serviceIds = newOrder.map((service: StaticService) => service.id);
+      const serviceIds = newOrder.map((service: any) => service.id);
       
       reorderServicesMutation.mutate(serviceIds);
     }

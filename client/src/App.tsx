@@ -17,6 +17,7 @@ import KnowledgeBaseArticle from "@/pages/knowledge-base-article";
 import ServiceCalculator from "@/pages/service-calculator";
 import AdminServiceCalculator from "@/pages/admin-service-calculator";
 import ServicesOrder from "@/pages/services-order-static";
+import ServicesManagedPage from "@/pages/services-managed";
 import Checkout from "@/pages/checkout";
 
 import SocialProofPopup from "@/components/social-proof-popup";
@@ -41,6 +42,7 @@ function Router() {
       <Route path="/knowledge-base/:slug" component={KnowledgeBaseArticle} />
       <Route path="/service-calculator" component={ServiceCalculator} />
       <Route path="/services-order" component={ServicesOrder} />
+      <Route path="/services" component={ServicesManagedPage} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/admin/reviews" component={AdminReviewsPage} />
       <Route path="/admin/login" component={AdminLogin} />
