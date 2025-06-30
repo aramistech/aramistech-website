@@ -110,71 +110,135 @@ export default function AdminLogin() {
         <Card>
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">
-              <Lock className="w-6 h-6 mx-auto mb-2" />
-              Admin Login
+              {requires2FA ? <Shield className="w-6 h-6 mx-auto mb-2" /> : <Lock className="w-6 h-6 mx-auto mb-2" />}
+              {requires2FA ? 'Two-Factor Authentication' : 'Admin Login'}
             </CardTitle>
             <CardDescription className="text-center">
-              Enter your credentials to access the admin panel
+              {requires2FA 
+                ? 'Enter the 6-digit code from your authenticator app or use a backup code'
+                : 'Enter your credentials to access the admin panel'
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            {...field}
-                            type="text"
-                            placeholder="Enter username"
-                            className="pl-10"
-                            disabled={loginMutation.isPending}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            {...field}
-                            type="password"
-                            placeholder="Enter password"
-                            className="pl-10"
-                            disabled={loginMutation.isPending}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            {!requires2FA ? (
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                            <Input
+                              {...field}
+                              type="text"
+                              placeholder="Enter username"
+                              className="pl-10"
+                              disabled={loginMutation.isPending}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                            <Input
+                              {...field}
+                              type="password"
+                              placeholder="Enter password"
+                              className="pl-10"
+                              disabled={loginMutation.isPending}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={loginMutation.isPending}
-                >
-                  {loginMutation.isPending ? "Signing in..." : "Sign in"}
-                </Button>
-              </form>
-            </Form>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={loginMutation.isPending}
+                  >
+                    {loginMutation.isPending ? "Signing in..." : "Sign in"}
+                  </Button>
+                </form>
+              </Form>
+            ) : (
+              <div className="space-y-4">
+                <Alert>
+                  <Smartphone className="h-4 w-4" />
+                  <AlertDescription>
+                    Open your authenticator app and enter the 6-digit code, or use one of your backup codes.
+                  </AlertDescription>
+                </Alert>
+                
+                <Form {...twoFactorForm}>
+                  <form onSubmit={twoFactorForm.handleSubmit(onTwoFactorSubmit)} className="space-y-4">
+                    <FormField
+                      control={twoFactorForm.control}
+                      name="twoFactorCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Authentication Code</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Key className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                              <Input 
+                                {...field} 
+                                placeholder="Enter 6-digit code or backup code" 
+                                className="pl-10 text-center text-lg tracking-widest"
+                                autoComplete="one-time-code"
+                                inputMode="numeric"
+                                disabled={loginMutation.isPending}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="flex gap-2">
+                      <Button
+                        type="submit"
+                        className="flex-1"
+                        disabled={loginMutation.isPending}
+                      >
+                        {loginMutation.isPending ? 'Verifying...' : 'Verify'}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={goBack}
+                        disabled={loginMutation.isPending}
+                      >
+                        Back
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+                
+                <div className="text-sm text-center text-muted-foreground">
+                  <p>Lost your device? Use one of your 8-character backup codes instead.</p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
