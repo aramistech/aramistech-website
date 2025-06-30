@@ -305,6 +305,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isEnabled: req.body.isEnabled,
         isDesktopEnabled: req.body.isDesktopEnabled,
         isMobileEnabled: req.body.isMobileEnabled,
+        
+        // Desktop fields
+        desktopTitle: req.body.desktopTitle,
+        desktopMessage: req.body.desktopMessage,
+        desktopButtonText: req.body.desktopButtonText,
+        desktopButtonLink: req.body.desktopButtonLink,
+        desktopBackgroundColor: req.body.desktopBackgroundColor,
+        desktopTextColor: req.body.desktopTextColor,
+        desktopButtonBackgroundColor: req.body.desktopButtonBackgroundColor,
+        desktopButtonTextColor: req.body.desktopButtonTextColor,
+        desktopIconType: req.body.desktopIconType,
+        
+        // Mobile fields
+        mobileTitle: req.body.mobileTitle,
+        mobileSubtitle: req.body.mobileSubtitle,
+        mobileDescription: req.body.mobileDescription,
+        mobileButtonText: req.body.mobileButtonText,
+        mobileButtonLink: req.body.mobileButtonLink,
+        mobileBackgroundColor: req.body.mobileBackgroundColor,
+        mobileTextColor: req.body.mobileTextColor,
+        mobileButtonBackgroundColor: req.body.mobileButtonBackgroundColor,
+        mobileButtonTextColor: req.body.mobileButtonTextColor,
+        mobileIconType: req.body.mobileIconType,
+        
+        // Legacy fields (for backward compatibility)
         title: req.body.title,
         message: req.body.message,
         buttonText: req.body.buttonText,
@@ -314,10 +339,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         buttonBackgroundColor: req.body.buttonBackgroundColor,
         buttonTextColor: req.body.buttonTextColor,
         iconType: req.body.iconType,
-        mobileTitle: req.body.mobileTitle,
-        mobileSubtitle: req.body.mobileSubtitle,
-        mobileDescription: req.body.mobileDescription,
-        mobileButtonText: req.body.mobileButtonText,
       };
       
       // Remove undefined fields
