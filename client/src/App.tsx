@@ -16,7 +16,7 @@ import KnowledgeBase from "@/pages/knowledge-base";
 import KnowledgeBaseArticle from "@/pages/knowledge-base-article";
 import ServiceCalculator from "@/pages/service-calculator";
 import AdminServiceCalculator from "@/pages/admin-service-calculator";
-import ServicesOrder from "@/pages/services-order";
+import ServicesOrder from "@/pages/services-order-static";
 import Checkout from "@/pages/checkout";
 
 import SocialProofPopup from "@/components/social-proof-popup";
