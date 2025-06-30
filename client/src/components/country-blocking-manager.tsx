@@ -315,16 +315,80 @@ export default function CountryBlockingManager() {
             </Button>
           </div>
 
-          {/* Current Blocked Countries */}
-          <div>
-            <Label className="text-sm font-medium mb-3 block">
-              Currently Blocked Countries ({blockedCountries.length})
-            </Label>
-            {blockedCountries.length === 0 ? (
-              <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg">
-                No countries are currently blocked
+          {/* Country Status Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {/* Blocked Countries */}
+            <div>
+              <Label className="text-sm font-medium mb-3 block text-red-700">
+                🚫 Blocked Countries ({blockedCountries.length})
+              </Label>
+              {blockedCountries.length === 0 ? (
+                <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-lg text-sm">
+                  No countries blocked
+                </div>
+              ) : (
+                <div className="max-h-32 overflow-y-auto space-y-1">
+                  {blockedCountries.map((country) => (
+                    <div
+                      key={country.id}
+                      className="flex items-center justify-between p-2 bg-red-50 border border-red-200 rounded text-sm"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center text-xs font-bold text-red-600">
+                          {country.countryCode}
+                        </span>
+                        <span className="font-medium text-red-900">{country.countryName}</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeCountryMutation.mutate(country.id)}
+                        disabled={removeCountryMutation.isPending}
+                        className="text-red-600 hover:text-red-800 hover:bg-red-100 h-6 w-6 p-0"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Enabled Countries */}
+            <div>
+              <Label className="text-sm font-medium mb-3 block text-green-700">
+                ✅ Enabled Countries ({COMMON_COUNTRIES.length - blockedCountries.length})
+              </Label>
+              <div className="max-h-32 overflow-y-auto space-y-1">
+                {COMMON_COUNTRIES
+                  .filter(country => !blockedCountries.some(bc => bc.countryCode === country.code))
+                  .slice(0, 10)
+                  .map((country) => (
+                    <div
+                      key={country.code}
+                      className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded text-sm"
+                    >
+                      <span className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center text-xs font-bold text-green-600">
+                        {country.code}
+                      </span>
+                      <span className="font-medium text-green-900">{country.name}</span>
+                    </div>
+                  ))}
+                {COMMON_COUNTRIES.length - blockedCountries.length > 10 && (
+                  <div className="text-xs text-gray-500 text-center py-1">
+                    +{COMMON_COUNTRIES.length - blockedCountries.length - 10} more enabled countries
+                  </div>
+                )}
               </div>
-            ) : (
+            </div>
+          </div>
+
+          {/* Detailed Management for Blocked Countries */}
+          {blockedCountries.length > 0 && (
+            <div>
+              <Label className="text-sm font-medium mb-3 block">
+                Detailed Blocked Countries Management
+              </Label>
               <div className="grid gap-2">
                 {blockedCountries.map((country) => (
                   <div
@@ -356,8 +420,8 @@ export default function CountryBlockingManager() {
                   </div>
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
