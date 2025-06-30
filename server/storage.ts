@@ -34,6 +34,10 @@ export interface IStorage {
   createAdminUser(user: InsertUser): Promise<User>;
   updateAdminUser(id: number, user: Partial<UpdateUser>): Promise<User>;
   deleteAdminUser(id: number): Promise<void>;
+  // 2FA Management
+  enable2FA(userId: number, secret: string, backupCodes: string[]): Promise<User>;
+  disable2FA(userId: number): Promise<User>;
+  updateBackupCodes(userId: number, backupCodes: string[]): Promise<User>;
   // Exit intent popup management
   getExitIntentPopup(): Promise<ExitIntentPopup | undefined>;
   updateExitIntentPopup(popup: InsertExitIntentPopup): Promise<ExitIntentPopup>;

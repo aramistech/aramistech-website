@@ -12,6 +12,7 @@ import path from "path";
 import fs from "fs";
 import { glob } from "glob";
 import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
+import { TwoFactorAuthService } from './two-factor-auth';
 import { z } from "zod";
 import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
 import { sendQuickQuoteEmail, sendContactEmail, sendAIConsultationEmail, sendITConsultationEmail, sendTechnicianTransferNotification, sendServiceCalculatorEmail } from "./email-service";
@@ -65,7 +66,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin authentication routes
   app.post("/api/admin/login", async (req, res) => {
     try {
-      const { username, password } = req.body;
+      const { username, password, twoFactorCode } = req.body;
       
       const user = await storage.getUserByUsername(username);
       if (!user) {
@@ -77,6 +78,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Invalid credentials" });
       }
 
+      // Check if user has 2FA enabled
+      if (user.twoFactorEnabled) {
+        if (!twoFactorCode) {
+          return res.json({
+            success: false,
+            requires2FA: true,
+            message: 'Two-factor authentication required'
+          });
+        }
+
+        // Verify 2FA code
+        const codeFormat = TwoFactorAuthService.isValidCodeFormat(twoFactorCode);
+        let isValid2FA = false;
+
+        if (codeFormat.isTotp && user.twoFactorSecret) {
+          // Verify TOTP code
+          isValid2FA = TwoFactorAuthService.verifyToken(twoFactorCode, user.twoFactorSecret);
+        } else if (codeFormat.isBackup && user.backupCodes) {
+          // Verify backup code
+          isValid2FA = TwoFactorAuthService.verifyBackupCode(twoFactorCode, user.backupCodes);
+          
+          if (isValid2FA) {
+            // Remove used backup code
+            const updatedBackupCodes = TwoFactorAuthService.removeBackupCode(twoFactorCode, user.backupCodes);
+            await storage.updateBackupCodes(user.id, updatedBackupCodes);
+          }
+        }
+
+        if (!isValid2FA) {
+          return res.status(401).json({ error: 'Invalid two-factor authentication code' });
+        }
+      }
+
       const sessionId = await createAdminSession(user.id);
       
       res.cookie('admin_session', sessionId, {
@@ -86,7 +120,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sameSite: 'lax'
       });
 
-      res.json({ success: true, user: { id: user.id, username: user.username } });
+      res.json({ 
+        success: true, 
+        user: { 
+          id: user.id, 
+          username: user.username,
+          twoFactorEnabled: user.twoFactorEnabled
+        } 
+      });
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ error: "Login failed" });
@@ -1164,6 +1205,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Delete admin user error:", error);
       res.status(500).json({ error: "Failed to delete admin user" });
+    }
+  });
+
+  // 2FA API Routes
+  // Generate 2FA setup (QR code and backup codes)
+  app.post("/api/admin/2fa/setup", requireAdminAuth, async (req, res) => {
+    try {
+      const userId = (req as any).user.id;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if (user.twoFactorEnabled) {
+        return res.status(400).json({ error: "2FA is already enabled for this user" });
+      }
+
+      const setup = await TwoFactorAuthService.generateSetup(user.username);
+      
+      res.json({
+        success: true,
+        qrCode: setup.qrCodeUrl,
+        backupCodes: setup.backupCodes,
+        secret: setup.secret // Don't store in DB yet, wait for verification
+      });
+    } catch (error) {
+      console.error("2FA setup error:", error);
+      res.status(500).json({ error: "Failed to generate 2FA setup" });
+    }
+  });
+
+  // Enable 2FA after verifying setup
+  app.post("/api/admin/2fa/enable", requireAdminAuth, async (req, res) => {
+    try {
+      const { token, secret, backupCodes } = req.body;
+      const userId = (req as any).user.id;
+
+      if (!token || !secret || !backupCodes) {
+        return res.status(400).json({ error: "Token, secret, and backup codes are required" });
+      }
+
+      // Verify the token with the secret
+      const isValid = TwoFactorAuthService.verifyToken(token, secret);
+      
+      if (!isValid) {
+        return res.status(400).json({ error: "Invalid 2FA token" });
+      }
+
+      // Enable 2FA for the user
+      const user = await storage.enable2FA(userId, secret, backupCodes);
+      
+      res.json({
+        success: true,
+        message: "2FA enabled successfully",
+        user: {
+          id: user.id,
+          username: user.username,
+          twoFactorEnabled: user.twoFactorEnabled
+        }
+      });
+    } catch (error) {
+      console.error("2FA enable error:", error);
+      res.status(500).json({ error: "Failed to enable 2FA" });
+    }
+  });
+
+  // Disable 2FA
+  app.post("/api/admin/2fa/disable", requireAdminAuth, async (req, res) => {
+    try {
+      const { password } = req.body;
+      const userId = (req as any).user.id;
+      const user = await storage.getUser(userId);
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if (!user.twoFactorEnabled) {
+        return res.status(400).json({ error: "2FA is not enabled for this user" });
+      }
+
+      // Verify password before disabling 2FA
+      const isPasswordValid = await verifyPassword(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(400).json({ error: "Invalid password" });
+      }
+
+      // Disable 2FA
+      const updatedUser = await storage.disable2FA(userId);
+      
+      res.json({
+        success: true,
+        message: "2FA disabled successfully",
+        user: {
+          id: updatedUser.id,
+          username: updatedUser.username,
+          twoFactorEnabled: updatedUser.twoFactorEnabled
+        }
+      });
+    } catch (error) {
+      console.error("2FA disable error:", error);
+      res.status(500).json({ error: "Failed to disable 2FA" });
+    }
+  });
+
+  // Generate new backup codes
+  app.post("/api/admin/2fa/backup-codes", requireAdminAuth, async (req, res) => {
+    try {
+      const userId = (req as any).user.id;
+      const user = await storage.getUser(userId);
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if (!user.twoFactorEnabled) {
+        return res.status(400).json({ error: "2FA is not enabled for this user" });
+      }
+
+      // Generate new backup codes
+      const newBackupCodes = TwoFactorAuthService.generateNewBackupCodes();
+      await storage.updateBackupCodes(userId, newBackupCodes);
+      
+      res.json({
+        success: true,
+        backupCodes: newBackupCodes
+      });
+    } catch (error) {
+      console.error("Generate backup codes error:", error);
+      res.status(500).json({ error: "Failed to generate backup codes" });
     }
   });
 
