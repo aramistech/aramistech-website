@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Trash2, Edit, Plus, GripVertical, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import ColorPickerWithPalette from '@/components/color-picker-with-palette';
 import {
   DndContext,
   closestCenter,
@@ -98,7 +99,7 @@ const iconOptions = [
   { value: 'bell', label: '🔔 Notifications' },
   { value: 'alertTriangle', label: '⚠️ Alerts' },
   { value: 'checkCircle', label: '✅ Success' },
-  { value: 'search', label: '🔍 Search' },
+  { value: 'searchTool', label: '🔍 Search' },
   
   // Power & Performance
   { value: 'zap', label: '⚡ Power/Speed' },
@@ -106,7 +107,6 @@ const iconOptions = [
   // Location & Office
   { value: 'home', label: '🏠 Home Office' },
   { value: 'mapPin', label: '📍 Location' },
-  { value: 'code', label: '💻 Development' },
   { value: 'network', label: '🌐 Network' },
   { value: 'backup', label: '💾 Backup' },
   { value: 'analytics', label: '📊 Analytics' },
@@ -298,29 +298,13 @@ function ServiceForm({ service, onSave, onCancel }: {
         </div>
       </div>
 
-      <div>
-        <Label htmlFor="buttonColor">Button Color</Label>
-        <div className="flex items-center gap-2">
-          <Input
-            id="buttonColor"
-            type="color"
-            value={formData.buttonColor}
-            onChange={(e) => setFormData({ ...formData, buttonColor: e.target.value })}
-            className="w-16 h-10 p-1 border rounded cursor-pointer"
-          />
-          <Input
-            value={formData.buttonColor}
-            onChange={(e) => setFormData({ ...formData, buttonColor: e.target.value })}
-            placeholder="#2563eb"
-            className="flex-1"
-          />
-          <div 
-            className="w-10 h-10 rounded border"
-            style={{ backgroundColor: formData.buttonColor }}
-            title="Color Preview"
-          />
-        </div>
-      </div>
+      <ColorPickerWithPalette
+        id="buttonColor"
+        label="Button Color"
+        value={formData.buttonColor}
+        onChange={(color) => setFormData({ ...formData, buttonColor: color })}
+        className="col-span-full"
+      />
 
       <div className="flex items-center space-x-2">
         <Switch
