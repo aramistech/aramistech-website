@@ -49,7 +49,7 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-6">Services</h4>
             <ul className="space-y-3 text-gray-300">
-              <li><a href="/services-managed" className="hover:text-white transition-colors">Maintenance Services</a></li>
+              <li><a href="/services" className="hover:text-white transition-colors">Maintenance Services</a></li>
               <li><a href="/ai-development" className="hover:text-white transition-colors">AI Development</a></li>
               <li><a href="/windows-10-upgrade" className="hover:text-white transition-colors">Windows 10 Upgrade</a></li>
               <li><a href="/service-calculator" className="hover:text-white transition-colors">Service Calculator</a></li>
