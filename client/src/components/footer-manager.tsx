@@ -399,7 +399,7 @@ function FooterLinkForm({
         <Input
           id="url"
           name="url"
-          type="url"
+          type="text"
           defaultValue={defaultValues?.url}
           placeholder="e.g., /services or https://example.com"
           required
