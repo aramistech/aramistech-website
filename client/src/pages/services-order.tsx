@@ -32,8 +32,10 @@ interface WHMCSServiceGroup {
 }
 
 export default function ServicesOrderPage() {
-  const { data: servicesData, isLoading } = useQuery({
+  const { data: servicesData, isLoading, error } = useQuery({
     queryKey: ['/api/whmcs/services'],
+    retry: 3,
+    retryDelay: 1000,
   });
 
   const formatPrice = (price: number | undefined): string => {
@@ -72,7 +74,57 @@ export default function ServicesOrderPage() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <DynamicHeader />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+              <h2 className="text-lg font-semibold text-red-900 mb-2">Service Loading Error</h2>
+              <p className="text-red-700 mb-4">Unable to load maintenance services from WHMCS.</p>
+              <p className="text-sm text-red-600">Error: {error?.message || 'Unknown error'}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   const services: WHMCSServiceGroup[] = (servicesData as any)?.services || [];
+
+  // If no services loaded and no error, show fallback content
+  if (!isLoading && !error && (!services || services.length === 0)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <DynamicHeader />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 max-w-lg mx-auto">
+              <h2 className="text-xl font-semibold text-yellow-900 mb-4">Services Temporarily Unavailable</h2>
+              <p className="text-yellow-800 mb-6">Our maintenance services are currently being updated. Please contact us directly for service information and pricing.</p>
+              <div className="space-y-3">
+                <a href="tel:+13058144461" className="block bg-aramis-orange text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors">
+                  Call (305) 814-4461
+                </a>
+                <a href="mailto:sales@aramistech.com" className="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                  Email Sales Team
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
