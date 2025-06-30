@@ -79,7 +79,8 @@ export default function DynamicHeader() {
 
   // Get security alert settings
   const securityAlert = alertData?.alert;
-  const isAlertEnabled = securityAlert?.isEnabled !== false && !isWarningDismissed;
+  const isDesktopAlertEnabled = securityAlert?.isDesktopEnabled !== false && !isWarningDismissed;
+  const isMobileAlertEnabled = securityAlert?.isMobileEnabled !== false && !isWarningDismissed;
 
   // Function to get icon component based on iconType
   const getIconComponent = (iconType: string) => {
@@ -189,7 +190,7 @@ export default function DynamicHeader() {
         </div>
       </div>
       {/* Security Alert Banner - Desktop */}
-      {isAlertEnabled && (
+      {isDesktopAlertEnabled && (
         <div 
           className="hidden sm:block critical-warning text-white py-1 relative overflow-hidden"
           style={{ backgroundColor: securityAlert?.backgroundColor || '#dc2626' }}
@@ -235,7 +236,7 @@ export default function DynamicHeader() {
         </div>
       )}
       {/* Security Alert Button - Mobile */}
-      {isAlertEnabled && (
+      {isMobileAlertEnabled && (
         <div className="sm:hidden fixed right-0 top-1/2 transform -translate-y-1/2 z-50">
           <div className="relative">
             <button

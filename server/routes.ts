@@ -303,6 +303,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Manually filter out problematic timestamp fields and validate
       const allowedFields = {
         isEnabled: req.body.isEnabled,
+        isDesktopEnabled: req.body.isDesktopEnabled,
+        isMobileEnabled: req.body.isMobileEnabled,
         title: req.body.title,
         message: req.body.message,
         buttonText: req.body.buttonText,
