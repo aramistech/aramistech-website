@@ -2756,6 +2756,24 @@ User message: ${message}`
     }
   });
 
+  app.put('/api/admin/footer-links/reorder', requireAdminAuth, async (req, res) => {
+    try {
+      const { links } = req.body;
+      
+      // Update each link with new order index
+      for (const link of links) {
+        await db.update(footerLinks)
+          .set({ orderIndex: link.orderIndex })
+          .where(eq(footerLinks.id, link.id));
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error reordering footer links:', error);
+      res.status(500).json({ success: false, error: 'Failed to reorder footer links' });
+    }
+  });
+
   // Image scanning endpoint to get current URLs
   app.get('/api/admin/scan-images', requireAdminAuth, async (req, res) => {
     try {

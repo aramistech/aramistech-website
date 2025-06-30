@@ -155,7 +155,16 @@ export default function FooterManager() {
     queryKey: ['/api/admin/footer-links'],
   });
 
-  const links = (linksData as any)?.links || [];
+  const links: FooterLink[] = (linksData as any)?.links || [];
+
+  // Group links by section
+  const groupedLinks = links.reduce((acc: Record<string, FooterLink[]>, link: FooterLink) => {
+    if (!acc[link.section]) {
+      acc[link.section] = [];
+    }
+    acc[link.section].push(link);
+    return acc;
+  }, {});
 
   const createMutation = useMutation({
     mutationFn: (data: FooterLinkFormData) => apiRequest('/api/admin/footer-links', 'POST', data),
@@ -204,7 +213,7 @@ export default function FooterManager() {
       const oldIndex = links.findIndex((link: FooterLink) => link.id.toString() === active.id);
       const newIndex = links.findIndex((link: FooterLink) => link.id.toString() === over.id);
 
-      const reorderedLinks = arrayMove(links, oldIndex, newIndex).map((link: FooterLink, index: number) => ({
+      const reorderedLinks = arrayMove(links, oldIndex, newIndex).map((link, index) => ({
         ...link,
         orderIndex: index + 1
       }));
@@ -232,14 +241,6 @@ export default function FooterManager() {
       createMutation.mutate(data);
     }
   };
-
-  const groupedLinks = links.reduce((acc: Record<string, FooterLink[]>, link: FooterLink) => {
-    if (!acc[link.section]) {
-      acc[link.section] = [];
-    }
-    acc[link.section].push(link);
-    return acc;
-  }, {});
 
   const getSectionIcon = (section: string) => {
     const option = sectionOptions.find(opt => opt.value === section);
