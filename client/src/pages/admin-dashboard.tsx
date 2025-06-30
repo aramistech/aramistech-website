@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator, ChevronLeft, ChevronRight, Book, GripVertical, Link } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator, ChevronLeft, ChevronRight, Book, GripVertical, Link, Globe } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -41,6 +41,7 @@ import ServiceCalculatorManager from '@/components/service-calculator-manager';
 import FooterManager from '@/components/footer-manager';
 import StaticServicesManagement from '@/components/admin/static-services-management';
 import TwoFactorAuthManager from '@/components/two-factor-auth-manager';
+import CountryBlockingManager from '@/components/country-blocking-manager';
 
 // Sortable Menu Item Component
 interface SortableMenuItemProps {
@@ -130,6 +131,7 @@ export default function AdminDashboard() {
     { id: 'users', label: 'Users', icon: Users },
     { id: 'twofactor', label: '2FA', icon: Shield },
     { id: 'security', label: 'Security', icon: Shield },
+    { id: 'country-blocking', label: 'Country Blocking', icon: Globe },
     { id: 'colors', label: 'Colors', icon: Palette },
     { id: 'knowledge', label: 'Knowledge', icon: Book },
     { id: 'media', label: 'Media Library', icon: ImageIcon },

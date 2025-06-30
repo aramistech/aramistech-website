@@ -99,6 +99,12 @@ export interface IStorage {
   updateStaticService(id: number, service: Partial<InsertStaticService>): Promise<StaticService>;
   deleteStaticService(id: number): Promise<void>;
   reorderStaticServices(serviceIds: number[]): Promise<void>;
+  // Country blocking management
+  getCountryBlockingSettings(): Promise<CountryBlocking | undefined>;
+  updateCountryBlockingSettings(settings: InsertCountryBlocking): Promise<CountryBlocking>;
+  getBlockedCountries(): Promise<BlockedCountry[]>;
+  addBlockedCountry(country: InsertBlockedCountry): Promise<BlockedCountry>;
+  removeBlockedCountry(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -768,6 +774,47 @@ export class DatabaseStorage implements IStorage {
 
   async clearStaticServices(): Promise<void> {
     await db.delete(staticServices);
+  }
+
+  // Country blocking management implementations
+  async getCountryBlockingSettings(): Promise<CountryBlocking | undefined> {
+    const [settings] = await db.select().from(countryBlocking).limit(1);
+    return settings || undefined;
+  }
+
+  async updateCountryBlockingSettings(settings: InsertCountryBlocking): Promise<CountryBlocking> {
+    // Check if settings exist
+    const existing = await this.getCountryBlockingSettings();
+    
+    if (existing) {
+      // Update existing settings
+      const [updated] = await db.update(countryBlocking)
+        .set({ ...settings, updatedAt: new Date() })
+        .where(eq(countryBlocking.id, existing.id))
+        .returning();
+      return updated;
+    } else {
+      // Create new settings
+      const [created] = await db.insert(countryBlocking)
+        .values(settings)
+        .returning();
+      return created;
+    }
+  }
+
+  async getBlockedCountries(): Promise<BlockedCountry[]> {
+    return await db.select().from(blockedCountries).orderBy(asc(blockedCountries.countryName));
+  }
+
+  async addBlockedCountry(country: InsertBlockedCountry): Promise<BlockedCountry> {
+    const [newCountry] = await db.insert(blockedCountries)
+      .values(country)
+      .returning();
+    return newCountry;
+  }
+
+  async removeBlockedCountry(id: number): Promise<void> {
+    await db.delete(blockedCountries).where(eq(blockedCountries.id, id));
   }
 }
 
