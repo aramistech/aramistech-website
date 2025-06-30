@@ -8,7 +8,26 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Trash2, Edit, Plus, ExternalLink, Link as LinkIcon, Globe, Users, Building } from 'lucide-react';
+import { Trash2, Edit, Plus, ExternalLink, Link as LinkIcon, Globe, Users, Building, GripVertical } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 
@@ -33,6 +52,85 @@ interface FooterLinkFormData {
   target: string;
 }
 
+// Sortable Footer Link Item Component
+function SortableFooterLink({ link, onEdit, onDelete }: { 
+  link: FooterLink; 
+  onEdit: (link: FooterLink) => void; 
+  onDelete: (id: number) => void; 
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: link.id.toString() });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const getSectionIcon = (section: string) => {
+    switch (section.toLowerCase()) {
+      case 'services': return <Building className="w-4 h-4" />;
+      case 'support': return <LinkIcon className="w-4 h-4" />;
+      case 'company': return <Users className="w-4 h-4" />;
+      case 'resources': return <Globe className="w-4 h-4" />;
+      default: return <LinkIcon className="w-4 h-4" />;
+    }
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center justify-between p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow"
+    >
+      <div className="flex items-center space-x-3">
+        <div
+          {...attributes}
+          {...listeners}
+          className="cursor-grab hover:cursor-grabbing p-1 hover:bg-gray-100 rounded"
+        >
+          <GripVertical className="w-4 h-4 text-gray-400" />
+        </div>
+        <div className="flex items-center space-x-2">
+          {getSectionIcon(link.section)}
+          <div>
+            <p className="font-medium">{link.label}</p>
+            <p className="text-sm text-gray-500">{link.url}</p>
+          </div>
+        </div>
+        <Badge variant={link.isActive ? "default" : "secondary"}>
+          {link.section}
+        </Badge>
+        <Badge variant={link.isActive ? "default" : "outline"}>
+          {link.isActive ? 'Active' : 'Inactive'}
+        </Badge>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onEdit(link)}
+        >
+          <Edit className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onDelete(link.id)}
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 const sectionOptions = [
   { value: 'services', label: 'Services', icon: Globe },
   { value: 'support', label: 'Support', icon: Users },
@@ -44,6 +142,14 @@ export default function FooterManager() {
   const [editingLink, setEditingLink] = useState<FooterLink | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const { toast } = useToast();
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const { data: linksData, isLoading } = useQuery({
     queryKey: ['/api/admin/footer-links'],
@@ -80,6 +186,32 @@ export default function FooterManager() {
       toast({ title: 'Footer link deleted successfully' });
     },
   });
+
+  const reorderMutation = useMutation({
+    mutationFn: (reorderedLinks: FooterLink[]) => 
+      apiRequest('/api/admin/footer-links/reorder', 'PUT', { links: reorderedLinks }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/footer-links'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/footer-links'] });
+      toast({ title: 'Footer links reordered successfully' });
+    },
+  });
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = links.findIndex((link: FooterLink) => link.id.toString() === active.id);
+      const newIndex = links.findIndex((link: FooterLink) => link.id.toString() === over.id);
+
+      const reorderedLinks = arrayMove(links, oldIndex, newIndex).map((link: FooterLink, index: number) => ({
+        ...link,
+        orderIndex: index + 1
+      }));
+
+      reorderMutation.mutate(reorderedLinks);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -178,41 +310,29 @@ export default function FooterManager() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {sectionLinks.map((link) => (
-                      <div key={link.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium text-gray-900">{link.label}</span>
-                            {!link.isActive && (
-                              <Badge variant="secondary">Inactive</Badge>
-                            )}
-                            {link.target === '_blank' && (
-                              <ExternalLink className="w-3 h-3 text-gray-400" />
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-600 mt-1">{link.url}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setEditingLink(link)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => deleteMutation.mutate(link.id)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={sectionLinks.map((link: FooterLink) => link.id.toString())}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="space-y-3">
+                        {sectionLinks
+                          .sort((a: FooterLink, b: FooterLink) => a.orderIndex - b.orderIndex)
+                          .map((link: FooterLink) => (
+                            <SortableFooterLink
+                              key={link.id}
+                              link={link}
+                              onEdit={setEditingLink}
+                              onDelete={(id) => deleteMutation.mutate(id)}
+                            />
+                          ))}
                       </div>
-                    ))}
-                  </div>
+                    </SortableContext>
+                  </DndContext>
                 </CardContent>
               </Card>
             );
