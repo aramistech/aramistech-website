@@ -109,7 +109,7 @@ function ServiceCard({ service }: { service: StaticService }) {
 
           {/* Service Description */}
           <div className="flex-1 mb-6">
-            <p className="text-gray-600 leading-relaxed">{service.description}</p>
+            <p className="text-gray-600 leading-relaxed whitespace-pre-line">{service.description}</p>
           </div>
 
           {/* Order Button */}
