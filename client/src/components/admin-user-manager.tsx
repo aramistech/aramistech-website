@@ -72,7 +72,14 @@ export default function AdminUserManager() {
     staleTime: 1000 * 60 * 5,
   });
 
+  // Fetch current user to identify self
+  const { data: currentUserData } = useQuery({
+    queryKey: ['/api/admin/me'],
+    staleTime: 1000 * 60 * 5,
+  });
+
   const adminUsers: AdminUser[] = usersData && usersData.users && Array.isArray(usersData.users) ? usersData.users : [];
+  const currentUserId = currentUserData?.user?.id;
 
   // 2FA toggle mutations
   const enable2FAMutation = useMutation({
@@ -88,9 +95,12 @@ export default function AdminUserManager() {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
     },
     onError: (error: any) => {
+      const errorMessage = error.message || "Failed to enable 2FA";
       toast({
         title: "Error",
-        description: error.message || "Failed to enable 2FA",
+        description: errorMessage.includes("Use the regular 2FA setup") 
+          ? "Please use the 2FA tab to manage your own two-factor authentication"
+          : errorMessage,
         variant: "destructive",
       });
     },
@@ -109,9 +119,12 @@ export default function AdminUserManager() {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
     },
     onError: (error: any) => {
+      const errorMessage = error.message || "Failed to disable 2FA";
       toast({
         title: "Error",
-        description: error.message || "Failed to disable 2FA",
+        description: errorMessage.includes("Use the regular 2FA disable") 
+          ? "Please use the 2FA tab to manage your own two-factor authentication"
+          : errorMessage,
         variant: "destructive",
       });
     },
@@ -499,7 +512,23 @@ export default function AdminUserManager() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      {user.twoFactorEnabled ? (
+                      {user.id === currentUserId ? (
+                        // For current user, show message to use 2FA tab
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            toast({
+                              title: "Use 2FA Tab",
+                              description: "Click the '2FA' tab in the sidebar to manage your own two-factor authentication",
+                            });
+                          }}
+                          className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                        >
+                          <Shield className="w-4 h-4 mr-1" />
+                          Manage Your 2FA
+                        </Button>
+                      ) : user.twoFactorEnabled ? (
                         <Button
                           variant="outline"
                           size="sm"
