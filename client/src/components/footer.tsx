@@ -1,10 +1,36 @@
 import { Facebook, Linkedin, Twitter, Phone, Mail, MapPin, Clock, Shield } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useQuery } from '@tanstack/react-query';
 
 import AramisTechFooterLogo from "@assets/AramisTechFooterLogo.png";
 
+interface FooterLink {
+  id: number;
+  section: string;
+  label: string;
+  url: string;
+  isActive: boolean;
+  orderIndex: number;
+  target: string;
+}
+
 export default function Footer() {
   const [isWarningDismissed, setIsWarningDismissed] = useState(false);
+
+  const { data: footerLinksData } = useQuery({
+    queryKey: ['/api/footer-links'],
+  });
+
+  const footerLinks = (footerLinksData as any)?.links || [];
+
+  // Group links by section
+  const groupedLinks = footerLinks.reduce((acc: Record<string, FooterLink[]>, link: FooterLink) => {
+    if (!acc[link.section]) {
+      acc[link.section] = [];
+    }
+    acc[link.section].push(link);
+    return acc;
+  }, {});
 
   useEffect(() => {
     const dismissed = localStorage.getItem('criticalWarningDismissed');
@@ -16,7 +42,6 @@ export default function Footer() {
   const enableWarning = () => {
     localStorage.removeItem('criticalWarningDismissed');
     setIsWarningDismissed(false);
-    // Refresh page to show warning button
     window.location.reload();
   };
 
