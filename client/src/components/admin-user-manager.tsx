@@ -37,6 +37,7 @@ interface AdminUser {
   lastLogin?: string;
   createdAt: string;
   updatedAt: string;
+  twoFactorEnabled?: boolean;
 }
 
 export default function AdminUserManager() {

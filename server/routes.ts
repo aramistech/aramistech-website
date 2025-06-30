@@ -1340,6 +1340,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin-controlled 2FA management endpoints
+  // Force enable 2FA for a user (admin only)
+  app.post("/api/admin/users/:userId/2fa/force-enable", requireAdminAuth, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const adminUser = (req as any).adminUser;
+      
+      // Prevent admins from enabling 2FA on their own account through this endpoint
+      if (parseInt(userId) === adminUser.id) {
+        return res.status(400).json({ error: "Use the regular 2FA setup for your own account" });
+      }
+
+      const targetUser = await storage.getUser(parseInt(userId));
+      if (!targetUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if (targetUser.twoFactorEnabled) {
+        return res.status(400).json({ error: "Two-factor authentication is already enabled for this user" });
+      }
+
+      // Generate a temporary secret and backup codes for the user
+      const secret = TwoFactorAuthService.generateSecret();
+      const backupCodes = TwoFactorAuthService.generateBackupCodes();
+      const hashedBackupCodes = backupCodes.map(code => TwoFactorAuthService.hashBackupCode(code));
+
+      // Enable 2FA for the target user
+      const updatedUser = await storage.enable2FA(parseInt(userId), secret, hashedBackupCodes);
+
+      res.json({
+        success: true,
+        message: `2FA enabled for user ${targetUser.username}`,
+        secret: secret, // Admin will need to share this with user
+        backupCodes: backupCodes,
+        user: {
+          id: updatedUser.id,
+          username: updatedUser.username,
+          twoFactorEnabled: updatedUser.twoFactorEnabled
+        }
+      });
+    } catch (error) {
+      console.error("Force enable 2FA error:", error);
+      res.status(500).json({ error: "Failed to enable 2FA" });
+    }
+  });
+
+  // Force disable 2FA for a user (admin only)
+  app.post("/api/admin/users/:userId/2fa/force-disable", requireAdminAuth, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const adminUser = (req as any).adminUser;
+      
+      // Prevent admins from disabling 2FA on their own account through this endpoint
+      if (parseInt(userId) === adminUser.id) {
+        return res.status(400).json({ error: "Use the regular 2FA disable for your own account" });
+      }
+
+      const targetUser = await storage.getUser(parseInt(userId));
+      if (!targetUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if (!targetUser.twoFactorEnabled) {
+        return res.status(400).json({ error: "Two-factor authentication is not enabled for this user" });
+      }
+
+      // Disable 2FA for the target user
+      const updatedUser = await storage.disable2FA(parseInt(userId));
+
+      res.json({
+        success: true,
+        message: `2FA disabled for user ${targetUser.username}`,
+        user: {
+          id: updatedUser.id,
+          username: updatedUser.username,
+          twoFactorEnabled: updatedUser.twoFactorEnabled
+        }
+      });
+    } catch (error) {
+      console.error("Force disable 2FA error:", error);
+      res.status(500).json({ error: "Failed to disable 2FA" });
+    }
+  });
+
   // Protected admin reviews routes
   app.get("/api/admin/reviews", requireAdminAuth, async (req, res) => {
     try {
