@@ -38,6 +38,7 @@ import KnowledgeBaseManager from '@/components/knowledge-base-manager';
 import SecurityAlertsManager from '@/components/security-alerts-manager';
 import ColorPaletteManager from '@/components/color-palette-manager';
 import ServiceCalculatorManager from '@/components/service-calculator-manager';
+import StaticServicesManagement from '@/components/admin/static-services-management';
 
 // Sortable Menu Item Component
 interface SortableMenuItemProps {
@@ -103,6 +104,7 @@ export default function AdminDashboard() {
   // Menu items with order state
   const [menuItems, setMenuItems] = useState([
     { id: 'reviews', label: 'Reviews', icon: Star },
+    { id: 'services', label: 'Services', icon: Settings },
     { id: 'menu', label: 'Menu', icon: Menu },
     { id: 'users', label: 'Users', icon: Users },
     { id: 'security', label: 'Security', icon: Shield },

@@ -4,7 +4,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema, insertColorPaletteSchema, insertPricingCalculationSchema, insertServiceCategorySchema, insertServiceOptionSchema } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema, insertColorPaletteSchema, insertPricingCalculationSchema, insertServiceCategorySchema, insertServiceOptionSchema, insertStaticServiceSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -2611,6 +2611,73 @@ User message: ${message}`
     });
   }
   
+  // Static Services Management
+  app.get('/api/admin/static-services', requireAdminAuth, async (req, res) => {
+    try {
+      const services = await storage.getStaticServices();
+      res.json({ success: true, services });
+    } catch (error) {
+      console.error('Error fetching static services:', error);
+      res.status(500).json({ success: false, error: 'Failed to fetch services' });
+    }
+  });
+
+  app.post('/api/admin/static-services', requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertStaticServiceSchema.parse(req.body);
+      const service = await storage.createStaticService(validatedData);
+      res.json({ success: true, service });
+    } catch (error) {
+      console.error('Error creating static service:', error);
+      res.status(500).json({ success: false, error: 'Failed to create service' });
+    }
+  });
+
+  app.put('/api/admin/static-services/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertStaticServiceSchema.partial().parse(req.body);
+      const service = await storage.updateStaticService(id, validatedData);
+      res.json({ success: true, service });
+    } catch (error) {
+      console.error('Error updating static service:', error);
+      res.status(500).json({ success: false, error: 'Failed to update service' });
+    }
+  });
+
+  app.delete('/api/admin/static-services/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteStaticService(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting static service:', error);
+      res.status(500).json({ success: false, error: 'Failed to delete service' });
+    }
+  });
+
+  app.post('/api/admin/static-services/reorder', requireAdminAuth, async (req, res) => {
+    try {
+      const { serviceIds } = req.body;
+      await storage.reorderStaticServices(serviceIds);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error reordering static services:', error);
+      res.status(500).json({ success: false, error: 'Failed to reorder services' });
+    }
+  });
+
+  // Public endpoint for services page
+  app.get('/api/static-services', async (req, res) => {
+    try {
+      const services = await storage.getStaticServices();
+      res.json({ success: true, services });
+    } catch (error) {
+      console.error('Error fetching static services:', error);
+      res.status(500).json({ success: false, error: 'Failed to fetch services' });
+    }
+  });
+
   // Image scanning endpoint to get current URLs
   app.get('/api/admin/scan-images', requireAdminAuth, async (req, res) => {
     try {
