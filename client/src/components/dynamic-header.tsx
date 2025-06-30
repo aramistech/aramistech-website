@@ -193,7 +193,7 @@ export default function DynamicHeader() {
       {isDesktopAlertEnabled && (
         <div 
           className="hidden sm:block critical-warning text-white py-1 relative overflow-hidden"
-          style={{ backgroundColor: securityAlert?.backgroundColor || '#dc2626' }}
+          style={{ backgroundColor: securityAlert?.desktopBackgroundColor || '#dc2626' }}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-center text-center">
@@ -201,30 +201,30 @@ export default function DynamicHeader() {
                 <span 
                   className="critical-badge px-2 py-1 rounded-full text-xs font-bold flex items-center"
                   style={{ 
-                    backgroundColor: securityAlert?.backgroundColor || '#dc2626',
-                    color: securityAlert?.textColor || 'white'
+                    backgroundColor: securityAlert?.desktopBackgroundColor || '#dc2626',
+                    color: securityAlert?.desktopTextColor || 'white'
                   }}
                 >
-                  {getIconComponent(securityAlert?.iconType || 'AlertTriangle')}
-                  CRITICAL
+                  {getIconComponent(securityAlert?.desktopIconType || 'AlertTriangle')}
+                  {securityAlert?.desktopTitle || 'CRITICAL'}
                 </span>
                 <span 
                   className="font-semibold text-sm sm:text-base professional-text"
-                  style={{ color: securityAlert?.textColor || 'white' }}
+                  style={{ color: securityAlert?.desktopTextColor || 'white' }}
                 >
-                  {securityAlert?.title || 'Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats'}
+                  {securityAlert?.desktopMessage || 'Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats'}
                 </span>
                 <Link 
-                  href={securityAlert?.buttonLink || '/windows10-upgrade'}
+                  href={securityAlert?.desktopButtonLink || '/windows10-upgrade'}
                   className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2 border-white hover:opacity-90 transition-all duration-300 transform hover:scale-105"
                   style={{ 
-                    backgroundColor: securityAlert?.buttonBackgroundColor || '#ffffff',
-                    color: securityAlert?.buttonTextColor || '#000000'
+                    backgroundColor: securityAlert?.desktopButtonBackgroundColor || '#ffffff',
+                    color: securityAlert?.desktopButtonTextColor || '#000000'
                   }}
                   onClick={() => window.scrollTo(0, 0)}
                 >
                   <span className="mr-1">►</span>
-                  {securityAlert?.buttonText || 'Learn More'}
+                  {securityAlert?.desktopButtonText || 'Learn More'}
                 </Link>
               </div>
             </div>
@@ -242,7 +242,7 @@ export default function DynamicHeader() {
             <button
               onClick={() => setShowMobilePopup(true)}
               className="critical-warning text-white p-3 relative overflow-hidden hover:opacity-90 transition-all duration-300 rounded-l-lg shadow-lg"
-              style={{ backgroundColor: securityAlert?.backgroundColor || '#dc2626' }}
+              style={{ backgroundColor: securityAlert?.mobileBackgroundColor || '#dc2626' }}
             >
               <div className="flex flex-col items-center space-y-1">
                 {(() => {
