@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -140,9 +140,21 @@ export default function SecurityAlertsManager() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Security Alerts Management</h2>
-        <div className="flex items-center space-x-2">
-          <Label htmlFor="alert-enabled">Alert Enabled</Label>
+        <div>
+          <h2 className="text-2xl font-bold">Security Alerts Management</h2>
+          <p className="text-gray-600 text-sm mt-1">Controls both desktop banner and mobile warning button</p>
+        </div>
+        <div className="flex items-center space-x-3">
+          <div className="text-right">
+            <Label htmlFor="alert-enabled" className="font-medium">Critical Security Alerts</Label>
+            <div className="text-xs text-gray-500 mt-1">
+              {formData.isEnabled ? (
+                <span className="text-green-600 font-medium">● ACTIVE on all devices</span>
+              ) : (
+                <span className="text-red-600 font-medium">● DISABLED on all devices</span>
+              )}
+            </div>
+          </div>
           <Switch
             id="alert-enabled"
             checked={formData.isEnabled}
@@ -155,69 +167,80 @@ export default function SecurityAlertsManager() {
       <Card>
         <CardHeader>
           <CardTitle>Live Preview</CardTitle>
+          <CardDescription>Preview how the security alerts appear on desktop and mobile</CardDescription>
         </CardHeader>
         <CardContent>
-          {formData.isEnabled && (
+          {formData.isEnabled ? (
             <>
               {/* Desktop Preview */}
-              <div className="mb-4">
-                <h4 className="font-semibold mb-2">Desktop Warning Banner</h4>
+              <div className="mb-6">
+                <h4 className="font-semibold mb-2 text-gray-700">Desktop Warning Banner</h4>
                 <div 
-                  className="py-1 relative overflow-hidden rounded"
-                  style={{ backgroundColor: formData.backgroundColor, color: formData.textColor }}
+                  className="py-1 relative overflow-hidden rounded border-2 border-gray-200"
+                  style={{ backgroundColor: formData.backgroundColor || '#dc2626', color: formData.textColor || '#ffffff' }}
                 >
                   <div className="max-w-4xl mx-auto px-4">
                     <div className="flex items-center justify-center text-center">
                       <div className="flex items-center space-x-3">
                         <span 
-                          className="px-2 py-1 rounded-full text-xs font-bold flex items-center"
-                          style={{ backgroundColor: formData.backgroundColor, color: formData.textColor }}
+                          className="px-2 py-1 rounded-full text-xs font-bold flex items-center space-x-1"
+                          style={{ 
+                            backgroundColor: formData.backgroundColor || '#dc2626', 
+                            color: formData.textColor || '#ffffff'
+                          }}
                         >
-                          <IconComponent className="w-3 h-3 mr-1" />
-                          {formData.title}
+                          <IconComponent className="w-3 h-3" />
+                          <span>{formData.title || 'CRITICAL'}</span>
                         </span>
                         <span className="font-semibold text-sm">
-                          {formData.message}
+                          {formData.message || 'Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats'}
                         </span>
                         <button 
-                          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2 border-white"
+                          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2"
                           style={{ 
-                            backgroundColor: formData.buttonBackgroundColor, 
-                            color: formData.buttonTextColor 
+                            backgroundColor: formData.buttonBackgroundColor || '#ffffff', 
+                            color: formData.buttonTextColor || '#000000',
+                            borderColor: formData.textColor || '#ffffff'
                           }}
                         >
                           <span className="mr-1">►</span>
-                          {formData.buttonText}
+                          {formData.buttonText || 'Learn More'}
                         </button>
                       </div>
                     </div>
                   </div>
+                  {/* Animated indicators */}
+                  <div className="absolute left-0 top-0 w-2 h-full bg-yellow-400 animate-ping"></div>
+                  <div className="absolute right-0 top-0 w-2 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
                 </div>
               </div>
 
               {/* Mobile Preview */}
-              <div>
-                <h4 className="font-semibold mb-2">Mobile Warning Button</h4>
+              <div className="mb-4">
+                <h4 className="font-semibold mb-2 text-gray-700">Mobile Warning Button</h4>
                 <div className="flex items-center space-x-4">
                   <div 
-                    className="text-white p-3 rounded-l-lg shadow-lg"
-                    style={{ backgroundColor: formData.backgroundColor }}
+                    className="p-3 rounded-l-lg shadow-lg border-2 border-gray-200"
+                    style={{ backgroundColor: formData.backgroundColor || '#dc2626', color: formData.textColor || '#ffffff' }}
                   >
                     <div className="flex flex-col items-center space-y-1">
-                      <IconComponent className="w-6 h-6" />
-                      <span className="font-bold text-xs">{formData.title}</span>
+                      <IconComponent className="w-6 h-6 animate-pulse" />
+                      <span className="font-bold text-xs">{formData.title || 'CRITICAL'}</span>
                     </div>
                   </div>
                   <div className="text-sm text-gray-600">
-                    Tapping opens popup with: "{formData.mobileTitle}"
+                    <div className="font-medium">Mobile Popup Contains:</div>
+                    <div>Title: "{formData.mobileTitle || 'CRITICAL SECURITY ALERT'}"</div>
+                    <div>Button: "{formData.mobileButtonText || 'Get Protected Now'}"</div>
                   </div>
                 </div>
               </div>
             </>
-          )}
-          {!formData.isEnabled && (
-            <div className="text-gray-500 text-center py-8">
-              Security alerts are currently disabled
+          ) : (
+            <div className="text-gray-500 text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <IconComponent className="w-12 h-12 mx-auto mb-2 opacity-50" />
+              <div className="font-medium">Security alerts are currently disabled</div>
+              <div className="text-sm">Both desktop banner and mobile button are hidden</div>
             </div>
           )}
         </CardContent>
