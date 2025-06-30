@@ -555,3 +555,42 @@ export const insertFooterLinkSchema = createInsertSchema(footerLinks).omit({
 
 export type FooterLink = typeof footerLinks.$inferSelect;
 export type InsertFooterLink = z.infer<typeof insertFooterLinkSchema>;
+
+// Country Blocking System
+export const countryBlocking = pgTable("country_blocking", {
+  id: serial("id").primaryKey(),
+  isEnabled: boolean("is_enabled").default(false),
+  blockMessage: text("block_message").default("This service is not available in your region."),
+  messageTitle: text("message_title").default("Service Not Available"),
+  fontSize: varchar("font_size", { length: 50 }).default("text-lg"),
+  fontColor: varchar("font_color", { length: 7 }).default("#374151"),
+  backgroundColor: varchar("background_color", { length: 7 }).default("#f9fafb"),
+  borderColor: varchar("border_color", { length: 7 }).default("#e5e7eb"),
+  showContactInfo: boolean("show_contact_info").default(true),
+  contactMessage: text("contact_message").default("If you believe this is an error, please contact us."),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const blockedCountries = pgTable("blocked_countries", {
+  id: serial("id").primaryKey(),
+  countryCode: varchar("country_code", { length: 2 }).notNull().unique(),
+  countryName: varchar("country_name", { length: 100 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertCountryBlockingSchema = createInsertSchema(countryBlocking).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertBlockedCountrySchema = createInsertSchema(blockedCountries).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type CountryBlocking = typeof countryBlocking.$inferSelect;
+export type InsertCountryBlocking = z.infer<typeof insertCountryBlockingSchema>;
+export type BlockedCountry = typeof blockedCountries.$inferSelect;
+export type InsertBlockedCountry = z.infer<typeof insertBlockedCountrySchema>;

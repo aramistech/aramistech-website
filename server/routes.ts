@@ -3599,5 +3599,124 @@ User message: ${message}`
     }
   });
 
+  // Country Blocking Management API endpoints
+  app.get('/api/admin/country-blocking', requireAdminAuth, async (req, res) => {
+    try {
+      const settings = await storage.getCountryBlockingSettings();
+      const blockedCountries = await storage.getBlockedCountries();
+      res.json({ 
+        success: true, 
+        settings: settings || {
+          isEnabled: false,
+          blockMessage: "This service is not available in your region.",
+          messageTitle: "Service Not Available",
+          fontSize: "text-lg",
+          fontColor: "#374151",
+          backgroundColor: "#f9fafb",
+          borderColor: "#e5e7eb",
+          showContactInfo: true,
+          contactMessage: "If you believe this is an error, please contact us."
+        },
+        blockedCountries: blockedCountries || []
+      });
+    } catch (error) {
+      console.error('Error fetching country blocking data:', error);
+      res.status(500).json({ error: 'Failed to fetch country blocking data' });
+    }
+  });
+
+  app.put('/api/admin/country-blocking', requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertCountryBlockingSchema.parse(req.body);
+      const updated = await storage.updateCountryBlockingSettings(validatedData);
+      res.json({ success: true, settings: updated });
+    } catch (error) {
+      console.error('Error updating country blocking settings:', error);
+      res.status(400).json({ error: 'Failed to update country blocking settings' });
+    }
+  });
+
+  app.post('/api/admin/country-blocking/countries', requireAdminAuth, async (req, res) => {
+    try {
+      const { countryCode, countryName } = req.body;
+      if (!countryCode || !countryName) {
+        return res.status(400).json({ error: 'Country code and name are required' });
+      }
+      
+      const country = await storage.addBlockedCountry({ countryCode, countryName });
+      res.json({ success: true, country });
+    } catch (error) {
+      console.error('Error adding blocked country:', error);
+      res.status(400).json({ error: 'Failed to add blocked country' });
+    }
+  });
+
+  app.delete('/api/admin/country-blocking/countries/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const countryId = parseInt(req.params.id);
+      await storage.removeBlockedCountry(countryId);
+      res.json({ success: true, message: 'Country removed from block list' });
+    } catch (error) {
+      console.error('Error removing blocked country:', error);
+      res.status(500).json({ error: 'Failed to remove blocked country' });
+    }
+  });
+
+  // Public endpoint to check visitor's country
+  app.get('/api/visitor-country', async (req, res) => {
+    try {
+      const clientIP = req.headers['x-forwarded-for'] || 
+                      req.headers['x-real-ip'] || 
+                      req.connection.remoteAddress || 
+                      req.socket.remoteAddress ||
+                      '127.0.0.1';
+      
+      // Extract IP if it's in the format "ip, ip"
+      const ip = Array.isArray(clientIP) ? clientIP[0] : clientIP.split(',')[0].trim();
+      
+      // Skip blocking for local development
+      if (ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.') || ip.startsWith('10.')) {
+        return res.json({ 
+          success: true, 
+          country: { code: 'US', name: 'United States' },
+          blocked: false 
+        });
+      }
+
+      // Free IP geolocation service - ip-api.com (1000 requests/month free)
+      const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,countryCode`);
+      const data = await response.json();
+      
+      if (data.status === 'fail') {
+        // If geolocation fails, allow access by default
+        return res.json({ 
+          success: true, 
+          country: { code: 'UNKNOWN', name: 'Unknown' },
+          blocked: false 
+        });
+      }
+
+      // Check if country is blocked
+      const settings = await storage.getCountryBlockingSettings();
+      const blockedCountries = await storage.getBlockedCountries();
+      const isBlocked = settings?.isEnabled && blockedCountries.some(bc => bc.countryCode === data.countryCode);
+      
+      res.json({ 
+        success: true, 
+        country: { code: data.countryCode, name: data.country },
+        blocked: isBlocked,
+        settings: isBlocked ? settings : null
+      });
+    } catch (error) {
+      console.error('Error checking visitor country:', error);
+      // If service fails, allow access by default
+      res.json({ 
+        success: true, 
+        country: { code: 'UNKNOWN', name: 'Unknown' },
+        blocked: false 
+      });
+    }
+  });
+
   return httpServer;
 }
