@@ -720,6 +720,10 @@ export class DatabaseStorage implements IStorage {
         .where(eq(staticServices.id, serviceIds[i]));
     }
   }
+
+  async clearStaticServices(): Promise<void> {
+    await db.delete(staticServices);
+  }
 }
 
 export const storage = new DatabaseStorage();
