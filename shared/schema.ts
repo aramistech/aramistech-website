@@ -309,6 +309,8 @@ export const adminChatSettings = pgTable("admin_chat_settings", {
 export const securityAlerts = pgTable("security_alerts", {
   id: serial("id").primaryKey(),
   isEnabled: boolean("is_enabled").default(true),
+  isDesktopEnabled: boolean("is_desktop_enabled").default(true),
+  isMobileEnabled: boolean("is_mobile_enabled").default(true),
   title: varchar("title", { length: 255 }).notNull().default("CRITICAL"),
   message: text("message").notNull().default("Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats"),
   buttonText: varchar("button_text", { length: 100 }).notNull().default("Learn More"),

@@ -14,6 +14,8 @@ import ColorPickerWithPalette from "@/components/color-picker-with-palette";
 interface SecurityAlert {
   id: number;
   isEnabled: boolean;
+  isDesktopEnabled: boolean;
+  isMobileEnabled: boolean;
   title: string;
   message: string;
   buttonText: string;
@@ -56,6 +58,8 @@ export default function SecurityAlertsManager() {
   
   const [formData, setFormData] = useState<Partial<SecurityAlert>>({
     isEnabled: true,
+    isDesktopEnabled: true,
+    isMobileEnabled: true,
     title: "CRITICAL",
     message: "Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats",
     buttonText: "Learn More",
@@ -142,24 +146,46 @@ export default function SecurityAlertsManager() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Security Alerts Management</h2>
-          <p className="text-gray-600 text-sm mt-1">Controls both desktop banner and mobile warning button</p>
+          <p className="text-gray-600 text-sm mt-1">Separate controls for desktop banner and mobile warning button</p>
         </div>
-        <div className="flex items-center space-x-3">
-          <div className="text-right">
-            <Label htmlFor="alert-enabled" className="font-medium">Critical Security Alerts</Label>
-            <div className="text-xs text-gray-500 mt-1">
-              {formData.isEnabled ? (
-                <span className="text-green-600 font-medium">● ACTIVE on all devices</span>
-              ) : (
-                <span className="text-red-600 font-medium">● DISABLED on all devices</span>
-              )}
+        <div className="flex items-center space-x-6">
+          {/* Desktop Toggle */}
+          <div className="flex items-center space-x-3">
+            <div className="text-right">
+              <Label htmlFor="desktop-enabled" className="font-medium">Desktop Banner</Label>
+              <div className="text-xs text-gray-500 mt-1">
+                {formData.isDesktopEnabled ? (
+                  <span className="text-green-600 font-medium">● ACTIVE</span>
+                ) : (
+                  <span className="text-red-600 font-medium">● DISABLED</span>
+                )}
+              </div>
             </div>
+            <Switch
+              id="desktop-enabled"
+              checked={formData.isDesktopEnabled}
+              onCheckedChange={(checked) => handleChange('isDesktopEnabled', checked)}
+            />
           </div>
-          <Switch
-            id="alert-enabled"
-            checked={formData.isEnabled}
-            onCheckedChange={(checked) => handleChange('isEnabled', checked)}
-          />
+          
+          {/* Mobile Toggle */}
+          <div className="flex items-center space-x-3">
+            <div className="text-right">
+              <Label htmlFor="mobile-enabled" className="font-medium">Mobile Button</Label>
+              <div className="text-xs text-gray-500 mt-1">
+                {formData.isMobileEnabled ? (
+                  <span className="text-green-600 font-medium">● ACTIVE</span>
+                ) : (
+                  <span className="text-red-600 font-medium">● DISABLED</span>
+                )}
+              </div>
+            </div>
+            <Switch
+              id="mobile-enabled"
+              checked={formData.isMobileEnabled}
+              onCheckedChange={(checked) => handleChange('isMobileEnabled', checked)}
+            />
+          </div>
         </div>
       </div>
 
@@ -170,79 +196,93 @@ export default function SecurityAlertsManager() {
           <CardDescription>Preview how the security alerts appear on desktop and mobile</CardDescription>
         </CardHeader>
         <CardContent>
-          {formData.isEnabled ? (
-            <>
-              {/* Desktop Preview */}
-              <div className="mb-6">
-                <h4 className="font-semibold mb-2 text-gray-700">Desktop Warning Banner</h4>
+          {/* Desktop Preview */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-semibold text-gray-700">Desktop Warning Banner</h4>
+              <span className={`text-xs font-medium px-2 py-1 rounded ${formData.isDesktopEnabled ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100'}`}>
+                {formData.isDesktopEnabled ? 'ENABLED' : 'DISABLED'}
+              </span>
+            </div>
+            {formData.isDesktopEnabled ? (
+              <div 
+                className="py-1 relative overflow-hidden rounded border-2 border-gray-200"
+                style={{ backgroundColor: formData.backgroundColor || '#dc2626', color: formData.textColor || '#ffffff' }}
+              >
+                <div className="max-w-4xl mx-auto px-4">
+                  <div className="flex items-center justify-center text-center">
+                    <div className="flex items-center space-x-3">
+                      <span 
+                        className="px-2 py-1 rounded-full text-xs font-bold flex items-center space-x-1"
+                        style={{ 
+                          backgroundColor: formData.backgroundColor || '#dc2626', 
+                          color: formData.textColor || '#ffffff'
+                        }}
+                      >
+                        <IconComponent className="w-3 h-3" />
+                        <span>{formData.title || 'CRITICAL'}</span>
+                      </span>
+                      <span className="font-semibold text-sm">
+                        {formData.message || 'Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats'}
+                      </span>
+                      <button 
+                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2"
+                        style={{ 
+                          backgroundColor: formData.buttonBackgroundColor || '#ffffff', 
+                          color: formData.buttonTextColor || '#000000',
+                          borderColor: formData.textColor || '#ffffff'
+                        }}
+                      >
+                        <span className="mr-1">►</span>
+                        {formData.buttonText || 'Learn More'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {/* Animated indicators */}
+                <div className="absolute left-0 top-0 w-2 h-full bg-yellow-400 animate-ping"></div>
+                <div className="absolute right-0 top-0 w-2 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+              </div>
+            ) : (
+              <div className="text-gray-500 text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <div className="font-medium">Desktop banner is disabled</div>
+                <div className="text-sm">No warning banner will appear on desktop</div>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Preview */}
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-semibold text-gray-700">Mobile Warning Button</h4>
+              <span className={`text-xs font-medium px-2 py-1 rounded ${formData.isMobileEnabled ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100'}`}>
+                {formData.isMobileEnabled ? 'ENABLED' : 'DISABLED'}
+              </span>
+            </div>
+            {formData.isMobileEnabled ? (
+              <div className="flex items-center space-x-4">
                 <div 
-                  className="py-1 relative overflow-hidden rounded border-2 border-gray-200"
+                  className="p-3 rounded-l-lg shadow-lg border-2 border-gray-200"
                   style={{ backgroundColor: formData.backgroundColor || '#dc2626', color: formData.textColor || '#ffffff' }}
                 >
-                  <div className="max-w-4xl mx-auto px-4">
-                    <div className="flex items-center justify-center text-center">
-                      <div className="flex items-center space-x-3">
-                        <span 
-                          className="px-2 py-1 rounded-full text-xs font-bold flex items-center space-x-1"
-                          style={{ 
-                            backgroundColor: formData.backgroundColor || '#dc2626', 
-                            color: formData.textColor || '#ffffff'
-                          }}
-                        >
-                          <IconComponent className="w-3 h-3" />
-                          <span>{formData.title || 'CRITICAL'}</span>
-                        </span>
-                        <span className="font-semibold text-sm">
-                          {formData.message || 'Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats'}
-                        </span>
-                        <button 
-                          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2"
-                          style={{ 
-                            backgroundColor: formData.buttonBackgroundColor || '#ffffff', 
-                            color: formData.buttonTextColor || '#000000',
-                            borderColor: formData.textColor || '#ffffff'
-                          }}
-                        >
-                          <span className="mr-1">►</span>
-                          {formData.buttonText || 'Learn More'}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Animated indicators */}
-                  <div className="absolute left-0 top-0 w-2 h-full bg-yellow-400 animate-ping"></div>
-                  <div className="absolute right-0 top-0 w-2 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
-                </div>
-              </div>
-
-              {/* Mobile Preview */}
-              <div className="mb-4">
-                <h4 className="font-semibold mb-2 text-gray-700">Mobile Warning Button</h4>
-                <div className="flex items-center space-x-4">
-                  <div 
-                    className="p-3 rounded-l-lg shadow-lg border-2 border-gray-200"
-                    style={{ backgroundColor: formData.backgroundColor || '#dc2626', color: formData.textColor || '#ffffff' }}
-                  >
-                    <div className="flex flex-col items-center space-y-1">
-                      <IconComponent className="w-6 h-6 animate-pulse" />
-                      <span className="font-bold text-xs">{formData.title || 'CRITICAL'}</span>
-                    </div>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    <div className="font-medium">Mobile Popup Contains:</div>
-                    <div>Title: "{formData.mobileTitle || 'CRITICAL SECURITY ALERT'}"</div>
-                    <div>Button: "{formData.mobileButtonText || 'Get Protected Now'}"</div>
+                  <div className="flex flex-col items-center space-y-1">
+                    <IconComponent className="w-6 h-6 animate-pulse" />
+                    <span className="font-bold text-xs">{formData.title || 'CRITICAL'}</span>
                   </div>
                 </div>
+                <div className="text-sm text-gray-600">
+                  <div className="font-medium">Mobile Popup Contains:</div>
+                  <div>Title: "{formData.mobileTitle || 'CRITICAL SECURITY ALERT'}"</div>
+                  <div>Button: "{formData.mobileButtonText || 'Get Protected Now'}"</div>
+                </div>
               </div>
-            </>
-          ) : (
-            <div className="text-gray-500 text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-              <IconComponent className="w-12 h-12 mx-auto mb-2 opacity-50" />
-              <div className="font-medium">Security alerts are currently disabled</div>
-              <div className="text-sm">Both desktop banner and mobile button are hidden</div>
-            </div>
-          )}
+            ) : (
+              <div className="text-gray-500 text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <div className="font-medium">Mobile button is disabled</div>
+                <div className="text-sm">No warning button will appear on mobile</div>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
