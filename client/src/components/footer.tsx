@@ -23,12 +23,16 @@ export default function Footer() {
 
   const footerLinks = (footerLinksData as any)?.links || [];
 
-  // Group links by section
+  // Group links by section and normalize case
   const groupedLinks = footerLinks.reduce((acc: Record<string, FooterLink[]>, link: FooterLink) => {
-    if (!acc[link.section]) {
-      acc[link.section] = [];
+    // Normalize section names to handle case variations
+    const normalizedSection = link.section.toLowerCase();
+    const displaySection = normalizedSection.charAt(0).toUpperCase() + normalizedSection.slice(1);
+    
+    if (!acc[displaySection]) {
+      acc[displaySection] = [];
     }
-    acc[link.section].push(link);
+    acc[displaySection].push(link);
     return acc;
   }, {});
 
@@ -74,8 +78,8 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-gray-300 text-sm">
-              {groupedLinks['Services']
-                ?.sort((a: FooterLink, b: FooterLink) => a.orderIndex - b.orderIndex)
+              {(groupedLinks['Services'] || [])
+                .sort((a: FooterLink, b: FooterLink) => a.orderIndex - b.orderIndex)
                 .map((link: FooterLink) => (
                   <li key={link.id}>
                     <a 
@@ -86,15 +90,15 @@ export default function Footer() {
                       {link.label}
                     </a>
                   </li>
-                )) || []}
+                ))}
             </ul>
           </div>
 
           <div>
             <h4 className="text-lg font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-gray-300 text-sm">
-              {groupedLinks['Support']
-                ?.sort((a: FooterLink, b: FooterLink) => a.orderIndex - b.orderIndex)
+              {(groupedLinks['Support'] || [])
+                .sort((a: FooterLink, b: FooterLink) => a.orderIndex - b.orderIndex)
                 .map((link: FooterLink) => (
                   <li key={link.id}>
                     <a 
@@ -105,7 +109,7 @@ export default function Footer() {
                       {link.label}
                     </a>
                   </li>
-                )) || []}
+                ))}
             </ul>
           </div>
           
