@@ -292,32 +292,36 @@ export default function SecurityAlertsManager() {
                   <div>
                     <Label>Background Color</Label>
                     <ColorPickerWithPalette
-                      color={formData.desktopBackgroundColor}
+                      value={formData.desktopBackgroundColor}
                       onChange={(color) => handleInputChange("desktopBackgroundColor", color)}
+                      label="Desktop Background Color"
                     />
                   </div>
                   
                   <div>
                     <Label>Text Color</Label>
                     <ColorPickerWithPalette
-                      color={formData.desktopTextColor}
+                      value={formData.desktopTextColor}
                       onChange={(color) => handleInputChange("desktopTextColor", color)}
+                      label="Desktop Text Color"
                     />
                   </div>
                   
                   <div>
                     <Label>Button Background</Label>
                     <ColorPickerWithPalette
-                      color={formData.desktopButtonBackgroundColor}
+                      value={formData.desktopButtonBackgroundColor}
                       onChange={(color) => handleInputChange("desktopButtonBackgroundColor", color)}
+                      label="Desktop Button Background Color"
                     />
                   </div>
                   
                   <div>
                     <Label>Button Text</Label>
                     <ColorPickerWithPalette
-                      color={formData.desktopButtonTextColor}
+                      value={formData.desktopButtonTextColor}
                       onChange={(color) => handleInputChange("desktopButtonTextColor", color)}
+                      label="Desktop Button Text Color"
                     />
                   </div>
                 </div>
@@ -456,32 +460,36 @@ export default function SecurityAlertsManager() {
                   <div>
                     <Label>Background Color</Label>
                     <ColorPickerWithPalette
-                      color={formData.mobileBackgroundColor}
+                      value={formData.mobileBackgroundColor}
                       onChange={(color) => handleInputChange("mobileBackgroundColor", color)}
+                      label="Mobile Background Color"
                     />
                   </div>
                   
                   <div>
                     <Label>Text Color</Label>
                     <ColorPickerWithPalette
-                      color={formData.mobileTextColor}
+                      value={formData.mobileTextColor}
                       onChange={(color) => handleInputChange("mobileTextColor", color)}
+                      label="Mobile Text Color"
                     />
                   </div>
                   
                   <div>
                     <Label>Button Background</Label>
                     <ColorPickerWithPalette
-                      color={formData.mobileButtonBackgroundColor}
+                      value={formData.mobileButtonBackgroundColor}
                       onChange={(color) => handleInputChange("mobileButtonBackgroundColor", color)}
+                      label="Mobile Button Background Color"
                     />
                   </div>
                   
                   <div>
                     <Label>Button Text</Label>
                     <ColorPickerWithPalette
-                      color={formData.mobileButtonTextColor}
+                      value={formData.mobileButtonTextColor}
                       onChange={(color) => handleInputChange("mobileButtonTextColor", color)}
+                      label="Mobile Button Text Color"
                     />
                   </div>
                 </div>
