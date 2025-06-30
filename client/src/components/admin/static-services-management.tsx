@@ -125,6 +125,17 @@ const iconOptions = [
   { value: 'linkIcon', label: '🔗 Link' },
   { value: 'world', label: '🌎 Web Services' },
   { value: 'webIcon', label: '🌐 Web' },
+  
+  // Servers & Infrastructure
+  { value: 'server', label: '🖥️ Server' },
+  { value: 'serverCog', label: '⚙️ Server Config' },
+  { value: 'serverOff', label: '🔴 Server Down' },
+  { value: 'database', label: '🗄️ Database' },
+  { value: 'hardDrive', label: '💾 Hard Drive' },
+  { value: 'activity', label: '📊 Server Monitor' },
+  { value: 'cpu', label: '🧠 CPU/Processor' },
+  { value: 'memory', label: '🧮 Memory/RAM' },
+  { value: 'hdd', label: '💿 Storage' },
   { value: 'analytics', label: '📊 Analytics' },
   { value: 'maintenance', label: '🔧 Maintenance' },
   { value: 'consulting', label: '👥 Consulting' },
