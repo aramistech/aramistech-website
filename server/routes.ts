@@ -13,6 +13,7 @@ import fs from "fs";
 import { glob } from "glob";
 import { hashPassword, verifyPassword, createAdminSession, requireAdminAuth } from "./auth";
 import { TwoFactorAuthService } from './two-factor-auth';
+import crypto from 'crypto';
 import { z } from "zod";
 import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
 import { sendQuickQuoteEmail, sendContactEmail, sendAIConsultationEmail, sendITConsultationEmail, sendTechnicianTransferNotification, sendServiceCalculatorEmail } from "./email-service";
@@ -1362,9 +1363,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Generate a temporary secret and backup codes for the user
-      const secret = TwoFactorAuthService.generateSecret();
-      const backupCodes = TwoFactorAuthService.generateBackupCodes();
-      const hashedBackupCodes = backupCodes.map(code => TwoFactorAuthService.hashBackupCode(code));
+      const { secret, backupCodes } = await TwoFactorAuthService.generateSetup(targetUser.username);
+      const hashedBackupCodes = backupCodes.map(code => {
+  const hash = crypto.createHash('sha256');
+  hash.update(code);
+  return hash.digest('hex');
+});
 
       // Enable 2FA for the target user
       const updatedUser = await storage.enable2FA(parseInt(userId), secret, hashedBackupCodes);

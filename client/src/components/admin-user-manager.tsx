@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { Plus, Edit, Trash2, User, Key, Mail, Calendar, Activity } from 'lucide-react';
+import { Plus, Edit, Trash2, User, Key, Mail, Calendar, Activity, Shield, ShieldOff } from 'lucide-react';
 
 const createUserSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters'),
@@ -73,6 +73,47 @@ export default function AdminUserManager() {
   });
 
   const adminUsers: AdminUser[] = Array.isArray(usersData?.users) ? usersData.users : [];
+
+  // 2FA toggle mutations
+  const enable2FAMutation = useMutation({
+    mutationFn: (userId: number) => apiRequest(`/api/admin/users/${userId}/2fa/force-enable`, {
+      method: 'POST',
+    }),
+    onSuccess: (data) => {
+      toast({
+        title: "2FA Enabled",
+        description: data.message,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.response?.data?.error || "Failed to enable 2FA",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const disable2FAMutation = useMutation({
+    mutationFn: (userId: number) => apiRequest(`/api/admin/users/${userId}/2fa/force-disable`, {
+      method: 'POST',
+    }),
+    onSuccess: (data) => {
+      toast({
+        title: "2FA Disabled", 
+        description: data.message,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.response?.data?.error || "Failed to disable 2FA",
+        variant: "destructive",
+      });
+    },
+  });
 
   // Create user mutation
   const createUserMutation = useMutation({
