@@ -38,6 +38,7 @@ import KnowledgeBaseManager from '@/components/knowledge-base-manager';
 import SecurityAlertsManager from '@/components/security-alerts-manager';
 import ColorPaletteManager from '@/components/color-palette-manager';
 import ServiceCalculatorManager from '@/components/service-calculator-manager';
+import FooterManager from '@/components/footer-manager';
 import StaticServicesManagement from '@/components/admin/static-services-management';
 
 // Sortable Menu Item Component
@@ -106,6 +107,7 @@ export default function AdminDashboard() {
     { id: 'reviews', label: 'Reviews', icon: Star },
     { id: 'services', label: 'Services', icon: Settings },
     { id: 'menu', label: 'Menu', icon: Menu },
+    { id: 'footer', label: 'Footer', icon: Link },
     { id: 'users', label: 'Users', icon: Users },
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'colors', label: 'Colors', icon: Palette },
