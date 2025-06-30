@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -79,6 +79,13 @@ export default function CountryBlockingManager() {
   const queryClient = useQueryClient();
   const [selectedCountry, setSelectedCountry] = useState('');
   
+  // Local state for text inputs to prevent update conflicts
+  const [localSettings, setLocalSettings] = useState({
+    messageTitle: '',
+    blockMessage: '',
+    contactMessage: ''
+  });
+  
   // Fetch country blocking data
   const { data: countryData, isLoading } = useQuery({
     queryKey: ['/api/admin/country-blocking'],
@@ -98,6 +105,26 @@ export default function CountryBlockingManager() {
   };
 
   const blockedCountries: BlockedCountry[] = countryData?.blockedCountries || [];
+
+  // Sync local state with fetched settings
+  useEffect(() => {
+    if (settings) {
+      setLocalSettings({
+        messageTitle: settings.messageTitle || '',
+        blockMessage: settings.blockMessage || '',
+        contactMessage: settings.contactMessage || ''
+      });
+    }
+  }, [settings.messageTitle, settings.blockMessage, settings.contactMessage]);
+
+  // Debounced update function
+  const debouncedUpdate = useCallback((key: string, value: any) => {
+    const timeoutId = setTimeout(() => {
+      updateSettingsMutation.mutate({ [key]: value });
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   // Update settings mutation
   const updateSettingsMutation = useMutation({
@@ -334,8 +361,11 @@ export default function CountryBlockingManager() {
             <Label htmlFor="messageTitle">Message Title</Label>
             <Input
               id="messageTitle"
-              value={settings.messageTitle}
-              onChange={(e) => handleSettingUpdate('messageTitle', e.target.value)}
+              value={localSettings.messageTitle}
+              onChange={(e) => {
+                setLocalSettings(prev => ({ ...prev, messageTitle: e.target.value }));
+                debouncedUpdate('messageTitle', e.target.value);
+              }}
               placeholder="Service Not Available"
               disabled={updateSettingsMutation.isPending}
             />
@@ -346,8 +376,11 @@ export default function CountryBlockingManager() {
             <Label htmlFor="blockMessage">Block Message</Label>
             <Textarea
               id="blockMessage"
-              value={settings.blockMessage}
-              onChange={(e) => handleSettingUpdate('blockMessage', e.target.value)}
+              value={localSettings.blockMessage}
+              onChange={(e) => {
+                setLocalSettings(prev => ({ ...prev, blockMessage: e.target.value }));
+                debouncedUpdate('blockMessage', e.target.value);
+              }}
               placeholder="This service is not available in your region."
               rows={3}
               disabled={updateSettingsMutation.isPending}
@@ -370,8 +403,11 @@ export default function CountryBlockingManager() {
                 <Label htmlFor="contactMessage">Contact Message</Label>
                 <Textarea
                   id="contactMessage"
-                  value={settings.contactMessage}
-                  onChange={(e) => handleSettingUpdate('contactMessage', e.target.value)}
+                  value={localSettings.contactMessage}
+                  onChange={(e) => {
+                    setLocalSettings(prev => ({ ...prev, contactMessage: e.target.value }));
+                    debouncedUpdate('contactMessage', e.target.value);
+                  }}
                   placeholder="If you believe this is an error, please contact us."
                   rows={2}
                   disabled={updateSettingsMutation.isPending}
@@ -452,10 +488,10 @@ export default function CountryBlockingManager() {
               borderColor: settings.borderColor
             }}
           >
-            <h3 className="font-bold mb-4 text-xl">{settings.messageTitle}</h3>
-            <p className="mb-4">{settings.blockMessage}</p>
+            <h3 className="font-bold mb-4 text-xl">{localSettings.messageTitle || settings.messageTitle}</h3>
+            <p className="mb-4">{localSettings.blockMessage || settings.blockMessage}</p>
             {settings.showContactInfo && (
-              <p className="text-sm opacity-80">{settings.contactMessage}</p>
+              <p className="text-sm opacity-80">{localSettings.contactMessage || settings.contactMessage}</p>
             )}
           </div>
         </CardContent>
