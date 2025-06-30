@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -86,6 +86,9 @@ export default function CountryBlockingManager() {
     contactMessage: ''
   });
   
+  // Refs for debounce timeouts
+  const timeoutRefs = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  
   // Fetch country blocking data
   const { data: countryData, isLoading } = useQuery({
     queryKey: ['/api/admin/country-blocking'],
@@ -116,15 +119,6 @@ export default function CountryBlockingManager() {
       });
     }
   }, [settings.messageTitle, settings.blockMessage, settings.contactMessage]);
-
-  // Debounced update function
-  const debouncedUpdate = useCallback((key: string, value: any) => {
-    const timeoutId = setTimeout(() => {
-      updateSettingsMutation.mutate({ [key]: value });
-    }, 500); // 500ms delay
-
-    return () => clearTimeout(timeoutId);
-  }, []);
 
   // Update settings mutation
   const updateSettingsMutation = useMutation({
@@ -192,6 +186,29 @@ export default function CountryBlockingManager() {
       });
     },
   });
+
+  // Debounced update function with proper cleanup
+  const debouncedUpdate = useCallback((key: string, value: any) => {
+    // Clear existing timeout for this key
+    if (timeoutRefs.current[key]) {
+      clearTimeout(timeoutRefs.current[key]);
+    }
+    
+    // Set new timeout
+    timeoutRefs.current[key] = setTimeout(() => {
+      updateSettingsMutation.mutate({ [key]: value });
+      delete timeoutRefs.current[key];
+    }, 1000); // 1 second delay
+  }, [updateSettingsMutation]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(timeoutRefs.current).forEach(timeout => {
+        clearTimeout(timeout);
+      });
+    };
+  }, []);
 
   const handleSettingUpdate = (key: keyof CountryBlockingSettings, value: any) => {
     updateSettingsMutation.mutate({ [key]: value });
