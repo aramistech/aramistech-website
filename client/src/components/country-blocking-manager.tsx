@@ -404,31 +404,28 @@ export default function CountryBlockingManager() {
 
             {/* Font Color */}
             <div className="space-y-2">
-              <Label>Font Color</Label>
               <ColorPickerWithPalette
+                label="Font Color"
                 value={settings.fontColor}
-                onChange={(color) => handleSettingUpdate('fontColor', color)}
-                disabled={updateSettingsMutation.isPending}
+                onChange={(color: string) => handleSettingUpdate('fontColor', color)}
               />
             </div>
 
             {/* Background Color */}
             <div className="space-y-2">
-              <Label>Background Color</Label>
               <ColorPickerWithPalette
+                label="Background Color"
                 value={settings.backgroundColor}
-                onChange={(color) => handleSettingUpdate('backgroundColor', color)}
-                disabled={updateSettingsMutation.isPending}
+                onChange={(color: string) => handleSettingUpdate('backgroundColor', color)}
               />
             </div>
 
             {/* Border Color */}
             <div className="space-y-2">
-              <Label>Border Color</Label>
               <ColorPickerWithPalette
+                label="Border Color"
                 value={settings.borderColor}
-                onChange={(color) => handleSettingUpdate('borderColor', color)}
-                disabled={updateSettingsMutation.isPending}
+                onChange={(color: string) => handleSettingUpdate('borderColor', color)}
               />
             </div>
           </div>

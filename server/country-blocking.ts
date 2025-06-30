@@ -52,12 +52,17 @@ async function getIPGeolocation(ip: string): Promise<IPGeolocationResponse> {
   // Try each service until one works
   for (const service of IP_GEOLOCATION_SERVICES) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
       const response = await fetch(service.url(ip), {
-        timeout: 5000, // 5 second timeout
+        signal: controller.signal,
         headers: {
           'User-Agent': 'AramisTech-CountryBlocking/1.0'
         }
       });
+      
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         continue; // Try next service
