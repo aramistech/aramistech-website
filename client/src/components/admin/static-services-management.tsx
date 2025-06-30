@@ -51,6 +51,10 @@ const iconOptions = [
   { value: 'database', label: '🗄️ Database' },
   { value: 'hardDrive', label: '💾 Hard Drive' },
   { value: 'cpu', label: '🧠 CPU/Processor' },
+  { value: 'serverCog', label: '⚙️ Server Config' },
+  { value: 'serverOff', label: '🔴 Server Down' },
+  { value: 'memory', label: '🧮 Memory/RAM' },
+  { value: 'hdd', label: '💿 Storage' },
   
   // Security & Protection
   { value: 'shield', label: '🛡️ Security' },
@@ -118,27 +122,10 @@ const iconOptions = [
   { value: 'phoneCall', label: '☎️ Phone Call' },
   
   // Internet & Web
-  { value: 'globe', label: '🌍 Internet' },
-  { value: 'wifi', label: '📶 WiFi' },
-  { value: 'network', label: '🌐 Network' },
   { value: 'link', label: '🔗 Website Link' },
   { value: 'linkIcon', label: '🔗 Link' },
   { value: 'world', label: '🌎 Web Services' },
   { value: 'webIcon', label: '🌐 Web' },
-  
-  // Servers & Infrastructure
-  { value: 'server', label: '🖥️ Server' },
-  { value: 'serverCog', label: '⚙️ Server Config' },
-  { value: 'serverOff', label: '🔴 Server Down' },
-  { value: 'database', label: '🗄️ Database' },
-  { value: 'hardDrive', label: '💾 Hard Drive' },
-  { value: 'activity', label: '📊 Server Monitor' },
-  { value: 'cpu', label: '🧠 CPU/Processor' },
-  { value: 'memory', label: '🧮 Memory/RAM' },
-  { value: 'hdd', label: '💿 Storage' },
-  { value: 'analytics', label: '📊 Analytics' },
-  { value: 'maintenance', label: '🔧 Maintenance' },
-  { value: 'consulting', label: '👥 Consulting' },
 ];
 
 function SortableServiceItem({ service, onEdit, onDelete }: {
