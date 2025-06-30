@@ -26,7 +26,7 @@ export default function ChatGPTChatbot({ className = "" }: ChatGPTChatbotProps) 
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hello! I'm AramisTech's AI assistant powered by ChatGPT. I can help you with IT questions, troubleshooting, service inquiries, and more. How can I assist you today?",
+      text: "Hello! I'm AramisTech's AI assistant. I can help you with IT questions, troubleshooting, service inquiries, and more. How can I assist you today?",
       isBot: true,
       timestamp: new Date()
     }
