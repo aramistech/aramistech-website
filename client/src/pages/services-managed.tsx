@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, ArrowRight, CheckCircle, Server, Shield, Cloud, Headphones, Code, Globe, Archive, BarChart3, Wrench, Users, Wifi, Router, HardDrive, Cpu, Database, Network, Zap, Settings, Lock, CloudDownload, CloudUpload, Smartphone, Laptop, Monitor, Printer, Scan, FileText, Folder, Search, Bell, AlertTriangle, CheckCircle2, Activity, Gauge, TrendingUp, Building, Home, MapPin } from 'lucide-react';
 import DynamicHeader from '@/components/dynamic-header';
+import Footer from '@/components/footer';
 
 interface StaticService {
   id: number;
@@ -307,6 +308,8 @@ export default function ServicesManagedPage() {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }
