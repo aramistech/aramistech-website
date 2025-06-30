@@ -311,6 +311,31 @@ export const securityAlerts = pgTable("security_alerts", {
   isEnabled: boolean("is_enabled").default(true),
   isDesktopEnabled: boolean("is_desktop_enabled").default(true),
   isMobileEnabled: boolean("is_mobile_enabled").default(true),
+  
+  // Desktop Alert Settings
+  desktopTitle: varchar("desktop_title", { length: 255 }).notNull().default("CRITICAL"),
+  desktopMessage: text("desktop_message").notNull().default("Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats"),
+  desktopButtonText: varchar("desktop_button_text", { length: 100 }).notNull().default("Learn More"),
+  desktopButtonLink: varchar("desktop_button_link", { length: 255 }).notNull().default("/windows10-upgrade"),
+  desktopBackgroundColor: varchar("desktop_background_color", { length: 50 }).notNull().default("#dc2626"),
+  desktopTextColor: varchar("desktop_text_color", { length: 50 }).notNull().default("#ffffff"),
+  desktopButtonBackgroundColor: varchar("desktop_button_background_color", { length: 50 }).notNull().default("#ffffff"),
+  desktopButtonTextColor: varchar("desktop_button_text_color", { length: 50 }).notNull().default("#000000"),
+  desktopIconType: varchar("desktop_icon_type", { length: 50 }).notNull().default("AlertTriangle"),
+  
+  // Mobile Alert Settings
+  mobileTitle: varchar("mobile_title", { length: 255 }).notNull().default("CRITICAL SECURITY ALERT"),
+  mobileSubtitle: varchar("mobile_subtitle", { length: 255 }).notNull().default("Windows 10 Support Ending"),
+  mobileDescription: text("mobile_description").notNull().default("Your Systems Will Become Vulnerable to New Threats. Microsoft is ending Windows 10 support on October 14, 2025. After this date, your systems will no longer receive security updates, leaving them exposed to new cyber threats."),
+  mobileButtonText: varchar("mobile_button_text", { length: 100 }).notNull().default("Get Protected Now"),
+  mobileButtonLink: varchar("mobile_button_link", { length: 255 }).notNull().default("/windows10-upgrade"),
+  mobileBackgroundColor: varchar("mobile_background_color", { length: 50 }).notNull().default("#dc2626"),
+  mobileTextColor: varchar("mobile_text_color", { length: 50 }).notNull().default("#ffffff"),
+  mobileButtonBackgroundColor: varchar("mobile_button_background_color", { length: 50 }).notNull().default("#ffffff"),
+  mobileButtonTextColor: varchar("mobile_button_text_color", { length: 50 }).notNull().default("#000000"),
+  mobileIconType: varchar("mobile_icon_type", { length: 50 }).notNull().default("AlertTriangle"),
+  
+  // Legacy fields (maintained for backward compatibility)
   title: varchar("title", { length: 255 }).notNull().default("CRITICAL"),
   message: text("message").notNull().default("Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats"),
   buttonText: varchar("button_text", { length: 100 }).notNull().default("Learn More"),
@@ -320,10 +345,7 @@ export const securityAlerts = pgTable("security_alerts", {
   buttonBackgroundColor: varchar("button_background_color", { length: 50 }).notNull().default("#ffffff"),
   buttonTextColor: varchar("button_text_color", { length: 50 }).notNull().default("#000000"),
   iconType: varchar("icon_type", { length: 50 }).notNull().default("AlertTriangle"),
-  mobileTitle: varchar("mobile_title", { length: 255 }).notNull().default("CRITICAL SECURITY ALERT"),
-  mobileSubtitle: varchar("mobile_subtitle", { length: 255 }).notNull().default("Windows 10 Support Ending"),
-  mobileDescription: text("mobile_description").notNull().default("Your Systems Will Become Vulnerable to New Threats. Microsoft is ending Windows 10 support on October 14, 2025. After this date, your systems will no longer receive security updates, leaving them exposed to new cyber threats."),
-  mobileButtonText: varchar("mobile_button_text", { length: 100 }).notNull().default("Get Protected Now"),
+  
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

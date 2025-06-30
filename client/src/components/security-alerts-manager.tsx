@@ -7,8 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, Shield, Bell, Zap, AlertCircle, Info } from "lucide-react";
+import { AlertTriangle, Shield, Bell, Zap, AlertCircle, Info, Monitor, Smartphone, Settings2, Palette } from "lucide-react";
 import ColorPickerWithPalette from "@/components/color-picker-with-palette";
 
 interface SecurityAlert {
@@ -16,6 +19,31 @@ interface SecurityAlert {
   isEnabled: boolean;
   isDesktopEnabled: boolean;
   isMobileEnabled: boolean;
+  
+  // Desktop Settings
+  desktopTitle: string;
+  desktopMessage: string;
+  desktopButtonText: string;
+  desktopButtonLink: string;
+  desktopBackgroundColor: string;
+  desktopTextColor: string;
+  desktopButtonBackgroundColor: string;
+  desktopButtonTextColor: string;
+  desktopIconType: string;
+  
+  // Mobile Settings
+  mobileTitle: string;
+  mobileSubtitle: string;
+  mobileDescription: string;
+  mobileButtonText: string;
+  mobileButtonLink: string;
+  mobileBackgroundColor: string;
+  mobileTextColor: string;
+  mobileButtonBackgroundColor: string;
+  mobileButtonTextColor: string;
+  mobileIconType: string;
+  
+  // Legacy fields
   title: string;
   message: string;
   buttonText: string;
@@ -25,86 +53,47 @@ interface SecurityAlert {
   buttonBackgroundColor: string;
   buttonTextColor: string;
   iconType: string;
-  mobileTitle: string;
-  mobileSubtitle: string;
-  mobileDescription: string;
-  mobileButtonText: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 const iconOptions = [
   { value: "AlertTriangle", label: "Alert Triangle", icon: AlertTriangle },
   { value: "Shield", label: "Shield", icon: Shield },
   { value: "Bell", label: "Bell", icon: Bell },
-  { value: "Zap", label: "Lightning", icon: Zap },
+  { value: "Zap", label: "Zap", icon: Zap },
   { value: "AlertCircle", label: "Alert Circle", icon: AlertCircle },
   { value: "Info", label: "Info", icon: Info },
-];
-
-const colorOptions = [
-  { value: "#dc2626", label: "Red", preview: "bg-red-600" },
-  { value: "#ea580c", label: "Orange", preview: "bg-orange-600" },
-  { value: "#ca8a04", label: "Yellow", preview: "bg-yellow-600" },
-  { value: "#2563eb", label: "Blue", preview: "bg-blue-600" },
-  { value: "#9333ea", label: "Purple", preview: "bg-purple-600" },
-  { value: "#16a34a", label: "Green", preview: "bg-green-600" },
-  { value: "#4b5563", label: "Gray", preview: "bg-gray-600" },
 ];
 
 export default function SecurityAlertsManager() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [formData, setFormData] = useState<Partial<SecurityAlert>>({
-    isEnabled: true,
-    isDesktopEnabled: true,
-    isMobileEnabled: true,
-    title: "CRITICAL",
-    message: "Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats",
-    buttonText: "Learn More",
-    buttonLink: "/windows10-upgrade",
-    backgroundColor: "#dc2626",
-    textColor: "#ffffff",
-    buttonBackgroundColor: "#ffffff",
-    buttonTextColor: "#000000",
-    iconType: "AlertTriangle",
-    mobileTitle: "CRITICAL SECURITY ALERT",
-    mobileSubtitle: "Windows 10 Support Ending",
-    mobileDescription: "Your Systems Will Become Vulnerable to New Threats. Microsoft is ending Windows 10 support on October 14, 2025. After this date, your systems will no longer receive security updates, leaving them exposed to new cyber threats.",
-    mobileButtonText: "Get Protected Now",
+  const [formData, setFormData] = useState<SecurityAlert | null>(null);
+
+  const { data: alert, isLoading } = useQuery<{ success: boolean; alert: SecurityAlert }>({
+    queryKey: ["/api/security-alert"],
   });
 
-  const { data: alertData, isLoading } = useQuery({
-    queryKey: ['/api/security-alert'],
-    queryFn: async () => {
-      const res = await fetch('/api/security-alert');
-      return res.json();
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: async (data: Partial<SecurityAlert>) => {
-      const res = await fetch('/api/admin/security-alert', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        credentials: 'include',
+  const updateAlertMutation = useMutation({
+    mutationFn: async (updatedAlert: Partial<SecurityAlert>) => {
+      const response = await fetch("/api/admin/security-alert", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedAlert),
       });
-      if (!res.ok) throw new Error('Failed to update security alert');
-      return res.json();
+      
+      if (!response.ok) {
+        throw new Error("Failed to update security alert");
+      }
+      
+      return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/security-alert"] });
       toast({
         title: "Success",
         description: "Security alert updated successfully",
       });
-      // Update form data with the returned data to maintain consistency
-      setFormData(data.alert);
-      // Invalidate queries after a delay to prevent immediate form reset
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['/api/security-alert'] });
-      }, 100);
     },
     onError: () => {
       toast({
@@ -116,345 +105,466 @@ export default function SecurityAlertsManager() {
   });
 
   useEffect(() => {
-    if (alertData?.alert && !updateMutation.isPending) {
-      setFormData(alertData.alert);
+    if (alert?.alert) {
+      setFormData(alert.alert);
     }
-  }, [alertData, updateMutation.isPending]);
+  }, [alert]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateMutation.mutate(formData);
+    if (formData) {
+      updateAlertMutation.mutate(formData);
+    }
   };
 
-  const handleChange = (field: keyof SecurityAlert, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (field: keyof SecurityAlert, value: any) => {
+    if (formData) {
+      setFormData({ ...formData, [field]: value });
+    }
   };
 
-  const getIconComponent = (iconType: string) => {
-    const iconOption = iconOptions.find(opt => opt.value === iconType);
-    return iconOption ? iconOption.icon : AlertTriangle;
+  const handleToggle = (field: keyof SecurityAlert) => {
+    if (formData) {
+      setFormData({ ...formData, [field]: !formData[field] });
+    }
   };
 
-  const IconComponent = getIconComponent(formData.iconType || "AlertTriangle");
-
-  if (isLoading) {
-    return <div className="p-6">Loading security alerts...</div>;
+  if (isLoading || !formData) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Settings2 className="h-5 w-5" />
+            Security Alerts Management
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>Loading security alerts...</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Security Alerts Management</h2>
-          <p className="text-gray-600 text-sm mt-1">Separate controls for desktop banner and mobile warning button</p>
-        </div>
-        <div className="flex items-center space-x-6">
-          {/* Desktop Toggle */}
-          <div className="flex items-center space-x-3">
-            <div className="text-right">
-              <Label htmlFor="desktop-enabled" className="font-medium">Desktop Banner</Label>
-              <div className="text-xs text-gray-500 mt-1">
-                {formData.isDesktopEnabled ? (
-                  <span className="text-green-600 font-medium">● ACTIVE</span>
-                ) : (
-                  <span className="text-red-600 font-medium">● DISABLED</span>
-                )}
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Settings2 className="h-5 w-5" />
+          Security Alerts Management
+        </CardTitle>
+        <CardDescription>
+          Customize security alerts for desktop and mobile separately
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Master Toggles */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Monitor className="h-4 w-4" />
+                <Label htmlFor="desktop-enabled">Desktop Alert</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="desktop-enabled"
+                  checked={formData.isDesktopEnabled}
+                  onCheckedChange={() => handleToggle("isDesktopEnabled")}
+                />
+                <Badge variant={formData.isDesktopEnabled ? "default" : "secondary"}>
+                  {formData.isDesktopEnabled ? "ACTIVE" : "DISABLED"}
+                </Badge>
               </div>
             </div>
-            <Switch
-              id="desktop-enabled"
-              checked={formData.isDesktopEnabled}
-              onCheckedChange={(checked) => handleChange('isDesktopEnabled', checked)}
-            />
-          </div>
-          
-          {/* Mobile Toggle */}
-          <div className="flex items-center space-x-3">
-            <div className="text-right">
-              <Label htmlFor="mobile-enabled" className="font-medium">Mobile Button</Label>
-              <div className="text-xs text-gray-500 mt-1">
-                {formData.isMobileEnabled ? (
-                  <span className="text-green-600 font-medium">● ACTIVE</span>
-                ) : (
-                  <span className="text-red-600 font-medium">● DISABLED</span>
-                )}
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Smartphone className="h-4 w-4" />
+                <Label htmlFor="mobile-enabled">Mobile Alert</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="mobile-enabled"
+                  checked={formData.isMobileEnabled}
+                  onCheckedChange={() => handleToggle("isMobileEnabled")}
+                />
+                <Badge variant={formData.isMobileEnabled ? "default" : "secondary"}>
+                  {formData.isMobileEnabled ? "ACTIVE" : "DISABLED"}
+                </Badge>
               </div>
             </div>
-            <Switch
-              id="mobile-enabled"
-              checked={formData.isMobileEnabled}
-              onCheckedChange={(checked) => handleChange('isMobileEnabled', checked)}
-            />
           </div>
-        </div>
-      </div>
 
-      {/* Preview Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Live Preview</CardTitle>
-          <CardDescription>Preview how the security alerts appear on desktop and mobile</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {/* Desktop Preview */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="font-semibold text-gray-700">Desktop Warning Banner</h4>
-              <span className={`text-xs font-medium px-2 py-1 rounded ${formData.isDesktopEnabled ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100'}`}>
-                {formData.isDesktopEnabled ? 'ENABLED' : 'DISABLED'}
-              </span>
-            </div>
-            {formData.isDesktopEnabled ? (
-              <div 
-                className="py-1 relative overflow-hidden rounded border-2 border-gray-200"
-                style={{ backgroundColor: formData.backgroundColor || '#dc2626', color: formData.textColor || '#ffffff' }}
-              >
-                <div className="max-w-4xl mx-auto px-4">
+          <Separator />
+
+          {/* Tabbed Interface for Desktop and Mobile */}
+          <Tabs defaultValue="desktop" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="desktop" className="flex items-center gap-2">
+                <Monitor className="h-4 w-4" />
+                Desktop Banner
+              </TabsTrigger>
+              <TabsTrigger value="mobile" className="flex items-center gap-2">
+                <Smartphone className="h-4 w-4" />
+                Mobile Button
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Desktop Alert Configuration */}
+            <TabsContent value="desktop" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="desktop-title">Desktop Title</Label>
+                  <Input
+                    id="desktop-title"
+                    value={formData.desktopTitle}
+                    onChange={(e) => handleInputChange("desktopTitle", e.target.value)}
+                    placeholder="CRITICAL"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="desktop-icon">Desktop Icon</Label>
+                  <Select 
+                    value={formData.desktopIconType} 
+                    onValueChange={(value) => handleInputChange("desktopIconType", value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {iconOptions.map((option) => {
+                        const IconComponent = option.icon;
+                        return (
+                          <SelectItem key={option.value} value={option.value}>
+                            <div className="flex items-center gap-2">
+                              <IconComponent className="h-4 w-4" />
+                              {option.label}
+                            </div>
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="desktop-message">Desktop Message</Label>
+                <Textarea
+                  id="desktop-message"
+                  value={formData.desktopMessage}
+                  onChange={(e) => handleInputChange("desktopMessage", e.target.value)}
+                  placeholder="Your message here..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="desktop-button-text">Desktop Button Text</Label>
+                  <Input
+                    id="desktop-button-text"
+                    value={formData.desktopButtonText}
+                    onChange={(e) => handleInputChange("desktopButtonText", e.target.value)}
+                    placeholder="Learn More"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="desktop-button-link">Desktop Button Link</Label>
+                  <Input
+                    id="desktop-button-link"
+                    value={formData.desktopButtonLink}
+                    onChange={(e) => handleInputChange("desktopButtonLink", e.target.value)}
+                    placeholder="/windows10-upgrade"
+                  />
+                </div>
+              </div>
+
+              {/* Desktop Colors */}
+              <div className="space-y-4">
+                <h4 className="font-medium flex items-center gap-2">
+                  <Palette className="h-4 w-4" />
+                  Desktop Colors
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Background Color</Label>
+                    <ColorPickerWithPalette
+                      color={formData.desktopBackgroundColor}
+                      onChange={(color) => handleInputChange("desktopBackgroundColor", color)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Text Color</Label>
+                    <ColorPickerWithPalette
+                      color={formData.desktopTextColor}
+                      onChange={(color) => handleInputChange("desktopTextColor", color)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Button Background</Label>
+                    <ColorPickerWithPalette
+                      color={formData.desktopButtonBackgroundColor}
+                      onChange={(color) => handleInputChange("desktopButtonBackgroundColor", color)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Button Text</Label>
+                    <ColorPickerWithPalette
+                      color={formData.desktopButtonTextColor}
+                      onChange={(color) => handleInputChange("desktopButtonTextColor", color)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop Preview */}
+              <div className="mt-6">
+                <Label className="text-sm font-medium">Desktop Preview</Label>
+                <div 
+                  className="mt-2 p-4 rounded-lg"
+                  style={{ backgroundColor: formData.desktopBackgroundColor }}
+                >
                   <div className="flex items-center justify-center text-center">
                     <div className="flex items-center space-x-3">
+                      {(() => {
+                        const SelectedIcon = iconOptions.find(opt => opt.value === formData.desktopIconType)?.icon || AlertTriangle;
+                        return <SelectedIcon className="w-6 h-6" style={{ color: formData.desktopTextColor }} />;
+                      })()}
                       <span 
-                        className="px-2 py-1 rounded-full text-xs font-bold flex items-center space-x-1"
+                        className="font-bold text-sm px-2 py-1 rounded"
                         style={{ 
-                          backgroundColor: formData.backgroundColor || '#dc2626', 
-                          color: formData.textColor || '#ffffff'
+                          backgroundColor: formData.desktopBackgroundColor, 
+                          color: formData.desktopTextColor 
                         }}
                       >
-                        <IconComponent className="w-3 h-3" />
-                        <span>{formData.title || 'CRITICAL'}</span>
+                        {formData.desktopTitle}
                       </span>
-                      <span className="font-semibold text-sm">
-                        {formData.message || 'Windows 10 Support Ending - Your Systems Will Become Vulnerable to New Threats'}
+                      <span style={{ color: formData.desktopTextColor }}>
+                        {formData.desktopMessage}
                       </span>
-                      <button 
-                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2"
-                        style={{ 
-                          backgroundColor: formData.buttonBackgroundColor || '#ffffff', 
-                          color: formData.buttonTextColor || '#000000',
-                          borderColor: formData.textColor || '#ffffff'
+                      <button
+                        className="px-4 py-2 rounded text-sm font-medium"
+                        style={{
+                          backgroundColor: formData.desktopButtonBackgroundColor,
+                          color: formData.desktopButtonTextColor
                         }}
                       >
-                        <span className="mr-1">►</span>
-                        {formData.buttonText || 'Learn More'}
+                        <span className="mr-2">►</span>
+                        {formData.desktopButtonText}
                       </button>
                     </div>
                   </div>
                 </div>
-                {/* Animated indicators */}
-                <div className="absolute left-0 top-0 w-2 h-full bg-yellow-400 animate-ping"></div>
-                <div className="absolute right-0 top-0 w-2 h-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
               </div>
-            ) : (
-              <div className="text-gray-500 text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                <div className="font-medium">Desktop banner is disabled</div>
-                <div className="text-sm">No warning banner will appear on desktop</div>
-              </div>
-            )}
-          </div>
+            </TabsContent>
 
-          {/* Mobile Preview */}
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="font-semibold text-gray-700">Mobile Warning Button</h4>
-              <span className={`text-xs font-medium px-2 py-1 rounded ${formData.isMobileEnabled ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100'}`}>
-                {formData.isMobileEnabled ? 'ENABLED' : 'DISABLED'}
-              </span>
-            </div>
-            {formData.isMobileEnabled ? (
-              <div className="flex items-center space-x-4">
-                <div 
-                  className="p-3 rounded-l-lg shadow-lg border-2 border-gray-200"
-                  style={{ backgroundColor: formData.backgroundColor || '#dc2626', color: formData.textColor || '#ffffff' }}
+            {/* Mobile Alert Configuration */}
+            <TabsContent value="mobile" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="mobile-title">Mobile Title</Label>
+                  <Input
+                    id="mobile-title"
+                    value={formData.mobileTitle}
+                    onChange={(e) => handleInputChange("mobileTitle", e.target.value)}
+                    placeholder="CRITICAL SECURITY ALERT"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="mobile-subtitle">Mobile Subtitle</Label>
+                  <Input
+                    id="mobile-subtitle"
+                    value={formData.mobileSubtitle}
+                    onChange={(e) => handleInputChange("mobileSubtitle", e.target.value)}
+                    placeholder="Windows 10 Support Ending"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="mobile-icon">Mobile Icon</Label>
+                <Select 
+                  value={formData.mobileIconType} 
+                  onValueChange={(value) => handleInputChange("mobileIconType", value)}
                 >
-                  <div className="flex flex-col items-center space-y-1">
-                    <IconComponent className="w-6 h-6 animate-pulse" />
-                    <span className="font-bold text-xs">{formData.title || 'CRITICAL'}</span>
-                  </div>
-                </div>
-                <div className="text-sm text-gray-600">
-                  <div className="font-medium">Mobile Popup Contains:</div>
-                  <div>Title: "{formData.mobileTitle || 'CRITICAL SECURITY ALERT'}"</div>
-                  <div>Button: "{formData.mobileButtonText || 'Get Protected Now'}"</div>
-                </div>
-              </div>
-            ) : (
-              <div className="text-gray-500 text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                <div className="font-medium">Mobile button is disabled</div>
-                <div className="text-sm">No warning button will appear on mobile</div>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Basic Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Basic Settings</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="title">Alert Title</Label>
-                <Input
-                  id="title"
-                  value={formData.title || ''}
-                  onChange={(e) => handleChange('title', e.target.value)}
-                  placeholder="CRITICAL"
-                />
-              </div>
-              <div>
-                <Label htmlFor="icon">Icon</Label>
-                <Select value={formData.iconType} onValueChange={(value) => handleChange('iconType', value)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {iconOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-center space-x-2">
-                          <option.icon className="w-4 h-4" />
-                          <span>{option.label}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
+                    {iconOptions.map((option) => {
+                      const IconComponent = option.icon;
+                      return (
+                        <SelectItem key={option.value} value={option.value}>
+                          <div className="flex items-center gap-2">
+                            <IconComponent className="h-4 w-4" />
+                            {option.label}
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
               </div>
-            </div>
 
-            <div>
-              <Label htmlFor="message">Desktop Message</Label>
-              <Textarea
-                id="message"
-                value={formData.message || ''}
-                onChange={(e) => handleChange('message', e.target.value)}
-                placeholder="Your alert message for desktop users"
-                rows={2}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="buttonText">Button Text</Label>
-                <Input
-                  id="buttonText"
-                  value={formData.buttonText || ''}
-                  onChange={(e) => handleChange('buttonText', e.target.value)}
-                  placeholder="Learn More"
+                <Label htmlFor="mobile-description">Mobile Description</Label>
+                <Textarea
+                  id="mobile-description"
+                  value={formData.mobileDescription}
+                  onChange={(e) => handleInputChange("mobileDescription", e.target.value)}
+                  placeholder="Detailed description for mobile popup..."
+                  rows={4}
                 />
               </div>
-              <div>
-                <Label htmlFor="buttonLink">Button Link</Label>
-                <Input
-                  id="buttonLink"
-                  value={formData.buttonLink || ''}
-                  onChange={(e) => handleChange('buttonLink', e.target.value)}
-                  placeholder="/windows10-upgrade"
-                />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="mobile-button-text">Mobile Button Text</Label>
+                  <Input
+                    id="mobile-button-text"
+                    value={formData.mobileButtonText}
+                    onChange={(e) => handleInputChange("mobileButtonText", e.target.value)}
+                    placeholder="Get Protected Now"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="mobile-button-link">Mobile Button Link</Label>
+                  <Input
+                    id="mobile-button-link"
+                    value={formData.mobileButtonLink}
+                    onChange={(e) => handleInputChange("mobileButtonLink", e.target.value)}
+                    placeholder="/windows10-upgrade"
+                  />
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Mobile Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Mobile Settings</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="mobileTitle">Mobile Alert Title</Label>
-                <Input
-                  id="mobileTitle"
-                  value={formData.mobileTitle || ''}
-                  onChange={(e) => handleChange('mobileTitle', e.target.value)}
-                  placeholder="CRITICAL SECURITY ALERT"
-                />
+              {/* Mobile Colors */}
+              <div className="space-y-4">
+                <h4 className="font-medium flex items-center gap-2">
+                  <Palette className="h-4 w-4" />
+                  Mobile Colors
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Background Color</Label>
+                    <ColorPickerWithPalette
+                      color={formData.mobileBackgroundColor}
+                      onChange={(color) => handleInputChange("mobileBackgroundColor", color)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Text Color</Label>
+                    <ColorPickerWithPalette
+                      color={formData.mobileTextColor}
+                      onChange={(color) => handleInputChange("mobileTextColor", color)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Button Background</Label>
+                    <ColorPickerWithPalette
+                      color={formData.mobileButtonBackgroundColor}
+                      onChange={(color) => handleInputChange("mobileButtonBackgroundColor", color)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Button Text</Label>
+                    <ColorPickerWithPalette
+                      color={formData.mobileButtonTextColor}
+                      onChange={(color) => handleInputChange("mobileButtonTextColor", color)}
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                <Label htmlFor="mobileSubtitle">Mobile Subtitle</Label>
-                <Input
-                  id="mobileSubtitle"
-                  value={formData.mobileSubtitle || ''}
-                  onChange={(e) => handleChange('mobileSubtitle', e.target.value)}
-                  placeholder="Windows 10 Support Ending"
-                />
+
+              {/* Mobile Preview */}
+              <div className="mt-6">
+                <Label className="text-sm font-medium">Mobile Preview</Label>
+                <div 
+                  className="mt-2 p-6 rounded-lg max-w-sm mx-auto"
+                  style={{ backgroundColor: formData.mobileBackgroundColor }}
+                >
+                  <div className="flex items-start mb-4">
+                    {(() => {
+                      const SelectedIcon = iconOptions.find(opt => opt.value === formData.mobileIconType)?.icon || AlertTriangle;
+                      return <SelectedIcon className="w-8 h-8 mr-3" style={{ color: formData.mobileTextColor }} />;
+                    })()}
+                    <div>
+                      <span 
+                        className="px-2 py-1 rounded-full text-xs font-bold"
+                        style={{ 
+                          backgroundColor: formData.mobileBackgroundColor, 
+                          color: formData.mobileTextColor 
+                        }}
+                      >
+                        CRITICAL SECURITY ALERT
+                      </span>
+                      <h3 
+                        className="font-bold text-lg mt-2"
+                        style={{ color: formData.mobileTextColor }}
+                      >
+                        {formData.mobileTitle}
+                      </h3>
+                    </div>
+                  </div>
+                  
+                  <p 
+                    className="text-base mb-6 leading-relaxed"
+                    style={{ color: formData.mobileTextColor }}
+                  >
+                    {formData.mobileDescription}
+                  </p>
+                  
+                  <button
+                    className="w-full px-6 py-3 rounded-full text-base font-bold border-2"
+                    style={{
+                      backgroundColor: formData.mobileButtonBackgroundColor,
+                      color: formData.mobileButtonTextColor,
+                      borderColor: formData.mobileTextColor
+                    }}
+                  >
+                    <span className="mr-2">►</span>
+                    {formData.mobileButtonText}
+                  </button>
+                </div>
               </div>
-            </div>
+            </TabsContent>
+          </Tabs>
 
-            <div>
-              <Label htmlFor="mobileDescription">Mobile Description</Label>
-              <Textarea
-                id="mobileDescription"
-                value={formData.mobileDescription || ''}
-                onChange={(e) => handleChange('mobileDescription', e.target.value)}
-                placeholder="Detailed description for mobile popup"
-                rows={3}
-              />
-            </div>
+          <Separator />
 
-            <div>
-              <Label htmlFor="mobileButtonText">Mobile Button Text</Label>
-              <Input
-                id="mobileButtonText"
-                value={formData.mobileButtonText || ''}
-                onChange={(e) => handleChange('mobileButtonText', e.target.value)}
-                placeholder="Get Protected Now"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Appearance Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Appearance</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Banner Background Color */}
-            <ColorPickerWithPalette
-              value={formData.backgroundColor || '#dc2626'}
-              onChange={(value) => handleChange('backgroundColor', value)}
-              label="Banner Background Color"
-              id="backgroundColor"
-            />
-
-            {/* Button Background Color */}
-            <ColorPickerWithPalette
-              value={formData.buttonBackgroundColor || '#dc2626'}
-              onChange={(value) => handleChange('buttonBackgroundColor', value)}
-              label="Button Background Color"
-              id="buttonBackgroundColor"
-            />
-
-            {/* Button Text Color */}
-            <ColorPickerWithPalette
-              value={formData.buttonTextColor || '#ffffff'}
-              onChange={(value) => handleChange('buttonTextColor', value)}
-              label="Button Text Color"
-              id="buttonTextColor"
-            />
-
-            {/* Banner Text Color */}
-            <ColorPickerWithPalette
-              value={formData.textColor || '#ffffff'}
-              onChange={(value) => handleChange('textColor', value)}
-              label="Banner Text Color"
-              id="textColor"
-            />
-          </CardContent>
-        </Card>
-
-        <Button 
-          type="submit" 
-          className="w-full"
-          disabled={updateMutation.isPending}
-        >
-          {updateMutation.isPending ? 'Updating...' : 'Update Security Alert'}
-        </Button>
-      </form>
-    </div>
+          {/* Submit Button */}
+          <div className="flex justify-end">
+            <Button 
+              type="submit" 
+              disabled={updateAlertMutation.isPending}
+              className="flex items-center gap-2"
+            >
+              {updateAlertMutation.isPending ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Updating...
+                </>
+              ) : (
+                <>
+                  <Settings2 className="h-4 w-4" />
+                  Update Security Alerts
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
