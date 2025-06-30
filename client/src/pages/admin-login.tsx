@@ -8,20 +8,28 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { Lock, User } from 'lucide-react';
+import { Lock, User, Shield, Smartphone, Key } from 'lucide-react';
 
 const loginSchema = z.object({
   username: z.string().min(1, 'Username is required'),
   password: z.string().min(1, 'Password is required'),
 });
 
+const twoFactorSchema = z.object({
+  twoFactorCode: z.string().min(1, 'Authentication code is required'),
+});
+
 type LoginFormData = z.infer<typeof loginSchema>;
+type TwoFactorFormData = z.infer<typeof twoFactorSchema>;
 
 export default function AdminLogin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [requires2FA, setRequires2FA] = useState(false);
+  const [loginCredentials, setLoginCredentials] = useState<LoginFormData | null>(null);
   
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -31,17 +39,33 @@ export default function AdminLogin() {
     },
   });
 
+  const twoFactorForm = useForm<TwoFactorFormData>({
+    resolver: zodResolver(twoFactorSchema),
+    defaultValues: {
+      twoFactorCode: '',
+    },
+  });
+
   const loginMutation = useMutation({
-    mutationFn: async (data: LoginFormData) => {
+    mutationFn: async (data: LoginFormData & { twoFactorCode?: string }) => {
       const res = await apiRequest('/api/admin/login', 'POST', data);
       return res.json();
     },
-    onSuccess: () => {
-      toast({
-        title: "Login successful",
-        description: "Welcome to the admin dashboard",
-      });
-      setLocation('/admin/dashboard');
+    onSuccess: (response) => {
+      if (response.requires2FA) {
+        setRequires2FA(true);
+        setLoginCredentials(form.getValues());
+        toast({
+          title: "Two-factor authentication required",
+          description: "Please enter your 6-digit code from your authenticator app",
+        });
+      } else if (response.success) {
+        toast({
+          title: "Login successful",
+          description: "Welcome to the admin dashboard",
+        });
+        setLocation('/admin/dashboard');
+      }
     },
     onError: (error: any) => {
       toast({
@@ -54,6 +78,21 @@ export default function AdminLogin() {
 
   const onSubmit = (data: LoginFormData) => {
     loginMutation.mutate(data);
+  };
+
+  const onTwoFactorSubmit = (data: TwoFactorFormData) => {
+    if (loginCredentials) {
+      loginMutation.mutate({
+        ...loginCredentials,
+        twoFactorCode: data.twoFactorCode,
+      });
+    }
+  };
+
+  const goBack = () => {
+    setRequires2FA(false);
+    setLoginCredentials(null);
+    twoFactorForm.reset();
   };
 
   return (

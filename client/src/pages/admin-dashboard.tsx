@@ -40,6 +40,7 @@ import ColorPaletteManager from '@/components/color-palette-manager';
 import ServiceCalculatorManager from '@/components/service-calculator-manager';
 import FooterManager from '@/components/footer-manager';
 import StaticServicesManagement from '@/components/admin/static-services-management';
+import TwoFactorAuthManager from '@/components/two-factor-auth-manager';
 
 // Sortable Menu Item Component
 interface SortableMenuItemProps {
@@ -109,6 +110,7 @@ export default function AdminDashboard() {
     { id: 'menu', label: 'Menu', icon: Menu },
     { id: 'footer', label: 'Footer', icon: Link },
     { id: 'users', label: 'Users', icon: Users },
+    { id: 'twofactor', label: '2FA', icon: Shield },
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'colors', label: 'Colors', icon: Palette },
     { id: 'knowledge', label: 'Knowledge', icon: Book },
@@ -262,6 +264,24 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <StaticServicesManagement />
+            </CardContent>
+          </Card>
+        );
+
+      case 'twofactor':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="w-5 h-5" />
+                Two-Factor Authentication
+              </CardTitle>
+              <CardDescription>
+                Manage two-factor authentication settings for enhanced account security
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TwoFactorAuthManager />
             </CardContent>
           </Card>
         );
