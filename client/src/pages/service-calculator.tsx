@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Calculator, Clock, Shield, Monitor, Network, Database, Zap, Phone, Mail, User, Building } from 'lucide-react';
 import DynamicHeader from '@/components/dynamic-header';
+import Footer from '@/components/footer';
 
 interface ServiceCategory {
   id: number;
@@ -692,6 +693,7 @@ export default function ServiceCalculator() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
