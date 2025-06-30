@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator, ChevronLeft, ChevronRight, Book, GripVertical } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator, ChevronLeft, ChevronRight, Book, GripVertical, Link } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -226,6 +226,9 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         );
+
+      case 'footer':
+        return <FooterManager />;
 
       case 'users':
         return (
