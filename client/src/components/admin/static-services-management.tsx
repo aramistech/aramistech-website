@@ -107,8 +107,24 @@ const iconOptions = [
   // Location & Office
   { value: 'home', label: '🏠 Home Office' },
   { value: 'mapPin', label: '📍 Location' },
+  
+  // Email & Communications
+  { value: 'mail', label: '📧 Email' },
+  { value: 'mailOpen', label: '📬 Email Open' },
+  { value: 'inbox', label: '📥 Inbox' },
+  { value: 'send', label: '📤 Send Email' },
+  { value: 'messageSquare', label: '💬 Messages' },
+  { value: 'phone', label: '📞 Phone' },
+  { value: 'phoneCall', label: '☎️ Phone Call' },
+  
+  // Internet & Web
+  { value: 'globe', label: '🌍 Internet' },
+  { value: 'wifi', label: '📶 WiFi' },
   { value: 'network', label: '🌐 Network' },
-  { value: 'backup', label: '💾 Backup' },
+  { value: 'link', label: '🔗 Website Link' },
+  { value: 'linkIcon', label: '🔗 Link' },
+  { value: 'world', label: '🌎 Web Services' },
+  { value: 'webIcon', label: '🌐 Web' },
   { value: 'analytics', label: '📊 Analytics' },
   { value: 'maintenance', label: '🔧 Maintenance' },
   { value: 'consulting', label: '👥 Consulting' },
