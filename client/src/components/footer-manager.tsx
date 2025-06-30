@@ -132,10 +132,10 @@ function SortableFooterLink({ link, onEdit, onDelete }: {
 }
 
 const sectionOptions = [
-  { value: 'services', label: 'Services', icon: Globe },
-  { value: 'support', label: 'Support', icon: Users },
-  { value: 'company', label: 'Company', icon: Building },
-  { value: 'resources', label: 'Resources', icon: LinkIcon },
+  { value: 'Services', label: 'Services', icon: Globe },
+  { value: 'Support', label: 'Support', icon: Users },
+  { value: 'Company', label: 'Company', icon: Building },
+  { value: 'Resources', label: 'Resources', icon: LinkIcon },
 ];
 
 export default function FooterManager() {
@@ -369,7 +369,7 @@ function FooterLinkForm({
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
         <Label htmlFor="section">Section</Label>
-        <Select name="section" defaultValue={defaultValues?.section || 'services'}>
+        <Select name="section" defaultValue={defaultValues?.section || 'Services'}>
           <SelectTrigger>
             <SelectValue placeholder="Select section" />
           </SelectTrigger>
