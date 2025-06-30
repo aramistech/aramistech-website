@@ -84,7 +84,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
 
   const urlImportMutation = useMutation({
     mutationFn: async (url: string) => {
-      const response = await apiRequest('POST', '/api/admin/media/import-url', { url });
+      const response = await apiRequest('/api/admin/media/import-url', 'POST', { url });
       return await response.json();
     },
     onSuccess: () => {
@@ -107,7 +107,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
 
   const websiteScanMutation = useMutation({
     mutationFn: async (url: string) => {
-      const response = await apiRequest('POST', '/api/admin/media/scan-website', { url });
+      const response = await apiRequest('/api/admin/media/scan-website', 'POST', { url });
       return await response.json();
     },
     onSuccess: (data) => {
@@ -133,7 +133,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, altText, caption }: { id: number; altText: string; caption: string }) => {
-      return await apiRequest("PUT", `/api/admin/media/${id}`, { altText, caption });
+      return await apiRequest(`/api/admin/media/${id}`, "PUT", { altText, caption });
     },
     onSuccess: () => {
       toast({

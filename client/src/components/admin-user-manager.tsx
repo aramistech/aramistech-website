@@ -76,7 +76,7 @@ export default function AdminUserManager() {
   // Create user mutation
   const createUserMutation = useMutation({
     mutationFn: async (data: CreateUserFormData) => {
-      const res = await apiRequest('POST', '/api/admin/users', data);
+      const res = await apiRequest('/api/admin/users', 'POST', data);
       return res.json();
     },
     onSuccess: () => {
@@ -100,7 +100,7 @@ export default function AdminUserManager() {
   // Update user mutation
   const updateUserMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: UpdateUserFormData }) => {
-      const res = await apiRequest('PUT', `/api/admin/users/${id}`, data);
+      const res = await apiRequest(`/api/admin/users/${id}`, 'PUT', data);
       return res.json();
     },
     onSuccess: () => {
@@ -125,7 +125,7 @@ export default function AdminUserManager() {
   // Delete user mutation
   const deleteUserMutation = useMutation({
     mutationFn: async (id: number) => {
-      const res = await apiRequest('DELETE', `/api/admin/users/${id}`);
+      const res = await apiRequest(`/api/admin/users/${id}`, 'DELETE');
       return res.json();
     },
     onSuccess: () => {
