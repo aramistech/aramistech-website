@@ -88,45 +88,45 @@ function ServiceCard({ service }: { service: StaticService }) {
   const IconComponent = iconMap[service.icon] || Server;
 
   return (
-    <Card className="h-full transition-all duration-300 hover:shadow-xl hover:scale-105 border-gray-200">
-      <CardContent className="p-8">
-        <div className="flex flex-col h-full">
-          {/* Service Icon and Title */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="p-3 bg-blue-50 rounded-xl">
-              <IconComponent className="w-8 h-8 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-900">{service.name}</h3>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-2xl font-bold text-blue-600">{service.price}</span>
-                {service.setupFee && (
-                  <span className="text-sm text-gray-500">+ {service.setupFee} setup</span>
-                )}
-              </div>
+    <Card className="h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:scale-[1.02] border-gray-200 bg-white/80 backdrop-blur-sm">
+      <CardContent className="p-6 flex flex-col h-full">
+        {/* Service Icon and Title */}
+        <div className="flex items-start gap-4 mb-4">
+          <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+            <IconComponent className="w-7 h-7 text-blue-600" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">{service.name}</h3>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-blue-600">{service.price}</span>
+              {service.setupFee && (
+                <span className="text-xs text-gray-500 font-medium">+ {service.setupFee} setup</span>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* Service Description */}
-          <div className="flex-1 mb-6">
-            <p className="text-gray-600 leading-relaxed whitespace-pre-line">{service.description}</p>
+        {/* Service Description */}
+        <div className="flex-1 mb-6">
+          <div className="text-gray-600 leading-relaxed text-sm whitespace-pre-line overflow-hidden">
+            {service.description}
           </div>
+        </div>
 
-          {/* Order Button */}
-          <div className="mt-auto">
-            <Button 
-              asChild 
-              className="w-full text-white font-semibold py-3 rounded-lg transition-colors hover:opacity-90"
-              style={{ 
-                backgroundColor: service.buttonColor || '#2563eb'
-              }}
-            >
-              <a href={service.buttonUrl} target="_blank" rel="noopener noreferrer">
-                {service.buttonText}
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </a>
-            </Button>
-          </div>
+        {/* Order Button */}
+        <div className="mt-auto pt-2">
+          <Button 
+            asChild 
+            className="w-full text-white font-semibold py-3 rounded-xl transition-all duration-200 hover:opacity-90 hover:shadow-lg"
+            style={{ 
+              backgroundColor: service.buttonColor || '#2563eb'
+            }}
+          >
+            <a href={service.buttonUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
+              {service.buttonText}
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </a>
+          </Button>
         </div>
       </CardContent>
     </Card>
@@ -256,7 +256,7 @@ export default function ServicesManagedPage() {
           </div>
 
           {/* Services Grid */}
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-16">
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-6 mb-16">
             {services.map((service: StaticService) => (
               <ServiceCard key={service.id} service={service} />
             ))}
