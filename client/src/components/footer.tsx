@@ -49,12 +49,12 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-6">Services</h4>
             <ul className="space-y-3 text-gray-300">
-              <li><a href="#" className="hover:text-white transition-colors">Workstation Maintenance</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">File Server Support</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Active Directory</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Exchange/Google Workspace</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Synology NAS</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Phone Support</a></li>
+              <li><a href="/services-managed" className="hover:text-white transition-colors">Maintenance Services</a></li>
+              <li><a href="/ai-development" className="hover:text-white transition-colors">AI Development</a></li>
+              <li><a href="/windows-10-upgrade" className="hover:text-white transition-colors">Windows 10 Upgrade</a></li>
+              <li><a href="/service-calculator" className="hover:text-white transition-colors">Service Calculator</a></li>
+              <li><a href="/knowledge-base" className="hover:text-white transition-colors">Knowledge Base</a></li>
+              <li><a href="/#services" className="hover:text-white transition-colors">All IT Services</a></li>
             </ul>
           </div>
           
