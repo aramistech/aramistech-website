@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, ArrowRight, CheckCircle, Server, Shield, Cloud, Headphones, Code, Globe, Archive, BarChart3, Wrench, Users } from 'lucide-react';
+import { Loader2, ArrowRight, CheckCircle, Server, Shield, Cloud, Headphones, Code, Globe, Archive, BarChart3, Wrench, Users, Wifi, Router, HardDrive, Cpu, Database, Network, Zap, Settings, Lock, CloudDownload, CloudUpload, Smartphone, Laptop, Monitor, Printer, Scan, FileText, Folder, Search, Bell, AlertTriangle, CheckCircle2, Activity, Gauge, TrendingUp, Building, Home, MapPin } from 'lucide-react';
 import DynamicHeader from '@/components/dynamic-header';
 
 interface StaticService {
@@ -15,21 +15,73 @@ interface StaticService {
   icon: string;
   buttonText: string;
   buttonUrl: string;
+  buttonColor: string;
   isActive: boolean;
   orderIndex: number;
 }
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  // Infrastructure & Servers
   server: Server,
+  database: Database,
+  hardDrive: HardDrive,
+  cpu: Cpu,
+  
+  // Security & Protection
   shield: Shield,
+  lock: Lock,
+  
+  // Networking & Connectivity
+  network: Network,
+  globe: Globe,
+  wifi: Wifi,
+  router: Router,
+  
+  // Cloud Services
   cloud: Cloud,
+  cloudDownload: CloudDownload,
+  cloudUpload: CloudUpload,
+  
+  // Support & Maintenance
   support: Headphones,
-  code: Code,
-  network: Globe,
-  backup: Archive,
-  analytics: BarChart3,
   maintenance: Wrench,
+  settings: Settings,
+  
+  // Business & Analytics
   consulting: Users,
+  analytics: BarChart3,
+  activity: Activity,
+  gauge: Gauge,
+  trendingUp: TrendingUp,
+  building: Building,
+  
+  // Development & Code
+  code: Code,
+  
+  // Devices & Hardware
+  laptop: Laptop,
+  monitor: Monitor,
+  smartphone: Smartphone,
+  printer: Printer,
+  
+  // Data & Files
+  backup: Archive,
+  folder: Folder,
+  fileText: FileText,
+  scan: Scan,
+  
+  // Monitoring & Alerts
+  bell: Bell,
+  alertTriangle: AlertTriangle,
+  checkCircle: CheckCircle2,
+  search: Search,
+  
+  // Power & Performance
+  zap: Zap,
+  
+  // Location & Office
+  home: Home,
+  mapPin: MapPin,
 };
 
 function ServiceCard({ service }: { service: StaticService }) {
