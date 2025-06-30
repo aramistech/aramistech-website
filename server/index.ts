@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { createDefaultAdmin, setupDefaultMenuItems, createDefaultSecurityAlert } from "./setup-admin";
+import { createDefaultFooterLinks } from "./setup-footer";
 import path from "path";
 
 const app = express();
@@ -56,6 +57,7 @@ app.use((req, res, next) => {
   await createDefaultAdmin();
   await setupDefaultMenuItems();
   await createDefaultSecurityAlert();
+  await createDefaultFooterLinks();
   
   const server = await registerRoutes(app);
 

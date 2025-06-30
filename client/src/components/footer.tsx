@@ -71,17 +71,28 @@ export default function Footer() {
             </div>
           </div>
           
-          <div>
-            <h4 className="text-lg font-semibold mb-6">Services</h4>
-            <ul className="space-y-3 text-gray-300">
-              <li><a href="/services" className="hover:text-white transition-colors">Maintenance Services</a></li>
-              <li><a href="/ai-development" className="hover:text-white transition-colors">AI Development</a></li>
-              <li><a href="/windows-10-upgrade" className="hover:text-white transition-colors">Windows 10 Upgrade</a></li>
-              <li><a href="/service-calculator" className="hover:text-white transition-colors">Service Calculator</a></li>
-              <li><a href="/knowledge-base" className="hover:text-white transition-colors">Knowledge Base</a></li>
-              <li><a href="/#services" className="hover:text-white transition-colors">All IT Services</a></li>
-            </ul>
-          </div>
+          {/* Dynamic Footer Sections */}
+          {Object.entries(groupedLinks).map(([section, sectionLinks]) => (
+            <div key={section}>
+              <h4 className="text-lg font-semibold mb-6">{section}</h4>
+              <ul className="space-y-3 text-gray-300">
+                {sectionLinks
+                  .sort((a: FooterLink, b: FooterLink) => a.orderIndex - b.orderIndex)
+                  .map((link: FooterLink) => (
+                    <li key={link.id}>
+                      <a 
+                        href={link.url} 
+                        target={link.target}
+                        className="hover:text-white transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          ))}
           
           <div>
             <h4 className="text-lg font-semibold mb-6">Contact Info</h4>
