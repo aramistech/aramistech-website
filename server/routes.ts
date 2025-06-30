@@ -2678,6 +2678,82 @@ User message: ${message}`
     }
   });
 
+  // Footer Links Management Routes
+  app.get('/api/admin/footer-links', requireAdminAuth, async (req, res) => {
+    try {
+      const links = await db.select().from(footerLinks).orderBy(asc(footerLinks.section), asc(footerLinks.orderIndex));
+      res.json({ success: true, links });
+    } catch (error) {
+      console.error('Error fetching footer links:', error);
+      res.status(500).json({ success: false, error: 'Failed to fetch footer links' });
+    }
+  });
+
+  app.get('/api/footer-links', async (req, res) => {
+    try {
+      const links = await db.select().from(footerLinks)
+        .where(eq(footerLinks.isActive, true))
+        .orderBy(asc(footerLinks.section), asc(footerLinks.orderIndex));
+      res.json({ success: true, links });
+    } catch (error) {
+      console.error('Error fetching footer links:', error);
+      res.status(500).json({ success: false, error: 'Failed to fetch footer links' });
+    }
+  });
+
+  app.post('/api/admin/footer-links', requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertFooterLinkSchema.parse(req.body);
+      const [newLink] = await db.insert(footerLinks).values(validatedData).returning();
+      res.json({ success: true, link: newLink });
+    } catch (error) {
+      console.error('Error creating footer link:', error);
+      res.status(500).json({ success: false, error: 'Failed to create footer link' });
+    }
+  });
+
+  app.put('/api/admin/footer-links/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertFooterLinkSchema.parse(req.body);
+      
+      const [updatedLink] = await db
+        .update(footerLinks)
+        .set({ ...validatedData, updatedAt: new Date() })
+        .where(eq(footerLinks.id, id))
+        .returning();
+      
+      if (!updatedLink) {
+        return res.status(404).json({ success: false, error: 'Footer link not found' });
+      }
+      
+      res.json({ success: true, link: updatedLink });
+    } catch (error) {
+      console.error('Error updating footer link:', error);
+      res.status(500).json({ success: false, error: 'Failed to update footer link' });
+    }
+  });
+
+  app.delete('/api/admin/footer-links/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      const [deletedLink] = await db
+        .delete(footerLinks)
+        .where(eq(footerLinks.id, id))
+        .returning();
+      
+      if (!deletedLink) {
+        return res.status(404).json({ success: false, error: 'Footer link not found' });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting footer link:', error);
+      res.status(500).json({ success: false, error: 'Failed to delete footer link' });
+    }
+  });
+
   // Image scanning endpoint to get current URLs
   app.get('/api/admin/scan-images', requireAdminAuth, async (req, res) => {
     try {

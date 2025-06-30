@@ -507,3 +507,24 @@ export const insertStaticServiceSchema = createInsertSchema(staticServices).omit
 
 export type StaticService = typeof staticServices.$inferSelect;
 export type InsertStaticService = z.infer<typeof insertStaticServiceSchema>;
+
+export const footerLinks = pgTable('footer_links', {
+  id: serial('id').primaryKey(),
+  section: varchar('section', { length: 50 }).notNull(), // "services", "support", "company", etc.
+  label: varchar('label', { length: 100 }).notNull(),
+  url: text('url').notNull(),
+  isActive: boolean('is_active').default(true),
+  orderIndex: integer('order_index').default(0),
+  target: varchar('target', { length: 10 }).default('_self'), // "_self" or "_blank"
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const insertFooterLinkSchema = createInsertSchema(footerLinks).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type FooterLink = typeof footerLinks.$inferSelect;
+export type InsertFooterLink = z.infer<typeof insertFooterLinkSchema>;
