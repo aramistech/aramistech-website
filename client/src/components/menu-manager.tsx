@@ -271,7 +271,7 @@ export default function MenuManager() {
   // Create menu item mutation
   const createItemMutation = useMutation({
     mutationFn: async (data: MenuItemFormData) => {
-      const res = await apiRequest('POST', '/api/admin/menu-items', data);
+      const res = await apiRequest('/api/admin/menu-items', 'POST', data);
       return res.json();
     },
     onSuccess: () => {
@@ -296,7 +296,7 @@ export default function MenuManager() {
   // Update menu item mutation
   const updateItemMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: MenuItemFormData }) => {
-      const res = await apiRequest('PUT', `/api/admin/menu-items/${id}`, data);
+      const res = await apiRequest(`/api/admin/menu-items/${id}`, 'PUT', data);
       return res.json();
     },
     onSuccess: () => {
@@ -321,7 +321,7 @@ export default function MenuManager() {
   // Delete menu item mutation
   const deleteItemMutation = useMutation({
     mutationFn: async (id: number) => {
-      const res = await apiRequest('DELETE', `/api/admin/menu-items/${id}`);
+      const res = await apiRequest(`/api/admin/menu-items/${id}`, 'DELETE');
       return res.json();
     },
     onSuccess: () => {
@@ -343,7 +343,7 @@ export default function MenuManager() {
   // Reset menu items mutation
   const resetMenuMutation = useMutation({
     mutationFn: async () => {
-      const res = await apiRequest('POST', `/api/admin/menu-items/reset`);
+      const res = await apiRequest(`/api/admin/menu-items/reset`, 'POST');
       return res.json();
     },
     onSuccess: () => {
@@ -370,7 +370,7 @@ export default function MenuManager() {
         orderIndex: index,
       }));
       
-      const res = await apiRequest('PUT', '/api/admin/menu-items/reorder', { updates });
+      const res = await apiRequest('/api/admin/menu-items/reorder', 'PUT', { updates });
       return res.json();
     },
     onSuccess: () => {
@@ -394,7 +394,7 @@ export default function MenuManager() {
   // Toggle visibility mutation
   const toggleVisibilityMutation = useMutation({
     mutationFn: async ({ id, isVisible }: { id: number; isVisible: boolean }) => {
-      const res = await apiRequest('PUT', `/api/admin/menu-items/${id}`, { isVisible });
+      const res = await apiRequest(`/api/admin/menu-items/${id}`, 'PUT', { isVisible });
       return res.json();
     },
     onSuccess: () => {
