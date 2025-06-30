@@ -3,14 +3,14 @@ import { hashPassword } from './auth';
 
 export async function createDefaultAdmin() {
   try {
-    // Check if admin already exists
-    const existingAdmin = await storage.getUserByUsername('admin');
-    if (existingAdmin) {
+    // Check if any admin users exist
+    const existingUsers = await storage.getAllAdminUsers();
+    if (existingUsers.length > 0) {
       console.log('Admin user already exists');
       return;
     }
 
-    // Create default admin user
+    // Create default admin user only if no users exist at all
     const hashedPassword = await hashPassword('admin123');
     const admin = await storage.createUser({
       username: 'admin',
