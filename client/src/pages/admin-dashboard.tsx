@@ -99,9 +99,27 @@ function SortableMenuItem({ id, label, icon: Icon, isActive, isCollapsed, onClic
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  // Initialize sidebar as collapsed on mobile, open on desktop
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 1024; // collapsed on mobile/tablet
+    }
+    return false;
+  });
   const [activeTab, setActiveTab] = useState('reviews');
   const queryClient = useQueryClient();
+
+  // Handle window resize for responsive sidebar
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setSidebarCollapsed(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Menu items with order state
   const [menuItems, setMenuItems] = useState([
@@ -464,10 +482,20 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+      {/* Mobile Menu Overlay */}
+      {!sidebarCollapsed && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarCollapsed(true)}
+        />
+      )}
+      
       {/* Collapsible Sidebar */}
       <div className={`bg-white border-r border-gray-200 shadow-sm transition-all duration-300 ${
-        sidebarCollapsed ? 'w-16' : 'w-64'
-      } flex flex-col`}>
+        sidebarCollapsed 
+          ? 'w-16 lg:w-16' 
+          : 'w-64 lg:w-64 fixed lg:relative z-50 lg:z-auto h-full lg:h-auto'
+      } flex flex-col ${sidebarCollapsed ? '' : 'lg:translate-x-0'}`}>
         {/* Sidebar Header */}
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
@@ -522,21 +550,34 @@ export default function AdminDashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
         <div className="bg-white border-b border-gray-200 shadow-sm">
-          <div className="px-6 py-4">
+          <div className="px-4 lg:px-6 py-4">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {menuItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
-              </h2>
-              <span className="text-sm text-gray-500">Welcome back, {(user as any)?.username}</span>
+              <div className="flex items-center gap-3">
+                {/* Mobile Menu Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className="lg:hidden p-2"
+                >
+                  <Menu className="w-5 h-5" />
+                </Button>
+                <h2 className="text-xl lg:text-2xl font-bold text-gray-900 truncate">
+                  {menuItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
+                </h2>
+              </div>
+              <span className="text-xs lg:text-sm text-gray-500 truncate ml-2">
+                Welcome, {(user as any)?.username}
+              </span>
             </div>
           </div>
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 p-6 overflow-auto">
+        <div className="flex-1 p-4 lg:p-6 overflow-auto">
           {renderContent()}
         </div>
       </div>

@@ -465,7 +465,7 @@ export default function AdminUserManager() {
             {adminUsers.map(user => (
               <Card key={user.id}>
                 <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full">
                         <User className="w-5 h-5 text-blue-600" />
@@ -511,7 +511,7 @@ export default function AdminUserManager() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                       {user.id === currentUserId ? (
                         // For current user, show message to use 2FA tab
                         <Button
