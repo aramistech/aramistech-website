@@ -3741,6 +3741,7 @@ User message: ${message}`
 
       // Get Google Reviews count if Place ID is configured
       let googleReviewsCount = 0;
+      let reviewSource = 'database';
       const placeId = process.env.ARAMISTECH_PLACE_ID;
       const apiKey = process.env.GOOGLE_PLACES_API_KEY;
       
@@ -3752,14 +3753,22 @@ User message: ${message}`
           const data = await response.json();
           if (data.status === 'OK' && data.result?.user_ratings_total) {
             googleReviewsCount = data.result.user_ratings_total;
+            reviewSource = 'google';
+          } else {
+            console.log('Google Places API response:', data);
           }
         } catch (error) {
           console.error('Error fetching Google Reviews:', error);
         }
       }
 
+      // Fallback to database reviews if Google API fails
+      const [reviewsResult] = await db.select({ count: sql<number>`count(*)::int` }).from(reviews);
+      const fallbackReviewCount = reviewsResult?.count || 0;
+
       const stats = {
-        totalReviews: googleReviewsCount || 0,
+        totalReviews: googleReviewsCount > 0 ? googleReviewsCount : fallbackReviewCount,
+        reviewSource: googleReviewsCount > 0 ? 'google' : 'database',
         totalContacts: contactsResult?.count || 0,
         totalQuotes: quotesResult?.count || 0,
         recentContacts: recentContactsResult?.count || 0,
