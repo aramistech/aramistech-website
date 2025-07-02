@@ -3722,7 +3722,6 @@ User message: ${message}`
   app.get('/api/dashboard/stats', async (req, res) => {
     try {
       // Get counts from database
-      const [reviewsResult] = await db.select({ count: sql<number>`count(*)::int` }).from(reviews);
       const [contactsResult] = await db.select({ count: sql<number>`count(*)::int` }).from(contacts);
       const [quotesResult] = await db.select({ count: sql<number>`count(*)::int` }).from(quickQuotes);
       
@@ -3740,12 +3739,32 @@ User message: ${message}`
         .from(quickQuotes)
         .where(gte(quickQuotes.createdAt, thirtyDaysAgo));
 
+      // Get Google Reviews count if Place ID is configured
+      let googleReviewsCount = 0;
+      const placeId = process.env.ARAMISTECH_PLACE_ID;
+      const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+      
+      if (placeId && apiKey) {
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=user_ratings_total&key=${apiKey}`
+          );
+          const data = await response.json();
+          if (data.status === 'OK' && data.result?.user_ratings_total) {
+            googleReviewsCount = data.result.user_ratings_total;
+          }
+        } catch (error) {
+          console.error('Error fetching Google Reviews:', error);
+        }
+      }
+
       const stats = {
-        totalReviews: reviewsResult?.count || 0,
+        totalReviews: googleReviewsCount || 0,
         totalContacts: contactsResult?.count || 0,
         totalQuotes: quotesResult?.count || 0,
         recentContacts: recentContactsResult?.count || 0,
         recentQuotes: recentQuotesResult?.count || 0,
+        googleReviewsEnabled: !!(placeId && apiKey),
         lastUpdated: new Date().toISOString()
       };
 
