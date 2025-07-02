@@ -110,6 +110,12 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('reviews');
   const queryClient = useQueryClient();
 
+  // Fetch real database statistics
+  const { data: statsData } = useQuery({
+    queryKey: ['/api/dashboard/stats'],
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
   // Handle window resize for responsive sidebar
   React.useEffect(() => {
     const handleResize = () => {
@@ -446,7 +452,7 @@ export default function AdminDashboard() {
                 <Star className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
+                <div className="text-2xl font-bold">{(statsData as any)?.stats?.totalReviews || 0}</div>
                 <p className="text-xs text-muted-foreground">Customer testimonials</p>
               </CardContent>
             </Card>
@@ -456,7 +462,7 @@ export default function AdminDashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
+                <div className="text-2xl font-bold">{(statsData as any)?.stats?.totalContacts || 0}</div>
                 <p className="text-xs text-muted-foreground">Contact form submissions</p>
               </CardContent>
             </Card>
@@ -466,18 +472,18 @@ export default function AdminDashboard() {
                 <Calculator className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
+                <div className="text-2xl font-bold">{(statsData as any)?.stats?.totalQuotes || 0}</div>
                 <p className="text-xs text-muted-foreground">Quote requests</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>
                 <Settings className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
-                <p className="text-xs text-muted-foreground">Admin accounts</p>
+                <div className="text-2xl font-bold">{((statsData as any)?.stats?.recentContacts || 0) + ((statsData as any)?.stats?.recentQuotes || 0)}</div>
+                <p className="text-xs text-muted-foreground">Last 30 days</p>
               </CardContent>
             </Card>
             <div className="col-span-full">
