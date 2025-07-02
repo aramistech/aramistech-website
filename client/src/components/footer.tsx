@@ -143,7 +143,7 @@ export default function Footer() {
                 {/* QR Code */}
                 <div className="bg-white p-2 rounded-lg">
                   <img 
-                    src="/attached_assets/googlereviewqrcodearamistech-2_1751463228978.png" 
+                    src="/attached_assets/googlereviewqrcodearamistech-2_1751464149144.png" 
                     alt="Google Review QR Code" 
                     className="w-16 h-16"
                   />
