@@ -1,4 +1,4 @@
-import { Facebook, Linkedin, Twitter, Phone, Mail, MapPin, Clock, Shield } from "lucide-react";
+import { Facebook, Linkedin, Twitter, Phone, Mail, MapPin, Clock, Shield, Star } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useQuery } from '@tanstack/react-query';
 
@@ -136,30 +136,58 @@ export default function Footer() {
 
             {/* Google Review Section */}
             <div className="mt-6 pt-6 border-t border-gray-600">
-              <h5 className="text-md font-semibold mb-3 text-aramis-orange">Leave us a Google Review</h5>
-              <p className="text-gray-300 text-xs mb-3">It Really Helps Us Out, Thank You!</p>
-              
-              <div className="flex items-center space-x-3">
-                {/* QR Code */}
-                <div className="bg-white p-2 rounded-lg">
-                  <img 
-                    src="/api/media/36/file" 
-                    alt="Google Review QR Code" 
-                    className="w-16 h-16"
-                  />
+              <div className="bg-gradient-to-br from-blue-50 to-green-50 p-4 rounded-xl border border-gray-200">
+                {/* Google-style Header */}
+                <div className="flex items-center mb-3">
+                  <div className="flex items-center space-x-1 mr-2">
+                    <span className="text-lg font-bold text-blue-600">G</span>
+                    <span className="text-lg font-bold text-red-500">o</span>
+                    <span className="text-lg font-bold text-yellow-500">o</span>
+                    <span className="text-lg font-bold text-blue-600">g</span>
+                    <span className="text-lg font-bold text-green-600">l</span>
+                    <span className="text-lg font-bold text-red-500">e</span>
+                  </div>
+                  <h5 className="text-md font-semibold text-gray-800">Review</h5>
                 </div>
                 
-                {/* Review Link */}
-                <div className="flex-1">
-                  <a 
-                    href="https://g.page/r/CYN7HOtqQGRlEAI/review"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block bg-primary-blue hover:bg-secondary-blue text-white text-xs px-3 py-2 rounded-lg transition-colors duration-200 text-center w-full"
-                  >
-                    Click to Review
-                  </a>
-                  <p className="text-gray-400 text-xs mt-1 text-center">or scan QR code</p>
+                {/* 5-Star Rating Display */}
+                <div className="flex items-center mb-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                    />
+                  ))}
+                  <span className="ml-2 text-sm text-gray-600 font-medium">5.0</span>
+                </div>
+                
+                <p className="text-gray-700 text-sm font-medium mb-3">
+                  Leave us a Google Review - It Really Helps Us Out, Thank You!
+                </p>
+                
+                <div className="flex items-center space-x-3">
+                  {/* QR Code */}
+                  <div className="bg-white p-2 rounded-lg shadow-sm border">
+                    <img 
+                      src="/api/media/36/file" 
+                      alt="Google Review QR Code" 
+                      className="w-16 h-16"
+                    />
+                  </div>
+                  
+                  {/* Review Actions */}
+                  <div className="flex-1">
+                    <a 
+                      href="https://g.page/r/CYN7HOtqQGRlEAI/review"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors duration-200 shadow-sm"
+                    >
+                      <Star className="w-4 h-4 mr-2 fill-white" />
+                      Write Review
+                    </a>
+                    <p className="text-gray-600 text-xs mt-2 text-center">Scan QR or click button</p>
+                  </div>
                 </div>
               </div>
             </div>
