@@ -50,16 +50,16 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-professional-gray text-white py-12">
+    <footer className="bg-professional-gray text-white py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div>
             <img 
               src="/api/media/4/file" 
               alt="AramisTech Logo" 
-              className="h-16 w-auto mb-4 brightness-0 invert"
+              className="h-12 w-auto mb-3 brightness-0 invert"
             />
-            <p className="text-gray-300 mb-4 text-sm">
+            <p className="text-gray-300 mb-3 text-sm">
               Family-owned IT company with 27+ years of experience serving South Florida businesses.
             </p>
             <div className="flex space-x-3">
@@ -135,43 +135,41 @@ export default function Footer() {
             </ul>
 
             {/* Google Review Section */}
-            <div className="mt-6 pt-6 border-t border-gray-600">
-              <div className="bg-gradient-to-br from-blue-50 to-green-50 p-4 rounded-xl border border-gray-200">
-                {/* Google-style Header */}
-                <div className="flex items-center mb-3">
-                  <div className="flex items-center space-x-1 mr-2">
-                    <span className="text-lg font-bold text-blue-600">G</span>
-                    <span className="text-lg font-bold text-red-500">o</span>
-                    <span className="text-lg font-bold text-yellow-500">o</span>
-                    <span className="text-lg font-bold text-blue-600">g</span>
-                    <span className="text-lg font-bold text-green-600">l</span>
-                    <span className="text-lg font-bold text-red-500">e</span>
+            <div className="mt-4 pt-4 border-t border-gray-600">
+              <div className="bg-gradient-to-br from-blue-50 to-green-50 p-3 rounded-lg border border-gray-200">
+                {/* Google-style Header with Stars */}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-1">
+                    <span className="text-sm font-bold text-blue-600">G</span>
+                    <span className="text-sm font-bold text-red-500">o</span>
+                    <span className="text-sm font-bold text-yellow-500">o</span>
+                    <span className="text-sm font-bold text-blue-600">g</span>
+                    <span className="text-sm font-bold text-green-600">l</span>
+                    <span className="text-sm font-bold text-red-500">e</span>
+                    <span className="text-sm font-semibold text-gray-800 ml-1">Review</span>
                   </div>
-                  <h5 className="text-md font-semibold text-gray-800">Review</h5>
+                  <div className="flex items-center">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className="w-3 h-3 fill-yellow-400 text-yellow-400"
+                      />
+                    ))}
+                    <span className="ml-1 text-xs text-gray-600 font-medium">5.0</span>
+                  </div>
                 </div>
                 
-                {/* 5-Star Rating Display */}
-                <div className="flex items-center mb-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                  <span className="ml-2 text-sm text-gray-600 font-medium">5.0</span>
-                </div>
-                
-                <p className="text-gray-700 text-sm font-medium mb-3">
-                  Leave us a Google Review - It Really Helps Us Out, Thank You!
+                <p className="text-gray-700 text-xs mb-3 text-center">
+                  It Really Helps Us Out, Thank You!
                 </p>
                 
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
                   {/* QR Code */}
-                  <div className="bg-white p-2 rounded-lg shadow-sm border">
+                  <div className="bg-white p-1.5 rounded shadow-sm border">
                     <img 
                       src="/api/media/36/file" 
                       alt="Google Review QR Code" 
-                      className="w-16 h-16"
+                      className="w-12 h-12"
                     />
                   </div>
                   
@@ -181,12 +179,12 @@ export default function Footer() {
                       href="https://g.page/r/CYN7HOtqQGRlEAI/review"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors duration-200 shadow-sm"
+                      className="inline-flex items-center justify-center w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-2 py-2 rounded transition-colors duration-200"
                     >
-                      <Star className="w-4 h-4 mr-2 fill-white" />
+                      <Star className="w-3 h-3 mr-1 fill-white" />
                       Write Review
                     </a>
-                    <p className="text-gray-600 text-xs mt-2 text-center">Scan QR or click button</p>
+                    <p className="text-gray-600 text-xs mt-1 text-center">Scan or click</p>
                   </div>
                 </div>
               </div>
@@ -194,7 +192,7 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="border-t border-gray-600 pt-8 mt-12">
+        <div className="border-t border-gray-600 pt-4 mt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex flex-col md:flex-row items-center md:space-x-4">
               <p className="text-gray-400 text-sm">
