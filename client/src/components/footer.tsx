@@ -133,6 +133,36 @@ export default function Footer() {
                 <span>Mon-Fri: 9am-6pm</span>
               </li>
             </ul>
+
+            {/* Google Review Section */}
+            <div className="mt-6 pt-6 border-t border-gray-600">
+              <h5 className="text-md font-semibold mb-3 text-aramis-orange">Leave us a Google Review</h5>
+              <p className="text-gray-300 text-xs mb-3">It Really Helps Us Out, Thank You!</p>
+              
+              <div className="flex items-center space-x-3">
+                {/* QR Code */}
+                <div className="bg-white p-2 rounded-lg">
+                  <img 
+                    src="/attached_assets/googlereviewqrcodearamistech-2_1751463228978.png" 
+                    alt="Google Review QR Code" 
+                    className="w-16 h-16"
+                  />
+                </div>
+                
+                {/* Review Link */}
+                <div className="flex-1">
+                  <a 
+                    href="https://g.page/r/CYN7HOtqQGRlEAI/review"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block bg-primary-blue hover:bg-secondary-blue text-white text-xs px-3 py-2 rounded-lg transition-colors duration-200 text-center w-full"
+                  >
+                    Click to Review
+                  </a>
+                  <p className="text-gray-400 text-xs mt-1 text-center">or scan QR code</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
