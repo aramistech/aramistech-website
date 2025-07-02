@@ -4,9 +4,9 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import cookieParser from "cookie-parser";
 import { storage } from "./storage";
-import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema, insertColorPaletteSchema, insertPricingCalculationSchema, insertServiceCategorySchema, insertServiceOptionSchema, insertStaticServiceSchema, insertFooterLinkSchema, insertCountryBlockingSchema, footerLinks } from "@shared/schema";
+import { insertContactSchema, insertQuickQuoteSchema, insertAIConsultationSchema, insertITConsultationSchema, insertReviewSchema, insertUserSchema, updateUserSchema, insertMenuItemSchema, insertExitIntentPopupSchema, insertMediaFileSchema, insertKnowledgeBaseCategorySchema, insertKnowledgeBaseArticleSchema, insertSecurityAlertSchema, insertColorPaletteSchema, insertPricingCalculationSchema, insertServiceCategorySchema, insertServiceOptionSchema, insertStaticServiceSchema, insertFooterLinkSchema, insertCountryBlockingSchema, footerLinks, reviews, contacts, quickQuotes } from "@shared/schema";
 import { db } from "./db";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, gte, sql } from "drizzle-orm";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -3715,6 +3715,44 @@ User message: ${message}`
         country: { code: 'UNKNOWN', name: 'Unknown' },
         blocked: false 
       });
+    }
+  });
+
+  // Dashboard Statistics API
+  app.get('/api/dashboard/stats', async (req, res) => {
+    try {
+      // Get counts from database
+      const [reviewsResult] = await db.select({ count: sql<number>`count(*)::int` }).from(reviews);
+      const [contactsResult] = await db.select({ count: sql<number>`count(*)::int` }).from(contacts);
+      const [quotesResult] = await db.select({ count: sql<number>`count(*)::int` }).from(quickQuotes);
+      
+      // Get recent activity (last 30 days)
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      
+      const [recentContactsResult] = await db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(contacts)
+        .where(gte(contacts.createdAt, thirtyDaysAgo));
+      
+      const [recentQuotesResult] = await db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(quickQuotes)
+        .where(gte(quickQuotes.createdAt, thirtyDaysAgo));
+
+      const stats = {
+        totalReviews: reviewsResult?.count || 0,
+        totalContacts: contactsResult?.count || 0,
+        totalQuotes: quotesResult?.count || 0,
+        recentContacts: recentContactsResult?.count || 0,
+        recentQuotes: recentQuotesResult?.count || 0,
+        lastUpdated: new Date().toISOString()
+      };
+
+      res.json({ success: true, stats });
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+      res.status(500).json({ success: false, error: 'Failed to fetch dashboard statistics' });
     }
   });
 
