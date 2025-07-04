@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { trackConversion } from "@/components/google-ads-tracking";
 import { insertContactSchema, insertQuickQuoteSchema } from "@shared/schema";
 import type { InsertContact, InsertQuickQuote } from "@shared/schema";
 
@@ -39,6 +40,9 @@ export function useContactForm() {
       return response.json();
     },
     onSuccess: () => {
+      // Track Google Ads conversion
+      trackConversion('contact_form_submitted');
+      
       toast({
         title: "Success!",
         description: "Thank you for your interest! We will contact you within 2 hours during business hours.",
@@ -60,6 +64,9 @@ export function useContactForm() {
       return response.json();
     },
     onSuccess: () => {
+      // Track Google Ads conversion
+      trackConversion('quick_quote_submitted');
+      
       toast({
         title: "Success!",
         description: "Thank you for your interest! We will contact you within 2 hours during business hours.",

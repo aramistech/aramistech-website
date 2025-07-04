@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { trackConversion } from './google-ads-tracking';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -78,6 +79,9 @@ export default function AIConsultationForm({ isOpen, onClose }: AIConsultationFo
       return await apiRequest('/api/ai-consultation', 'POST', data);
     },
     onSuccess: () => {
+      // Track Google Ads conversion
+      trackConversion('ai_consultation_submitted');
+      
       setIsSuccess(true);
       form.reset();
       toast({

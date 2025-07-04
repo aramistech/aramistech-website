@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import { trackConversion } from '@/components/google-ads-tracking';
 import DynamicHeader from '@/components/dynamic-header';
 import Footer from '@/components/footer';
 import { SEO } from '@/components/seo';
@@ -95,6 +96,9 @@ export default function ITConsultation() {
     mutationFn: (data: ConsultationFormData) => 
       apiRequest('/api/it-consultation', 'POST', data),
     onSuccess: () => {
+      // Track Google Ads conversion
+      trackConversion('consultation_submitted');
+      
       toast({
         title: 'Consultation Request Sent!',
         description: 'We\'ll contact you within 24 hours to schedule your free consultation.',
