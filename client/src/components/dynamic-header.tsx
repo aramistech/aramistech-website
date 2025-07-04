@@ -404,12 +404,13 @@ export default function DynamicHeader() {
                 </button>
               );
             })}
-            <button 
-              onClick={() => scrollToSection('contact')} 
-              className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
-            >
-              Free Consultation
-            </button>
+            <Link href="/it-consultation">
+              <button 
+                className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
+              >
+                Free Consultation
+              </button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -472,12 +473,17 @@ export default function DynamicHeader() {
                   </button>
                 );
               })}
-              <button 
-                onClick={() => scrollToSection('contact')} 
-                className="w-full mt-4 bg-aramis-orange text-white px-6 py-3 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
-              >
-                Free Consultation
-              </button>
+              <Link href="/it-consultation">
+                <button 
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setTimeout(() => window.scrollTo(0, 0), 100);
+                  }}
+                  className="w-full mt-4 bg-aramis-orange text-white px-6 py-3 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
+                >
+                  Free Consultation
+                </button>
+              </Link>
               
               {isWarningDismissed && (
                 <button
