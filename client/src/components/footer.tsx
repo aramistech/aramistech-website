@@ -63,13 +63,13 @@ export default function Footer() {
               Family-owned IT company with 27+ years of experience serving South Florida businesses.
             </p>
             <div className="flex space-x-3">
-              <a href="#" className="bg-primary-blue p-2 rounded-lg hover:bg-secondary-blue transition-colors">
+              <a href="https://www.facebook.com/people/AramisTech/61577937779297/" target="_blank" rel="noopener noreferrer" className="bg-primary-blue p-2 rounded-lg hover:bg-secondary-blue transition-colors">
                 <Facebook className="w-4 h-4" />
               </a>
-              <a href="#" className="bg-primary-blue p-2 rounded-lg hover:bg-secondary-blue transition-colors">
+              <a href="https://www.linkedin.com/in/aramis-figueroa-88349ba9" target="_blank" rel="noopener noreferrer" className="bg-primary-blue p-2 rounded-lg hover:bg-secondary-blue transition-colors">
                 <Linkedin className="w-4 h-4" />
               </a>
-              <a href="#" className="bg-primary-blue p-2 rounded-lg hover:bg-secondary-blue transition-colors">
+              <a href="https://x.com/aramistech" target="_blank" rel="noopener noreferrer" className="bg-primary-blue p-2 rounded-lg hover:bg-secondary-blue transition-colors">
                 <Twitter className="w-4 h-4" />
               </a>
             </div>
