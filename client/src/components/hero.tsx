@@ -2,6 +2,7 @@ import { Award, CheckCircle, Calendar, Phone } from "lucide-react";
 import { useContactForm } from "@/hooks/use-contact-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Link } from "wouter";
 import { trackClick, trackBusinessEvent, trackFormInteraction } from "@/lib/analytics";
 
 export default function Hero() {
@@ -54,13 +55,18 @@ export default function Hero() {
               Family-owned IT company serving South Florida businesses with reliable computer repairs, network maintenance, cloud solutions, and custom servers. Get peace of mind with our expert technology support.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <button 
-                onClick={scrollToContact}
-                className="bg-white text-primary-blue px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-center flex-1 sm:flex-none sm:w-64"
-              >
-                <Calendar className="inline-block w-4 h-4 mr-2" />
-                Schedule Free Consultation
-              </button>
+              <Link href="/it-consultation">
+                <button 
+                  className="bg-white text-primary-blue px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-center flex-1 sm:flex-none sm:w-64 w-full"
+                  onClick={() => {
+                    trackClick('cta_button', 'hero_it_consultation', 'Schedule Free Consultation');
+                    trackBusinessEvent('consultation_request', { source: 'hero_cta' });
+                  }}
+                >
+                  <Calendar className="inline-block w-4 h-4 mr-2" />
+                  Schedule Free Consultation
+                </button>
+              </Link>
               <a 
                 href="tel:(305) 814-4461" 
                 className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-blue transition-colors text-center flex flex-col items-center justify-center min-h-[4rem] flex-1 sm:flex-none sm:w-64"

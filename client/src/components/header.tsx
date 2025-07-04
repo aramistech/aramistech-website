@@ -274,12 +274,13 @@ export default function Header() {
                 </div>
               )}
             </div>
-            <button 
-              onClick={() => scrollToSection('contact')} 
-              className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
-            >
-              Free Consultation
-            </button>
+            <Link href="/it-consultation">
+              <button 
+                className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
+              >
+                Free Consultation
+              </button>
+            </Link>
           </div>
           
           <div className="lg:hidden">
@@ -448,12 +449,17 @@ export default function Header() {
                 </div>
               )}
             </div>
-            <button 
-              onClick={() => scrollToSection('contact')} 
-              className="block w-full text-left py-2 bg-aramis-orange text-white px-4 rounded-lg text-center"
-            >
-              Free Consultation
-            </button>
+            <Link href="/it-consultation">
+              <button 
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setTimeout(() => window.scrollTo(0, 0), 100);
+                }}
+                className="block w-full text-left py-2 bg-aramis-orange text-white px-4 rounded-lg text-center"
+              >
+                Free Consultation
+              </button>
+            </Link>
           </div>
         </div>
       )}
