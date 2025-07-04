@@ -186,7 +186,12 @@ export default function GoogleAdsCampaign() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEO {...SEOConfigs.googleAds} />
+      <SEO 
+        title="Access Denied | Google Ads Campaign Builder"
+        description="This page requires administrator access."
+        keywords="admin, access denied"
+        url=""
+      />
       <DynamicHeader />
       
       <main>

@@ -42,6 +42,7 @@ import FooterManager from '@/components/footer-manager';
 import StaticServicesManagement from '@/components/admin/static-services-management';
 import TwoFactorAuthManager from '@/components/two-factor-auth-manager';
 import CountryBlockingManager from '@/components/country-blocking-manager';
+import GoogleAdsCampaignBuilder from '@/components/google-ads-campaign-builder';
 
 // Sortable Menu Item Component
 interface SortableMenuItemProps {
@@ -131,6 +132,7 @@ export default function AdminDashboard() {
   // Menu items with order state
   const [menuItems, setMenuItems] = useState([
     { id: 'overview', label: 'Quick Tools', icon: Zap },
+    { id: 'google-ads', label: 'Google Ads', icon: TrendingUp },
     { id: 'reviews', label: 'Reviews', icon: Star },
     { id: 'services', label: 'Services', icon: Settings },
     { id: 'menu', label: 'Menu', icon: Menu },
@@ -245,7 +247,7 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => window.open('/google-ads-campaign', '_blank')}>
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setActiveTab('google-ads')}>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -332,6 +334,24 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </div>
+        );
+
+      case 'google-ads':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5" />
+                Google Ads Campaign Builder
+              </CardTitle>
+              <CardDescription>
+                Complete campaign setup with keywords, ad copy, and targeting for IT services
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GoogleAdsCampaignBuilder />
+            </CardContent>
+          </Card>
         );
 
       case 'reviews':
