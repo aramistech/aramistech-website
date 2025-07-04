@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator, ChevronLeft, ChevronRight, Book, GripVertical, Link, Globe } from 'lucide-react';
+import { LogOut, Settings, Star, Menu, Users, BarChart3, ExternalLink, Image as ImageIcon, Shield, Palette, Calculator, ChevronLeft, ChevronRight, Book, GripVertical, Link, Globe, Zap, TrendingUp, BookOpen, Monitor } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -494,14 +494,116 @@ export default function AdminDashboard() {
 
       default:
         return (
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-center">
-                <h3 className="text-lg font-medium">Welcome to AramisTech Admin Dashboard</h3>
-                <p className="text-gray-600 mt-2">Select a section from the sidebar to get started.</p>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <Card>
+              <CardContent className="p-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-medium">Welcome to AramisTech Admin Dashboard</h3>
+                  <p className="text-gray-600 mt-2">Manage your website and business tools from one central location.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Tools Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Zap className="w-5 h-5" />
+                  Quick Tools & Resources
+                </CardTitle>
+                <CardDescription>
+                  Fast access to marketing and business tools
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex flex-col items-start space-y-2"
+                    onClick={() => window.open('/google-ads-campaign', '_blank')}
+                  >
+                    <div className="flex items-center gap-2 w-full">
+                      <TrendingUp className="w-5 h-5 text-blue-600" />
+                      <span className="font-medium">Google Ads Campaign</span>
+                    </div>
+                    <p className="text-sm text-gray-600 text-left">
+                      Complete campaign builder with keywords, ad copy, and targeting for IT services
+                    </p>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex flex-col items-start space-y-2"
+                    onClick={() => window.open('/service-calculator', '_blank')}
+                  >
+                    <div className="flex items-center gap-2 w-full">
+                      <Calculator className="w-5 h-5 text-green-600" />
+                      <span className="font-medium">Service Calculator</span>
+                    </div>
+                    <p className="text-sm text-gray-600 text-left">
+                      Pricing calculator for customers to estimate service costs
+                    </p>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex flex-col items-start space-y-2"
+                    onClick={() => window.open('/knowledge-base', '_blank')}
+                  >
+                    <div className="flex items-center gap-2 w-full">
+                      <BookOpen className="w-5 h-5 text-purple-600" />
+                      <span className="font-medium">Knowledge Base</span>
+                    </div>
+                    <p className="text-sm text-gray-600 text-left">
+                      Technical articles and troubleshooting guides for customers
+                    </p>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex flex-col items-start space-y-2"
+                    onClick={() => window.open('/', '_blank')}
+                  >
+                    <div className="flex items-center gap-2 w-full">
+                      <Globe className="w-5 h-5 text-aramis-orange" />
+                      <span className="font-medium">Live Website</span>
+                    </div>
+                    <p className="text-sm text-gray-600 text-left">
+                      View your website as customers see it
+                    </p>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex flex-col items-start space-y-2"
+                    onClick={() => window.open('/customer-portal', '_blank')}
+                  >
+                    <div className="flex items-center gap-2 w-full">
+                      <Users className="w-5 h-5 text-blue-600" />
+                      <span className="font-medium">Customer Portal</span>
+                    </div>
+                    <p className="text-sm text-gray-600 text-left">
+                      Customer billing and support portal access
+                    </p>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex flex-col items-start space-y-2"
+                    onClick={() => window.open('/windows10-upgrade', '_blank')}
+                  >
+                    <div className="flex items-center gap-2 w-full">
+                      <Monitor className="w-5 h-5 text-red-600" />
+                      <span className="font-medium">Windows 10 Upgrade</span>
+                    </div>
+                    <p className="text-sm text-gray-600 text-left">
+                      Urgent Windows 10 end-of-support service page
+                    </p>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         );
     }
   };
