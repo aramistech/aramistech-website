@@ -130,6 +130,7 @@ export default function AdminDashboard() {
 
   // Menu items with order state
   const [menuItems, setMenuItems] = useState([
+    { id: 'overview', label: 'Quick Tools', icon: Zap },
     { id: 'reviews', label: 'Reviews', icon: Star },
     { id: 'services', label: 'Services', icon: Settings },
     { id: 'menu', label: 'Menu', icon: Menu },
@@ -219,6 +220,120 @@ export default function AdminDashboard() {
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'overview':
+        return (
+          <div className="space-y-6">
+            <Card>
+              <CardContent className="p-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-medium">Welcome to AramisTech Admin Dashboard</h3>
+                  <p className="text-gray-600 mt-2">Manage your website and business tools from one central location.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Tools Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Zap className="w-5 h-5" />
+                  Quick Tools & Resources
+                </CardTitle>
+                <CardDescription>
+                  Fast access to marketing and business tools
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => window.open('/google-ads-campaign', '_blank')}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <TrendingUp className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <h3 className="font-medium text-gray-900">Google Ads Campaign</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        Complete campaign builder with keywords, ad copy, and targeting for IT services
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => window.open('/service-calculator', '_blank')}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Calculator className="w-5 h-5 text-green-600" />
+                        </div>
+                        <h3 className="font-medium text-gray-900">Service Calculator</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        Pricing calculator for customers to estimate service costs
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => window.open('/knowledge-base', '_blank')}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <BookOpen className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <h3 className="font-medium text-gray-900">Knowledge Base</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        Technical articles and troubleshooting guides for customers
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => window.open('/', '_blank')}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <Globe className="w-5 h-5 text-aramis-orange" />
+                        </div>
+                        <h3 className="font-medium text-gray-900">Live Website</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        View your website as customers see it
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => window.open('/customer-portal', '_blank')}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Users className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <h3 className="font-medium text-gray-900">Customer Portal</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        Customer billing and support portal access
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => window.open('/windows10-upgrade', '_blank')}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                          <Monitor className="w-5 h-5 text-red-600" />
+                        </div>
+                        <h3 className="font-medium text-gray-900">Windows 10 Upgrade</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        Urgent Windows 10 end-of-support service page
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
       case 'reviews':
         return (
           <Card>
@@ -494,116 +609,14 @@ export default function AdminDashboard() {
 
       default:
         return (
-          <div className="space-y-6">
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <h3 className="text-lg font-medium">Welcome to AramisTech Admin Dashboard</h3>
-                  <p className="text-gray-600 mt-2">Manage your website and business tools from one central location.</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Tools Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Zap className="w-5 h-5" />
-                  Quick Tools & Resources
-                </CardTitle>
-                <CardDescription>
-                  Fast access to marketing and business tools
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <Button
-                    variant="outline"
-                    className="h-auto p-4 flex flex-col items-start space-y-2"
-                    onClick={() => window.open('/google-ads-campaign', '_blank')}
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <TrendingUp className="w-5 h-5 text-blue-600" />
-                      <span className="font-medium">Google Ads Campaign</span>
-                    </div>
-                    <p className="text-sm text-gray-600 text-left">
-                      Complete campaign builder with keywords, ad copy, and targeting for IT services
-                    </p>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className="h-auto p-4 flex flex-col items-start space-y-2"
-                    onClick={() => window.open('/service-calculator', '_blank')}
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <Calculator className="w-5 h-5 text-green-600" />
-                      <span className="font-medium">Service Calculator</span>
-                    </div>
-                    <p className="text-sm text-gray-600 text-left">
-                      Pricing calculator for customers to estimate service costs
-                    </p>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className="h-auto p-4 flex flex-col items-start space-y-2"
-                    onClick={() => window.open('/knowledge-base', '_blank')}
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <BookOpen className="w-5 h-5 text-purple-600" />
-                      <span className="font-medium">Knowledge Base</span>
-                    </div>
-                    <p className="text-sm text-gray-600 text-left">
-                      Technical articles and troubleshooting guides for customers
-                    </p>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className="h-auto p-4 flex flex-col items-start space-y-2"
-                    onClick={() => window.open('/', '_blank')}
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <Globe className="w-5 h-5 text-aramis-orange" />
-                      <span className="font-medium">Live Website</span>
-                    </div>
-                    <p className="text-sm text-gray-600 text-left">
-                      View your website as customers see it
-                    </p>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className="h-auto p-4 flex flex-col items-start space-y-2"
-                    onClick={() => window.open('/customer-portal', '_blank')}
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <Users className="w-5 h-5 text-blue-600" />
-                      <span className="font-medium">Customer Portal</span>
-                    </div>
-                    <p className="text-sm text-gray-600 text-left">
-                      Customer billing and support portal access
-                    </p>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className="h-auto p-4 flex flex-col items-start space-y-2"
-                    onClick={() => window.open('/windows10-upgrade', '_blank')}
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <Monitor className="w-5 h-5 text-red-600" />
-                      <span className="font-medium">Windows 10 Upgrade</span>
-                    </div>
-                    <p className="text-sm text-gray-600 text-left">
-                      Urgent Windows 10 end-of-support service page
-                    </p>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <div className="text-center">
+                <h3 className="text-lg font-medium">AramisTech Admin Dashboard</h3>
+                <p className="text-gray-600 mt-2">Select a section from the sidebar to get started.</p>
+              </div>
+            </CardContent>
+          </Card>
         );
     }
   };
