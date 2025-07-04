@@ -131,6 +131,13 @@ export const SEOConfigs = {
     keywords: 'IT knowledge base, troubleshooting guides, tech support, cybersecurity tips, computer help, network solutions, IT articles',
     url: 'https://aramistech.com/knowledge-base'
   },
+
+  googleAds: {
+    title: 'Google Ads Campaign Builder | Digital Marketing for IT Services',
+    description: 'Complete Google Ads campaign setup for IT services. Professional keywords, targeting, and ad copy optimized for South Florida IT leads and conversions.',
+    keywords: 'Google Ads IT services, PPC campaign setup, digital marketing IT, lead generation, South Florida advertising, IT marketing strategy',
+    url: 'https://aramistech.com/google-ads-campaign'
+  },
   
   servicesOrder: {
     title: 'IT Service Packages | Managed IT Services | Business Solutions',
