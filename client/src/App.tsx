@@ -19,6 +19,7 @@ import AdminServiceCalculator from "@/pages/admin-service-calculator";
 import ServicesOrder from "@/pages/services-order-static";
 import ServicesManagedPage from "@/pages/services-managed";
 import Checkout from "@/pages/checkout";
+import ITConsultation from "@/pages/it-consultation";
 
 
 import SocialProofPopup from "@/components/social-proof-popup";
@@ -45,6 +46,7 @@ function Router() {
       <Route path="/services-order" component={ServicesOrder} />
       <Route path="/services" component={ServicesManagedPage} />
       <Route path="/checkout" component={Checkout} />
+      <Route path="/it-consultation" component={ITConsultation} />
       <Route path="/admin/reviews" component={AdminReviewsPage} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
