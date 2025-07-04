@@ -107,7 +107,7 @@ export default function AdminDashboard() {
     }
     return false;
   });
-  const [activeTab, setActiveTab] = useState('reviews');
+  const [activeTab, setActiveTab] = useState('overview');
   const queryClient = useQueryClient();
 
   // Fetch real database statistics
