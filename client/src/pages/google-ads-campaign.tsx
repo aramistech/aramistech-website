@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -142,9 +144,39 @@ const campaignData = {
 };
 
 export default function GoogleAdsCampaign() {
+  const [, setLocation] = useLocation();
   const [selectedObjective, setSelectedObjective] = useState("leads");
   const [selectedBudget, setSelectedBudget] = useState("Moderate");
   const [copiedText, setCopiedText] = useState("");
+
+  // Check authentication
+  const { data: authData, isLoading } = useQuery<{ user?: any }>({
+    queryKey: ['/api/admin/me'],
+    retry: false
+  });
+
+  useEffect(() => {
+    if (!isLoading && !authData?.user) {
+      setLocation('/admin/login');
+    }
+  }, [authData, isLoading, setLocation]);
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-aramis-orange mx-auto mb-4"></div>
+          <p className="text-gray-600">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect if not authenticated
+  if (!authData?.user) {
+    return null;
+  }
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
