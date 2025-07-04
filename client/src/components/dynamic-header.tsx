@@ -342,9 +342,9 @@ export default function DynamicHeader() {
                 </Link>
               </div>
               
-              {/* Animated urgency indicators */}
-              <div className="absolute top-0 left-0 h-2 w-full bg-yellow-400 animate-ping"></div>
-              <div className="absolute bottom-0 left-0 h-2 w-full bg-yellow-400 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+              {/* Static urgency indicators - no animation to prevent scrollbar issues */}
+              <div className="absolute top-0 left-0 h-1 w-full bg-yellow-400 opacity-80"></div>
+              <div className="absolute bottom-0 left-0 h-1 w-full bg-yellow-400 opacity-80"></div>
             </div>
           </div>
         </>

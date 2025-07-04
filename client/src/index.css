@@ -4,16 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Critical Warning Banner Animation */
-@keyframes urgentTransform {
-  0%, 100% { 
-    transform: scale(1);
-  }
-  50% { 
-    transform: scale(1.02);
-  }
-}
-
+/* Critical Warning Banner Animation - Fixed to prevent horizontal scrollbar */
 @keyframes urgentFlash {
   0%, 50%, 100% { opacity: 1; }
   25%, 75% { opacity: 0.8; }
@@ -25,7 +16,7 @@
 }
 
 .critical-warning {
-  animation: urgentTransform 2s ease-in-out infinite;
+  /* Removed scaling animation to prevent horizontal scrollbar */
 }
 
 .critical-badge {
@@ -134,10 +125,12 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
   }
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden; /* Prevent horizontal scrollbar globally */
   }
 }
 
