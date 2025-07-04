@@ -10,10 +10,12 @@ import Testimonials from "@/components/testimonials";
 import Contact from "@/components/contact";
 import Footer from "@/components/footer";
 import ExitIntentPopup from "@/components/exit-intent-popup";
+import { SEO, SEOConfigs } from "@/components/seo";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <SEO {...SEOConfigs.home} />
       <DynamicHeader />
       <Hero />
       <TrustIndicators />

@@ -3784,5 +3784,61 @@ User message: ${message}`
     }
   });
 
+  // SEO Sitemap Generation
+  app.get('/sitemap.xml', (req, res) => {
+    const baseUrl = 'https://aramistech.com';
+    const currentDate = new Date().toISOString();
+    
+    const urls = [
+      // Main pages
+      { loc: `${baseUrl}/`, priority: '1.0', changefreq: 'weekly' },
+      { loc: `${baseUrl}/windows10-upgrade`, priority: '0.9', changefreq: 'weekly' },
+      { loc: `${baseUrl}/ai-development`, priority: '0.8', changefreq: 'monthly' },
+      { loc: `${baseUrl}/ip-lookup`, priority: '0.7', changefreq: 'monthly' },
+      { loc: `${baseUrl}/knowledge-base`, priority: '0.8', changefreq: 'weekly' },
+      { loc: `${baseUrl}/services-order`, priority: '0.8', changefreq: 'monthly' },
+      { loc: `${baseUrl}/service-calculator`, priority: '0.7', changefreq: 'monthly' }
+    ];
+
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+${urls.map(url => `  <url>
+    <loc>${url.loc}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>${url.changefreq}</changefreq>
+    <priority>${url.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+    res.set('Content-Type', 'application/xml');
+    res.send(sitemap);
+  });
+
+  // Robots.txt for SEO
+  app.get('/robots.txt', (req, res) => {
+    const robotsTxt = `User-agent: *
+Allow: /
+
+# Allow crawling of all content
+Allow: /windows10-upgrade
+Allow: /ai-development
+Allow: /ip-lookup
+Allow: /knowledge-base
+Allow: /services-order
+Allow: /service-calculator
+
+# Disallow admin areas
+Disallow: /admin/
+
+# Sitemap location
+Sitemap: https://aramistech.com/sitemap.xml`;
+
+    res.set('Content-Type', 'text/plain');
+    res.send(robotsTxt);
+  });
+
   return httpServer;
 }

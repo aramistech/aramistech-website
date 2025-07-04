@@ -17,6 +17,7 @@ import { apiRequest } from "@/lib/queryClient";
 import DynamicHeader from "@/components/dynamic-header";
 import Footer from "@/components/footer";
 import { Link } from "wouter";
+import { SEO, SEOConfigs, ServiceSchemas } from "@/components/seo";
 
 interface TimeLeft {
   days: number;
@@ -142,6 +143,7 @@ export default function Windows10Upgrade() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <SEO {...SEOConfigs.windows10} schema={ServiceSchemas.windows10Upgrade} />
       <DynamicHeader />
       
       {/* Hero Section */}

@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Allow crawling of all content
+Allow: /windows10-upgrade
+Allow: /ai-development
+Allow: /ip-lookup
+Allow: /knowledge-base
+Allow: /services-order
+Allow: /service-calculator
+
+# Disallow admin areas
+Disallow: /admin/
+
+# Sitemap location
+Sitemap: https://aramistech.com/sitemap.xml

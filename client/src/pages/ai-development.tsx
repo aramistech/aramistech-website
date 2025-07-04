@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import DynamicHeader from '@/components/dynamic-header';
 import Footer from '@/components/footer';
 import AIConsultationForm from '@/components/ai-consultation-form';
+import { SEO, SEOConfigs } from '@/components/seo';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,7 @@ export default function AIDevelopment() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO {...SEOConfigs.aiDevelopment} />
       <DynamicHeader />
       
       {/* Hero Section */}

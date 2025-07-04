@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import DynamicHeader from "@/components/dynamic-header";
 import Footer from "@/components/footer";
+import { SEO, SEOConfigs } from "@/components/seo";
 
 interface KnowledgeBaseCategory {
   id: number;
@@ -70,6 +71,7 @@ export default function KnowledgeBase() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO {...SEOConfigs.knowledgeBase} />
       <DynamicHeader />
       
       <main>
