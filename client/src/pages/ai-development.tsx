@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import DynamicHeader from '@/components/dynamic-header';
 import Footer from '@/components/footer';
 import AIConsultationForm from '@/components/ai-consultation-form';
+import { ServiceSpecificForm } from '@/components/service-specific-forms';
 import { SEO, SEOConfigs } from '@/components/seo';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
   Brain, 
@@ -18,16 +19,186 @@ import {
   CheckCircle,
   ArrowRight,
   Cpu,
-  Code,
+  Code2,
   Video,
   BarChart3,
-  Shield
+  Shield,
+  MessageCircle,
+  Sparkles,
+  FileText,
+  Workflow,
+  Monitor
 } from 'lucide-react';
 import { Link } from 'wouter';
 
+const aiServices = [
+  {
+    id: 'machine-learning',
+    title: 'Machine Learning',
+    icon: Brain,
+    color: 'from-blue-500 to-purple-600',
+    borderColor: 'border-blue-500',
+    description: 'Custom ML models for pattern recognition, predictive analytics, and automated decision-making to optimize your business processes.',
+    features: [
+      'Predictive Analytics',
+      'Data Pattern Recognition', 
+      'Automated Classification',
+      'Intelligent Forecasting',
+      'Risk Assessment Models',
+      'Customer Behavior Analysis'
+    ],
+    useCases: [
+      'Sales forecasting and inventory optimization',
+      'Customer churn prediction and retention',
+      'Quality control and defect detection',
+      'Financial risk assessment',
+      'Dynamic pricing strategies'
+    ]
+  },
+  {
+    id: 'ai-chatbots',
+    title: 'AI Chatbots',
+    icon: MessageCircle,
+    color: 'from-green-500 to-emerald-600',
+    borderColor: 'border-green-500',
+    description: 'Intelligent conversational AI that handles customer inquiries, provides support, and generates leads 24/7 with natural language understanding.',
+    features: [
+      'Natural Language Processing',
+      '24/7 Customer Support',
+      'Lead Generation',
+      'Multi-language Support',
+      'Integration with CRM',
+      'Sentiment Analysis'
+    ],
+    useCases: [
+      'Customer service automation',
+      'Lead qualification and nurturing',
+      'FAQ and support ticket reduction',
+      'Sales assistance and product recommendations',
+      'Appointment scheduling and booking'
+    ]
+  },
+  {
+    id: 'ai-analytics',
+    title: 'AI Analytics',
+    icon: BarChart3,
+    color: 'from-purple-500 to-pink-600',
+    borderColor: 'border-purple-500',
+    description: 'Transform raw data into actionable insights with AI-powered analytics platforms that reveal trends, opportunities, and optimization strategies.',
+    features: [
+      'Business Intelligence',
+      'Real-time Dashboards',
+      'Predictive Modeling',
+      'Performance Optimization',
+      'Automated Reporting',
+      'Data Visualization'
+    ],
+    useCases: [
+      'Marketing campaign optimization',
+      'Operational efficiency analysis',
+      'Financial performance insights',
+      'Website and app analytics',
+      'Supply chain optimization'
+    ]
+  },
+  {
+    id: 'ai-automation',
+    title: 'AI Automation',
+    icon: Zap,
+    color: 'from-orange-500 to-red-600',
+    borderColor: 'border-orange-500',
+    description: 'Intelligent process automation that learns and adapts, reducing manual work while improving accuracy and efficiency across your operations.',
+    features: [
+      'Workflow Optimization',
+      'Document Processing',
+      'Task Automation',
+      'Smart Scheduling',
+      'Error Reduction',
+      'Cost Optimization'
+    ],
+    useCases: [
+      'Invoice and document processing',
+      'Email marketing automation',
+      'Inventory management',
+      'Employee scheduling optimization',
+      'Data entry and validation'
+    ]
+  },
+  {
+    id: 'custom-ai-solutions',
+    title: 'Custom AI Solutions',
+    icon: Code2,
+    color: 'from-indigo-500 to-blue-600',
+    borderColor: 'border-indigo-500',
+    description: 'Tailored AI applications designed specifically for your industry and business needs, from concept to deployment and ongoing optimization.',
+    features: [
+      'Industry-Specific Solutions',
+      'API Integration',
+      'Scalable Architecture',
+      'Custom Training',
+      'Performance Monitoring',
+      'Continuous Learning'
+    ],
+    useCases: [
+      'Healthcare diagnostic tools',
+      'Legal document analysis',
+      'Real estate valuation models',
+      'Educational learning platforms',
+      'Agriculture optimization systems'
+    ]
+  },
+  {
+    id: 'ai-agents',
+    title: 'AI Agents',
+    icon: Users,
+    color: 'from-cyan-500 to-blue-600',
+    borderColor: 'border-cyan-500',
+    description: 'Intelligent autonomous agents that can perform complex tasks, make decisions, and interact with multiple systems to achieve specific business objectives.',
+    features: [
+      'Autonomous Decision Making',
+      'Multi-system Integration',
+      'Task Orchestration',
+      'Learning & Adaptation',
+      'Goal-oriented Behavior',
+      'Real-time Monitoring'
+    ],
+    useCases: [
+      'Automated trading and investment',
+      'Smart home and IoT management',
+      'Customer journey orchestration',
+      'Supply chain coordination',
+      'Personal assistant services'
+    ]
+  },
+  {
+    id: 'ai-promo-videos',
+    title: 'AI-Powered Promo Videos',
+    icon: Video,
+    color: 'from-yellow-500 to-orange-600',
+    borderColor: 'border-yellow-500',
+    description: 'Professional promotional videos created with cutting-edge AI tools, including intelligent editing, custom prompts, and automated post-production for maximum marketing impact.',
+    features: [
+      'AI-Enhanced Editing',
+      'Custom Script Generation',
+      'Automated Visual Effects',
+      'Voice Synthesis',
+      'Brand Integration',
+      'Multi-format Output'
+    ],
+    useCases: [
+      'Product launch videos',
+      'Social media content creation',
+      'Training and educational videos',
+      'Marketing campaign assets',
+      'Corporate presentation videos'
+    ]
+  }
+];
 
 export default function AIDevelopment() {
   const [isConsultationFormOpen, setIsConsultationFormOpen] = useState(false);
+  const [serviceFormOpen, setServiceFormOpen] = useState(false);
+  const [selectedServiceType, setSelectedServiceType] = useState<string>('');
 
   return (
     <div className="min-h-screen bg-white">
@@ -421,7 +592,7 @@ export default function AIDevelopment() {
               <CardContent className="p-6">
                 <div className="flex items-center mb-4">
                   <div className="p-3 bg-indigo-100 rounded-lg mr-4 group-hover:bg-indigo-200 transition-colors">
-                    <Code className="w-6 h-6 text-indigo-600" />
+                    <Code2 className="w-6 h-6 text-indigo-600" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900">Custom AI Solutions</h3>
                 </div>
@@ -775,10 +946,21 @@ export default function AIDevelopment() {
       <Footer />
       
       {/* AI Consultation Form */}
-      <AIConsultationForm
-        isOpen={isConsultationFormOpen}
-        onClose={() => setIsConsultationFormOpen(false)}
-      />
+      {isConsultationFormOpen && (
+        <AIConsultationForm
+          isOpen={isConsultationFormOpen}
+          onClose={() => setIsConsultationFormOpen(false)}
+        />
+      )}
+      
+      {/* Service-Specific Form Modal */}
+      {serviceFormOpen && (
+        <ServiceSpecificForm 
+          isOpen={serviceFormOpen}
+          onClose={() => setServiceFormOpen(false)}
+          serviceType={selectedServiceType}
+        />
+      )}
     </div>
   );
 }
