@@ -133,38 +133,39 @@ export default function Header() {
       </div>
 
       {/* Main Navigation */}
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
-          <div className="flex items-center">
-            <img 
-              src="/api/media/4/file" 
-              alt="AramisTech Logo" 
-              className="h-20 w-auto"
-            />
-          </div>
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <div className="backdrop-blur-xl bg-white/75 border border-white/80 shadow-xl rounded-2xl">
+          <div className="flex justify-between items-center py-4 px-6">
+            <div className="flex items-center">
+              <img 
+                src="/api/media/4/file" 
+                alt="AramisTech Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
           
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             <button 
               onClick={() => scrollToSection('services')} 
-              className="text-professional-gray hover:text-aramis-orange transition-colors font-medium"
+              className="text-slate-600 hover:text-aramis-orange hover:bg-orange-50 transition-all duration-300 font-medium px-4 py-2 rounded-lg backdrop-blur-sm"
             >
               Services
             </button>
             <button 
               onClick={() => scrollToSection('about')} 
-              className="text-professional-gray hover:text-aramis-orange transition-colors font-medium"
+              className="text-slate-600 hover:text-aramis-orange hover:bg-orange-50 transition-all duration-300 font-medium px-4 py-2 rounded-lg backdrop-blur-sm"
             >
               About
             </button>
             <button 
               onClick={() => scrollToSection('team')} 
-              className="text-professional-gray hover:text-aramis-orange transition-colors font-medium"
+              className="text-slate-600 hover:text-aramis-orange hover:bg-orange-50 transition-all duration-300 font-medium px-4 py-2 rounded-lg backdrop-blur-sm"
             >
               Team
             </button>
             <button 
               onClick={() => scrollToSection('industries')} 
-              className="text-professional-gray hover:text-aramis-orange transition-colors font-medium"
+              className="text-slate-600 hover:text-aramis-orange hover:bg-orange-50 transition-all duration-300 font-medium px-4 py-2 rounded-lg backdrop-blur-sm"
             >
               Industries
             </button>
@@ -172,14 +173,14 @@ export default function Header() {
             <div className="relative" ref={dropdownRef}>
               <button 
                 onClick={() => setIsSupportDropdownOpen(!isSupportDropdownOpen)}
-                className="flex items-center gap-1 text-professional-gray hover:text-aramis-orange transition-colors font-medium"
+                className="flex items-center gap-1 text-slate-600 hover:text-aramis-orange hover:bg-orange-50 transition-all duration-300 font-medium px-4 py-2 rounded-lg backdrop-blur-sm"
               >
                 Support
                 <ChevronDown className={`w-4 h-4 transition-transform ${isSupportDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               
               {isSupportDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                <div className="absolute top-full left-0 mt-2 w-64 backdrop-blur-xl bg-white/90 rounded-lg shadow-xl border border-white/80 py-2 z-50">
                   <Link href="/customer-portal">
                     <button 
                       onClick={() => {
@@ -276,7 +277,7 @@ export default function Header() {
             </div>
             <Link href="/it-consultation">
               <button 
-                className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
+                className="bg-aramis-orange text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 backdrop-blur-sm"
               >
                 Free Consultation
               </button>
@@ -287,6 +288,7 @@ export default function Header() {
             <button onClick={toggleMenu} className="text-professional-gray hover:text-aramis-orange">
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
+          </div>
           </div>
         </div>
       </nav>
