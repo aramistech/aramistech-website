@@ -377,9 +377,9 @@ export default function AIServices() {
             })}
           </div>
 
-          {/* Second Row - 2 services */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 max-w-4xl mx-auto">
-            {aiServices.slice(3, 5).map((service) => {
+          {/* Second Row - 3 services */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+            {aiServices.slice(3, 6).map((service) => {
               const IconComponent = service.icon;
               const isSelected = selectedService === service.id;
               
@@ -466,7 +466,7 @@ export default function AIServices() {
 
           {/* AI-Powered Videos - Full Width Bottom */}
           <div className="max-w-6xl mx-auto">
-            {aiServices.slice(5).map((service) => {
+            {aiServices.slice(6).map((service) => {
               const IconComponent = service.icon;
               const isSelected = selectedService === service.id;
               
