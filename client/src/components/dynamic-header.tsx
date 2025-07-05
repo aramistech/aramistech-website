@@ -37,12 +37,25 @@ export default function DynamicHeader() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
-      setIsScrolled(scrollPosition > 100);
+      const wasScrolled = isScrolled;
+      const shouldBeScrolled = scrollPosition > 100;
+      
+      setIsScrolled(shouldBeScrolled);
+      
+      // Add/remove body padding to prevent content jumping when nav becomes fixed
+      if (shouldBeScrolled && !wasScrolled) {
+        document.body.style.paddingTop = '80px'; // Approximate height of navigation
+      } else if (!shouldBeScrolled && wasScrolled) {
+        document.body.style.paddingTop = '0px';
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.body.style.paddingTop = '0px'; // Cleanup on unmount
+    };
+  }, [isScrolled]);
 
   const dismissWarning = () => {
     localStorage.setItem('criticalWarningDismissed', 'true');
@@ -165,7 +178,7 @@ export default function DynamicHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-50" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)' }}>
+    <header className="relative" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)' }}>
       {/* Top Bar */}
       <div className="bg-primary-blue text-white py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -351,12 +364,19 @@ export default function DynamicHeader() {
       )}
       {/* Main Navigation - Clean Frosted Glass Style */}
       <div 
-        className="w-full"
+        className={`w-full transition-all duration-300 ${
+          isScrolled 
+            ? 'fixed top-0 left-0 right-0 z-50' 
+            : 'relative z-30'
+        }`}
         style={{
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(226, 232, 240, 0.5)'
+          background: isScrolled 
+            ? 'rgba(255, 255, 255, 0.75)' 
+            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+          backdropFilter: isScrolled ? 'blur(25px)' : 'blur(20px)',
+          WebkitBackdropFilter: isScrolled ? 'blur(25px)' : 'blur(20px)',
+          borderBottom: '1px solid rgba(226, 232, 240, 0.5)',
+          boxShadow: isScrolled ? '0 8px 32px rgba(0, 0, 0, 0.12)' : 'none'
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
