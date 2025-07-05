@@ -350,7 +350,7 @@ export default function AIDevelopment() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Trusted AI Solutions Provider</h2>
-            <p className="text-gray-600">Serving South Florida businesses with 27+ years of technology expertise</p>
+            <p className="text-gray-600">Serving South Florida businesses with 5+ years of technology expertise</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
