@@ -12,7 +12,7 @@ import Windows10Upgrade from "@/pages/windows10-upgrade";
 import CustomerPortal from "@/pages/customer-portal";
 import IPLookup from "@/pages/ip-lookup";
 import AIDevelopment from "@/pages/ai-development";
-import AIServices from "@/pages/ai-services";
+
 import KnowledgeBase from "@/pages/knowledge-base";
 import KnowledgeBaseArticle from "@/pages/knowledge-base-article";
 import ServiceCalculator from "@/pages/service-calculator";
@@ -40,7 +40,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/ai-development" component={AIDevelopment} />
-      <Route path="/ai-services" component={AIServices} />
+
       <Route path="/windows10-upgrade" component={Windows10Upgrade} />
       <Route path="/customer-portal" component={CustomerPortal} />
       <Route path="/ip-lookup" component={IPLookup} />
