@@ -49,35 +49,38 @@
   }
 }
 
-/* Frosted Glass Navigation Styles */
+/* Clean Frosted Glass Navigation - Matching Mockup */
 .frosted-glass-nav {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
-.nav-item-glass {
-  color: #374151;
+.menu-item-clean {
+  color: #4a5568;
   font-weight: 500;
-  transition: all 0.2s ease;
+  font-size: 15px;
+  padding: 10px 20px;
   border-radius: 8px;
-  padding: 8px 16px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 
-.nav-item-glass:hover {
+.menu-item-clean:hover {
   background: #f97316;
   color: white;
   transform: translateY(-1px);
 }
 
-.dropdown-glass {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.dropdown-clean {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* Futuristic AI Hero Animations */

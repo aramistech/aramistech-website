@@ -350,19 +350,19 @@ export default function DynamicHeader() {
         </>
       )}
       {/* Main Navigation */}
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-        <div className="frosted-glass-nav rounded-2xl relative">
-          <div className={`flex justify-between items-center transition-all duration-300 px-6 relative z-10 ${isScrolled ? 'py-2' : 'py-4'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="frosted-glass-nav rounded-2xl">
+          <div className="flex justify-between items-center px-8 py-4">
             <div className="flex items-center">
-            <img 
-              src="/api/media/4/file" 
-              alt="AramisTech Logo" 
-              className={`w-auto transition-all duration-300 ${isScrolled ? 'h-12' : 'h-20'}`}
-            />
-          </div>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6">
+              <img 
+                src="/api/media/4/file" 
+                alt="AramisTech Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center space-x-8">
             {mainMenuItems.map((item) => {
               const subItems = getSubMenuItems(item.id);
               const hasSubItems = subItems.length > 0;
@@ -372,19 +372,19 @@ export default function DynamicHeader() {
                   <div key={item.id} className="relative" ref={dropdownRef}>
                     <button 
                       onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
-                      className="nav-item-glass flex items-center gap-1"
+                      className="menu-item-clean flex items-center gap-1"
                     >
                       {item.label}
                       <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === item.id ? 'rotate-180' : ''}`} />
                     </button>
                     
                     {activeDropdown === item.id && (
-                      <div className="absolute top-full left-0 mt-2 w-56 dropdown-glass rounded-lg py-2 z-50">
+                      <div className="absolute top-full left-0 mt-2 w-56 dropdown-clean rounded-lg py-2 z-50">
                         {subItems.map((subItem) => (
                           <button
                             key={subItem.id}
                             onClick={() => handleMenuItemClick(subItem)}
-                            className="block w-full text-left px-4 py-2 text-professional-gray hover:text-aramis-orange hover:bg-gray-50 transition-colors"
+                            className="block w-full text-left px-4 py-2 text-gray-700 hover:text-aramis-orange hover:bg-gray-50 transition-colors"
                           >
                             {subItem.label}
                           </button>
@@ -399,7 +399,7 @@ export default function DynamicHeader() {
                 <button 
                   key={item.id}
                   onClick={() => handleMenuItemClick(item)}
-                  className="nav-item-glass"
+                  className="menu-item-clean"
                 >
                   {item.label}
                 </button>
@@ -506,7 +506,7 @@ export default function DynamicHeader() {
             </div>
           </div>
         )}
-      </nav>
+      </div>
     </header>
   );
 }
