@@ -149,29 +149,6 @@ const aiServices = [
     ]
   },
   {
-    id: 'ai-promo-videos',
-    title: 'AI-Powered Promo Videos',
-    icon: Video,
-    color: 'from-yellow-500 to-orange-600',
-    borderColor: 'border-yellow-500',
-    description: 'Professional promotional videos created with cutting-edge AI tools, including intelligent editing, custom prompts, and automated post-production for maximum marketing impact.',
-    features: [
-      'AI-Enhanced Editing',
-      'Custom Script Generation',
-      'Automated Visual Effects',
-      'Voice Synthesis',
-      'Brand Integration',
-      'Multi-format Output'
-    ],
-    useCases: [
-      'Product launch videos',
-      'Social media content creation',
-      'Training and educational videos',
-      'Marketing campaign assets',
-      'Corporate presentation videos'
-    ]
-  },
-  {
     id: 'ai-agents',
     title: 'AI Agents',
     icon: Users,
@@ -192,6 +169,29 @@ const aiServices = [
       'Customer journey orchestration',
       'Supply chain coordination',
       'Personal assistant services'
+    ]
+  },
+  {
+    id: 'ai-promo-videos',
+    title: 'AI-Powered Promo Videos',
+    icon: Video,
+    color: 'from-yellow-500 to-orange-600',
+    borderColor: 'border-yellow-500',
+    description: 'Professional promotional videos created with cutting-edge AI tools, including intelligent editing, custom prompts, and automated post-production for maximum marketing impact.',
+    features: [
+      'AI-Enhanced Editing',
+      'Custom Script Generation',
+      'Automated Visual Effects',
+      'Voice Synthesis',
+      'Brand Integration',
+      'Multi-format Output'
+    ],
+    useCases: [
+      'Product launch videos',
+      'Social media content creation',
+      'Training and educational videos',
+      'Marketing campaign assets',
+      'Corporate presentation videos'
     ]
   }
 ];
