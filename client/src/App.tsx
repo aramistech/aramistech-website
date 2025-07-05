@@ -25,6 +25,7 @@ import ITConsultation from "@/pages/it-consultation";
 
 import SocialProofPopup from "@/components/social-proof-popup";
 import ChatGPTChatbot from "@/components/chatgpt-chatbot";
+import FrostedNavigation from "@/components/frosted-navigation";
 import { useEffect } from "react";
 import { initGA } from "./lib/analytics";
 import { useAnalytics } from "./hooks/use-analytics";

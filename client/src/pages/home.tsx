@@ -1,4 +1,4 @@
-import DynamicHeader from "@/components/dynamic-header";
+import FrostedNavigation from "@/components/frosted-navigation";
 import Hero from "@/components/hero";
 import TrustIndicators from "@/components/trust-indicators";
 import Services from "@/components/services";
@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <SEO {...SEOConfigs.home} />
-      <DynamicHeader />
+      <FrostedNavigation />
       <Hero />
       <TrustIndicators />
       <Services />
