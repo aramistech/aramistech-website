@@ -165,7 +165,7 @@ export default function DynamicHeader() {
   };
 
   return (
-    <header className="shadow-sm sticky top-0 z-50" style={{ background: 'linear-gradient(135deg, rgba(239, 246, 255, 0.6) 0%, rgba(219, 234, 254, 0.7) 50%, rgba(147, 197, 253, 0.4) 100%)' }}>
+    <header className="sticky top-0 z-50" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)' }}>
       {/* Top Bar */}
       <div className="bg-primary-blue text-white py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -362,7 +362,7 @@ export default function DynamicHeader() {
           </div>
           
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             {mainMenuItems.map((item) => {
               const subItems = getSubMenuItems(item.id);
               const hasSubItems = subItems.length > 0;
@@ -372,7 +372,7 @@ export default function DynamicHeader() {
                   <div key={item.id} className="relative" ref={dropdownRef}>
                     <button 
                       onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
-                      className="nav-item-glass flex items-center gap-1 text-slate-700 font-medium px-4 py-2 rounded-lg"
+                      className="nav-item-glass flex items-center gap-1"
                     >
                       {item.label}
                       <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === item.id ? 'rotate-180' : ''}`} />
@@ -399,7 +399,7 @@ export default function DynamicHeader() {
                 <button 
                   key={item.id}
                   onClick={() => handleMenuItemClick(item)}
-                  className="nav-item-glass text-slate-700 font-medium px-4 py-2 rounded-lg"
+                  className="nav-item-glass"
                 >
                   {item.label}
                 </button>
