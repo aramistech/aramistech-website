@@ -165,26 +165,38 @@ export default function FrostedNavigation() {
 
                 if (hasSubItems) {
                   return (
-                    <div key={item.id} className="relative" ref={dropdownRef}>
+                    <div key={item.id} className="relative group" ref={dropdownRef}>
                       <button 
                         onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
-                        className="nav-link flex items-center gap-1"
+                        className="nav-link flex items-center gap-1 relative"
                       >
                         {item.label}
                         <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === item.id ? 'rotate-180' : ''}`} />
                       </button>
                       
                       {activeDropdown === item.id && (
-                        <div className="absolute top-full left-0 mt-2 w-auto min-w-56 dropdown-menu py-2" style={{ zIndex: 999999 }}>
-                          {subItems.map((subItem: MenuItem) => (
-                            <button
-                              key={subItem.id}
-                              onClick={() => handleMenuItemClick(subItem)}
-                              className="block w-full text-left px-4 py-2 text-gray-700 hover:text-aramis-orange hover:bg-gray-50 transition-colors whitespace-nowrap"
-                            >
-                              {subItem.label}
-                            </button>
-                          ))}
+                        <div 
+                          className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 min-w-[220px] w-max professional-dropdown"
+                          style={{ zIndex: 999999 }}
+                        >
+                          <div className="bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden backdrop-blur-xl bg-opacity-95">
+                            {subItems.map((subItem: MenuItem, index) => (
+                              <button
+                                key={subItem.id}
+                                onClick={() => handleMenuItemClick(subItem)}
+                                className={`block w-full text-left px-6 py-4 text-gray-700 hover:text-aramis-orange hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 transition-all duration-300 font-medium text-sm group ${
+                                  index !== subItems.length - 1 ? 'border-b border-gray-100' : ''
+                                }`}
+                              >
+                                <span className="flex items-center justify-between">
+                                  {subItem.label}
+                                  <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transform translate-x-1 group-hover:translate-x-0 transition-all duration-200" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                </span>
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
