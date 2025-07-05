@@ -242,24 +242,24 @@ export default function AIServices() {
         
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            {/* Animated AI Technology Badge */}
-            <div className="inline-flex items-center bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white mb-6 text-lg px-6 py-3 rounded-full shadow-lg animate-pulse">
+            {/* Professional AI Technology Badge */}
+            <div className="inline-flex items-center bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white mb-6 text-lg px-6 py-3 rounded-full shadow-lg animate-fade-in">
               <div className="flex space-x-1 mr-3">
-                <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-100"></div>
-                <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-200"></div>
+                <div className="w-2 h-2 bg-white rounded-full opacity-40"></div>
+                <div className="w-2 h-2 bg-white rounded-full opacity-70"></div>
+                <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
-              <Cpu className="w-5 h-5 mr-2 animate-spin" style={{animation: 'spin 3s linear infinite'}} />
+              <Cpu className="w-5 h-5 mr-2 animate-pulse" />
               AI Technology Hub
               <div className="flex space-x-1 ml-3">
-                <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-300"></div>
-                <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-400"></div>
-                <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-500"></div>
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                <div className="w-2 h-2 bg-white rounded-full opacity-70"></div>
+                <div className="w-2 h-2 bg-white rounded-full opacity-40"></div>
               </div>
             </div>
 
             <h1 className="text-5xl lg:text-7xl font-bold leading-tight mb-6 animate-fade-in-up">
-              <span className="inline-block animate-pulse">Comprehensive</span>
+              <span className="inline-block">Comprehensive</span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-500 block animate-gradient">
                 AI Services
               </span>
