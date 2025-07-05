@@ -305,8 +305,8 @@ export default function AIDevelopment() {
               </p>
             </div>
 
-            {/* Futuristic Buttons */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            {/* Futuristic Button */}
+            <div className="flex justify-center">
               <div className="relative group">
                 <Button 
                   size="lg" 
@@ -321,21 +321,6 @@ export default function AIDevelopment() {
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600/50 to-purple-600/50 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   {/* Animated border */}
                   <div className="absolute inset-0 rounded-lg border border-blue-400/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </Button>
-              </div>
-              
-              <div className="relative group">
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="relative bg-transparent border-2 border-gray-400/30 text-gray-300 hover:text-white hover:border-blue-400/50 px-8 py-4 text-lg backdrop-blur-sm overflow-hidden"
-                >
-                  <Link href="#services" className="relative z-10 flex items-center">
-                    Explore AI Services
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Link>
-                  {/* Button hover effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Button>
               </div>
             </div>
