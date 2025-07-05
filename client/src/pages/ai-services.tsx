@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import DynamicHeader from '@/components/dynamic-header';
 import Footer from '@/components/footer';
 import AIConsultationForm from '@/components/ai-consultation-form';
+import { ServiceSpecificForm } from '@/components/service-specific-forms';
 import { SEO } from '@/components/seo';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -221,6 +222,8 @@ const aiServices = [
 export default function AIServices() {
   const [isConsultationFormOpen, setIsConsultationFormOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [serviceFormOpen, setServiceFormOpen] = useState(false);
+  const [selectedServiceType, setSelectedServiceType] = useState<string>('');
 
   return (
     <div className="min-h-screen bg-white">
@@ -382,7 +385,8 @@ export default function AIServices() {
                         className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setIsConsultationFormOpen(true);
+                          setSelectedServiceType(service.id);
+                          setServiceFormOpen(true);
                         }}
                       >
                         Get Started with {service.title}
@@ -467,6 +471,15 @@ export default function AIServices() {
         <AIConsultationForm 
           isOpen={isConsultationFormOpen}
           onClose={() => setIsConsultationFormOpen(false)}
+        />
+      )}
+      
+      {/* Service-Specific Form Modal */}
+      {serviceFormOpen && (
+        <ServiceSpecificForm 
+          isOpen={serviceFormOpen}
+          onClose={() => setServiceFormOpen(false)}
+          serviceType={selectedServiceType}
         />
       )}
     </div>

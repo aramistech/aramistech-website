@@ -1907,6 +1907,66 @@ User message: ${message}`
     }
   });
 
+  // Service-specific consultation form submission
+  app.post("/api/service-consultation", async (req, res) => {
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        company,
+        serviceType,
+        projectDescription,
+        specificAnswer,
+        specificNeeds,
+        timeline,
+        budget,
+        submittedAt
+      } = req.body;
+
+      // Store in database using existing contact schema with modifications for service consultation
+      const consultationData = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        company: company || null,
+        service: serviceType,
+        challenges: `${projectDescription}\n\nSpecific Details: ${specificAnswer || 'Not provided'}\n\nInterested Features: ${specificNeeds?.join(', ') || 'None specified'}\n\nTimeline: ${timeline || 'Not specified'}\n\nBudget: ${budget || 'Not specified'}`,
+        contactTime: timeline || null,
+        employees: null
+      };
+
+      const contact = await storage.createContact(consultationData);
+      
+      // Send specialized email notification
+      try {
+        await sendContactEmail({
+          firstName,
+          lastName,
+          email,
+          phone,
+          company: company || undefined,
+          service: serviceType,
+          challenges: consultationData.challenges,
+          contactTime: timeline || undefined,
+        });
+        console.log("Service consultation email sent successfully");
+      } catch (emailError) {
+        console.error("Failed to send service consultation email:", emailError);
+      }
+      
+      res.json({ success: true, consultation: contact });
+    } catch (error) {
+      console.error("Service consultation submission error:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to submit consultation request" 
+      });
+    }
+  });
+
   // AI consultation form submission
   app.post("/api/ai-consultation", async (req, res) => {
     try {
