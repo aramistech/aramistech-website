@@ -276,7 +276,6 @@ export default function ITConsultation() {
                             <div className="flex items-center space-x-3">
                               <Checkbox
                                 checked={isSelected}
-                                onChange={() => handleServiceToggle(service.id)}
                                 className="pointer-events-none"
                               />
                               <IconComponent className={`w-5 h-5 ${isSelected ? 'text-aramis-orange' : 'text-gray-500'}`} />
