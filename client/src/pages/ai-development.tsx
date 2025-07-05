@@ -300,8 +300,8 @@ export default function AIDevelopment() {
             {/* Description with glow effect */}
             <div className="relative mb-10">
               <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Leverage cutting-edge artificial intelligence to automate processes, enhance decision-making, 
-                and unlock new opportunities for growth. Our AI experts deliver custom solutions tailored to your unique business needs.
+                Transform your business operations with custom AI solutions. From intelligent automation to predictive analytics, 
+                we develop cutting-edge artificial intelligence systems that drive efficiency and innovation for South Florida businesses.
               </p>
             </div>
 
