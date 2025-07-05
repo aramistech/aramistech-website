@@ -61,7 +61,7 @@ export default function AIDevelopment() {
                   Start Your AI Project
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
-                <Link href="#services">
+                <Link href="/ai-services">
                   <Button size="lg" variant="outline" className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white px-8 py-3">
                     Explore AI Services
                   </Button>

@@ -171,6 +171,10 @@
     animation: pulse-slow 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-in-out forwards;
+  }
+  
   .chatbot-glow {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
@@ -228,6 +232,15 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
