@@ -29,6 +29,7 @@ import { initGA } from "./lib/analytics";
 import { useAnalytics } from "./hooks/use-analytics";
 import { initializeWHMCS } from "./lib/whmcs-integration";
 import { GoogleAdsTracking } from "./components/google-ads-tracking";
+import { MicrosoftClarity } from "./components/microsoft-clarity";
 
 function Router() {
   // Track page views when routes change
@@ -79,6 +80,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <GoogleAdsTracking />
+        <MicrosoftClarity />
         <Router />
         <Toaster />
         <SocialProofPopup />
