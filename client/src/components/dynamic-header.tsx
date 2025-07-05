@@ -380,7 +380,7 @@ export default function DynamicHeader() {
                   <div key={item.id} className="relative" ref={dropdownRef}>
                     <button 
                       onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
-                      className="text-gray-700 hover:text-aramis-orange font-medium text-sm transition-colors duration-200 flex items-center gap-1"
+                      className="text-gray-700 hover:text-aramis-orange font-medium text-sm transition-all duration-300 flex items-center gap-1 px-4 py-2 rounded-lg hover:bg-orange-50 hover:bg-opacity-50"
                     >
                       {item.label}
                       <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === item.id ? 'rotate-180' : ''}`} />
@@ -392,7 +392,7 @@ export default function DynamicHeader() {
                           <button
                             key={subItem.id}
                             onClick={() => handleMenuItemClick(subItem)}
-                            className="block w-full text-left px-4 py-2 text-gray-700 hover:text-aramis-orange hover:bg-gray-50 transition-colors"
+                            className="block w-full text-left px-4 py-2 text-gray-700 hover:text-aramis-orange hover:bg-orange-50 hover:bg-opacity-50 transition-all duration-300 rounded-lg mx-2"
                           >
                             {subItem.label}
                           </button>
@@ -407,7 +407,7 @@ export default function DynamicHeader() {
                 <button 
                   key={item.id}
                   onClick={() => handleMenuItemClick(item)}
-                  className="text-gray-700 hover:text-aramis-orange font-medium text-sm transition-colors duration-200"
+                  className="text-gray-700 hover:text-aramis-orange font-medium text-sm transition-all duration-300 px-4 py-2 rounded-lg hover:bg-orange-50 hover:bg-opacity-50"
                 >
                   {item.label}
                 </button>
@@ -448,7 +448,7 @@ export default function DynamicHeader() {
                     <div key={item.id}>
                       <button
                         onClick={() => setIsMobileDropdownOpen(isMobileDropdownOpen === item.id ? null : item.id)}
-                        className="flex items-center justify-between w-full px-3 py-2 text-professional-gray hover:text-aramis-orange transition-colors font-medium"
+                        className="flex items-center justify-between w-full px-3 py-2 text-professional-gray hover:text-aramis-orange transition-all duration-300 font-medium rounded-lg hover:bg-orange-50 hover:bg-opacity-50"
                       >
                         {item.label}
                         <ChevronDown className={`w-4 h-4 transition-transform ${isMobileDropdownOpen === item.id ? 'rotate-180' : ''}`} />
@@ -460,7 +460,7 @@ export default function DynamicHeader() {
                             <button
                               key={subItem.id}
                               onClick={() => handleMenuItemClick(subItem)}
-                              className="block w-full text-left px-3 py-2 text-professional-gray hover:text-aramis-orange transition-colors"
+                              className="block w-full text-left px-3 py-2 text-professional-gray hover:text-aramis-orange transition-all duration-300 rounded-lg hover:bg-orange-50 hover:bg-opacity-50"
                             >
                               {subItem.label}
                             </button>
@@ -475,7 +475,7 @@ export default function DynamicHeader() {
                   <button
                     key={item.id}
                     onClick={() => handleMenuItemClick(item)}
-                    className="block w-full text-left px-3 py-2 text-professional-gray hover:text-aramis-orange transition-colors font-medium"
+                    className="block w-full text-left px-3 py-2 text-professional-gray hover:text-aramis-orange transition-all duration-300 font-medium rounded-lg hover:bg-orange-50 hover:bg-opacity-50"
                   >
                     {item.label}
                   </button>
