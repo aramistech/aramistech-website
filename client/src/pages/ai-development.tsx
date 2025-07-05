@@ -206,37 +206,157 @@ export default function AIDevelopment() {
       
       <DynamicHeader />
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-blue-50 to-purple-50 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
+      {/* Hero Section - Futuristic Design */}
+      <section className="pt-32 pb-20 relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:100px_100px]"></div>
+          
+          {/* Floating Orbs */}
+          <div className="absolute top-20 left-10 w-32 h-32 bg-blue-500/20 rounded-full blur-xl animate-float"></div>
+          <div className="absolute top-40 right-20 w-24 h-24 bg-purple-500/20 rounded-full blur-xl animate-float" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-20 left-1/4 w-20 h-20 bg-cyan-500/20 rounded-full blur-xl animate-float" style={{animationDelay: '4s'}}></div>
+          
+          {/* Gradient Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-transparent to-purple-600/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/10 to-slate-900/20"></div>
+        </div>
+
+        {/* Neural Network Animation */}
+        <div className="absolute inset-0 opacity-10">
+          <svg className="w-full h-full" viewBox="0 0 1200 800">
+            {/* Animated connection lines */}
+            {Array.from({ length: 12 }).map((_, i) => (
+              <g key={i}>
+                <circle 
+                  cx={100 + (i * 100)} 
+                  cy={200 + (i % 3) * 200} 
+                  r="2" 
+                  fill="white"
+                  opacity="0.6"
+                >
+                  <animate 
+                    attributeName="opacity" 
+                    values="0.2;1;0.2" 
+                    dur={`${3 + i * 0.2}s`} 
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                
+                {i < 11 && (
+                  <line 
+                    x1={100 + (i * 100)} 
+                    y1={200 + (i % 3) * 200} 
+                    x2={100 + ((i + 1) * 100)} 
+                    y2={200 + ((i + 1) % 3) * 200} 
+                    stroke="white" 
+                    strokeWidth="1"
+                    opacity="0.3"
+                  >
+                    <animate 
+                      attributeName="opacity" 
+                      values="0.1;0.5;0.1" 
+                      dur={`${4 + i * 0.3}s`} 
+                      repeatCount="indefinite"
+                    />
+                  </line>
+                )}
+              </g>
+            ))}
+          </svg>
+        </div>
+
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge className="bg-blue-100 text-blue-800 mb-6 text-lg px-4 py-2">
-              AI Development Solutions
-            </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Transform Your Business with 
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Intelligent AI Solutions</span>
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Leverage cutting-edge artificial intelligence to automate processes, enhance decision-making, 
-              and unlock new opportunities for growth. Our AI experts deliver custom solutions tailored to your unique business needs.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg"
-                onClick={() => setIsConsultationFormOpen(true)}
-              >
-                Get Free AI Consultation
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-              <Button variant="outline" size="lg" className="px-8 py-4 text-lg border-2">
-                <Link href="#services" className="flex items-center">
-                  Explore AI Services
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
+            {/* Futuristic Badge */}
+            <div className="relative inline-block mb-6">
+              <Badge className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-300 backdrop-blur-sm text-lg px-6 py-3 font-medium">
+                <span className="relative z-10">AI Development Solutions</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-sm"></div>
+              </Badge>
+            </div>
+
+            {/* Main Heading with Futuristic Effects */}
+            <div className="relative mb-8">
+              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight relative">
+                Transform Your Business with 
+                <br />
+                <span className="relative inline-block">
+                  <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent animate-pulse">
+                    Intelligent AI Solutions
+                  </span>
+                  {/* Holographic effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-cyan-400/20 blur-lg -z-10"></div>
+                </span>
+              </h1>
+              
+              {/* Scan line effect */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent animate-scan"></div>
+              </div>
+            </div>
+
+            {/* Description with glow effect */}
+            <div className="relative mb-10">
+              <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Leverage cutting-edge artificial intelligence to automate processes, enhance decision-making, 
+                and unlock new opportunities for growth. Our AI experts deliver custom solutions tailored to your unique business needs.
+              </p>
+            </div>
+
+            {/* Futuristic Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <div className="relative group">
+                <Button 
+                  size="lg" 
+                  className="relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg border border-blue-500/30 backdrop-blur-sm overflow-hidden"
+                  onClick={() => setIsConsultationFormOpen(true)}
+                >
+                  <span className="relative z-10 flex items-center">
+                    Get Free AI Consultation
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </span>
+                  {/* Button glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/50 to-purple-600/50 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  {/* Animated border */}
+                  <div className="absolute inset-0 rounded-lg border border-blue-400/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </Button>
+              </div>
+              
+              <div className="relative group">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="relative bg-transparent border-2 border-gray-400/30 text-gray-300 hover:text-white hover:border-blue-400/50 px-8 py-4 text-lg backdrop-blur-sm overflow-hidden"
+                >
+                  <Link href="#services" className="relative z-10 flex items-center">
+                    Explore AI Services
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Link>
+                  {/* Button hover effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </Button>
+              </div>
+            </div>
+
+            {/* Floating Tech Icons */}
+            <div className="absolute -left-20 top-1/4 opacity-20">
+              <div className="w-16 h-16 border border-blue-400/30 rounded-lg rotate-45 animate-float">
+                <Brain className="w-8 h-8 text-blue-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -rotate-45" />
+              </div>
+            </div>
+            
+            <div className="absolute -right-20 top-1/3 opacity-20">
+              <div className="w-12 h-12 border border-purple-400/30 rounded-full animate-float" style={{animationDelay: '1s'}}>
+                <Cpu className="w-6 h-6 text-purple-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+              </div>
+            </div>
+
+            <div className="absolute left-1/4 -bottom-10 opacity-20">
+              <div className="w-10 h-10 border border-cyan-400/30 rounded-lg rotate-12 animate-float" style={{animationDelay: '2s'}}>
+                <Network className="w-5 h-5 text-cyan-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -rotate-12" />
+              </div>
             </div>
           </div>
         </div>
