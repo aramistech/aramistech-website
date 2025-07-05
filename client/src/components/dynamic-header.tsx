@@ -165,7 +165,7 @@ export default function DynamicHeader() {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header className="shadow-sm sticky top-0 z-50" style={{ background: 'linear-gradient(135deg, rgba(239, 246, 255, 0.6) 0%, rgba(219, 234, 254, 0.7) 50%, rgba(147, 197, 253, 0.4) 100%)' }}>
       {/* Top Bar */}
       <div className="bg-primary-blue text-white py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -350,9 +350,10 @@ export default function DynamicHeader() {
         </>
       )}
       {/* Main Navigation */}
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`flex justify-between items-center transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
-          <div className="flex items-center">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <div className="frosted-glass-nav rounded-2xl relative">
+          <div className={`flex justify-between items-center transition-all duration-300 px-6 relative z-10 ${isScrolled ? 'py-2' : 'py-4'}`}>
+            <div className="flex items-center">
             <img 
               src="/api/media/4/file" 
               alt="AramisTech Logo" 
@@ -371,14 +372,14 @@ export default function DynamicHeader() {
                   <div key={item.id} className="relative" ref={dropdownRef}>
                     <button 
                       onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
-                      className="flex items-center gap-1 text-professional-gray hover:text-aramis-orange transition-colors font-medium"
+                      className="nav-item-glass flex items-center gap-1 text-slate-700 font-medium px-4 py-2 rounded-lg"
                     >
                       {item.label}
                       <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === item.id ? 'rotate-180' : ''}`} />
                     </button>
                     
                     {activeDropdown === item.id && (
-                      <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                      <div className="absolute top-full left-0 mt-2 w-56 dropdown-glass rounded-lg py-2 z-50">
                         {subItems.map((subItem) => (
                           <button
                             key={subItem.id}
@@ -398,7 +399,7 @@ export default function DynamicHeader() {
                 <button 
                   key={item.id}
                   onClick={() => handleMenuItemClick(item)}
-                  className="text-professional-gray hover:text-aramis-orange transition-colors font-medium"
+                  className="nav-item-glass text-slate-700 font-medium px-4 py-2 rounded-lg"
                 >
                   {item.label}
                 </button>
@@ -406,9 +407,10 @@ export default function DynamicHeader() {
             })}
             <Link href="/it-consultation">
               <button 
-                className="bg-aramis-orange text-white px-6 py-2 rounded-lg hover:bg-aramis-orange hover:opacity-90 transition-all font-semibold"
+                className="bg-aramis-orange text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden"
               >
-                Free Consultation
+                <span className="relative z-10">Free Consultation</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </Link>
           </div>
@@ -424,6 +426,7 @@ export default function DynamicHeader() {
                 <Menu className={`transition-all duration-300 ${isScrolled ? 'h-5 w-5' : 'h-6 w-6'}`} />
               }
             </button>
+          </div>
           </div>
         </div>
 
