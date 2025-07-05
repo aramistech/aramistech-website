@@ -285,7 +285,7 @@ export default function AIServices() {
               <div className="flex items-center space-x-4 text-blue-200">
                 <div className="flex items-center space-x-2">
                   <Shield className="w-5 h-5 text-green-400" />
-                  <span className="text-sm">27+ Years Proven</span>
+                  <span className="text-sm">5+ Years Proven</span>
                 </div>
                 <div className="w-1 h-6 bg-blue-400"></div>
                 <div className="flex items-center space-x-2">
