@@ -85,7 +85,7 @@ export default function FrostedNavigation() {
   };
 
   return (
-    <header className="sticky top-0 z-50" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)' }}>
+    <header className="sticky top-0" style={{ zIndex: 999999, background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)' }}>
       {/* Top Bar */}
       <div className="bg-primary-blue text-white py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -175,7 +175,7 @@ export default function FrostedNavigation() {
                       </button>
                       
                       {activeDropdown === item.id && (
-                        <div className="absolute top-full left-0 mt-2 w-auto min-w-56 dropdown-menu py-2 z-[9999]">
+                        <div className="absolute top-full left-0 mt-2 w-auto min-w-56 dropdown-menu py-2" style={{ zIndex: 999999 }}>
                           {subItems.map((subItem: MenuItem) => (
                             <button
                               key={subItem.id}
