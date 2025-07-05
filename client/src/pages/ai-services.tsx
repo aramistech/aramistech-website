@@ -574,9 +574,18 @@ export default function AIServices() {
                   </div>
 
                   {/* Bottom Action Button */}
-                  <div className="p-8 pt-0">
+                  <div className="p-8 pt-0 relative z-20" style={{ pointerEvents: 'all' }}>
+                    <div className="mb-2">
+                      <button 
+                        className="w-full bg-red-500 text-white py-2 rounded"
+                        onClick={() => console.log('TEST BUTTON CLICKED')}
+                      >
+                        TEST BUTTON - CLICK ME
+                      </button>
+                    </div>
                     <Button 
-                      className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-lg py-4"
+                      className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-lg py-4 relative z-30 cursor-pointer"
+                      style={{ pointerEvents: 'all' }}
                       onClick={(e) => {
                         e.stopPropagation();
                         console.log('Button clicked, service ID:', service.id);
