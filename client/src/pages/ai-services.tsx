@@ -242,35 +242,57 @@ export default function AIServices() {
         
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <Badge className="bg-orange-500 hover:bg-orange-600 text-white mb-6 text-lg px-6 py-2">
-              <Sparkles className="w-5 h-5 mr-2" />
-              Advanced AI Solutions
-            </Badge>
-            <h1 className="text-5xl lg:text-7xl font-bold leading-tight mb-6">
-              Comprehensive
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400 block">
+            {/* Animated AI Technology Badge */}
+            <div className="inline-flex items-center bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white mb-6 text-lg px-6 py-3 rounded-full shadow-lg animate-pulse">
+              <div className="flex space-x-1 mr-3">
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-100"></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-200"></div>
+              </div>
+              <Cpu className="w-5 h-5 mr-2 animate-spin" style={{animation: 'spin 3s linear infinite'}} />
+              AI Technology Hub
+              <div className="flex space-x-1 ml-3">
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-300"></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-400"></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce delay-500"></div>
+              </div>
+            </div>
+
+            <h1 className="text-5xl lg:text-7xl font-bold leading-tight mb-6 animate-fade-in-up">
+              <span className="inline-block animate-pulse">Comprehensive</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-500 block animate-gradient">
                 AI Services
               </span>
             </h1>
-            <p className="text-xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto">
+            <p className="text-xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto animate-fade-in-up delay-200">
               Discover our full suite of artificial intelligence solutions designed to transform your business. 
               From machine learning and automation to custom AI agents and computer vision, we deliver 
               cutting-edge technology tailored to your industry needs.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            
+            {/* Enhanced CTA Section */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up delay-300">
               <Button 
                 size="lg" 
-                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg"
+                className="group bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-8 py-4 text-lg transform transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
                 onClick={() => setIsConsultationFormOpen(true)}
               >
+                <Sparkles className="w-6 h-6 mr-2 group-hover:animate-spin" />
                 Start Your AI Project
-                <ArrowRight className="ml-2 w-6 h-6" />
+                <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Link href="/it-consultation">
-                <Button size="lg" variant="outline" className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white px-8 py-4 text-lg">
-                  Free Consultation
-                </Button>
-              </Link>
+              
+              <div className="flex items-center space-x-4 text-blue-200">
+                <div className="flex items-center space-x-2">
+                  <Shield className="w-5 h-5 text-green-400" />
+                  <span className="text-sm">27+ Years Proven</span>
+                </div>
+                <div className="w-1 h-6 bg-blue-400"></div>
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-5 h-5 text-blue-400" />
+                  <span className="text-sm">AI Excellence</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
