@@ -279,15 +279,13 @@ export default function AIDevelopment() {
 
             {/* Main Heading with Futuristic Effects */}
             <div className="relative mb-8">
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight relative">
-                Transform Your Business with 
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight relative">
+                <span className="animate-gradient">
+                  Transform Your Business with
+                </span>
                 <br />
-                <span className="relative inline-block">
-                  <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent animate-pulse">
-                    Intelligent AI Solutions
-                  </span>
-                  {/* Holographic effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-cyan-400/20 blur-lg -z-10"></div>
+                <span className="animate-gradient">
+                  Intelligent AI Solutions
                 </span>
               </h1>
               
