@@ -176,26 +176,42 @@ export default function FrostedNavigation() {
                       
                       {activeDropdown === item.id && (
                         <div 
-                          className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 min-w-[220px] w-max professional-dropdown"
-                          style={{ zIndex: 999999 }}
+                          className="fixed top-0 left-0 w-full h-full pointer-events-none"
+                          style={{ 
+                            zIndex: 999999999,
+                            position: 'fixed'
+                          }}
                         >
-                          <div className="bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden backdrop-blur-xl bg-opacity-95">
-                            {subItems.map((subItem: MenuItem, index) => (
-                              <button
-                                key={subItem.id}
-                                onClick={() => handleMenuItemClick(subItem)}
-                                className={`block w-full text-left px-6 py-4 text-gray-700 hover:text-aramis-orange hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 transition-all duration-300 font-medium text-sm group ${
-                                  index !== subItems.length - 1 ? 'border-b border-gray-100' : ''
-                                }`}
-                              >
-                                <span className="flex items-center justify-between">
+                          <div 
+                            className="absolute pointer-events-auto"
+                            style={{
+                              top: '140px',
+                              left: '50%',
+                              transform: 'translateX(-50%)',
+                              zIndex: 999999999
+                            }}
+                          >
+                            <div 
+                              className="bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden min-w-[220px] w-max"
+                              style={{
+                                background: 'rgba(255, 255, 255, 0.98)',
+                                backdropFilter: 'blur(20px)',
+                                WebkitBackdropFilter: 'blur(20px)',
+                                boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25)'
+                              }}
+                            >
+                              {subItems.map((subItem: MenuItem, index) => (
+                                <button
+                                  key={subItem.id}
+                                  onClick={() => handleMenuItemClick(subItem)}
+                                  className={`block w-full text-left px-6 py-4 text-gray-700 hover:text-aramis-orange hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 transition-all duration-300 font-medium text-sm ${
+                                    index !== subItems.length - 1 ? 'border-b border-gray-100' : ''
+                                  }`}
+                                >
                                   {subItem.label}
-                                  <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transform translate-x-1 group-hover:translate-x-0 transition-all duration-200" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                                  </svg>
-                                </span>
-                              </button>
-                            ))}
+                                </button>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       )}
