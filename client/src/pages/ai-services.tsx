@@ -12,7 +12,7 @@ import {
   Bot, 
   BarChart3, 
   Zap, 
-  Eye, 
+ 
   Code2,
   Video,
   Users,
@@ -125,29 +125,7 @@ const aiServices = [
       'Data entry and validation'
     ]
   },
-  {
-    id: 'computer-vision',
-    title: 'Computer Vision',
-    icon: Eye,
-    color: 'from-red-500 to-pink-600',
-    borderColor: 'border-red-500',
-    description: 'AI-powered image and video analysis for quality control, security monitoring, and automated visual inspection systems.',
-    features: [
-      'Image Recognition',
-      'Quality Control',
-      'Security Monitoring',
-      'Object Detection',
-      'Facial Recognition',
-      'Anomaly Detection'
-    ],
-    useCases: [
-      'Manufacturing quality assurance',
-      'Security and surveillance systems',
-      'Retail inventory tracking',
-      'Medical image analysis',
-      'Vehicle and traffic monitoring'
-    ]
-  },
+
   {
     id: 'custom-ai-solutions',
     title: 'Custom AI Solutions',

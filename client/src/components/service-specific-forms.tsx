@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import { X, ArrowRight, Brain, Bot, BarChart3, Zap, Eye, Code2, Video, Users } from 'lucide-react';
+import { X, ArrowRight, Brain, Bot, BarChart3, Zap, Code2, Video, Users } from 'lucide-react';
 
 interface ServiceFormProps {
   isOpen: boolean;
@@ -110,26 +110,7 @@ const serviceConfigs = {
       budget: 'What\'s your investment range for automation?'
     }
   },
-  'computer-vision': {
-    title: 'Computer Vision Solution',
-    icon: Eye,
-    color: 'from-red-500 to-pink-600',
-    description: 'AI-powered image and video analysis',
-    needs: [
-      'Quality Control',
-      'Security Monitoring',
-      'Object Detection',
-      'Image Recognition',
-      'Inventory Tracking',
-      'Defect Detection'
-    ],
-    questions: {
-      projectDescription: 'What do you need to detect, recognize, or monitor with computer vision?',
-      specificQuestion: 'What type of images/videos will you be analyzing?',
-      timeline: 'When do you need this vision system operational?',
-      budget: 'What\'s your budget for this computer vision project?'
-    }
-  },
+
   'custom-ai-solutions': {
     title: 'Custom AI Development',
     icon: Code2,
