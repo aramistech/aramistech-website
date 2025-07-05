@@ -134,38 +134,38 @@ export default function Header() {
 
       {/* Main Navigation */}
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-        <div className="backdrop-blur-xl bg-white/75 border border-white/80 shadow-xl rounded-2xl">
-          <div className="flex justify-between items-center py-4 px-6">
+        <div className="frosted-glass-nav rounded-2xl relative">
+          <div className="flex justify-between items-center py-4 px-6 relative z-10">
             <div className="flex items-center">
               <img 
                 src="/api/media/4/file" 
                 alt="AramisTech Logo" 
-                className="h-16 w-auto"
+                className="h-20 w-auto"
               />
             </div>
           
           <div className="hidden lg:flex items-center space-x-6">
             <button 
               onClick={() => scrollToSection('services')} 
-              className="text-slate-600 hover:text-aramis-orange hover:bg-orange-50 transition-all duration-300 font-medium px-4 py-2 rounded-lg backdrop-blur-sm"
+              className="nav-item-glass text-slate-700 font-medium px-4 py-2 rounded-lg"
             >
               Services
             </button>
             <button 
               onClick={() => scrollToSection('about')} 
-              className="text-slate-600 hover:text-aramis-orange hover:bg-orange-50 transition-all duration-300 font-medium px-4 py-2 rounded-lg backdrop-blur-sm"
+              className="nav-item-glass text-slate-700 font-medium px-4 py-2 rounded-lg"
             >
               About
             </button>
             <button 
               onClick={() => scrollToSection('team')} 
-              className="text-slate-600 hover:text-aramis-orange hover:bg-orange-50 transition-all duration-300 font-medium px-4 py-2 rounded-lg backdrop-blur-sm"
+              className="nav-item-glass text-slate-700 font-medium px-4 py-2 rounded-lg"
             >
               Team
             </button>
             <button 
               onClick={() => scrollToSection('industries')} 
-              className="text-slate-600 hover:text-aramis-orange hover:bg-orange-50 transition-all duration-300 font-medium px-4 py-2 rounded-lg backdrop-blur-sm"
+              className="nav-item-glass text-slate-700 font-medium px-4 py-2 rounded-lg"
             >
               Industries
             </button>
@@ -173,14 +173,14 @@ export default function Header() {
             <div className="relative" ref={dropdownRef}>
               <button 
                 onClick={() => setIsSupportDropdownOpen(!isSupportDropdownOpen)}
-                className="flex items-center gap-1 text-slate-600 hover:text-aramis-orange hover:bg-orange-50 transition-all duration-300 font-medium px-4 py-2 rounded-lg backdrop-blur-sm"
+                className="nav-item-glass flex items-center gap-1 text-slate-700 font-medium px-4 py-2 rounded-lg"
               >
                 Support
                 <ChevronDown className={`w-4 h-4 transition-transform ${isSupportDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               
               {isSupportDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 backdrop-blur-xl bg-white/90 rounded-lg shadow-xl border border-white/80 py-2 z-50">
+                <div className="absolute top-full left-0 mt-2 w-64 dropdown-glass rounded-lg py-2 z-50">
                   <Link href="/customer-portal">
                     <button 
                       onClick={() => {
@@ -277,9 +277,10 @@ export default function Header() {
             </div>
             <Link href="/it-consultation">
               <button 
-                className="bg-aramis-orange text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 backdrop-blur-sm"
+                className="bg-aramis-orange text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden"
               >
-                Free Consultation
+                <span className="relative z-10">Free Consultation</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </Link>
           </div>
