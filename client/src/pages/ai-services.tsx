@@ -579,8 +579,10 @@ export default function AIServices() {
                       className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-lg py-4"
                       onClick={(e) => {
                         e.stopPropagation();
+                        console.log('Button clicked, service ID:', service.id);
                         setSelectedServiceType(service.id);
                         setServiceFormOpen(true);
+                        console.log('State updated: serviceFormOpen = true, selectedServiceType =', service.id);
                       }}
                     >
                       Get Started with {service.title}
