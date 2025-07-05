@@ -457,3 +457,26 @@
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
+
+/* Critical Warning Banner Styles */
+.critical-warning {
+  background: linear-gradient(45deg, #dc2626, #b91c1c);
+  position: relative;
+}
+
+.critical-badge {
+  animation: flash 2s infinite;
+}
+
+.glow-text {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.professional-text {
+  letter-spacing: 0.025em;
+}
+
+@keyframes flash {
+  0%, 50% { opacity: 1; }
+  25%, 75% { opacity: 0.5; }
+}
