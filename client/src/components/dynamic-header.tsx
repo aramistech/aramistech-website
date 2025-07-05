@@ -407,12 +407,12 @@ export default function DynamicHeader() {
                     </button>
                     
                     {activeDropdown === item.id && (
-                      <div className="absolute top-full left-0 mt-2 w-56 dropdown-clean rounded-lg py-2 z-50">
+                      <div className="absolute top-full left-0 mt-2 w-64 dropdown-clean rounded-lg py-2 z-[9999]">
                         {subItems.map((subItem) => (
                           <button
                             key={subItem.id}
                             onClick={() => handleMenuItemClick(subItem)}
-                            className="block w-full text-left px-4 py-2 text-gray-700 hover:text-aramis-orange hover:bg-orange-50 hover:bg-opacity-50 transition-all duration-300 rounded-lg mx-2"
+                            className="block w-full text-left px-4 py-3 text-gray-700 hover:text-aramis-orange hover:bg-orange-50 hover:bg-opacity-50 transition-all duration-300 hover:scale-[1.02] transform"
                           >
                             {subItem.label}
                           </button>
