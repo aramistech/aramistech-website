@@ -23,7 +23,7 @@ import {
   Building2,
   MapPin
 } from "lucide-react";
-import Header from "@/components/header";
+import DynamicHeader from "@/components/dynamic-header";
 import Footer from "@/components/footer";
 
 const checkoutSchema = z.object({
@@ -271,7 +271,7 @@ export default function Checkout() {
   if (!serviceData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <Header />
+        <DynamicHeader />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <div className="animate-spin w-8 h-8 border-4 border-aramis-orange border-t-transparent rounded-full mx-auto" />
@@ -285,7 +285,7 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <Header />
+      <DynamicHeader />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
