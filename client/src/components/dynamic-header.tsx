@@ -349,15 +349,23 @@ export default function DynamicHeader() {
           </div>
         </>
       )}
-      {/* Main Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="frosted-glass-nav rounded-2xl">
-          <div className="flex justify-between items-center px-8 py-4">
+      {/* Main Navigation - Clean Frosted Glass Style */}
+      <div 
+        className="w-full"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(226, 232, 240, 0.5)'
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <img 
                 src="/api/media/4/file" 
                 alt="AramisTech Logo" 
-                className="h-16 w-auto"
+                className={`w-auto transition-all duration-300 ${isScrolled ? 'h-12' : 'h-20'}`}
               />
             </div>
             
@@ -372,7 +380,7 @@ export default function DynamicHeader() {
                   <div key={item.id} className="relative" ref={dropdownRef}>
                     <button 
                       onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
-                      className="menu-item-clean flex items-center gap-1"
+                      className="text-gray-700 hover:text-aramis-orange font-medium text-sm transition-colors duration-200 flex items-center gap-1"
                     >
                       {item.label}
                       <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === item.id ? 'rotate-180' : ''}`} />
@@ -399,18 +407,15 @@ export default function DynamicHeader() {
                 <button 
                   key={item.id}
                   onClick={() => handleMenuItemClick(item)}
-                  className="menu-item-clean"
+                  className="text-gray-700 hover:text-aramis-orange font-medium text-sm transition-colors duration-200"
                 >
                   {item.label}
                 </button>
               );
             })}
             <Link href="/it-consultation">
-              <button 
-                className="bg-aramis-orange text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden"
-              >
-                <span className="relative z-10">Free Consultation</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+              <button className="bg-aramis-orange text-white px-6 py-2 rounded-full font-medium text-sm hover:bg-orange-600 transition-colors duration-200">
+                Free Consultation
               </button>
             </Link>
           </div>
