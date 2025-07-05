@@ -12,7 +12,6 @@ import {
   Bot, 
   BarChart3, 
   Zap, 
- 
   Code2,
   Video,
   Users,
@@ -23,9 +22,9 @@ import {
   TrendingUp,
   Shield,
   Monitor,
+  Target,
   Workflow,
   FileText,
-  Target,
   Cpu,
   Database,
   Network
@@ -291,8 +290,9 @@ export default function AIServices() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {aiServices.map((service) => {
+          {/* First Row - 3 services */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+            {aiServices.slice(0, 3).map((service) => {
               const IconComponent = service.icon;
               const isSelected = selectedService === service.id;
               
@@ -372,6 +372,232 @@ export default function AIServices() {
                       </Button>
                     </div>
                   </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Second Row - 2 services */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 max-w-4xl mx-auto">
+            {aiServices.slice(3, 5).map((service) => {
+              const IconComponent = service.icon;
+              const isSelected = selectedService === service.id;
+              
+              return (
+                <Card 
+                  key={service.id}
+                  className={`group relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 cursor-pointer border-2 ${
+                    isSelected ? service.borderColor : 'border-gray-200'
+                  }`}
+                  onClick={() => setSelectedService(isSelected ? null : service.id)}
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
+                  
+                  <CardHeader className="relative z-10">
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div className={`p-3 rounded-lg bg-gradient-to-br ${service.color} text-white shadow-lg`}>
+                        <IconComponent className="w-6 h-6" />
+                      </div>
+                      <CardTitle className="text-xl font-bold text-gray-900 group-hover:text-blue-900 transition-colors">
+                        {service.title}
+                      </CardTitle>
+                    </div>
+                    <p className="text-gray-600 leading-relaxed">
+                      {service.description}
+                    </p>
+                  </CardHeader>
+
+                  <CardContent className="relative z-10">
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                          <Target className="w-4 h-4 mr-2 text-orange-500" />
+                          Key Features
+                        </h4>
+                        <div className="grid grid-cols-1 gap-2">
+                          {service.features.slice(0, isSelected ? service.features.length : 3).map((feature, idx) => (
+                            <div key={idx} className="flex items-center text-sm text-gray-600">
+                              <CheckCircle className="w-4 h-4 mr-2 text-green-500 flex-shrink-0" />
+                              {feature}
+                            </div>
+                          ))}
+                          {!isSelected && service.features.length > 3 && (
+                            <div className="text-sm text-blue-600 font-medium">
+                              +{service.features.length - 3} more features
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {isSelected && (
+                        <div className="mt-6 pt-4 border-t border-gray-200 animate-fade-in">
+                          <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                            <TrendingUp className="w-4 h-4 mr-2 text-orange-500" />
+                            Use Cases
+                          </h4>
+                          <div className="space-y-2">
+                            {service.useCases.map((useCase, idx) => (
+                              <div key={idx} className="flex items-start text-sm text-gray-600">
+                                <ArrowRight className="w-4 h-4 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+                                {useCase}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <Button 
+                        className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedServiceType(service.id);
+                          setServiceFormOpen(true);
+                        }}
+                      >
+                        Get Started with {service.title}
+                        <ArrowRight className="ml-2 w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* AI-Powered Videos - Full Width Bottom */}
+          <div className="max-w-6xl mx-auto">
+            {aiServices.slice(5).map((service) => {
+              const IconComponent = service.icon;
+              const isSelected = selectedService === service.id;
+              
+              return (
+                <Card 
+                  key={service.id}
+                  className={`group relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 cursor-pointer border-2 ${
+                    isSelected ? service.borderColor : 'border-gray-200'
+                  }`}
+                  onClick={() => setSelectedService(isSelected ? null : service.id)}
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
+                  
+                  <div className="grid md:grid-cols-2 gap-8 p-8">
+                    {/* Left Side - Content */}
+                    <div className="relative z-10">
+                      <CardHeader className="p-0 mb-6">
+                        <div className="flex items-center space-x-4 mb-4">
+                          <div className={`p-4 rounded-lg bg-gradient-to-br ${service.color} text-white shadow-lg`}>
+                            <IconComponent className="w-8 h-8" />
+                          </div>
+                          <CardTitle className="text-2xl font-bold text-gray-900 group-hover:text-blue-900 transition-colors">
+                            {service.title}
+                          </CardTitle>
+                        </div>
+                        <p className="text-gray-600 leading-relaxed text-lg">
+                          {service.description}
+                        </p>
+                      </CardHeader>
+
+                      <CardContent className="p-0">
+                        <div className="space-y-6">
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-4 flex items-center text-lg">
+                              <Target className="w-5 h-5 mr-2 text-orange-500" />
+                              Key Features
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              {service.features.slice(0, isSelected ? service.features.length : 6).map((feature, idx) => (
+                                <div key={idx} className="flex items-center text-gray-600">
+                                  <CheckCircle className="w-4 h-4 mr-3 text-green-500 flex-shrink-0" />
+                                  {feature}
+                                </div>
+                              ))}
+                              {!isSelected && service.features.length > 6 && (
+                                <div className="text-blue-600 font-medium col-span-2">
+                                  +{service.features.length - 6} more features
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {isSelected && (
+                            <div className="pt-4 border-t border-gray-200 animate-fade-in">
+                              <h4 className="font-semibold text-gray-900 mb-4 flex items-center text-lg">
+                                <TrendingUp className="w-5 h-5 mr-2 text-orange-500" />
+                                Use Cases
+                              </h4>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                {service.useCases.map((useCase, idx) => (
+                                  <div key={idx} className="flex items-start text-gray-600">
+                                    <ArrowRight className="w-4 h-4 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
+                                    {useCase}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </div>
+
+                    {/* Right Side - Enhanced Visual */}
+                    <div className="relative z-10 flex items-center justify-center">
+                      <div className="relative w-full max-w-md mx-auto">
+                        {/* Animated Video Production Visualization */}
+                        <div className="relative bg-gradient-to-br from-yellow-100 to-orange-100 rounded-2xl p-8 shadow-inner">
+                          {/* Video Frame */}
+                          <div className="bg-gray-900 rounded-lg p-4 mb-4 relative overflow-hidden">
+                            <div className="aspect-video bg-gradient-to-br from-yellow-400 to-orange-500 rounded flex items-center justify-center relative">
+                              <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
+                                <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center animate-pulse">
+                                  <div className="w-0 h-0 border-l-[20px] border-l-gray-900 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent ml-1"></div>
+                                </div>
+                              </div>
+                              {/* AI Enhancement Particles */}
+                              <div className="absolute top-2 left-2 w-2 h-2 bg-white rounded-full animate-ping"></div>
+                              <div className="absolute top-4 right-3 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-ping" style={{animationDelay: '0.5s'}}></div>
+                              <div className="absolute bottom-3 left-4 w-2 h-2 bg-orange-300 rounded-full animate-ping" style={{animationDelay: '1s'}}></div>
+                            </div>
+                            {/* Timeline */}
+                            <div className="mt-3 h-2 bg-gray-700 rounded-full overflow-hidden">
+                              <div className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full animate-pulse" style={{width: '60%'}}></div>
+                            </div>
+                          </div>
+                          
+                          {/* AI Tools */}
+                          <div className="flex justify-center space-x-2">
+                            <div className="bg-orange-500 text-white p-2 rounded-lg shadow-lg animate-bounce" style={{animationDelay: '0s'}}>
+                              <Brain className="w-4 h-4" />
+                            </div>
+                            <div className="bg-yellow-500 text-white p-2 rounded-lg shadow-lg animate-bounce" style={{animationDelay: '0.3s'}}>
+                              <Zap className="w-4 h-4" />
+                            </div>
+                            <div className="bg-orange-600 text-white p-2 rounded-lg shadow-lg animate-bounce" style={{animationDelay: '0.6s'}}>
+                              <Sparkles className="w-4 h-4" />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Floating Elements */}
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-float"></div>
+                        <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-orange-500 rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Action Button */}
+                  <div className="p-8 pt-0">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white text-lg py-4"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedServiceType(service.id);
+                        setServiceFormOpen(true);
+                      }}
+                    >
+                      Get Started with {service.title}
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
+                  </div>
                 </Card>
               );
             })}
