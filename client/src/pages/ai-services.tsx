@@ -468,15 +468,11 @@ export default function AIServices() {
           <div className="max-w-6xl mx-auto">
             {aiServices.slice(6).map((service) => {
               const IconComponent = service.icon;
-              const isSelected = selectedService === service.id;
               
               return (
                 <Card 
                   key={service.id}
-                  className={`group relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 cursor-pointer border-2 ${
-                    isSelected ? service.borderColor : 'border-gray-200'
-                  }`}
-                  onClick={() => setSelectedService(isSelected ? null : service.id)}
+                  className="group relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 border-2 border-gray-200"
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
                   
@@ -505,36 +501,29 @@ export default function AIServices() {
                               Key Features
                             </h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                              {service.features.slice(0, isSelected ? service.features.length : 6).map((feature, idx) => (
+                              {service.features.map((feature, idx) => (
                                 <div key={idx} className="flex items-center text-gray-600">
                                   <CheckCircle className="w-4 h-4 mr-3 text-green-500 flex-shrink-0" />
                                   {feature}
                                 </div>
                               ))}
-                              {!isSelected && service.features.length > 6 && (
-                                <div className="text-blue-600 font-medium col-span-2">
-                                  +{service.features.length - 6} more features
-                                </div>
-                              )}
                             </div>
                           </div>
 
-                          {isSelected && (
-                            <div className="pt-4 border-t border-gray-200 animate-fade-in">
-                              <h4 className="font-semibold text-gray-900 mb-4 flex items-center text-lg">
-                                <TrendingUp className="w-5 h-5 mr-2 text-orange-500" />
-                                Use Cases
-                              </h4>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {service.useCases.map((useCase, idx) => (
-                                  <div key={idx} className="flex items-start text-gray-600">
-                                    <ArrowRight className="w-4 h-4 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
-                                    {useCase}
-                                  </div>
-                                ))}
-                              </div>
+                          <div className="pt-4 border-t border-gray-200">
+                            <h4 className="font-semibold text-gray-900 mb-4 flex items-center text-lg">
+                              <TrendingUp className="w-5 h-5 mr-2 text-orange-500" />
+                              Use Cases
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              {service.useCases.map((useCase, idx) => (
+                                <div key={idx} className="flex items-start text-gray-600">
+                                  <ArrowRight className="w-4 h-4 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
+                                  {useCase}
+                                </div>
+                              ))}
                             </div>
-                          )}
+                          </div>
                         </div>
                       </CardContent>
                     </div>
