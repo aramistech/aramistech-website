@@ -259,7 +259,7 @@ export default function AIServices() {
             </div>
 
             <h1 className="text-5xl lg:text-7xl font-bold leading-tight mb-6 animate-fade-in-up">
-              <span className="inline-block">Comprehensive</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white animate-gradient">Comprehensive</span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-500 block animate-gradient">
                 AI Services
               </span>
