@@ -365,7 +365,7 @@ export default function DynamicHeader() {
               <img 
                 src="/api/media/4/file" 
                 alt="AramisTech Logo" 
-                className={`w-auto transition-all duration-300 pb-2 ${isScrolled ? 'h-12' : 'h-20'}`}
+                className={`w-auto transition-all duration-300 py-2 ${isScrolled ? 'h-12' : 'h-20'}`}
               />
             </div>
             
