@@ -274,9 +274,11 @@ export default function ITConsultation() {
                             onClick={() => handleServiceToggle(service.id)}
                           >
                             <div className="flex items-center space-x-3">
-                              <Checkbox
+                              <input
+                                type="checkbox"
                                 checked={isSelected}
-                                className="pointer-events-none"
+                                readOnly
+                                className="w-4 h-4 text-aramis-orange border-gray-300 rounded focus:ring-aramis-orange pointer-events-none"
                               />
                               <IconComponent className={`w-5 h-5 ${isSelected ? 'text-aramis-orange' : 'text-gray-500'}`} />
                               <span className={`font-medium ${isSelected ? 'text-aramis-orange' : 'text-gray-700'}`}>
