@@ -85,7 +85,7 @@ export default function FrostedNavigation() {
   };
 
   return (
-    <header className="sticky top-0" style={{ zIndex: 999999, background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)' }}>
+    <header className="sticky top-0" style={{ zIndex: 999999 }}>
       {/* Top Bar */}
       <div className="bg-primary-blue text-white py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -145,20 +145,35 @@ export default function FrostedNavigation() {
         </div>
       )}
 
-      {/* Main Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="frosted-glass-nav">
-          <div className="menu-container">
-            <div className="logo-section">
+      {/* Main Navigation - Beautiful Frosted Glass Design */}
+      <div 
+        className="relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(249, 115, 22, 0.15) 50%, rgba(147, 51, 234, 0.1) 100%)',
+          backdropFilter: 'blur(25px)',
+          WebkitBackdropFilter: 'blur(25px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+        }}
+      >
+        {/* Animated Glass Particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-10 -left-10 w-80 h-80 bg-gradient-to-r from-blue-400/10 to-orange-400/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-10 -right-10 w-96 h-96 bg-gradient-to-r from-orange-400/10 to-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex-shrink-0">
               <img 
                 src="/api/media/4/file" 
                 alt="AramisTech Logo" 
-                className="logo"
+                className="h-12 w-auto filter drop-shadow-lg"
               />
             </div>
             
-            {/* Desktop Navigation */}
-            <nav className="nav-links hidden lg:flex">
+            {/* Desktop Navigation - Frosted Glass Menu */}
+            <nav className="hidden lg:flex items-center space-x-1">
               {mainMenuItems.map((item: MenuItem) => {
                 const subItems = getSubMenuItems(item.id);
                 const hasSubItems = subItems.length > 0;
@@ -168,7 +183,32 @@ export default function FrostedNavigation() {
                     <div key={item.id} className="relative group" ref={dropdownRef}>
                       <button 
                         onClick={() => setActiveDropdown(activeDropdown === item.id ? null : item.id)}
-                        className="nav-link flex items-center gap-1 relative"
+                        className="glass-nav-item flex items-center gap-1"
+                        style={{
+                          padding: '12px 20px',
+                          background: 'rgba(255, 255, 255, 0.1)',
+                          backdropFilter: 'blur(10px)',
+                          WebkitBackdropFilter: 'blur(10px)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          borderRadius: '50px',
+                          color: 'rgba(55, 65, 81, 0.9)',
+                          fontWeight: '500',
+                          fontSize: '14px',
+                          transition: 'all 0.3s ease',
+                          cursor: 'pointer'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(249, 115, 22, 0.15)';
+                          e.currentTarget.style.color = '#f97316';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 8px 25px rgba(249, 115, 22, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                          e.currentTarget.style.color = 'rgba(55, 65, 81, 0.9)';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
                       >
                         {item.label}
                         <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === item.id ? 'rotate-180' : ''}`} />
@@ -223,7 +263,32 @@ export default function FrostedNavigation() {
                   <button 
                     key={item.id}
                     onClick={() => handleMenuItemClick(item)}
-                    className="nav-link"
+                    className="glass-nav-item"
+                    style={{
+                      padding: '12px 20px',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      borderRadius: '50px',
+                      color: 'rgba(55, 65, 81, 0.9)',
+                      fontWeight: '500',
+                      fontSize: '14px',
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(249, 115, 22, 0.15)';
+                      e.currentTarget.style.color = '#f97316';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(249, 115, 22, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                      e.currentTarget.style.color = 'rgba(55, 65, 81, 0.9)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                   >
                     {item.label}
                   </button>
@@ -231,9 +296,35 @@ export default function FrostedNavigation() {
               })}
             </nav>
 
-            {/* CTA Button */}
+            {/* CTA Button - Frosted Glass Design */}
             <Link href="/it-consultation">
-              <button className="cta-button hidden lg:block">
+              <button 
+                className="hidden lg:block"
+                style={{
+                  padding: '12px 24px',
+                  background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.9) 0%, rgba(251, 146, 60, 0.9) 100%)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: '50px',
+                  color: 'white',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 20px rgba(249, 115, 22, 0.4)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-3px) scale(1.05)';
+                  e.currentTarget.style.boxShadow = '0 8px 30px rgba(249, 115, 22, 0.6)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(249, 115, 22, 1) 0%, rgba(251, 146, 60, 1) 100%)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(249, 115, 22, 0.4)';
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(249, 115, 22, 0.9) 0%, rgba(251, 146, 60, 0.9) 100%)';
+                }}
+              >
                 Free Consultation
               </button>
             </Link>
