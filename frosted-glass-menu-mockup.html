@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frosted Glass Menu Mockup - AramisTech</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .demo-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .demo-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Current Menu Style */
+        .current-menu {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .current-menu-label {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        /* Frosted Glass Menu Style */
+        .frosted-menu {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .frosted-menu-label {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* Common Menu Styles */
+        .menu-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .company-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .current-menu .company-name {
+            color: #1f2937;
+        }
+
+        .frosted-menu .company-name {
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            font-weight: 400;
+        }
+
+        .current-menu .tagline {
+            color: #6b7280;
+        }
+
+        .frosted-menu .tagline {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .current-menu .nav-link {
+            color: #374151;
+        }
+
+        .current-menu .nav-link:hover {
+            color: #f97316;
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .frosted-menu .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .frosted-menu .nav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .cta-button {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .current-menu .cta-button {
+            background: #f97316;
+            color: white;
+        }
+
+        .current-menu .cta-button:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+
+        .frosted-menu .cta-button {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1f2937;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .frosted-menu .cta-button:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 3px;
+            background: currentColor;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .current-menu .hamburger-line {
+            background: #374151;
+        }
+
+        .frosted-menu .hamburger-line {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
+            }
+        }
+
+        /* Demo Info */
+        .demo-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            color: white;
+            margin-top: 40px;
+        }
+
+        .demo-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+
+        .demo-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .demo-info li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .demo-info li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>AramisTech Menu Design Comparison</h1>
+            <p>Current vs Frosted Glass Navigation</p>
+        </div>
+
+        <!-- Current Menu Style -->
+        <div class="current-menu">
+            <div class="current-menu-label">Current Menu Style</div>
+            <div class="menu-container">
+                <div class="logo-section">
+                    <div class="logo">AT</div>
+                    <div>
+                        <div class="company-name">ARAMISTECH</div>
+                        <div class="tagline">TECH WITH A PERSONAL TOUCH</div>
+                    </div>
+                </div>
+                
+                <nav class="nav-links">
+                    <a href="#" class="nav-link">Home</a>
+                    <a href="#" class="nav-link">About</a>
+                    <a href="#" class="nav-link">AI Development</a>
+                    <a href="#" class="nav-link">Services</a>
+                    <a href="#" class="nav-link">Support</a>
+                    <a href="#" class="nav-link">Contact Us</a>
+                </nav>
+                
+                <a href="#" class="cta-button">Free Consultation</a>
+                
+                <div class="mobile-menu-toggle">
+                    <div class="hamburger-line"></div>
+                    <div class="hamburger-line"></div>
+                    <div class="hamburger-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frosted Glass Menu Style -->
+        <div class="frosted-menu">
+            <div class="frosted-menu-label">Frosted Glass Menu Style</div>
+            <div class="menu-container">
+                <div class="logo-section">
+                    <div class="logo">AT</div>
+                    <div>
+                        <div class="company-name">ARAMISTECH</div>
+                        <div class="tagline">TECH WITH A PERSONAL TOUCH</div>
+                    </div>
+                </div>
+                
+                <nav class="nav-links">
+                    <a href="#" class="nav-link">Home</a>
+                    <a href="#" class="nav-link">About</a>
+                    <a href="#" class="nav-link">AI Development</a>
+                    <a href="#" class="nav-link">Services</a>
+                    <a href="#" class="nav-link">Support</a>
+                    <a href="#" class="nav-link">Contact Us</a>
+                </nav>
+                
+                <a href="#" class="cta-button">Free Consultation</a>
+                
+                <div class="mobile-menu-toggle">
+                    <div class="hamburger-line"></div>
+                    <div class="hamburger-line"></div>
+                    <div class="hamburger-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Information -->
+        <div class="demo-info">
+            <h3>Frosted Glass Design Features</h3>
+            <ul>
+                <li>Semi-transparent background with backdrop blur effect</li>
+                <li>Subtle border with glass-like appearance</li>
+                <li>Enhanced depth with layered shadows</li>
+                <li>Elegant hover effects with additional blur</li>
+                <li>Professional white text with subtle shadows</li>
+                <li>Modern glass-morphism aesthetic</li>
+                <li>Maintains readability while adding visual sophistication</li>
+                <li>Responsive design that works on all devices</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
