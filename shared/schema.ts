@@ -22,7 +22,7 @@ export const contacts = pgTable("contacts", {
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
-  company: text("company").notNull(),
+  company: text("company"),
   service: text("service"),
   employees: text("employees"),
   challenges: text("challenges"),
