@@ -44,7 +44,7 @@ export default function DynamicHeader() {
       
       // Add/remove body padding to prevent content jumping when nav becomes fixed
       if (shouldBeScrolled && !wasScrolled) {
-        document.body.style.paddingTop = '80px'; // Approximate height of navigation
+        document.body.style.paddingTop = '100px'; // Updated height for larger navigation
       } else if (!shouldBeScrolled && wasScrolled) {
         document.body.style.paddingTop = '0px';
       }
@@ -380,12 +380,12 @@ export default function DynamicHeader() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
               <img 
                 src="/api/media/4/file" 
                 alt="AramisTech Logo" 
-                className={`w-auto transition-all duration-300 py-2 ${isScrolled ? 'h-12' : 'h-20'}`}
+                className={`w-auto transition-all duration-300 py-4 ${isScrolled ? 'h-16' : 'h-24'}`}
               />
             </div>
             
