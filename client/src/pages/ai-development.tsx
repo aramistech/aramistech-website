@@ -594,6 +594,87 @@ export default function AIDevelopment() {
         </div>
       </section>
 
+      {/* Cutting-Edge AI Technology */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              Cutting-Edge AI Technology
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We leverage the latest AI frameworks and technologies to deliver robust, 
+              scalable solutions
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-5xl mx-auto">
+            {/* TensorFlow */}
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
+                <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                  <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M1.292 5.856L11.54 0v24l-4.095-2.378V7.603L1.292 5.856zm21.416 5.516l-4.095-2.378V24L7.446 18.49l4.095-2.378L18.613 9.372z"/>
+                  </svg>
+                </div>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">TensorFlow</h3>
+            </div>
+
+            {/* PyTorch */}
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-20 h-20 bg-orange-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors">
+                <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+                  <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 7.568c-.878-.878-2.298-.878-3.176 0-.878.878-.878 2.298 0 3.176.878.878 2.298.878 3.176 0 .878-.878.878-2.298 0-3.176z"/>
+                  </svg>
+                </div>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">PyTorch</h3>
+            </div>
+
+            {/* OpenAI API */}
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
+                <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                  <Brain className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">OpenAI API</h3>
+            </div>
+
+            {/* Google AI */}
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-20 h-20 bg-purple-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-purple-100 transition-colors">
+                <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                  <Database className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Google AI</h3>
+            </div>
+
+            {/* Azure ML */}
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-100 transition-colors">
+                <div className="w-12 h-12 bg-indigo-500 rounded-lg flex items-center justify-center">
+                  <Network className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Azure ML</h3>
+            </div>
+
+            {/* Custom Models */}
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-gray-100 transition-colors">
+                <div className="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center">
+                  <Code2 className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Custom Models</h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="container mx-auto px-6 text-center">
