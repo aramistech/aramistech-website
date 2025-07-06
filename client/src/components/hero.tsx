@@ -94,13 +94,13 @@ export default function Hero() {
           
           <div className="relative">
             <img 
-              src="/api/media/25/file" 
+              src="/api/media/38/file" 
               alt="Professional IT team working with technology" 
               className="rounded-xl shadow-2xl w-full h-auto"
             />
             
             {/* Quick Contact Form Overlay */}
-            <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-lg shadow-xl max-w-sm hidden lg:block">
+            <div className="absolute bottom-4 -right-6 bg-white p-6 rounded-lg shadow-xl max-w-sm hidden lg:block">
               <h3 className="text-lg font-semibold text-professional-gray mb-4">Get Quick Quote</h3>
               <form onSubmit={quickQuoteForm.handleSubmit(submitQuickQuote)} className="space-y-3">
                 <Input
