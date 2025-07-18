@@ -424,7 +424,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
               <div key={file.id} className="group relative">
                 <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                   <img
-                    src={file.url}
+                    src={`/api/media/${file.id}/file`}
                     alt={file.altText || file.originalName}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                   />
