@@ -156,7 +156,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest("DELETE", `/api/admin/media/${id}`);
+      return await apiRequest(`/api/admin/media/${id}`, "DELETE");
     },
     onSuccess: () => {
       toast({
