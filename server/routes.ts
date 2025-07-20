@@ -758,21 +758,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "No file uploaded" });
       }
 
-      const fileUrl = `/uploads/${req.file.filename}`;
       const mediaData = {
         fileName: req.file.filename,
         originalName: req.file.originalname,
         mimeType: req.file.mimetype,
         fileSize: req.file.size,
         filePath: req.file.path,
-        url: fileUrl,
+        url: `/api/media/{id}/file`, // Will be updated with actual ID after insertion
         altText: req.body.altText || '',
         caption: req.body.caption || '',
       };
 
       const validatedData = insertMediaFileSchema.parse(mediaData);
       const file = await storage.uploadMediaFile(validatedData);
-      res.json({ success: true, file });
+      
+      // Update the URL with the actual file ID
+      const updatedFile = await storage.updateMediaFile(file.id, {
+        url: `/api/media/${file.id}/file`
+      });
+      
+      res.json({ success: true, file: updatedFile || file });
     } catch (error) {
       console.error("Error uploading file:", error);
       res.status(500).json({ error: "Failed to upload file" });
@@ -955,6 +960,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error importing image from URL:", error);
       res.status(500).json({ error: "Failed to import image from URL" });
     }
+  });
+
+  // Direct file serving (for backward compatibility)
+  app.get("/uploads/:filename", (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, "../uploads", filename);
+    
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "File not found" });
+    }
+    
+    res.sendFile(path.resolve(filePath));
   });
 
   // Website scanning endpoint

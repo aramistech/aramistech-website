@@ -302,9 +302,10 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Media Library</CardTitle>
-        <div className="flex gap-2">
+      <CardHeader>
+        <div className="flex flex-row items-center justify-between">
+          <CardTitle>Media Library</CardTitle>
+          <div className="flex gap-2">
           <Button
             onClick={() => cleanupMutation.mutate()}
             disabled={cleanupMutation.isPending}
@@ -429,6 +430,21 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
             </Tabs>
           </DialogContent>
         </Dialog>
+          </div>
+        </div>
+        
+        {/* File Persistence Warning */}
+        <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-start gap-2">
+            <div className="w-4 h-4 text-amber-600 mt-0.5">⚠️</div>
+            <div className="text-sm">
+              <p className="font-medium text-amber-800">File Persistence Notice</p>
+              <p className="text-amber-700 mt-1">
+                Files are stored locally and may be deleted during deployments or server restarts. 
+                Use the "Cleanup Missing" button to sync the database when files disappear.
+              </p>
+            </div>
+          </div>
         </div>
       </CardHeader>
       
