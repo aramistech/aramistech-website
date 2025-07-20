@@ -174,6 +174,26 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
     },
   });
 
+  const cleanupMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("/api/admin/media/cleanup", "POST");
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: "Cleanup Complete",
+        description: `Removed ${data.missingFiles} missing files from database`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/media"] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to cleanup missing files",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Drag and drop handlers
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -284,14 +304,23 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Media Library</CardTitle>
-        <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-aramis-orange hover:bg-orange-600">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Images
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-lg">
+        <div className="flex gap-2">
+          <Button
+            onClick={() => cleanupMutation.mutate()}
+            disabled={cleanupMutation.isPending}
+            variant="outline"
+            className="text-red-600 border-red-200 hover:bg-red-50"
+          >
+            {cleanupMutation.isPending ? "Cleaning..." : "Cleanup Missing"}
+          </Button>
+          <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-aramis-orange hover:bg-orange-600">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Images
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>Add Images to Library</DialogTitle>
             </DialogHeader>
@@ -400,6 +429,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
             </Tabs>
           </DialogContent>
         </Dialog>
+        </div>
       </CardHeader>
       
       <CardContent>

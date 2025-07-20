@@ -782,7 +782,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/media", requireAdminAuth, async (req, res) => {
     try {
       const files = await storage.getMediaFiles();
-      res.json({ success: true, files });
+      
+      // Check for missing files and mark them
+      const filesWithStatus = files.map(file => ({
+        ...file,
+        fileExists: fs.existsSync(file.filePath)
+      }));
+      
+      res.json({ success: true, files: filesWithStatus });
     } catch (error) {
       console.error("Error fetching media files:", error);
       res.status(500).json({ error: "Failed to fetch media files" });
@@ -801,7 +808,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if file exists on filesystem
       if (!fs.existsSync(file.filePath)) {
-        return res.status(404).json({ error: "File not found on disk" });
+        console.warn(`File missing from disk: ${file.filePath} (ID: ${id})`);
+        return res.status(404).json({ 
+          error: "File not found on disk",
+          fileId: id,
+          fileName: file.originalName,
+          message: "File was uploaded but has been removed from storage. This can happen on Replit due to container restarts or deployments."
+        });
       }
 
       // Set appropriate content type
@@ -945,6 +958,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Website scanning endpoint
+  // Cleanup missing files endpoint
+  app.post("/api/admin/media/cleanup", requireAdminAuth, async (req, res) => {
+    try {
+      const files = await storage.getMediaFiles();
+      const missingFiles = [];
+      const validFiles = [];
+      
+      for (const file of files) {
+        if (!fs.existsSync(file.filePath)) {
+          missingFiles.push(file);
+          // Remove from database
+          await storage.deleteMediaFile(file.id);
+        } else {
+          validFiles.push(file);
+        }
+      }
+      
+      res.json({ 
+        success: true, 
+        message: `Cleanup completed. Removed ${missingFiles.length} missing files.`,
+        missingFiles: missingFiles.length,
+        validFiles: validFiles.length,
+        removedFiles: missingFiles.map(f => ({ id: f.id, name: f.originalName }))
+      });
+    } catch (error) {
+      console.error("Error during cleanup:", error);
+      res.status(500).json({ error: "Failed to cleanup missing files" });
+    }
+  });
+
   app.post("/api/admin/media/scan-website", requireAdminAuth, async (req, res) => {
     try {
       const { url } = req.body;
