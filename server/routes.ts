@@ -442,7 +442,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Auto-detect images endpoint
+  // Auto-detect images endpoint (legacy)
   app.get("/api/admin/auto-detect-images", requireAdminAuth, (req, res) => {
     try {
       // Function to automatically scan all files for images
@@ -653,20 +653,171 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Use dynamic image scanning instead of hardcoded list
       const detectedImages = scanForImages();
       
-      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+      // Force cache bypass with timestamp
+      res.set('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
       res.set('Pragma', 'no-cache');
       res.set('Expires', '0');
+      res.set('Last-Modified', new Date().toUTCString());
       res.json({ 
         success: true, 
         images: detectedImages,
         totalFound: detectedImages.length,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        scanTime: new Date().toISOString()
       });
       
     } catch (error: any) {
       console.error("Auto-detect images error:", error);
       res.status(500).json({ 
         error: "Failed to auto-detect images", 
+        details: error?.message || "Unknown error"
+      });
+    }
+  });
+
+  // Visual Image Manager scan endpoint
+  app.get("/api/admin/scan-images", requireAdminAuth, (req, res) => {
+    try {
+      console.log("🔍 Scanning for images - forced fresh scan");
+      
+      const scanForImages = () => {
+        const detectedImages: any[] = [];
+        const searchPatterns = [
+          'client/src/components/*.tsx',
+          'client/src/pages/*.tsx',
+          'client/src/*.tsx'
+        ];
+
+        searchPatterns.forEach(pattern => {
+          const files = glob.sync(pattern);
+          
+          files.forEach(filePath => {
+            try {
+              const content = fs.readFileSync(filePath, 'utf-8');
+              const lines = content.split('\n');
+              
+              lines.forEach((line, index) => {
+                // Look for image: attributes in JavaScript objects (team.tsx style)
+                const imageMatches = line.match(/image:\s*["']([^"']+)["']/g);
+                if (imageMatches) {
+                  imageMatches.forEach(match => {
+                    const urlMatch = match.match(/image:\s*["']([^"']+)["']/);
+                    if (urlMatch && urlMatch[1]) {
+                      const url = urlMatch[1];
+                      console.log(`🎯 Found team image: ${url} at line ${index + 1}`);
+                      
+                      if (url && url.includes('/api/media/')) {
+                        const fileName = path.basename(filePath, '.tsx');
+                        const id = `${fileName}-line-${index + 1}`;
+                        
+                        detectedImages.push({
+                          id,
+                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Image`,
+                          description: `Team photo in ${fileName} component`,
+                          currentUrl: url,
+                          filePath,
+                          lineNumber: index + 1,
+                          category: "Team Photos"
+                        });
+                      }
+                    }
+                  });
+                }
+
+                // Look for src= attributes
+                const srcMatches = line.match(/src=["']([^"']+)["']/g);
+                if (srcMatches) {
+                  srcMatches.forEach(match => {
+                    const urlMatch = match.match(/src=["']([^"']+)["']/);
+                    if (urlMatch && urlMatch[1]) {
+                      const url = urlMatch[1];
+                      if (url && 
+                          !url.includes('YOUR_IMAGE_ID') && 
+                          !url.includes('placeholder') && 
+                          !url.includes('example') &&
+                          !url.includes('REPLACE_WITH') &&
+                          (url.includes('/api/media/') || 
+                           url.includes('images.unsplash.com') || 
+                           url.includes('aramistech.com') || 
+                           url.includes('.png') || 
+                           url.includes('.jpg') || 
+                           url.includes('.svg') || 
+                           url.includes('.jpeg') ||
+                           url.startsWith('/') && (url.includes('.png') || url.includes('.jpg') || url.includes('.svg')))) {
+                        
+                        const fileName = path.basename(filePath, '.tsx');
+                        const id = `${fileName}-line-${index + 1}`;
+                        
+                        let category = "Other Images";
+                        if (url.includes('/api/media/')) category = "Media Library";
+                        else if (filePath.includes('team') || url.includes('profile') || url.includes('Figueroa')) category = "Team Photos";
+                        else if (filePath.includes('header') || filePath.includes('footer') || filePath.includes('logo') || url.includes('Logo')) category = "Company Branding";
+                        else if (filePath.includes('hero') || filePath.includes('about') || filePath.includes('contact')) category = "Section Images";
+                        else if (filePath.includes('pages/')) category = "Page Backgrounds";
+                        
+                        let description = `Image in ${fileName} component`;
+                        if (url.includes('Logo')) description = `Logo in ${fileName} component`;
+                        else if (url.includes('profile')) description = `Profile photo in ${fileName} component`;
+                        else if (filePath.includes('windows10')) description = `Windows 10 related image in ${fileName} page`;
+                        
+                        detectedImages.push({
+                          id,
+                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Image`,
+                          description,
+                          currentUrl: url,
+                          filePath,
+                          lineNumber: index + 1,
+                          category
+                        });
+                      }
+                    }
+                  });
+                }
+              });
+            } catch (error) {
+              console.error(`Error scanning file ${filePath}:`, error);
+            }
+          });
+        });
+
+        // Remove duplicates and sort by category
+        const uniqueImages = detectedImages.filter((image, index, self) => 
+          index === self.findIndex(t => t.currentUrl === image.currentUrl && t.filePath === image.filePath)
+        );
+
+        console.log(`📊 Found ${uniqueImages.length} unique images`);
+        uniqueImages.forEach(img => {
+          if (img.category === "Team Photos") {
+            console.log(`👤 Team: ${img.currentUrl}`);
+          }
+        });
+
+        return uniqueImages.sort((a, b) => {
+          if (a.category !== b.category) {
+            return a.category.localeCompare(b.category);
+          }
+          return a.label.localeCompare(b.label);
+        });
+      };
+
+      const detectedImages = scanForImages();
+      
+      res.set('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+      res.set('Pragma', 'no-cache');
+      res.set('Expires', '0');
+      res.set('Last-Modified', new Date().toUTCString());
+      res.json({ 
+        success: true, 
+        images: detectedImages,
+        totalFound: detectedImages.length,
+        timestamp: Date.now(),
+        scanTime: new Date().toISOString()
+      });
+      
+    } catch (error: any) {
+      console.error("Image scan error:", error);
+      res.status(500).json({ 
+        error: "Failed to scan images", 
         details: error?.message || "Unknown error"
       });
     }

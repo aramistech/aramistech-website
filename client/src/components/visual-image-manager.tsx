@@ -49,8 +49,15 @@ export default function VisualImageManager() {
   const mediaFiles = mediaResponse?.files || [];
   const autoDetectedImages = autoDetectResponse?.images || [];
 
-  // Use auto-detected images, fallback to manual list if auto-detection fails
-  const websiteImages: WebsiteImage[] = autoDetectedImages.length > 0 ? autoDetectedImages : [
+  // Force use auto-detected images with updated scan endpoint
+  const { data: scanResponse, isLoading: isScanLoading, refetch: refetchScan } = useQuery({
+    queryKey: ["/api/admin/scan-images", Date.now()],
+    staleTime: 0,
+    refetchOnMount: true,
+  });
+
+  // Use fresh scan data, fallback to manual list if scan fails
+  const websiteImages: WebsiteImage[] = (scanResponse?.success && scanResponse?.images && scanResponse.images.length > 0) ? scanResponse.images : [
     // Company Logos (appears in header, footer, and various pages)
     {
       id: "company-logo-header",
@@ -93,27 +100,27 @@ export default function VisualImageManager() {
       id: "team-aramis",
       label: "Aramis Figueroa",
       description: "CEO and founder photo in team section",
-      currentUrl: "/api/media/15/file",
+      currentUrl: "/api/media/56/file",
       filePath: "client/src/components/team.tsx",
-      lineNumber: 21,
-      category: "Team Photos"
-    },
-    {
-      id: "team-gabriel",
-      label: "Gabriel Figueroa",
-      description: "CTO photo in team section",
-      currentUrl: "/api/media/21/file",
-      filePath: "client/src/components/team.tsx",
-      lineNumber: 30,
+      lineNumber: 7,
       category: "Team Photos"
     },
     {
       id: "team-aramis-m",
       label: "Aramis M. Figueroa",
       description: "IT/Software Developer photo in team section",
-      currentUrl: "https://aramistech.com/wp-content/uploads/2024/09/Grayprofile-pic2-600x600-1.png",
+      currentUrl: "/api/media/57/file",
       filePath: "client/src/components/team.tsx",
       lineNumber: 14,
+      category: "Team Photos"
+    },
+    {
+      id: "team-gabriel",
+      label: "Gabriel Figueroa",
+      description: "CTO photo in team section",
+      currentUrl: "/api/media/58/file",
+      filePath: "client/src/components/team.tsx",
+      lineNumber: 21,
       category: "Team Photos"
     },
     // Section Images
@@ -180,10 +187,10 @@ export default function VisualImageManager() {
   const handleManualScan = async () => {
     setIsScanning(true);
     try {
-      await refetchAutoDetect();
+      await refetchScan();
       toast({
         title: "Scan Complete",
-        description: `Found ${autoDetectResponse?.totalFound || 0} images across your website`,
+        description: `Found ${scanResponse?.totalFound || 0} images across your website`,
       });
     } catch (error) {
       toast({
@@ -209,8 +216,8 @@ export default function VisualImageManager() {
         description: "Website image has been updated successfully",
       });
       setSelectedImage(null);
-      // Refresh auto-detection to show updated URLs
-      refetchAutoDetect();
+      // Refresh scan to show updated URLs
+      refetchScan();
     },
     onError: (error: any) => {
       console.error("Image update error:", error);
