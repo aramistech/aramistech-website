@@ -32,7 +32,7 @@ import ExitIntentManager from '@/components/exit-intent-manager';
 import MediaLibrary from '@/components/media-library';
 
 
-import VisualImageManager from '@/components/visual-image-manager-working';
+import VisualImageManagerEnhanced from '@/components/visual-image-manager-enhanced';
 import AnalyticsDashboard from '@/components/analytics-dashboard';
 import KnowledgeBaseManager from '@/components/knowledge-base-manager';
 import SecurityAlertsManager from '@/components/security-alerts-manager';
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
     { id: 'country-blocking', label: 'Country Blocking', icon: Globe },
     { id: 'colors', label: 'Colors', icon: Palette },
     { id: 'knowledge', label: 'Knowledge', icon: Book },
-    { id: 'media', label: 'Images', icon: ImageIcon },
+    { id: 'media', label: 'Media Gallery', icon: ImageIcon },
     { id: 'demo', label: 'Visual Images', icon: Settings },
     { id: 'popup', label: 'Exit Popup', icon: ExternalLink },
     { id: 'calculator', label: 'Calculator', icon: Calculator },
@@ -502,27 +502,12 @@ export default function AdminDashboard() {
         );
 
       case 'media':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ImageIcon className="w-5 h-5" />
-                Media Library
-              </CardTitle>
-              <CardDescription>
-                Upload and manage images for your website content
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <MediaLibrary />
-            </CardContent>
-          </Card>
-        );
+        return <MediaLibrary />;
 
 
 
       case 'demo':
-        return <VisualImageManager />;
+        return <VisualImageManagerEnhanced />;
 
       case 'popup':
         return (
