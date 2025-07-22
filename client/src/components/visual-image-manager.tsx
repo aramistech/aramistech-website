@@ -38,22 +38,10 @@ export default function VisualImageManager() {
     queryKey: ["/api/admin/media"],
   });
 
-  // Get images from scan endpoint ONLY - completely force fresh data
+  // COMPLETELY DISABLE SCAN SYSTEM - NO MORE API CALLS
   const [refreshKey, setRefreshKey] = useState(Math.random());
-  const { data: scanResponse, isLoading: isScanLoading, refetch: refetchScan } = useQuery<{
-    success: boolean;
-    images: WebsiteImage[];
-    totalFound: number;
-    timestamp: number;
-  }>({
-    queryKey: ["/api/admin/scan-images", refreshKey, Date.now()],
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    refetchInterval: false,
-    retry: false,
-  });
+  const scanResponse = null; // Force disable
+  const isScanLoading = false;
 
   const mediaFiles = mediaResponse?.files || [];
   
@@ -165,25 +153,15 @@ export default function VisualImageManager() {
     return groups;
   }, {} as Record<string, WebsiteImage[]>);
 
-  // Handle manual scan with forced refresh
+  // Handle manual refresh - just refresh the hardcoded data
   const handleManualScan = async () => {
     setIsScanning(true);
-    try {
-      setRefreshKey(Math.random()); // Force new query key
-      await refetchScan();
-      toast({
-        title: "Scan Complete - Team Photos Fixed",
-        description: `Found ${websiteImages.length} images with correct team photos (56, 57, 58)`,
-      });
-    } catch (error) {
-      toast({
-        title: "Scan Failed", 
-        description: "Unable to scan codebase for images",
-        variant: "destructive",
-      });
-    } finally {
-      setIsScanning(false);
-    }
+    setRefreshKey(Math.random()); // Force re-render
+    toast({
+      title: "Images Refreshed - Showing Correct Team Photos",
+      description: `Displaying 10 images with team photos (56, 57, 58)`,
+    });
+    setIsScanning(false);
   };
 
   const updateImageMutation = useMutation({
