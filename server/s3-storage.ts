@@ -20,6 +20,7 @@ const getBucketName = (): string => {
   bucketName = bucketName.replace(/^s3:\/\//, '');
   // Remove trailing slashes and paths - just get the bucket name
   bucketName = bucketName.split('/')[0];
+  console.log(`Using S3 bucket: ${bucketName}`);
   return bucketName;
 };
 

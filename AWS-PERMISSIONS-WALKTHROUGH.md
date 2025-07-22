@@ -35,8 +35,8 @@ Adding S3 permissions to your existing AWS user `aramistech` so your backup syst
                 "s3:ListBucket"
             ],
             "Resource": [
-                "arn:aws:s3:::MILL33122",
-                "arn:aws:s3:::MILL33122/*"
+                "arn:aws:s3:::MILL35122",
+                "arn:aws:s3:::MILL35122/*"
             ]
         }
     ]
