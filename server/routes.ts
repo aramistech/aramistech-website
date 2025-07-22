@@ -463,6 +463,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
               const lines = content.split('\n');
               
               lines.forEach((line, index) => {
+                // Look for image: attributes in JavaScript objects (team.tsx style)
+                const imageMatches = line.match(/image:\s*["']([^"']+)["']/g);
+                if (imageMatches) {
+                  imageMatches.forEach(match => {
+                    const urlMatch = match.match(/image:\s*["']([^"']+)["']/);
+                    if (urlMatch && urlMatch[1]) {
+                      const url = urlMatch[1];
+                      if (url && 
+                          !url.includes('YOUR_IMAGE_ID') && 
+                          !url.includes('placeholder') && 
+                          !url.includes('example') &&
+                          !url.includes('REPLACE_WITH') &&
+                          (url.includes('/api/media/') || 
+                           url.includes('images.unsplash.com') || 
+                           url.includes('aramistech.com') || 
+                           url.includes('.png') || 
+                           url.includes('.jpg') || 
+                           url.includes('.svg') || 
+                           url.includes('.jpeg') ||
+                           url.startsWith('/') && (url.includes('.png') || url.includes('.jpg') || url.includes('.svg')))) {
+                        
+                        const fileName = path.basename(filePath, '.tsx');
+                        const id = `${fileName}-line-${index + 1}`;
+                        
+                        let category = "Other Images";
+                        if (url.includes('/api/media/')) category = "Media Library";
+                        else if (filePath.includes('team') || url.includes('profile') || url.includes('Figueroa')) category = "Team Photos";
+                        else if (filePath.includes('header') || filePath.includes('footer') || filePath.includes('logo') || url.includes('Logo')) category = "Company Branding";
+                        else if (filePath.includes('hero') || filePath.includes('about') || filePath.includes('contact')) category = "Section Images";
+                        else if (filePath.includes('pages/')) category = "Page Backgrounds";
+                        
+                        let description = `Image in ${fileName} component`;
+                        if (url.includes('Logo')) description = `Logo in ${fileName} component`;
+                        else if (url.includes('profile')) description = `Profile photo in ${fileName} component`;
+                        else if (filePath.includes('windows10')) description = `Windows 10 related image in ${fileName} page`;
+                        
+                        detectedImages.push({
+                          id,
+                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Image`,
+                          description,
+                          currentUrl: url,
+                          filePath,
+                          lineNumber: index + 1,
+                          category
+                        });
+                      }
+                    }
+                  });
+                }
+
                 // Look for src= attributes
                 const srcMatches = line.match(/src=["']([^"']+)["']/g);
                 if (srcMatches) {
