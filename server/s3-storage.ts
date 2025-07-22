@@ -4,13 +4,14 @@ import { Upload } from '@aws-sdk/lib-storage';
 import fs from 'fs';
 import path from 'path';
 
-// Initialize S3 client
+// Initialize S3 client with path-style URLs
 const s3Client = new S3Client({
   region: process.env.AWS_REGION || 'us-east-1',
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
+  forcePathStyle: true, // Use path-style URLs
 });
 
 // Clean bucket name - remove s3:// prefix and paths  
@@ -51,8 +52,8 @@ export class S3StorageService {
 
       const result = await upload.done();
       
-      // Return the S3 URL
-      return `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com/${key}`;
+      // Return the S3 URL using path-style format
+      return `https://s3.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com/${BUCKET_NAME}/${key}`;
     } catch (error) {
       console.error('S3 upload error:', error);
       throw error;

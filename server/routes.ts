@@ -834,12 +834,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "File not found" });
       }
 
-      // TODO: S3 URLs are returning 404s - temporarily disabled S3 serving
-      // First try to serve from S3 if available and accessible
-      // if (file.s3Url && file.isBackedUp) {
-      //   console.log(`Redirecting to S3 for file ID: ${id}`);
-      //   return res.redirect(301, file.s3Url);
-      // }
+      // Serve from S3 using authenticated access
+      if (file.s3Url && file.isBackedUp) {
+        try {
+          console.log(`Fetching from S3 for file ID: ${id}`);
+          
+          // Use S3StorageService to get the file with authentication
+          const url = new URL(file.s3Url);
+          // Extract key: remove leading slash and bucket name
+          let pathParts = url.pathname.substring(1).split('/'); // Remove leading slash and split
+          // Remove bucket name if it's the first part
+          if (pathParts[0] === 'MILL33122') {
+            pathParts = pathParts.slice(1);
+          }
+          const key = pathParts.join('/');
+          
+          const { GetObjectCommand } = await import('@aws-sdk/client-s3');
+          const { S3Client } = await import('@aws-sdk/client-s3');
+          
+          const s3Client = new S3Client({
+            region: process.env.AWS_REGION || 'us-east-1',
+            credentials: {
+              accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+              secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+            },
+            forcePathStyle: true,
+          });
+          
+          const command = new GetObjectCommand({
+            Bucket: 'MILL33122',
+            Key: key,
+          });
+          
+          const response = await s3Client.send(command);
+          
+          if (response.Body) {
+            // Stream the S3 response to client
+            res.setHeader('Content-Type', file.mimeType);
+            res.setHeader('Cache-Control', 'public, max-age=31536000');
+            
+            // Convert S3 stream to buffer
+            const chunks: Uint8Array[] = [];
+            const stream = response.Body as any;
+            
+            for await (const chunk of stream) {
+              chunks.push(chunk);
+            }
+            
+            const buffer = Buffer.concat(chunks);
+            return res.send(buffer);
+          }
+        } catch (error) {
+          console.error(`S3 fetch error for file ID: ${id}:`, (error as Error).message);
+        }
+      }
       
       // Fallback to local file if S3 is not available
       if (fs.existsSync(file.filePath)) {
