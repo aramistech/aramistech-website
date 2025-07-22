@@ -37,7 +37,7 @@ export class S3StorageService {
       }
 
       const fileStream = fs.createReadStream(filePath);
-      const key = `media/${fileName}`;
+      const key = `aramistechwebsiteimages/${fileName}`;
 
       const upload = new Upload({
         client: s3Client,
