@@ -675,7 +675,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Visual Image Manager scan endpoint
+  // Visual Image Manager scan endpoint  
   app.get("/api/admin/scan-images", requireAdminAuth, (req, res) => {
     try {
       console.log("🔍 Scanning for images - forced fresh scan");
