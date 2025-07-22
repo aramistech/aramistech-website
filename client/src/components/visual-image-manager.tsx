@@ -38,11 +38,19 @@ export default function VisualImageManager() {
     queryKey: ["/api/admin/media"],
   });
 
-  // Get images from scan endpoint ONLY - no fallback
-  const { data: scanResponse, isLoading: isScanLoading, refetch: refetchScan } = useQuery({
-    queryKey: ["/api/admin/scan-images", Date.now()],
+  // Get images from scan endpoint ONLY - no fallback with forced refresh
+  const { data: scanResponse, isLoading: isScanLoading, refetch: refetchScan } = useQuery<{
+    success: boolean;
+    images: WebsiteImage[];
+    totalFound: number;
+    timestamp: number;
+  }>({
+    queryKey: ["/api/admin/scan-images", Math.random()],
     staleTime: 0,
+    gcTime: 0,
     refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchInterval: false,
   });
 
   const mediaFiles = mediaResponse?.files || [];
