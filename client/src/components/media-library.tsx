@@ -9,20 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Upload, Trash2, Edit3, CloudDownload, Link, Plus, Search } from "lucide-react";
-
-interface MediaFile {
-  id: number;
-  fileName: string;
-  originalName: string;
-  mimeType: string;
-  fileSize: number;
-  filePath: string;
-  url: string;
-  altText?: string;
-  caption?: string;
-  uploadedAt: string;
-  updatedAt: string;
-}
+import type { MediaFile } from "@shared/schema";
 
 interface MediaLibraryProps {
   onSelectImage?: (imageUrl: string) => void;

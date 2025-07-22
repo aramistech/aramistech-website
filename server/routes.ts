@@ -2982,9 +2982,9 @@ User message: ${message}`
               }
               
               // Notify all clients in session about transfer
-              wss.clients.forEach((client) => {
+              wss.clients.forEach((client: any) => {
                 if (client.readyState === WebSocket.OPEN && 
-                    (client as any).sessionId === data.sessionId) {
+                    client.sessionId === data.sessionId) {
                   client.send(JSON.stringify({
                     type: 'chat_transferred',
                     message: systemMessage
@@ -2993,9 +2993,9 @@ User message: ${message}`
               });
               
               // Notify admin clients about new transfer
-              wss.clients.forEach((client) => {
+              wss.clients.forEach((client: any) => {
                 if (client.readyState === WebSocket.OPEN && 
-                    (client as any).userType === 'admin') {
+                    client.userType === 'admin') {
                   client.send(JSON.stringify({
                     type: 'new_transfer',
                     session: transferSession
