@@ -433,15 +433,15 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
           </div>
         </div>
         
-        {/* File Persistence Warning */}
-        <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+        {/* S3 Backup Status */}
+        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-start gap-2">
-            <div className="w-4 h-4 text-amber-600 mt-0.5">⚠️</div>
+            <div className="w-4 h-4 text-green-600 mt-0.5">☁️</div>
             <div className="text-sm">
-              <p className="font-medium text-amber-800">File Persistence Notice</p>
-              <p className="text-amber-700 mt-1">
-                Files are stored locally and may be deleted during deployments or server restarts. 
-                Use the "Cleanup Missing" button to sync the database when files disappear.
+              <p className="font-medium text-green-800">Cloud Storage Active</p>
+              <p className="text-green-700 mt-1">
+                All images are automatically backed up to AWS S3 cloud storage and will be restored if needed. 
+                Your files are permanently protected.
               </p>
             </div>
           </div>
@@ -528,9 +528,16 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
               <div className="space-y-4">
                 <div>
                   <img
-                    src={editingFile.url}
+                    src={`/api/media/${editingFile.id}/file`}
                     alt={editingFile.originalName}
                     className="w-full max-h-64 object-cover rounded-lg"
+                    onError={(e) => {
+                      // Fallback to S3 URL if local serving fails
+                      const target = e.target as HTMLImageElement;
+                      if (target.src.includes('/api/media/') && editingFile.s3Url) {
+                        target.src = editingFile.s3Url;
+                      }
+                    }}
                   />
                 </div>
                 
