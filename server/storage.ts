@@ -45,7 +45,7 @@ export interface IStorage {
   uploadMediaFile(file: InsertMediaFile): Promise<MediaFile>;
   getMediaFiles(): Promise<MediaFile[]>;
   getMediaFileById(id: number): Promise<MediaFile | undefined>;
-  updateMediaFile(id: number, file: Partial<InsertMediaFile>): Promise<MediaFile>;
+  updateMediaFile(id: number, file: any): Promise<MediaFile>;
   deleteMediaFile(id: number): Promise<void>;
   // Knowledge base management
   getKnowledgeBaseCategories(): Promise<KnowledgeBaseCategory[]>;
@@ -431,7 +431,7 @@ export class DatabaseStorage implements IStorage {
     return file;
   }
 
-  async updateMediaFile(id: number, fileData: Partial<InsertMediaFile>): Promise<MediaFile> {
+  async updateMediaFile(id: number, fileData: any): Promise<MediaFile> {
     const [file] = await db
       .update(mediaFiles)
       .set({ ...fileData, updatedAt: new Date() })

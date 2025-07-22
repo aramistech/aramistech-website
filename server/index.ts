@@ -4,6 +4,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import { createDefaultAdmin, setupDefaultMenuItems, createDefaultSecurityAlert } from "./setup-admin";
 import { createDefaultFooterLinks } from "./setup-footer";
 import { countryBlockingMiddleware } from "./country-blocking";
+import { S3StorageService } from "./s3-storage";
 import path from "path";
 
 const app = express();
@@ -62,6 +63,15 @@ app.use((req, res, next) => {
   await setupDefaultMenuItems();
   await createDefaultSecurityAlert();
   await createDefaultFooterLinks();
+  
+  // Backup existing files to S3 cloud storage to prevent loss
+  try {
+    console.log("Starting automatic S3 backup of existing media files...");
+    await S3StorageService.backupExistingFiles();
+    console.log("S3 backup initialization completed successfully");
+  } catch (error) {
+    console.error("S3 backup initialization failed - your images may not be permanently preserved:", error);
+  }
   
   // Apply country blocking middleware to all routes
   app.use(countryBlockingMiddleware);

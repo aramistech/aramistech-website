@@ -124,6 +124,8 @@ export const mediaFiles = pgTable("media_files", {
   fileSize: integer("file_size").notNull(),
   filePath: text("file_path").notNull(),
   url: text("url").notNull(),
+  s3Url: text("s3_url"),
+  isBackedUp: boolean("is_backed_up").default(false),
   altText: text("alt_text"),
   caption: text("caption"),
   uploadedAt: timestamp("uploaded_at").defaultNow(),

@@ -18,6 +18,7 @@ import { z } from "zod";
 import { whmcsConfig, validateWHMCSConfig, validateWHMCSWebhook } from "./whmcs-config";
 import { sendQuickQuoteEmail, sendContactEmail, sendAIConsultationEmail, sendITConsultationEmail, sendTechnicianTransferNotification, sendServiceCalculatorEmail } from "./email-service";
 import { testAWSConnection } from "./test-aws";
+import { S3StorageService } from "./s3-storage";
 import { aramisTechMaintenanceServices, getWHMCSProducts, getWHMCSProductDetails } from "./whmcs-services";
 import { processAuthorizeNetPayment, validateCreditCard } from "./authorize-net";
 
@@ -772,12 +773,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertMediaFileSchema.parse(mediaData);
       const file = await storage.uploadMediaFile(validatedData);
       
-      // Update the URL with the actual file ID
+      // Automatically backup to S3 cloud storage
+      let s3Url: string | null = null;
+      let isBackedUp = false;
+      
+      try {
+        console.log(`Backing up file to S3: ${req.file.filename}`);
+        s3Url = await S3StorageService.uploadToS3(req.file.path, req.file.filename);
+        isBackedUp = true;
+        console.log(`Successfully backed up to S3: ${s3Url}`);
+      } catch (s3Error) {
+        console.error("S3 backup failed:", s3Error);
+        // Continue without S3 backup - file still works locally
+      }
+      
+      // Update the URL with the actual file ID and S3 backup info
       const updatedFile = await storage.updateMediaFile(file.id, {
-        url: `/api/media/${file.id}/file`
+        url: `/api/media/${file.id}/file`,
+        s3Url,
+        isBackedUp
       });
       
-      res.json({ success: true, file: updatedFile || file });
+      res.json({ 
+        success: true, 
+        file: updatedFile || file,
+        s3Backup: isBackedUp ? 'success' : 'failed'
+      });
     } catch (error) {
       console.error("Error uploading file:", error);
       res.status(500).json({ error: "Failed to upload file" });
@@ -814,12 +835,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check if file exists on filesystem
       if (!fs.existsSync(file.filePath)) {
         console.warn(`File missing from disk: ${file.filePath} (ID: ${id})`);
-        return res.status(404).json({ 
-          error: "File not found on disk",
-          fileId: id,
-          fileName: file.originalName,
-          message: "File was uploaded but has been removed from storage. This can happen on Replit due to container restarts or deployments."
-        });
+        
+        // Try to restore from S3 backup if available
+        if (file.s3Url && file.isBackedUp) {
+          console.log(`Attempting to restore file from S3: ${file.s3Url}`);
+          try {
+            const restored = await S3StorageService.restoreFromS3(file.s3Url, file.fileName);
+            if (restored) {
+              console.log(`Successfully restored file from S3: ${file.fileName}`);
+              // File is now available, continue with serving it
+            } else {
+              throw new Error('Restore failed');
+            }
+          } catch (restoreError) {
+            console.error(`Failed to restore file from S3:`, restoreError);
+            return res.status(404).json({ 
+              error: "File not found on disk and S3 restore failed",
+              fileId: id,
+              fileName: file.originalName,
+              message: "File was uploaded but has been removed from storage and could not be restored from cloud backup."
+            });
+          }
+        } else {
+          return res.status(404).json({ 
+            error: "File not found on disk",
+            fileId: id,
+            fileName: file.originalName,
+            message: "File was uploaded but has been removed from storage. No cloud backup available."
+          });
+        }
       }
 
       // Set appropriate content type
@@ -3972,6 +4016,52 @@ Sitemap: https://aramistech.com/sitemap.xml`;
 
     res.set('Content-Type', 'text/plain');
     res.send(robotsTxt);
+  });
+
+  // S3 Backup Management Routes (CRITICAL: Prevents image loss forever)
+  app.post('/api/admin/backup-to-s3', requireAdminAuth, async (req, res) => {
+    try {
+      const { MediaBackupService } = await import('./media-backup-service');
+      await MediaBackupService.backupAllExistingFiles();
+      res.json({ success: true, message: 'All files successfully backed up to S3 cloud storage' });
+    } catch (error) {
+      console.error('S3 backup error:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'S3 backup failed',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  app.post('/api/admin/restore-from-s3', requireAdminAuth, async (req, res) => {
+    try {
+      const { MediaBackupService } = await import('./media-backup-service');
+      await MediaBackupService.restoreMissingFiles();
+      res.json({ success: true, message: 'Missing files restored from S3 backup' });
+    } catch (error) {
+      console.error('S3 restore error:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'S3 restore failed',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  app.get('/api/admin/backup-health', requireAdminAuth, async (req, res) => {
+    try {
+      const { MediaBackupService } = await import('./media-backup-service');
+      const health = await MediaBackupService.checkBackupHealth();
+      res.json({ success: true, health });
+    } catch (error) {
+      console.error('Backup health check error:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Backup health check failed',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
   });
 
   return httpServer;
