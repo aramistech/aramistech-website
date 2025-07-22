@@ -141,7 +141,7 @@ export default function AdminDashboard() {
     { id: 'country-blocking', label: 'Country Blocking', icon: Globe },
     { id: 'colors', label: 'Colors', icon: Palette },
     { id: 'knowledge', label: 'Knowledge', icon: Book },
-    { id: 'media', label: 'Media Library', icon: ImageIcon },
+    { id: 'media', label: 'Images', icon: ImageIcon },
     { id: 'demo', label: 'Visual Images', icon: Settings },
     { id: 'popup', label: 'Exit Popup', icon: ExternalLink },
     { id: 'calculator', label: 'Calculator', icon: Calculator },

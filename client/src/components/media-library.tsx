@@ -442,7 +442,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
               Media Library
             </CardTitle>
             <p className="text-sm text-gray-600 mt-1">
-              {filteredFiles.length} of {allFiles.length} files • {formatFileSize(allFiles.reduce((acc, f) => acc + f.fileSize, 0))} total
+              Upload and manage images for your website content
             </p>
           </div>
           <div className="flex gap-2">
