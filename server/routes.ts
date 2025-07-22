@@ -824,7 +824,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Public route for serving media files - redirect to S3
+  // Public route for serving media files - redirect to S3 or serve locally
   app.get("/api/media/:id/file", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -834,19 +834,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "File not found" });
       }
 
-      // Always serve from S3 if available
-      if (file.s3Url && file.isBackedUp) {
-        console.log(`Redirecting to S3 for file ID: ${id}`);
-        return res.redirect(301, file.s3Url);
+      // TODO: S3 URLs are returning 404s - temporarily disabled S3 serving
+      // First try to serve from S3 if available and accessible
+      // if (file.s3Url && file.isBackedUp) {
+      //   console.log(`Redirecting to S3 for file ID: ${id}`);
+      //   return res.redirect(301, file.s3Url);
+      // }
+      
+      // Fallback to local file if S3 is not available
+      if (fs.existsSync(file.filePath)) {
+        console.log(`Serving local file for ID: ${id}`);
+        res.setHeader('Content-Type', file.mimeType);
+        res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+        return res.sendFile(path.resolve(file.filePath));
       }
       
-      // If no S3 URL, file is not properly backed up
-      console.error(`No S3 backup available for file ID: ${id}`);
+      // If no S3 URL and no local file, return error
+      console.error(`No S3 backup or local file available for file ID: ${id}`);
       return res.status(404).json({ 
         error: "File not available",
         fileId: id,
         fileName: file.originalName,
-        message: "File is not backed up to cloud storage."
+        message: "File is not available in cloud storage or local filesystem."
       });
       
     } catch (error) {

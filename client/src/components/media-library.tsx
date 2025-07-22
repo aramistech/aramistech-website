@@ -457,7 +457,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
               <div key={file.id} className="group relative">
                 <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                   <img
-                    src={file.s3Url || file.url}
+                    src={`/api/media/${file.id}/file`}
                     alt={file.altText || file.originalName}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                   />
@@ -468,7 +468,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
                     {selectionMode && onSelectImage ? (
                       <Button
                         size="sm"
-                        onClick={() => onSelectImage(file.s3Url || file.url)}
+                        onClick={() => onSelectImage(`/api/media/${file.id}/file`)}
                         className="bg-aramis-orange hover:bg-orange-600"
                       >
                         Select
@@ -515,7 +515,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
               <div className="space-y-4">
                 <div>
                   <img
-                    src={editingFile.s3Url || editingFile.url}
+                    src={`/api/media/${editingFile.id}/file`}
                     alt={editingFile.originalName}
                     className="w-full max-h-64 object-cover rounded-lg"
                     onError={(e) => {
