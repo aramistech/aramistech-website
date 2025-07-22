@@ -524,7 +524,7 @@ export default function VisualImageManagerEnhanced() {
                               <div className="flex items-center gap-3">
                                 <span>{formatFileSize(mediaFile.fileSize)}</span>
                                 <span>•</span>
-                                <span>{new Date(mediaFile.uploadedAt).toLocaleDateString()}</span>
+                                <span>{mediaFile.uploadedAt ? new Date(mediaFile.uploadedAt).toLocaleDateString() : 'Unknown date'}</span>
                                 {mediaFile.isBackedUp && (
                                   <span className="flex items-center gap-1 text-green-600">
                                     <CheckCircle className="w-3 h-3" />
