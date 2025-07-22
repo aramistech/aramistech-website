@@ -42,7 +42,7 @@ export default function Team() {
               <img 
                 src={`${member.image}?v=${Date.now()}`} 
                 alt={`${member.name} - ${member.role}`} 
-                className="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-4 border-primary-blue/20"
+                className="w-40 h-40 rounded-full mx-auto mb-6 object-cover"
                 style={{ imageRendering: 'auto' }}
                 loading="lazy"
               />
