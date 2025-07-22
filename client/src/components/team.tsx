@@ -4,21 +4,21 @@ const teamMembers = [
   {
     name: "Aramis Figueroa",
     role: "IT NETWORK SPECIALIST",
-    image: "https://MILL33122.s3.us-east-1.amazonaws.com/aramistechwebsiteimages/file-1753162009699-773569388.png",
+    image: "/api/media/56/file",
     description: "With over 27 years of experience in the technology industry, Aramis specializes in network solutions, cloud services, and custom server setups. As the founder of AramisTech Corp, he's dedicated to helping businesses thrive in the digital landscape.",
     email: "aramis@aramistech.com"
   },
   {
     name: "Aramis M Figueroa",
     role: "IT / SOFTWARE DEVELOPER",
-    image: "https://MILL33122.s3.us-east-1.amazonaws.com/aramistechwebsiteimages/file-1753162015415-179179291.png",
+    image: "/api/media/57/file",
     description: "With 4 years of hands-on experience creating innovative solutions for businesses. Specializing in custom software development, web applications, and automation tools with a passion for coding and problem-solving.",
     email: "aramism@aramistech.com"
   },
   {
     name: "Gabriel Figueroa",
     role: "IT TECHNICIAN",
-    image: "https://MILL33122.s3.us-east-1.amazonaws.com/aramistechwebsiteimages/file-1753162019234-589734851.png",
+    image: "/api/media/58/file",
     description: "With over 2 years of experience in troubleshooting, maintaining, and optimizing IT systems. Known for his dedication to resolving technical issues quickly and efficiently with expertise in network maintenance and diagnostics.",
     email: "gabriel@aramistech.com"
   }
@@ -40,7 +40,7 @@ export default function Team() {
           {teamMembers.map((member, index) => (
             <div key={index} className="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow max-w-sm">
               <img 
-                src={`${member.image}?v=${Date.now()}`} 
+                src={member.image} 
                 alt={`${member.name} - ${member.role}`} 
                 className="w-48 h-48 rounded-full mx-auto mb-6 object-cover"
                 style={{ 
