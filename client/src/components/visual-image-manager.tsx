@@ -87,9 +87,9 @@ export default function VisualImageManager() {
       lineNumber: 8,
       category: "Company Branding"
     },
-    // Team Photos - CORRECT CURRENT URLS
+    // Team Photos - FORCED CORRECT CURRENT URLS
     {
-      id: "team-aramis",
+      id: "team-aramis-fixed",
       label: "Aramis Figueroa (IT NETWORK SPECIALIST)",
       description: "CEO and founder photo in team section",
       currentUrl: "/api/media/56/file",
@@ -98,7 +98,7 @@ export default function VisualImageManager() {
       category: "Team Photos"
     },
     {
-      id: "team-aramis-m",
+      id: "team-aramis-m-fixed",
       label: "Aramis M Figueroa (IT / SOFTWARE DEVELOPER)",
       description: "IT/Software Developer photo in team section", 
       currentUrl: "/api/media/57/file",
@@ -107,7 +107,7 @@ export default function VisualImageManager() {
       category: "Team Photos"
     },
     {
-      id: "team-gabriel",
+      id: "team-gabriel-fixed",
       label: "Gabriel Figueroa (IT TECHNICIAN)",
       description: "CTO photo in team section",
       currentUrl: "/api/media/58/file",
