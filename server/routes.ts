@@ -787,9 +787,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Continue without S3 backup - file still works locally
       }
       
-      // Update the URL to use S3 directly if backup successful, otherwise local fallback
+      // Always use the API endpoint as the primary URL for consistent serving
       const updatedFile = await storage.updateMediaFile(file.id, {
-        url: s3Url || `/api/media/${file.id}/file`, // Use S3 URL as primary URL
+        url: `/api/media/${file.id}/file`, // Always use API endpoint for serving
         s3Url,
         isBackedUp
       });
@@ -809,12 +809,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const files = await storage.getMediaFiles();
       
-      // Always prioritize S3 URLs for display
+      // Use API endpoints for consistent serving
       const filesWithStatus = files.map(file => ({
         ...file,
         fileExists: file.s3Url ? true : fs.existsSync(file.filePath), // S3 files always "exist"
-        // Always show S3 URL if available
-        url: file.s3Url || file.url
+        // Always use API endpoint URL for consistent serving
+        url: file.url
       }));
       
       res.json({ success: true, files: filesWithStatus });
