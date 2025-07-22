@@ -4,21 +4,21 @@ const teamMembers = [
   {
     name: "Aramis Figueroa",
     role: "IT NETWORK SPECIALIST",
-    image: "/api/media/15/file",
+    image: "/api/media/49/file",
     description: "With over 27 years of experience in the technology industry, Aramis specializes in network solutions, cloud services, and custom server setups. As the founder of AramisTech Corp, he's dedicated to helping businesses thrive in the digital landscape.",
     email: "aramis@aramistech.com"
   },
   {
     name: "Aramis M Figueroa",
     role: "IT / SOFTWARE DEVELOPER",
-    image: "/api/media/16/file",
+    image: "/api/media/50/file",
     description: "With 4 years of hands-on experience creating innovative solutions for businesses. Specializing in custom software development, web applications, and automation tools with a passion for coding and problem-solving.",
     email: "aramism@aramistech.com"
   },
   {
     name: "Gabriel Figueroa",
     role: "IT TECHNICIAN",
-    image: "/api/media/21/file",
+    image: "/api/media/51/file",
     description: "With over 2 years of experience in troubleshooting, maintaining, and optimizing IT systems. Known for his dedication to resolving technical issues quickly and efficiently with expertise in network maintenance and diagnostics.",
     email: "gabriel@aramistech.com"
   }
@@ -36,13 +36,15 @@ export default function Team() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           {teamMembers.map((member, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
+            <div key={index} className="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow max-w-sm">
               <img 
                 src={`${member.image}?v=${Date.now()}`} 
                 alt={`${member.name} - ${member.role}`} 
-                className="w-32 h-32 rounded-full mx-auto mb-6 object-cover border-4 border-primary-blue/20"
+                className="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-4 border-primary-blue/20"
+                style={{ imageRendering: 'auto' }}
+                loading="lazy"
               />
               <h3 className="text-xl font-bold text-professional-gray mb-2">{member.name}</h3>
               <p className="text-primary-blue font-semibold mb-4">{member.role}</p>
