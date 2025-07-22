@@ -750,10 +750,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
                         const id = `${fileName}-line-${index + 1}`;
                         
                         let category = "Other Images";
+                        let label = `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Image`;
+                        
                         if (url.includes('/api/media/')) category = "Media Library";
                         else if (filePath.includes('team') || url.includes('profile') || url.includes('Figueroa')) category = "Team Photos";
-                        else if (filePath.includes('header') || filePath.includes('footer') || filePath.includes('logo') || url.includes('Logo')) category = "Company Branding";
-                        else if (filePath.includes('hero') || filePath.includes('about') || filePath.includes('contact')) category = "Section Images";
+                        else if (filePath.includes('header') || filePath.includes('footer') || filePath.includes('logo') || url.includes('Logo')) {
+                          category = "Company Branding";
+                          if (filePath.includes('header')) label = "Header Logo";
+                          else if (filePath.includes('footer')) label = "Footer Logo";
+                          else if (filePath.includes('dynamic')) label = "Mobile Header Logo";
+                          else label = "Company Logo";
+                        }
+                        else if (filePath.includes('hero') || filePath.includes('about') || filePath.includes('contact')) {
+                          category = "Section Images";
+                          if (filePath.includes('hero')) label = "Hero Section Image";
+                          else if (filePath.includes('about')) label = "About Office";
+                          else if (filePath.includes('contact')) label = "Contact Skyline";
+                        }
                         else if (filePath.includes('pages/')) category = "Page Backgrounds";
                         
                         let description = `Image in ${fileName} component`;
@@ -763,12 +776,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
                         
                         detectedImages.push({
                           id,
-                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Image`,
+                          label,
                           description,
                           currentUrl: url,
                           filePath,
                           lineNumber: index + 1,
                           category
+                        });
+                      }
+                    }
+                  });
+                }
+
+                // Look for backgroundImage CSS styles - improved patterns
+                const bgImageMatches = line.match(/backgroundImage:\s*["'`].*?url\(([^"'`\)]+)\).*?["'`]/g);
+                if (bgImageMatches) {
+                  bgImageMatches.forEach(match => {
+                    const urlMatch = match.match(/backgroundImage:\s*["'`].*?url\(([^"'`\)]+)\).*?["'`]/);
+                    if (urlMatch && urlMatch[1]) {
+                      const url = urlMatch[1];
+                      if (url && !url.includes('placeholder') && 
+                          (url.includes('/api/media/') || url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg'))) {
+                        
+                        const fileName = path.basename(filePath, '.tsx');
+                        const id = `${fileName}-bg-line-${index + 1}`;
+                        
+                        detectedImages.push({
+                          id,
+                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Background`,
+                          description: `Background image in ${fileName} component`,
+                          currentUrl: url,
+                          filePath,
+                          lineNumber: index + 1,
+                          category: "Page Backgrounds"
+                        });
+                      }
+                    }
+                  });
+                }
+
+                // Look for template literal background images - more flexible pattern
+                const templateBgMatches = line.match(/background.*?:\s*[`"].*?url\(([^`"\)]+)\).*?[`"]/g);
+                if (templateBgMatches) {
+                  templateBgMatches.forEach(match => {
+                    const urlMatch = match.match(/background.*?:\s*[`"].*?url\(([^`"\)]+)\).*?[`"]/);
+                    if (urlMatch && urlMatch[1]) {
+                      const url = urlMatch[1];
+                      if (url && !url.includes('placeholder') && 
+                          (url.includes('/api/media/') || url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg'))) {
+                        
+                        const fileName = path.basename(filePath, '.tsx');
+                        const id = `${fileName}-template-bg-line-${index + 1}`;
+                        
+                        detectedImages.push({
+                          id,
+                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Background`,
+                          description: `Template background image in ${fileName} component`,
+                          currentUrl: url,
+                          filePath,
+                          lineNumber: index + 1,
+                          category: "Page Backgrounds"
+                        });
+                      }
+                    }
+                  });
+                }
+
+                // Look for inline style background images (specific pattern for Windows 10 page)
+                const inlineStyleMatches = line.match(/url\(([^)]+)\)/g);
+                if (inlineStyleMatches && line.includes('backgroundImage')) {
+                  inlineStyleMatches.forEach(match => {
+                    const urlMatch = match.match(/url\(([^)]+)\)/);
+                    if (urlMatch && urlMatch[1]) {
+                      const url = urlMatch[1];
+                      console.log(`🔍 Found background URL: ${url} at line ${index + 1}`);
+                      if (url && !url.includes('placeholder') && 
+                          (url.includes('/api/media/') || url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg'))) {
+                        
+                        const fileName = path.basename(filePath, '.tsx');
+                        const id = `${fileName}-inline-bg-line-${index + 1}`;
+                        
+                        console.log(`✅ Adding background image: ${url} from ${fileName}`);
+                        detectedImages.push({
+                          id,
+                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Background`,
+                          description: `Inline background image in ${fileName} component`,
+                          currentUrl: url,
+                          filePath,
+                          lineNumber: index + 1,
+                          category: "Page Backgrounds"
+                        });
+                      }
+                    }
+                  });
+                }
+
+                // Look for poster attributes in video tags
+                const posterMatches = line.match(/poster=["']([^"']+)["']/g);
+                if (posterMatches) {
+                  posterMatches.forEach(match => {
+                    const urlMatch = match.match(/poster=["']([^"']+)["']/);
+                    if (urlMatch && urlMatch[1]) {
+                      const url = urlMatch[1];
+                      if (url && (url.includes('/api/media/') || url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg'))) {
+                        
+                        const fileName = path.basename(filePath, '.tsx');
+                        const id = `${fileName}-poster-line-${index + 1}`;
+                        
+                        detectedImages.push({
+                          id,
+                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Video Poster`,
+                          description: `Video poster image in ${fileName} component`,
+                          currentUrl: url,
+                          filePath,
+                          lineNumber: index + 1,
+                          category: "Video & Media"
                         });
                       }
                     }
