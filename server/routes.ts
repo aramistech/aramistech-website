@@ -679,6 +679,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/scan-images", requireAdminAuth, (req, res) => {
     try {
       console.log("🔍 Scanning for images - forced fresh scan");
+      console.log("📋 DEBUG: About to return scan results to frontend...");
       
       const scanForImages = () => {
         const detectedImages: any[] = [];

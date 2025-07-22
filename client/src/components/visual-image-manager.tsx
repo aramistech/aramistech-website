@@ -38,23 +38,30 @@ export default function VisualImageManager() {
     queryKey: ["/api/admin/media"],
   });
 
-  // Get images from scan endpoint ONLY - no fallback with forced refresh
+  // Get images from scan endpoint ONLY - completely force fresh data
+  const [refreshKey, setRefreshKey] = useState(Math.random());
   const { data: scanResponse, isLoading: isScanLoading, refetch: refetchScan } = useQuery<{
     success: boolean;
     images: WebsiteImage[];
     totalFound: number;
     timestamp: number;
   }>({
-    queryKey: ["/api/admin/scan-images", Math.random()],
+    queryKey: ["/api/admin/scan-images", refreshKey, Date.now()],
     staleTime: 0,
     gcTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchInterval: false,
+    retry: false,
   });
 
   const mediaFiles = mediaResponse?.files || [];
   const websiteImages: WebsiteImage[] = scanResponse?.images || [];
+  
+  // DEBUG: Log what we're actually getting from the scan
+  console.log("🔍 DEBUG: Scan response:", scanResponse);
+  console.log("🔍 DEBUG: Website images:", websiteImages);
+  console.log("🔍 DEBUG: Team photos specifically:", websiteImages.filter(img => img.category === "Team Photos"));
 
   // Group images by category
   const groupedImages = websiteImages.reduce((groups, image) => {
@@ -66,10 +73,11 @@ export default function VisualImageManager() {
     return groups;
   }, {} as Record<string, WebsiteImage[]>);
 
-  // Handle manual scan
+  // Handle manual scan with forced refresh
   const handleManualScan = async () => {
     setIsScanning(true);
     try {
+      setRefreshKey(Math.random()); // Force new query key
       await refetchScan();
       toast({
         title: "Scan Complete",
