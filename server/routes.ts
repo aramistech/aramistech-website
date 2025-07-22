@@ -787,9 +787,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Continue without S3 backup - file still works locally
       }
       
-      // Update the URL with the actual file ID and S3 backup info
+      // Update the URL to use S3 directly if backup successful, otherwise local fallback
       const updatedFile = await storage.updateMediaFile(file.id, {
-        url: `/api/media/${file.id}/file`,
+        url: s3Url || `/api/media/${file.id}/file`, // Use S3 URL as primary URL
         s3Url,
         isBackedUp
       });
@@ -809,11 +809,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const files = await storage.getMediaFiles();
       
-      // Check for missing files and prioritize S3 URLs for display
+      // Always prioritize S3 URLs for display
       const filesWithStatus = files.map(file => ({
         ...file,
-        fileExists: fs.existsSync(file.filePath),
-        // Show S3 URL in admin if available, otherwise fall back to local URL
+        fileExists: file.s3Url ? true : fs.existsSync(file.filePath), // S3 files always "exist"
+        // Always show S3 URL if available
         url: file.s3Url || file.url
       }));
       
@@ -824,7 +824,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Public route for serving media files (for frontend use)
+  // Public route for serving media files - redirect to S3
   app.get("/api/media/:id/file", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -834,46 +834,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "File not found" });
       }
 
-      // Check if file exists on filesystem
-      if (!fs.existsSync(file.filePath)) {
-        console.warn(`File missing from disk: ${file.filePath} (ID: ${id})`);
-        
-        // Try to restore from S3 backup if available
-        if (file.s3Url && file.isBackedUp) {
-          console.log(`Attempting to restore file from S3: ${file.s3Url}`);
-          try {
-            const restored = await S3StorageService.restoreFromS3(file.s3Url, file.fileName);
-            if (restored) {
-              console.log(`Successfully restored file from S3: ${file.fileName}`);
-              // File is now available, continue with serving it
-            } else {
-              throw new Error('Restore failed');
-            }
-          } catch (restoreError) {
-            console.error(`Failed to restore file from S3:`, restoreError);
-            return res.status(404).json({ 
-              error: "File not found on disk and S3 restore failed",
-              fileId: id,
-              fileName: file.originalName,
-              message: "File was uploaded but has been removed from storage and could not be restored from cloud backup."
-            });
-          }
-        } else {
-          return res.status(404).json({ 
-            error: "File not found on disk",
-            fileId: id,
-            fileName: file.originalName,
-            message: "File was uploaded but has been removed from storage. No cloud backup available."
-          });
-        }
+      // Always serve from S3 if available
+      if (file.s3Url && file.isBackedUp) {
+        console.log(`Redirecting to S3 for file ID: ${id}`);
+        return res.redirect(301, file.s3Url);
       }
-
-      // Set appropriate content type
-      res.setHeader('Content-Type', file.mimeType);
-      res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
       
-      // Send the file
-      res.sendFile(path.resolve(file.filePath));
+      // If no S3 URL, file is not properly backed up
+      console.error(`No S3 backup available for file ID: ${id}`);
+      return res.status(404).json({ 
+        error: "File not available",
+        fileId: id,
+        fileName: file.originalName,
+        message: "File is not backed up to cloud storage."
+      });
+      
     } catch (error) {
       console.error("Error serving media file:", error);
       res.status(500).json({ error: "Failed to serve file" });

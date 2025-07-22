@@ -4,21 +4,21 @@ const teamMembers = [
   {
     name: "Aramis Figueroa",
     role: "IT NETWORK SPECIALIST",
-    image: "/api/media/49/file",
+    image: "https://MILL33122.s3.us-east-1.amazonaws.com/aramistechwebsiteimages/file-1753162009699-773569388.png",
     description: "With over 27 years of experience in the technology industry, Aramis specializes in network solutions, cloud services, and custom server setups. As the founder of AramisTech Corp, he's dedicated to helping businesses thrive in the digital landscape.",
     email: "aramis@aramistech.com"
   },
   {
     name: "Aramis M Figueroa",
     role: "IT / SOFTWARE DEVELOPER",
-    image: "/api/media/50/file",
+    image: "https://MILL33122.s3.us-east-1.amazonaws.com/aramistechwebsiteimages/file-1753162015415-179179291.png",
     description: "With 4 years of hands-on experience creating innovative solutions for businesses. Specializing in custom software development, web applications, and automation tools with a passion for coding and problem-solving.",
     email: "aramism@aramistech.com"
   },
   {
     name: "Gabriel Figueroa",
     role: "IT TECHNICIAN",
-    image: "/api/media/51/file",
+    image: "https://MILL33122.s3.us-east-1.amazonaws.com/aramistechwebsiteimages/file-1753162019234-589734851.png",
     description: "With over 2 years of experience in troubleshooting, maintaining, and optimizing IT systems. Known for his dedication to resolving technical issues quickly and efficiently with expertise in network maintenance and diagnostics.",
     email: "gabriel@aramistech.com"
   }

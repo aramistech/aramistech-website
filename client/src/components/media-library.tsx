@@ -470,7 +470,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
               <div key={file.id} className="group relative">
                 <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                   <img
-                    src={`/api/media/${file.id}/file`}
+                    src={file.s3Url || file.url}
                     alt={file.altText || file.originalName}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                   />
@@ -481,7 +481,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
                     {selectionMode && onSelectImage ? (
                       <Button
                         size="sm"
-                        onClick={() => onSelectImage(file.url)}
+                        onClick={() => onSelectImage(file.s3Url || file.url)}
                         className="bg-aramis-orange hover:bg-orange-600"
                       >
                         Select
@@ -528,15 +528,11 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
               <div className="space-y-4">
                 <div>
                   <img
-                    src={`/api/media/${editingFile.id}/file`}
+                    src={editingFile.s3Url || editingFile.url}
                     alt={editingFile.originalName}
                     className="w-full max-h-64 object-cover rounded-lg"
                     onError={(e) => {
-                      // Fallback to S3 URL if local serving fails
-                      const target = e.target as HTMLImageElement;
-                      if (target.src.includes('/api/media/') && editingFile.s3Url) {
-                        target.src = editingFile.s3Url;
-                      }
+                      console.error('Image failed to load:', editingFile.originalName);
                     }}
                   />
                 </div>
