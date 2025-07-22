@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,9 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Upload, Trash2, Edit3, CloudDownload, Link, Plus, Search } from "lucide-react";
+import { Upload, Trash2, Edit3, CloudDownload, Link, Plus, Search, Filter, Grid, List, Copy, Download, Eye, Calendar, FileImage, Folder, Tags } from "lucide-react";
 import type { MediaFile } from "@shared/schema";
 
 interface MediaLibraryProps {
@@ -20,9 +24,17 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
   const [editingFile, setEditingFile] = useState<MediaFile | null>(null);
   const [editAltText, setEditAltText] = useState("");
   const [editCaption, setEditCaption] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editTags, setEditTags] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [selectedFiles, setSelectedFiles] = useState<Set<number>>(new Set());
+  const [filterType, setFilterType] = useState<"all" | "images" | "docs">("all");
+  const [sortBy, setSortBy] = useState<"date" | "name" | "size">("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dropZoneRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -31,7 +43,55 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
     queryKey: ["/api/admin/media"],
   });
 
-  const files = mediaData?.files || [];
+  const allFiles = mediaData?.files || [];
+
+  // WordPress-style filtering and search
+  const filteredFiles = useMemo(() => {
+    let filtered = allFiles;
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(file => 
+        file.originalName.toLowerCase().includes(query) ||
+        file.altText?.toLowerCase().includes(query) ||
+        file.caption?.toLowerCase().includes(query) ||
+        file.description?.toLowerCase().includes(query) ||
+        file.tags?.some(tag => tag.toLowerCase().includes(query))
+      );
+    }
+
+    // Type filter
+    if (filterType !== "all") {
+      if (filterType === "images") {
+        filtered = filtered.filter(file => file.mimeType.startsWith('image/'));
+      } else if (filterType === "docs") {
+        filtered = filtered.filter(file => !file.mimeType.startsWith('image/'));
+      }
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      let comparison = 0;
+      switch (sortBy) {
+        case "name":
+          comparison = a.originalName.localeCompare(b.originalName);
+          break;
+        case "size":
+          comparison = a.fileSize - b.fileSize;
+          break;
+        case "date":
+        default:
+          const dateA = a.uploadedAt ? new Date(a.uploadedAt).getTime() : 0;
+          const dateB = b.uploadedAt ? new Date(b.uploadedAt).getTime() : 0;
+          comparison = dateA - dateB;
+          break;
+      }
+      return sortOrder === "desc" ? -comparison : comparison;
+    });
+
+    return filtered;
+  }, [allFiles, searchQuery, filterType, sortBy, sortOrder]);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -119,8 +179,20 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, altText, caption }: { id: number; altText: string; caption: string }) => {
-      return await apiRequest(`/api/admin/media/${id}`, "PUT", { altText, caption });
+    mutationFn: async ({ id, altText, caption, description, tags }: { 
+      id: number; 
+      altText: string; 
+      caption: string;
+      description: string;
+      tags: string;
+    }) => {
+      const tagsArray = tags.split(',').map(t => t.trim()).filter(t => t);
+      return await apiRequest(`/api/admin/media/${id}`, "PUT", { 
+        altText, 
+        caption, 
+        description,
+        tags: tagsArray 
+      });
     },
     onSuccess: () => {
       toast({
@@ -131,11 +203,35 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
       setEditingFile(null);
       setEditAltText("");
       setEditCaption("");
+      setEditDescription("");
+      setEditTags("");
     },
     onError: () => {
       toast({
         title: "Error",
         description: "Failed to update image details",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async (ids: number[]) => {
+      const promises = ids.map(id => apiRequest(`/api/admin/media/${id}`, "DELETE"));
+      return Promise.all(promises);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: `Deleted ${selectedFiles.size} files`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/media"] });
+      setSelectedFiles(new Set());
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete files",
         variant: "destructive",
       });
     },
@@ -259,6 +355,8 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
     setEditingFile(file);
     setEditAltText(file.altText || "");
     setEditCaption(file.caption || "");
+    setEditDescription(file.description || "");
+    setEditTags(file.tags?.join(', ') || "");
   };
 
   const handleDelete = (file: MediaFile) => {
@@ -273,8 +371,55 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
         id: editingFile.id,
         altText: editAltText,
         caption: editCaption,
+        description: editDescription,
+        tags: editTags,
       });
     }
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedFiles.size > 0 && confirm(`Delete ${selectedFiles.size} selected files?`)) {
+      bulkDeleteMutation.mutate(Array.from(selectedFiles));
+    }
+  };
+
+  const handleSelectFile = (fileId: number) => {
+    const newSelected = new Set(selectedFiles);
+    if (newSelected.has(fileId)) {
+      newSelected.delete(fileId);
+    } else {
+      newSelected.add(fileId);
+    }
+    setSelectedFiles(newSelected);
+  };
+
+  const handleSelectAll = () => {
+    if (selectedFiles.size === filteredFiles.length) {
+      setSelectedFiles(new Set());
+    } else {
+      setSelectedFiles(new Set(filteredFiles.map(f => f.id)));
+    }
+  };
+
+  const copyToClipboard = (text: string, message: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast({
+        title: "Copied!",
+        description: message,
+      });
+    });
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
   };
 
   if (isLoading) {
@@ -290,17 +435,36 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
   return (
     <Card>
       <CardHeader>
-        <div className="flex flex-row items-center justify-between">
-          <CardTitle>Media Library</CardTitle>
+        <div className="flex flex-row items-center justify-between mb-6">
+          <div>
+            <CardTitle className="text-2xl font-bold flex items-center gap-2">
+              <FileImage className="w-6 h-6 text-aramis-orange" />
+              WordPress Media Gallery
+            </CardTitle>
+            <p className="text-sm text-gray-600 mt-1">
+              {filteredFiles.length} of {allFiles.length} files • {formatFileSize(allFiles.reduce((acc, f) => acc + f.fileSize, 0))} total
+            </p>
+          </div>
           <div className="flex gap-2">
-          <Button
-            onClick={() => cleanupMutation.mutate()}
-            disabled={cleanupMutation.isPending}
-            variant="outline"
-            className="text-red-600 border-red-200 hover:bg-red-50"
-          >
-            {cleanupMutation.isPending ? "Cleaning..." : "Cleanup Missing"}
-          </Button>
+            {selectedFiles.size > 0 && (
+              <Button
+                onClick={handleBulkDelete}
+                disabled={bulkDeleteMutation.isPending}
+                variant="outline"
+                className="text-red-600 border-red-200 hover:bg-red-50"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete {selectedFiles.size}
+              </Button>
+            )}
+            <Button
+              onClick={() => cleanupMutation.mutate()}
+              disabled={cleanupMutation.isPending}
+              variant="outline"
+              className="text-red-600 border-red-200 hover:bg-red-50"
+            >
+              {cleanupMutation.isPending ? "Cleaning..." : "Cleanup Missing"}
+            </Button>
           <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-aramis-orange hover:bg-orange-600">
@@ -433,15 +597,101 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
           className="hidden"
         />
         
-        {files.length === 0 ? (
+        {/* WordPress-style toolbar */}
+        <div className="mb-6 space-y-4">
+          {/* Search and filters */}
+          <div className="flex flex-wrap gap-4 items-center justify-between">
+            <div className="flex gap-2">
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                <Input
+                  placeholder="Search images..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 w-64"
+                />
+              </div>
+              <Select value={filterType} onValueChange={(value) => setFilterType(value as any)}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All files</SelectItem>
+                  <SelectItem value="images">Images</SelectItem>
+                  <SelectItem value="docs">Documents</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex gap-2">
+              <Select value={`${sortBy}-${sortOrder}`} onValueChange={(value) => {
+                const [sort, order] = value.split('-');
+                setSortBy(sort as any);
+                setSortOrder(order as any);
+              }}>
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date-desc">Newest first</SelectItem>
+                  <SelectItem value="date-asc">Oldest first</SelectItem>
+                  <SelectItem value="name-asc">Name A-Z</SelectItem>
+                  <SelectItem value="name-desc">Name Z-A</SelectItem>
+                  <SelectItem value="size-desc">Largest first</SelectItem>
+                  <SelectItem value="size-asc">Smallest first</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+                className="px-3"
+              >
+                {viewMode === "grid" ? <List className="w-4 h-4" /> : <Grid className="w-4 h-4" />}
+              </Button>
+            </div>
+          </div>
+
+          {/* Bulk actions */}
+          {filteredFiles.length > 0 && (
+            <div className="flex items-center gap-4 py-3 px-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  checked={selectedFiles.size === filteredFiles.length && filteredFiles.length > 0}
+                  onCheckedChange={handleSelectAll}
+                />
+                <span className="text-sm font-medium">
+                  {selectedFiles.size > 0 ? `${selectedFiles.size} selected` : "Select all"}
+                </span>
+              </div>
+              {selectedFiles.size > 0 && (
+                <div className="flex gap-2 ml-auto">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setSelectedFiles(new Set())}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {filteredFiles.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
             <Upload className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-            <p className="text-lg font-medium mb-2">No images in library</p>
-            <p className="text-sm">Upload your first image to get started</p>
+            <p className="text-lg font-medium mb-2">
+              {searchQuery ? `No images match "${searchQuery}"` : "No images in library"}
+            </p>
+            <p className="text-sm">
+              {searchQuery ? "Try a different search term" : "Upload your first image to get started"}
+            </p>
           </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {files.map((file) => (
+        ) : viewMode === "grid" ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {filteredFiles.map((file) => (
               <div key={file.id} className="group relative">
                 <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                   <img
@@ -491,6 +741,64 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
               </div>
             ))}
           </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredFiles.map((file) => (
+              <div key={file.id} className="flex items-center gap-4 p-4 bg-white border rounded-lg">
+                <div className="w-16 h-16 rounded overflow-hidden bg-gray-100 flex-shrink-0">
+                  <img
+                    src={`/api/media/${file.id}/file`}
+                    alt={file.altText || file.originalName}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-gray-900 truncate">{file.originalName}</h3>
+                  <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
+                    <span>{formatFileSize(file.fileSize)}</span>
+                    <span>{formatDate(file.uploadedAt)}</span>
+                    {file.tags && file.tags.length > 0 && (
+                      <div className="flex gap-1">
+                        {file.tags.slice(0, 3).map((tag, i) => (
+                          <Badge key={i} variant="outline" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => copyToClipboard(`/api/media/${file.id}/file`, "Image URL copied!")}
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                  {!selectionMode && (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleEdit(file)}
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDelete(file)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
         
         {editingFile && (
@@ -528,16 +836,84 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
                     id="caption"
                     value={editCaption}
                     onChange={(e) => setEditCaption(e.target.value)}
-                    placeholder="Optional caption"
+                    placeholder="Image caption"
                   />
                 </div>
-                
-                <div className="flex gap-2 pt-4">
-                  <Button onClick={handleUpdate} disabled={updateMutation.isPending}>
-                    {updateMutation.isPending ? "Updating..." : "Update"}
-                  </Button>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    placeholder="Detailed description"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="tags">Tags (comma separated)</Label>
+                  <Input
+                    id="tags"
+                    value={editTags}
+                    onChange={(e) => setEditTags(e.target.value)}
+                    placeholder="tag1, tag2, tag3"
+                  />
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                  <h4 className="font-medium text-sm">File Details</h4>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">File size:</span>
+                      <span className="ml-2">{formatFileSize(editingFile.fileSize)}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Uploaded:</span>
+                      <span className="ml-2">{formatDate(editingFile.uploadedAt)}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Type:</span>
+                      <span className="ml-2">{editingFile.mimeType}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Backed up:</span>
+                      <span className="ml-2">{editingFile.isBackedUp ? "✅ Yes" : "⏳ Processing"}</span>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => copyToClipboard(`/api/media/${editingFile.id}/file`, "Image URL copied!")}
+                      className="mr-2"
+                    >
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copy URL
+                    </Button>
+                    {editingFile.s3Url && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => copyToClipboard(editingFile.s3Url!, "S3 URL copied!")}
+                      >
+                        <CloudDownload className="w-4 h-4 mr-2" />
+                        Copy S3 URL
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2">
                   <Button variant="outline" onClick={() => setEditingFile(null)}>
                     Cancel
+                  </Button>
+                  <Button
+                    onClick={handleUpdate}
+                    disabled={updateMutation.isPending}
+                    className="bg-aramis-orange hover:bg-orange-600"
+                  >
+                    {updateMutation.isPending ? "Saving..." : "Save Changes"}
                   </Button>
                 </div>
               </div>
