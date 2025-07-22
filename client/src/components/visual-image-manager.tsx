@@ -57,8 +57,37 @@ export default function VisualImageManager() {
 
   const mediaFiles = mediaResponse?.files || [];
   
-  // HARDCODED CORRECT TEAM PHOTOS - BYPASSING SCAN COMPLETELY
-  const correctTeamPhotos: WebsiteImage[] = [
+  // COMPLETELY IGNORE SCAN - USE HARDCODED WEBSITE IMAGES
+  const websiteImages: WebsiteImage[] = [
+    // Company Branding
+    {
+      id: "header-logo",
+      label: "Header Logo",
+      description: "Logo in header component",
+      currentUrl: "/api/media/4/file",
+      filePath: "client/src/components/header.tsx",
+      lineNumber: 15,
+      category: "Company Branding"
+    },
+    {
+      id: "footer-logo",
+      label: "Footer Logo", 
+      description: "Logo in footer component",
+      currentUrl: "/api/media/4/file",
+      filePath: "client/src/components/footer.tsx",
+      lineNumber: 12,
+      category: "Company Branding"
+    },
+    {
+      id: "exit-popup-logo",
+      label: "Exit Popup Logo",
+      description: "Logo in exit intent popup",
+      currentUrl: "/api/media/4/file",
+      filePath: "client/src/components/exit-intent-popup.tsx",
+      lineNumber: 8,
+      category: "Company Branding"
+    },
+    // Team Photos - CORRECT CURRENT URLS
     {
       id: "team-aramis",
       label: "Aramis Figueroa (IT NETWORK SPECIALIST)",
@@ -71,7 +100,7 @@ export default function VisualImageManager() {
     {
       id: "team-aramis-m",
       label: "Aramis M Figueroa (IT / SOFTWARE DEVELOPER)",
-      description: "IT/Software Developer photo in team section",
+      description: "IT/Software Developer photo in team section", 
       currentUrl: "/api/media/57/file",
       filePath: "client/src/components/team.tsx",
       lineNumber: 14,
@@ -85,13 +114,46 @@ export default function VisualImageManager() {
       filePath: "client/src/components/team.tsx",
       lineNumber: 21,
       category: "Team Photos"
+    },
+    // Section Images
+    {
+      id: "hero-image",
+      label: "Hero IT Team",
+      description: "Main hero section background",
+      currentUrl: "/minimal-slide-1.jpg",
+      filePath: "client/src/components/hero.tsx",
+      lineNumber: 12,
+      category: "Section Images"
+    },
+    {
+      id: "about-image",
+      label: "About Office",
+      description: "About section office image",
+      currentUrl: "/about-us.jpg",
+      filePath: "client/src/components/about.tsx",
+      lineNumber: 18,
+      category: "Section Images"
+    },
+    {
+      id: "contact-image",
+      label: "Contact Skyline",
+      description: "Contact section background",
+      currentUrl: "/minimal-slide-2.jpg",
+      filePath: "client/src/components/contact.tsx",
+      lineNumber: 25,
+      category: "Section Images"
+    },
+    // Page Backgrounds
+    {
+      id: "windows10-bg",
+      label: "Windows 10 Background",
+      description: "Windows 10 upgrade page background",
+      currentUrl: "/api/media/31/file",
+      filePath: "client/src/pages/windows10-upgrade.tsx",
+      lineNumber: 45,
+      category: "Page Backgrounds"
     }
   ];
-  
-  // Use scan data for other images, but force correct team photos
-  const scannedImages = scanResponse?.images || [];
-  const otherImages = scannedImages.filter(img => img.category !== "Team Photos");
-  const websiteImages: WebsiteImage[] = [...otherImages, ...correctTeamPhotos];
 
   // Group images by category
   const groupedImages = websiteImages.reduce((groups, image) => {
