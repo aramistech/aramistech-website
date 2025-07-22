@@ -816,7 +816,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Generate signed URL for S3 files for external sharing
         if (file.s3Url && file.isBackedUp) {
           try {
-            const { S3StorageService } = await import('../s3-storage.js');
+            const { S3StorageService } = await import('./s3-storage.js');
             externalUrl = await S3StorageService.generateSignedUrl(file.s3Url);
           } catch (error) {
             console.error(`Failed to generate signed URL for file ${file.id}:`, error);

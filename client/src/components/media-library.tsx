@@ -420,19 +420,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
           </div>
         </div>
         
-        {/* S3 Backup Status */}
-        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-start gap-2">
-            <div className="w-4 h-4 text-green-600 mt-0.5">☁️</div>
-            <div className="text-sm">
-              <p className="font-medium text-green-800">Cloud Storage Active</p>
-              <p className="text-green-700 mt-1">
-                All images are automatically backed up to AWS S3 cloud storage and will be restored if needed. 
-                Your files are permanently protected.
-              </p>
-            </div>
-          </div>
-        </div>
+
       </CardHeader>
       
       <CardContent>
