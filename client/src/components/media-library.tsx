@@ -439,7 +439,7 @@ export default function MediaLibrary({ onSelectImage, selectionMode = false }: M
           <div>
             <CardTitle className="text-2xl font-bold flex items-center gap-2">
               <FileImage className="w-6 h-6 text-aramis-orange" />
-              WordPress Media Gallery
+              Media Library
             </CardTitle>
             <p className="text-sm text-gray-600 mt-1">
               {filteredFiles.length} of {allFiles.length} files • {formatFileSize(allFiles.reduce((acc, f) => acc + f.fileSize, 0))} total
