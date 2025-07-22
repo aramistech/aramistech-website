@@ -42,8 +42,13 @@ export default function Team() {
               <img 
                 src={`${member.image}?v=${Date.now()}`} 
                 alt={`${member.name} - ${member.role}`} 
-                className="w-40 h-40 rounded-full mx-auto mb-6 object-cover"
-                style={{ imageRendering: 'auto' }}
+                className="w-48 h-48 rounded-full mx-auto mb-6 object-cover"
+                style={{ 
+                  imageRendering: '-webkit-optimize-contrast',
+                  filter: 'contrast(1.05) saturate(1.1)',
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden'
+                }}
                 loading="lazy"
               />
               <h3 className="text-xl font-bold text-professional-gray mb-2">{member.name}</h3>
