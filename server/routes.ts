@@ -809,10 +809,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const files = await storage.getMediaFiles();
       
-      // Check for missing files and mark them
+      // Check for missing files and prioritize S3 URLs for display
       const filesWithStatus = files.map(file => ({
         ...file,
-        fileExists: fs.existsSync(file.filePath)
+        fileExists: fs.existsSync(file.filePath),
+        // Show S3 URL in admin if available, otherwise fall back to local URL
+        url: file.s3Url || file.url
       }));
       
       res.json({ success: true, files: filesWithStatus });
