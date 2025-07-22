@@ -809,12 +809,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const files = await storage.getMediaFiles();
       
-      // Use API endpoints for consistent serving
-      const filesWithStatus = files.map(file => ({
-        ...file,
-        fileExists: file.s3Url ? true : fs.existsSync(file.filePath), // S3 files always "exist"
-        // Always use API endpoint URL for consistent serving
-        url: file.url
+      // Generate signed URLs for external sharing
+      const filesWithStatus = await Promise.all(files.map(async file => {
+        let externalUrl = file.url;
+        
+        // Generate signed URL for S3 files for external sharing
+        if (file.s3Url && file.isBackedUp) {
+          try {
+            const { S3StorageService } = await import('../s3-storage.js');
+            externalUrl = await S3StorageService.generateSignedUrl(file.s3Url);
+          } catch (error) {
+            console.error(`Failed to generate signed URL for file ${file.id}:`, error);
+            externalUrl = file.s3Url; // Fallback to S3 URL
+          }
+        }
+        
+        return {
+          ...file,
+          fileExists: file.s3Url ? true : fs.existsSync(file.filePath), // S3 files always "exist"
+          // Show signed URL for copying/external use
+          url: externalUrl,
+          // Keep API endpoint as internal serving URL
+          apiUrl: `/api/media/${file.id}/file`
+        };
       }));
       
       res.json({ success: true, files: filesWithStatus });

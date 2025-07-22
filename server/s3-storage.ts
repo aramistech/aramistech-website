@@ -1,5 +1,6 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 // Remove unused import for now
 import fs from 'fs';
 import path from 'path';
@@ -28,6 +29,33 @@ const getBucketName = (): string => {
 const BUCKET_NAME = getBucketName();
 
 export class S3StorageService {
+  /**
+   * Generate a signed URL for external sharing (valid for 7 days)
+   */
+  static async generateSignedUrl(s3Url: string): Promise<string> {
+    try {
+      // Extract key from S3 URL
+      const url = new URL(s3Url);
+      let pathParts = url.pathname.substring(1).split('/');
+      if (pathParts[0] === 'MILL33122') {
+        pathParts = pathParts.slice(1);
+      }
+      const key = pathParts.join('/');
+
+      const command = new GetObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+      });
+
+      // Generate signed URL valid for 7 days
+      const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 7 * 24 * 60 * 60 });
+      return signedUrl;
+    } catch (error) {
+      console.error('Failed to generate signed URL:', error);
+      return s3Url; // Fallback to original URL
+    }
+  }
+
   /**
    * Upload a file to S3 and return the S3 URL
    */
