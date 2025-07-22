@@ -3310,24 +3310,38 @@ User message: ${message}`
           fileContent = fileContent.replace(/src="[^"]*"/, `src="${newUrl}"`);
           break;
         case 'image':
-          // For team photos, replace by specific team member based on current URLs
+          // For team photos, replace by specific team member positions
           if (imageId === 'aramis-photo') {
-            // Replace the first image (Aramis Figueroa - Founder)
+            // Replace the first image (Aramis Figueroa - position 1)
             fileContent = fileContent.replace(/image: "\/api\/media\/\d+\/file"/, `image: "${newUrl}"`);
           } else if (imageId === 'aramis-m-photo') {
-            // Replace second occurrence for Aramis M Figueroa
-            let count = 0;
-            fileContent = fileContent.replace(/image: "\/api\/media\/\d+\/file"/g, (match) => {
-              count++;
-              return count === 2 ? `image: "${newUrl}"` : match;
-            });
+            // Replace second occurrence for Aramis M Figueroa (position 2)
+            const lines = fileContent.split('\n');
+            let imageCount = 0;
+            for (let i = 0; i < lines.length; i++) {
+              if (lines[i].includes('image: "/api/media/') && lines[i].includes('/file"')) {
+                imageCount++;
+                if (imageCount === 2) {
+                  lines[i] = lines[i].replace(/image: "\/api\/media\/\d+\/file"/, `image: "${newUrl}"`);
+                  break;
+                }
+              }
+            }
+            fileContent = lines.join('\n');
           } else if (imageId === 'gabriel-photo') {
-            // Replace third occurrence for Gabriel
-            let count = 0;
-            fileContent = fileContent.replace(/image: "\/api\/media\/\d+\/file"/g, (match) => {
-              count++;
-              return count === 3 ? `image: "${newUrl}"` : match;
-            });
+            // Replace third occurrence for Gabriel (position 3)
+            const lines = fileContent.split('\n');
+            let imageCount = 0;
+            for (let i = 0; i < lines.length; i++) {
+              if (lines[i].includes('image: "/api/media/') && lines[i].includes('/file"')) {
+                imageCount++;
+                if (imageCount === 3) {
+                  lines[i] = lines[i].replace(/image: "\/api\/media\/\d+\/file"/, `image: "${newUrl}"`);
+                  break;
+                }
+              }
+            }
+            fileContent = lines.join('\n');
           }
           break;
         case 'background':
