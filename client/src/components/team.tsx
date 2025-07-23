@@ -4,21 +4,21 @@ const teamMembers = [
   {
     name: "Aramis Figueroa",
     role: "IT NETWORK SPECIALIST",
-    image: `/api/media/56/file?t=${Date.now()}`,
+    image: "/api/media/56/file",
     description: "With over 27 years of experience in the technology industry, Aramis specializes in network solutions, cloud services, and custom server setups. As the founder of AramisTech Corp, he's dedicated to helping businesses thrive in the digital landscape.",
     email: "aramis@aramistech.com"
   },
   {
     name: "Aramis M Figueroa",
     role: "IT / SOFTWARE DEVELOPER",
-    image: `/api/media/57/file?t=${Date.now()}`,
+    image: "/api/media/57/file",
     description: "With 4 years of hands-on experience creating innovative solutions for businesses. Specializing in custom software development, web applications, and automation tools with a passion for coding and problem-solving.",
     email: "aramism@aramistech.com"
   },
   {
     name: "Gabriel Figueroa",
     role: "IT TECHNICIAN",
-    image: `/api/media/58/file?t=${Date.now()}`,
+    image: "/api/media/58/file",
     description: "With over 2 years of experience in troubleshooting, maintaining, and optimizing IT systems. Known for his dedication to resolving technical issues quickly and efficiently with expertise in network maintenance and diagnostics.",
     email: "gabriel@aramistech.com"
   }
@@ -40,7 +40,7 @@ export default function Team() {
           {teamMembers.map((member, index) => (
             <div key={index} className="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow max-w-sm">
               <img 
-                src={member.image} 
+                src={`${member.image}?t=${Date.now()}`} 
                 alt={`${member.name} - ${member.role}`} 
                 className="w-48 h-48 rounded-full mx-auto mb-6 object-cover"
                 style={{ 
