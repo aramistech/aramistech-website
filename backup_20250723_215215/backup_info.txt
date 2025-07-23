@@ -1,0 +1,21 @@
+AramisTech Website Backup
+Date: Wed Jul 23 09:52:19 PM UTC 2025
+Backup Directory: backup_20250723_215215
+
+Contents:
+- code_backup.tar.gz: Complete source code
+- database_backup.sql: PostgreSQL database dump
+- backup_info.txt: This summary file
+
+Media Files:
+- All uploaded images are automatically backed up to AWS S3
+- S3 Bucket: MILL33122
+- S3 backup is handled automatically by the application
+
+Restore Instructions:
+1. Extract code_backup.tar.gz to new project directory
+2. Restore database: psql $DATABASE_URL < database_backup.sql
+3. Configure environment variables (DATABASE_URL, AWS credentials)
+4. Run: npm install && npm run dev
+5. Media files will be served from S3 automatically
+
