@@ -12,7 +12,7 @@ const teamMembers = [
     name: "Aramis M Figueroa",
     role: "IT / SOFTWARE DEVELOPER",
     image: "/api/media/57/file",
-    description: "With 4 years of hands-on experience creating innovative solutions for businesses. Specializing in custom software development, web applications, and automation tools with a passion for coding and problem-solving.",
+    description: "With over 5 years of hands-on experience creating AI innovative solutions for businesses. Specializing in custom software development, web applications, and automation tools with a passion for coding and problem-solving.",
     email: "aramism@aramistech.com"
   },
   {
