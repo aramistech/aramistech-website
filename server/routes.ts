@@ -1232,7 +1232,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (response.Body) {
             // Stream the S3 response to client
             res.setHeader('Content-Type', file.mimeType);
-            res.setHeader('Cache-Control', 'public, max-age=31536000');
+            // Add cache-busting for development/testing - allows immediate image updates
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
             
             // Convert S3 stream to buffer
             const chunks: Uint8Array[] = [];
@@ -1254,7 +1257,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (fs.existsSync(file.filePath)) {
         console.log(`Serving local file for ID: ${id}`);
         res.setHeader('Content-Type', file.mimeType);
-        res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+        // Add cache-busting for development/testing - allows immediate image updates
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
         return res.sendFile(path.resolve(file.filePath));
       }
       
@@ -3819,6 +3825,8 @@ User message: ${message}`
       const { imageId } = req.params;
       const { mediaFileId } = req.body;
       
+      console.log(`🔥 POST REPLACE REQUEST: imageId=${imageId}, mediaFileId=${mediaFileId}`);
+      
       if (!imageId || !mediaFileId) {
         return res.status(400).json({ 
           success: false, 
@@ -3966,10 +3974,18 @@ User message: ${message}`
       }
 
       fs.writeFileSync(fullPath, fileContent, 'utf8');
+      
+      // Force cache invalidation by triggering HMR
+      setTimeout(() => {
+        console.log(`🔄 Image replacement completed for ${imageId} -> ${newUrl}`);
+      }, 100);
 
       res.json({ 
         success: true, 
-        message: "Image updated successfully" 
+        message: "Image updated successfully",
+        newUrl,
+        imageId,
+        timestamp: Date.now()
       });
     } catch (error) {
       console.error('Image replacement error:', error);

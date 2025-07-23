@@ -228,11 +228,17 @@ export default function VisualImageManagerEnhanced() {
     mutationFn: async ({ imageId, mediaFileId }: { imageId: string; mediaFileId: number }) => {
       return apiRequest(`/api/admin/replace-image/${imageId}`, "POST", { mediaFileId });
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       toast({
         title: "Success",
-        description: "Image updated successfully",
+        description: `Image updated successfully. Page will refresh to show changes.`,
       });
+      
+      // Force page refresh to clear all browser cache
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+      
       queryClient.invalidateQueries({ queryKey: ["/api/admin/scan-images"] });
       setMediaPickerOpen(false);
       setSelectedImage(null);
