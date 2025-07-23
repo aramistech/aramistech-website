@@ -709,12 +709,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
                       
                       if (url && url.includes('/api/media/')) {
                         const fileName = path.basename(filePath, '.tsx');
-                        const id = `${fileName}-line-${index + 1}`;
+                        let id, label;
+                        
+                        // Map team photos to correct IDs based on line numbers
+                        if (fileName === 'team') {
+                          if (index + 1 === 7) {
+                            id = 'aramis-photo';
+                            label = 'Aramis Figueroa Photo';
+                          } else if (index + 1 === 14) {
+                            id = 'aramis-m-photo';
+                            label = 'Aramis M Figueroa Photo';
+                          } else if (index + 1 === 21) {
+                            id = 'gabriel-photo';
+                            label = 'Gabriel Figueroa Photo';
+                          } else {
+                            id = `${fileName}-line-${index + 1}`;
+                            label = `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Image`;
+                          }
+                        } else {
+                          id = `${fileName}-line-${index + 1}`;
+                          label = `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Image`;
+                        }
                         
                         detectedImages.push({
                           id,
-                          label: `${fileName.charAt(0).toUpperCase() + fileName.slice(1)} Image`,
-                          description: `Team photo in ${fileName} component`,
+                          label,
+                          description: fileName === 'team' ? `Team photo in ${fileName} component` : `Image in ${fileName} component`,
                           currentUrl: url,
                           filePath,
                           lineNumber: index + 1,
@@ -3652,6 +3672,173 @@ User message: ${message}`
       }
 
       // Define image mappings
+      const imageMap: Record<string, { filePath: string; replaceType: string; }> = {
+        'header-logo': {
+          filePath: 'client/src/components/header.tsx',
+          replaceType: 'src'
+        },
+        'footer-logo': {
+          filePath: 'client/src/components/footer.tsx', 
+          replaceType: 'src'
+        },
+        'dynamic-header-logo': {
+          filePath: 'client/src/components/dynamic-header.tsx',
+          replaceType: 'src'
+        },
+        'exit-popup-logo': {
+          filePath: 'client/src/components/exit-intent-popup.tsx',
+          replaceType: 'src'
+        },
+        'aramis-photo': {
+          filePath: 'client/src/components/team.tsx',
+          replaceType: 'image'
+        },
+        'aramis-m-photo': {
+          filePath: 'client/src/components/team.tsx',
+          replaceType: 'image'
+        },
+        'gabriel-photo': {
+          filePath: 'client/src/components/team.tsx',
+          replaceType: 'image'
+        },
+        'hero-image': {
+          filePath: 'client/src/components/hero.tsx',
+          replaceType: 'src'
+        },
+        'about-image': {
+          filePath: 'client/src/components/about.tsx',
+          replaceType: 'src'
+        },
+        'contact-image': {
+          filePath: 'client/src/components/contact.tsx',
+          replaceType: 'src'
+        },
+        'windows10-bg': {
+          filePath: 'client/src/pages/windows10-upgrade.tsx',
+          replaceType: 'background'
+        },
+        'testimonial-poster': {
+          filePath: 'client/src/pages/windows10-upgrade.tsx',
+          replaceType: 'poster'
+        }
+      };
+
+      const imageInfo = imageMap[imageId];
+      if (!imageInfo) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid image ID" 
+        });
+      }
+
+      const fullPath = path.resolve(imageInfo.filePath);
+      
+      if (!fs.existsSync(fullPath)) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "File not found" 
+        });
+      }
+
+      let fileContent = fs.readFileSync(fullPath, 'utf8');
+      
+      // Replace based on replace type
+      switch (imageInfo.replaceType) {
+        case 'src':
+          // Replace src attribute
+          fileContent = fileContent.replace(/src="[^"]*"/, `src="${newUrl}"`);
+          break;
+        case 'image':
+          // For team photos, replace by specific team member positions
+          if (imageId === 'aramis-photo') {
+            // Replace the first image (Aramis Figueroa - position 1)
+            fileContent = fileContent.replace(/image: "\/api\/media\/\d+\/file"/, `image: "${newUrl}"`);
+          } else if (imageId === 'aramis-m-photo') {
+            // Replace second occurrence for Aramis M Figueroa (position 2)
+            const lines = fileContent.split('\n');
+            let imageCount = 0;
+            for (let i = 0; i < lines.length; i++) {
+              if (lines[i].includes('image: "/api/media/') && lines[i].includes('/file"')) {
+                imageCount++;
+                if (imageCount === 2) {
+                  lines[i] = lines[i].replace(/image: "\/api\/media\/\d+\/file"/, `image: "${newUrl}"`);
+                  break;
+                }
+              }
+            }
+            fileContent = lines.join('\n');
+          } else if (imageId === 'gabriel-photo') {
+            // Replace third occurrence for Gabriel (position 3)
+            const lines = fileContent.split('\n');
+            let imageCount = 0;
+            for (let i = 0; i < lines.length; i++) {
+              if (lines[i].includes('image: "/api/media/') && lines[i].includes('/file"')) {
+                imageCount++;
+                if (imageCount === 3) {
+                  lines[i] = lines[i].replace(/image: "\/api\/media\/\d+\/file"/, `image: "${newUrl}"`);
+                  break;
+                }
+              }
+            }
+            fileContent = lines.join('\n');
+          }
+          break;
+        case 'background':
+          // For background image - handle template literal format
+          fileContent = fileContent.replace(
+            /backgroundImage: `linear-gradient\([^)]+\), url\([^)]+\)`/,
+            `backgroundImage: \`linear-gradient(rgba(37, 99, 235, 0.75), rgba(67, 56, 202, 0.75)), url(${newUrl})\``
+          );
+          break;
+        case 'poster':
+          // For video poster
+          fileContent = fileContent.replace(/poster="[^"]*"/, `poster="${newUrl}"`);
+          break;
+        default:
+          throw new Error(`Unknown replace type: ${imageInfo.replaceType}`);
+      }
+
+      fs.writeFileSync(fullPath, fileContent, 'utf8');
+
+      res.json({ 
+        success: true, 
+        message: "Image updated successfully" 
+      });
+    } catch (error) {
+      console.error('Image replacement error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to update image" 
+      });
+    }
+  });
+
+  // POST endpoint for Visual Image Manager (matches frontend expectations)
+  app.post('/api/admin/replace-image/:imageId', requireAdminAuth, async (req, res) => {
+    try {
+      const { imageId } = req.params;
+      const { mediaFileId } = req.body;
+      
+      if (!imageId || !mediaFileId) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "imageId and mediaFileId are required" 
+        });
+      }
+
+      // Get the media file details first
+      const mediaFile = await storage.getMediaFileById(mediaFileId);
+      if (!mediaFile) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Media file not found" 
+        });
+      }
+
+      // Construct the new URL
+      const newUrl = `/api/media/${mediaFileId}/file`;
+
+      // Define image mappings (same as PUT endpoint)
       const imageMap: Record<string, { filePath: string; replaceType: string; }> = {
         'header-logo': {
           filePath: 'client/src/components/header.tsx',
