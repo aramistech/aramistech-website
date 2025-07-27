@@ -30,10 +30,17 @@ export default function IPLookup() {
   const [refreshing, setRefreshing] = useState(false);
   const { toast } = useToast();
 
+  // Helper function to check if an IP is IPv4
+  const isIPv4 = (ip: string): boolean => {
+    const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
+    return ipv4Regex.test(ip);
+  };
+
   const fetchPublicIP = async () => {
     try {
-      // Try multiple services for reliability
+      // Try multiple services for reliability - prioritize IPv4-only services
       const services = [
+        'https://api.ipify.org?format=json', // IPv4 only
         'https://ipapi.co/json/',
         'https://ip-api.com/json/',
         'https://ipinfo.io/json'
@@ -45,18 +52,26 @@ export default function IPLookup() {
           if (response.ok) {
             const data = await response.json();
             
-            // Normalize response format
-            const ipInfo: IPInfo = {
-              ip: data.ip || data.query,
-              city: data.city,
-              region: data.region || data.regionName,
-              country: data.country || data.country_name,
-              org: data.org || data.isp,
-              timezone: data.timezone
-            };
+            const detectedIP = data.ip || data.query;
             
-            setPublicIP(ipInfo);
-            return;
+            // Only accept IPv4 addresses
+            if (detectedIP && isIPv4(detectedIP)) {
+              // Normalize response format
+              const ipInfo: IPInfo = {
+                ip: detectedIP,
+                city: data.city,
+                region: data.region || data.regionName,
+                country: data.country || data.country_name,
+                org: data.org || data.isp,
+                timezone: data.timezone
+              };
+              
+              setPublicIP(ipInfo);
+              return;
+            } else {
+              console.log(`Skipping IPv6 address: ${detectedIP}`);
+              continue; // Try next service for IPv4
+            }
           }
         } catch (error) {
           console.warn(`Service ${service} failed:`, error);
